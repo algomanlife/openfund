@@ -1,5 +1,6 @@
 import { controlledRules } from './controlled-challenges.js'
 import { entitlementForOrderTx, fundedEntitlementSnapshot } from './entitlements.js'
+import { passForOrderTx } from './migration.js'
 /**
  * Openfund — challenge purchases, on-chain payment verification,
  * invoices, purchase/payment history and withdrawal requests.
@@ -319,8 +320,20 @@ export async function provisionOrderTx(client, { order, userId = order.user_id, 
        redeemed only as the zero-payment internal coupon it was issued as */
     const entitlement = await entitlementForOrderTx(client, order)
     if (entitlement && (controlled || !zeroPayment || order.payment_method !== 'internal_coupon')) throw fail(409, 'entitlement_order_invalid')
+    /* a migration pass (ADR 0051): the order paid the normal price; the
+       pass is consumed here, once, and the challenge starts funded */
+    let migrationPass = null
+    if (order.migration_pass_id) {
+      if (controlled || entitlement || order.coupon_id) throw fail(409, 'migration_order_invalid')
+      const { rows: [p] } = await client.query('SELECT * FROM migration_passes WHERE id=$1 FOR UPDATE', [order.migration_pass_id])
+      const { rows: [planRow] } = await client.query('SELECT slug FROM challenge_plans WHERE id=$1', [order.challenge_plan_id])
+      if (!p || p.user_id !== order.user_id || p.status !== 'issued' || !p.plans.includes(planRow?.slug) || Number(order.account_size_usd) > Number(p.max_size_usd))
+        throw fail(409, 'migration_pass_invalid')
+      await client.query(`UPDATE migration_passes SET status='redeemed', redeemed_at=now(), purchase_order_id=$2 WHERE id=$1`, [p.id, orderId])
+      migrationPass = p
+    }
     let rules = controlledRules(normalizeRules(planConfiguration, { dailyLossVariant: order.daily_loss_variant || 'default' }), controlled)
-    const fundedStart = entitlement?.start_stage === 0
+    const fundedStart = entitlement?.start_stage === 0 || !!migrationPass
     if (fundedStart) rules = fundedEntitlementSnapshot(rules, { orderCreatedAt: order.created_at })
 
     const challenge = (await client.query(
@@ -340,6 +353,12 @@ export async function provisionOrderTx(client, { order, userId = order.user_id, 
     })
 
     if (controlled?.profile === 'instant') await challenges.startTx(client, challenge)
+    if (migrationPass) {
+      await ChallengeService.event(client, challenge.id, 'migration_pass_redeemed', { passId: migrationPass.id, requestId: migrationPass.request_id })
+      await client.query(`INSERT INTO migration_events (request_id, actor, action, detail) VALUES ($1,$2,'pass_redeemed',$3)`,
+        [migrationPass.request_id, `user:${order.user_id}`, JSON.stringify({ orderId, challengeId: challenge.id })])
+      if (!rules.fundedPayoutVersion) await challenges.startTx(client, challenge)
+    }
     if (entitlement) {
       await ChallengeService.event(client, challenge.id, 'entitlement_redeemed',
         { entitlementId: entitlement.id, source: entitlement.source, reference: entitlement.reference, startStage: entitlement.start_stage })
@@ -859,7 +878,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      reservation race-safe under the coupon row lock). A 100% discount is
      provisioned here, in the same transaction, without any payment. */
   router.post('/purchases/orders', requireAuth, limit(30), wrap(async (req, res) => {
-    const { planSlug, accountSize, idempotencyKey, couponCode, dailyLossVariant = 'default' } = req.body || {}
+    const { planSlug, accountSize, idempotencyKey, couponCode, dailyLossVariant = 'default', migrationPassId = null } = req.body || {}
     const key = typeof idempotencyKey === 'string' && idempotencyKey.length <= 120 ? idempotencyKey : null
     const code = couponArg(couponCode)
     const customer = customerArg(req.body?.customer)
@@ -888,6 +907,10 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
     try {
       await client.query('BEGIN')
       const { plan, size, listPrice, variant } = await planPrice(client, planSlug, accountSize, dailyLossVariant)
+      /* Migration path (ADR 0051): a normal-price order carrying the
+         trader's approved, single-use pass; no coupon can be combined */
+      const pass = migrationPassId ? await passForOrderTx(client, { passId: migrationPassId, userId: req.user.user_id, planSlug: plan.slug, accountSize: size }) : null
+      if (pass && code) throw fail(409, 'migration_no_coupon')
       let coupon = null, pricing = applyCoupon(listPrice, null)
       if (code) ({ coupon, pricing } = await evaluateCoupon(client, {
         code, userId: req.user.user_id, planId: plan.id, accountSize: size, listPriceUsd: listPrice, lock: true }))
@@ -899,12 +922,12 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         [`user:${req.user.user_id}`, coupon ? `coupon:${controlledCoupon ? coupon.id : coupon.code}` : 'order_created'])
       const ins = await client.query(
         `INSERT INTO purchase_orders (user_id, challenge_plan_id, account_size_usd, list_price_usd, discount_usd, price_usd,
-                                      coupon_id, payment_required, payment_method, idempotency_key, customer, daily_loss_variant)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
+                                      coupon_id, payment_required, payment_method, idempotency_key, customer, daily_loss_variant, migration_pass_id)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) ON CONFLICT (user_id, idempotency_key) DO NOTHING RETURNING id`,
         [req.user.user_id, plan.id, size.toFixed(2), pricing.list, pricing.discount, pricing.net, coupon?.id ?? null, !zero,
           /* payment method of record: a 100% coupon order has no payment; an
              internal test coupon is recorded as such */
-          zero ? (coupon.internal ? 'internal_coupon' : 'coupon') : 'crypto', key, customer && JSON.stringify(customer), variant])
+          zero ? (coupon.internal ? 'internal_coupon' : 'coupon') : 'crypto', key, customer && JSON.stringify(customer), variant, pass?.id ?? null])
       if (!ins.rows[0]) conflict = true /* same idempotency key committed concurrently */
       else {
       orderId = ins.rows[0].id
@@ -912,7 +935,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
         `INSERT INTO coupon_redemptions (coupon_id, user_id, purchase_order_id, list_price_usd, discount_usd, net_price_usd)
          VALUES ($1,$2,$3,$4,$5,$6)`, [coupon.id, req.user.user_id, orderId, pricing.list, pricing.discount, pricing.net])
       if (zero) result = await confirmPurchaseTx(client, { orderId, userId: req.user.user_id, evidence: null, source: 'zero_payment' })
-      created = { planSlug, size, listPrice: pricing.list, discount: pricing.discount, price: pricing.net, coupon: controlledCoupon ? coupon.id : coupon?.code ?? null }
+      created = { planSlug, size, listPrice: pricing.list, discount: pricing.discount, price: pricing.net, coupon: controlledCoupon ? coupon.id : coupon?.code ?? null, migrationPassId: pass?.id ?? null }
       }
       await client.query(conflict ? 'ROLLBACK' : 'COMMIT')
     } catch (e) {

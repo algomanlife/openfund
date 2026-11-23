@@ -412,3 +412,5 @@ html[data-theme=light] .hero-terrain .ridge{stroke:#087b4a}
    transform-only rise instead of the former opacity + blur fade */
 .hero h1,.hero-intro,.hero-actions,.hero-micro{animation-name:hero-text-enter}
 @keyframes hero-text-enter{from{transform:translateY(14px)}to{transform:none}}
+/* Migration to Openfund card on the challenges page (ADR 0051): --flamingo is reserved for migration */
+.migration-banner{border-color:color-mix(in srgb,var(--flamingo) 45%,transparent);background:radial-gradient(ellipse at 20% 0,color-mix(in srgb,var(--flamingo) 12%,transparent),transparent 70%),var(--surface)}.migration-banner .pill{color:var(--flamingo);border-color:color-mix(in srgb,var(--flamingo) 40%,transparent)}.migration-banner .text-link{min-height:44px}

@@ -1,0 +1,81 @@
+/* Migration to Openfund (/:locale/migrate). The hero is the cinematic
+   flamingo scene (FlamingoScene, --flamingo); its motion is gated by the
+   scene itself (on screen, visible tab, reduced motion). */
+.mg-hero{position:relative;isolation:isolate;overflow:hidden;min-block-size:clamp(480px,72vh,720px);display:grid;align-items:end}
+.mg-hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--bg) 88%,transparent) 0,color-mix(in srgb,var(--bg) 55%,transparent) 45%,transparent 75%)}
+[dir=rtl] .mg-hero::before{background:linear-gradient(270deg,color-mix(in srgb,var(--bg) 88%,transparent) 0,color-mix(in srgb,var(--bg) 55%,transparent) 45%,transparent 75%)}
+
+.mg-hero::after{content:'';position:absolute;inset:auto 0 0;block-size:60%;z-index:-1;pointer-events:none;background:linear-gradient(transparent,var(--bg) 92%)}
+.mg-hero-copy{padding-block:48px 40px}
+.mg-eyebrow{font-size:12px;letter-spacing:.08em;color:var(--flamingo)}
+.mg-hero h1{font-size:clamp(30px,5.4vw,56px);line-height:1.3;font-weight:600;margin-block:12px;max-inline-size:780px;color:var(--white)}
+.mg-intro{max-inline-size:640px;color:var(--body);font-size:clamp(15px,2vw,18px);line-height:1.9}
+.mg-hero .hero-actions{justify-content:flex-start;margin-top:24px}
+:is(.mg-hero,.mg-section) .text-link{min-block-size:44px}
+
+.mg-section{padding-block:56px;border-top:1px solid var(--line)}
+.mg-section h2{font-size:clamp(24px,3.6vw,36px);margin-bottom:24px}
+.mg-note{font-size:13px;line-height:1.9;color:var(--muted);margin-top:14px}
+.mg-error{color:#e89483;margin-top:12px}
+html[data-theme=light] .mg-error{color:#a8321f}
+
+.mg-compare{inline-size:100%;border-collapse:collapse}
+.mg-compare th,.mg-compare td{padding:14px 12px;text-align:start;border-block-end:1px solid var(--line);vertical-align:top;line-height:1.7}
+.mg-compare thead th{font-size:14px;color:var(--muted)}
+.mg-compare tbody th{font-weight:500;color:var(--body);font-size:14px}
+.mg-compare .is-migration{color:var(--white);background:color-mix(in srgb,var(--flamingo) 8%,transparent)}
+.mg-compare thead .is-migration{color:var(--flamingo)}
+
+.mg-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.mg-steps li{border-block-start:2px solid color-mix(in srgb,var(--flamingo) 60%,transparent);padding-block-start:16px;min-inline-size:0}
+.mg-steps li>span{display:grid;place-items:center;inline-size:30px;block-size:30px;border-radius:50%;background:color-mix(in srgb,var(--flamingo) 20%,var(--surface));color:var(--white);font-size:13px}
+.mg-steps b{display:block;margin-block:10px 6px;color:var(--white)}
+.mg-steps p{font-size:13px;color:var(--body);line-height:1.8}
+
+.mg-evidence{margin:0;padding-inline-start:20px;display:grid;gap:10px;color:var(--body);line-height:1.8}
+.mg-evidence li::marker{color:var(--flamingo)}
+
+.mg-card{border:1px solid var(--line);border-radius:14px;padding:clamp(18px,3vw,26px);background:var(--surface);margin-block-end:16px;min-inline-size:0}
+.mg-card h3{font-size:17px;margin-bottom:12px}
+.mg-card p{color:var(--body);line-height:1.9}
+.mg-firm{color:var(--muted);margin-inline-start:6px}
+.mg-status.is-approved{border-color:color-mix(in srgb,var(--mint) 60%,transparent)}
+.mg-status.is-rejected{border-color:color-mix(in srgb,#e89483 50%,transparent)}
+.mg-status .button{margin-top:12px;min-block-size:44px}
+.mg-form{display:flex;flex-direction:column;gap:14px;max-inline-size:560px}
+.mg-form label{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--body)}
+.mg-form :is(input,select){min-block-size:44px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--white);font-size:16px;min-inline-size:0;max-inline-size:100%}
+.mg-form input[type=file]{padding:8px 0;border:0;background:transparent}
+.mg-form .button{align-self:flex-start;min-block-size:44px}
+.mg-checklist{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.mg-checklist li{display:flex;align-items:center;gap:10px;color:var(--body)}
+.mg-checklist li::before{content:'';flex:none;inline-size:18px;block-size:18px;border-radius:50%;border:2px solid var(--line)}
+.mg-checklist li.is-done{color:var(--white)}
+.mg-checklist li.is-done::before{background:var(--mint);border-color:var(--mint)}
+.mg-items{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:6px}
+.mg-items li{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;border-block-end:1px solid var(--line);padding-block:6px;font-size:14px;color:var(--body)}
+.mg-items small{color:var(--muted)}
+.mg-actions{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.mg-actions .button{min-block-size:44px}
+.mg-faq{border-block-end:1px solid var(--line);padding-block:14px}
+.mg-faq summary{cursor:pointer;color:var(--white);min-block-size:44px;display:flex;align-items:center}
+.mg-faq p{color:var(--body);line-height:1.9;margin-top:8px}
+.sr-only{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:900px){.mg-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.mg-steps{grid-template-columns:minmax(0,1fr)}.mg-section{padding-block:40px}}
+.mg-firms{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.mg-firm{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface);min-inline-size:0}
+.mg-firm h3{font-size:17px;margin-bottom:4px;color:var(--white)}
+.mg-firm p{font-size:13px;color:var(--body);line-height:1.8;margin-top:6px}
+.mg-firm-logo{inline-size:48px;block-size:48px;object-fit:contain;border-radius:10px;background:#fff;flex:none}
+.mg-monogram{flex:none}
+.mg-monogram-shape{fill:color-mix(in srgb,var(--flamingo) 16%,var(--surface));stroke:color-mix(in srgb,var(--flamingo) 60%,transparent);stroke-width:1.5}
+.mg-monogram text{fill:var(--white);font:700 15px var(--ds-font-latin);letter-spacing:.04em}
+/* phones: the scene sits above the copy, so landing birds never meet the call to action */
+@media (max-width:760px){
+  .mg-hero{min-block-size:0;display:block}
+  .mg-hero .mh-root{position:relative;inset:auto;block-size:min(58vw,300px);z-index:0}
+  .mg-hero::before,[dir=rtl] .mg-hero::before,.mg-hero::after{display:none}
+  .mg-hero-copy{padding-block:24px 32px}
+}

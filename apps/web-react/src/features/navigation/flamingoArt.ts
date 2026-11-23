@@ -1,6 +1,7 @@
 /* "Migration to Openfund" scene: a V-formation of flamingos flies across and
- * settles over a calm lake that reflects the OpenFi mark. Original SVG; the
- * mark is the unchanged brand asset, drawn as an image and its reflection.
+ * settles over a calm lake. Original SVG. The menu banner and drawer card
+ * show no mark (owner update 2026-11-23); `mark` is 0 for them. The /migrate
+ * page hero is features/migration/heroScene.ts.
  *
  * Three variants share one drawing:
  *   panel    the mega-menu banner (7 birds)
@@ -30,8 +31,8 @@ function formation(count: number, lead: [number, number], dx: number, dy: number
 }
 
 const LAYOUTS: Record<FlamingoVariant, Layout> = {
-  panel: { w: 320, h: 200, lakeY: 136, mark: 44, birds: formation(7, [236, 70], 30, 14, 0.95) },
-  compact: { w: 240, h: 120, lakeY: 84, mark: 26, birds: formation(3, [176, 38], 34, 13, 0.7) },
+  panel: { w: 320, h: 200, lakeY: 136, mark: 0, birds: formation(7, [236, 70], 30, 14, 0.95) },
+  compact: { w: 240, h: 120, lakeY: 84, mark: 0, birds: formation(3, [176, 38], 34, 13, 0.7) },
   hero: { w: 1200, h: 560, lakeY: 392, mark: 92, birds: formation(11, [820, 190], 64, 30, 1.7) },
 }
 
@@ -69,12 +70,16 @@ export function flamingoSceneNode(variant: FlamingoVariant, markHref: string): S
   /* far shore and the mark standing over the water like a landmark */
   el('path', { d: `M0 ${L.lakeY}c${L.w * 0.18} -${L.h * 0.06} ${L.w * 0.32} -${L.h * 0.02} ${L.w * 0.5} -${L.h * 0.04}s${L.w * 0.34} ${L.h * 0.02} ${L.w * 0.5} ${L.h * 0.04}z`, class: 'fl-shore' }, svg)
   const mw = L.mark, mh = L.mark * 644 / 581, mx = L.w * 0.5 - mw / 2, my = L.lakeY - mh - L.h * 0.035
-  el('ellipse', { cx: L.w * 0.5, cy: my + mh * 0.55, rx: mw * 1.4, ry: mh * 0.9, class: 'fl-glow' }, svg)
-  el('image', { href: markHref, x: mx, y: my, width: mw, height: mh, class: 'fl-mark' }, svg)
+  if (mw) {
+    el('ellipse', { cx: L.w * 0.5, cy: my + mh * 0.55, rx: mw * 1.4, ry: mh * 0.9, class: 'fl-glow' }, svg)
+    el('image', { href: markHref, x: mx, y: my, width: mw, height: mh, class: 'fl-mark' }, svg)
+  }
   el('rect', { x: 0, y: L.lakeY, width: L.w, height: L.h - L.lakeY, fill: `url(#${uid}-lake)`, class: 'fl-lake' }, svg)
   /* reflection: the same mark flipped about the waterline, fading with depth */
-  const reflection = el('g', { mask: `url(#${uid}-mask)`, class: 'fl-reflection' }, svg)
-  el('image', { href: markHref, x: mx, y: my, width: mw, height: mh, transform: `translate(0 ${2 * L.lakeY}) scale(1 -1)` }, reflection)
+  if (mw) {
+    const reflection = el('g', { mask: `url(#${uid}-mask)`, class: 'fl-reflection' }, svg)
+    el('image', { href: markHref, x: mx, y: my, width: mw, height: mh, transform: `translate(0 ${2 * L.lakeY}) scale(1 -1)` }, reflection)
+  }
   /* calm ripples */
   const ripples = el('g', { class: 'fl-ripples' }, svg)
   ;[0.5, 0.3, 0.7].forEach((fx, i) => el('ellipse', { cx: L.w * fx, cy: L.lakeY + (L.h - L.lakeY) * (0.28 + i * 0.18), rx: L.w * (0.07 + i * 0.02), ry: (L.h - L.lakeY) * 0.05, class: `fl-ripple r${i}` }, ripples))

@@ -9445,6 +9445,81 @@
       }
     ]
   },
+  "backstageOperations": {
+    "branch": "agent/claude/backstage-operational",
+    "baseCommit": "3ccfccb0180c54c49ff1f2f0d7dfecb99bcb7d53",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-22T15:18:40+00:00",
+    "source": "Backstage console on test port 8413 against apps/backend on test port 8313 (disposable database, fixture trader and challenge); Playwright",
+    "cms": "Directus not running (content and marketing sections show their unavailable state)",
+    "marketData": "Not used",
+    "wallet": "Owner console session; fixture wallet 0x1111…1111 only",
+    "screenshots": [
+      {
+        "file": "backstage-operations/plans-en-1440-light.jpg",
+        "route": "/#/plans",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Plans: list with catalog version, challenge count, edit/retire actions and publication history"
+      },
+      {
+        "file": "backstage-operations/plan-preview-en-1440-light.jpg",
+        "route": "/#/plans",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Plan editor: field-by-field diff preview (minTradingDays 3 → 4) and the shared validator result"
+      },
+      {
+        "file": "backstage-operations/challenge-actions-en-1440-light.jpg",
+        "route": "/#/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Challenge detail with the owner decisions: extend the time limit and void (created challenge)"
+      },
+      {
+        "file": "backstage-operations/trader-profile-fa-768-dark.jpg",
+        "route": "/#/users",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, dark: trader profile with internal notes, tags and the issue-entitlement action"
+      },
+      {
+        "file": "backstage-operations/plans-fa-768-dark.jpg",
+        "route": "/#/plans",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian, dark: plans list"
+      },
+      {
+        "file": "backstage-operations/entitlements-en-390-light.jpg",
+        "route": "/#/entitlements",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Entitlements list and the issue action at 390 px"
+      },
+      {
+        "file": "backstage-operations/trader-profile-en-390-light.jpg",
+        "route": "/#/users",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Trader profile at 390 px"
+      }
+    ]
+  },
   "challengesMenu": {
     "branch": "agent/claude/challenges-flamingo",
     "baseCommit": "d74b1b675c6037ae3c525a88f2a8e4faf6ef56d2",
@@ -9538,78 +9613,186 @@
       }
     ]
   },
-  "backstageOperations": {
-    "branch": "agent/claude/backstage-operational",
-    "baseCommit": "3ccfccb0180c54c49ff1f2f0d7dfecb99bcb7d53",
+  "migration": {
+    "branch": "agent/claude/migration",
+    "baseCommit": "ddc1d96",
     "status": "Unmerged branch; local verification only, not deployed",
-    "capturedAt": "2026-11-22T15:18:40+00:00",
-    "source": "Backstage console on test port 8413 against apps/backend on test port 8313 (disposable database, fixture trader and challenge); Playwright",
-    "cms": "Directus not running (content and marketing sections show their unavailable state)",
-    "marketData": "Not used",
-    "wallet": "Owner console session; fixture wallet 0x1111…1111 only",
+    "capturedAt": "2026-11-22T22:14:34+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres; MIGRATION_STORAGE_* pointed at a local S3-compatible stand-in so requests read as open; wallet not connected",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
     "screenshots": [
       {
-        "file": "backstage-operations/plans-en-1440-light.jpg",
-        "route": "/#/plans",
+        "file": "migration/hero-en-1440-dark.jpg",
+        "route": "/en/migrate",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "Plans: list with catalog version, challenge count, edit/retire actions and publication history"
+        "state": "English, dark: frameless flamingo hero (reduced-motion frame: landers standing in the water)"
       },
       {
-        "file": "backstage-operations/plan-preview-en-1440-light.jpg",
-        "route": "/#/plans",
+        "file": "migration/compare-en-1440-light.jpg",
+        "route": "/en/migrate",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "Plan editor: field-by-field diff preview (minTradingDays 3 → 4) and the shared validator result"
+        "state": "English, light: normal versus migration comparison"
       },
       {
-        "file": "backstage-operations/challenge-actions-en-1440-light.jpg",
-        "route": "/#/challenges",
+        "file": "migration/steps-en-1440-dark.jpg",
+        "route": "/en/migrate",
         "viewport": {
           "width": 1440,
           "height": 900
         },
-        "state": "Challenge detail with the owner decisions: extend the time limit and void (created challenge)"
+        "state": "English, dark: steps and accepted evidence with the not-affiliated disclaimer"
       },
       {
-        "file": "backstage-operations/trader-profile-fa-768-dark.jpg",
-        "route": "/#/users",
+        "file": "migration/request-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: request panel while storage is configured locally (S3-compatible stand-in), wallet not connected"
+      },
+      {
+        "file": "migration/hero-fa-768-light.jpg",
+        "route": "/fa/migrate",
         "viewport": {
           "width": 768,
           "height": 1024
         },
-        "state": "Persian, dark: trader profile with internal notes, tags and the issue-entitlement action"
+        "state": "Persian, light (RTL), tablet: hero"
       },
       {
-        "file": "backstage-operations/plans-fa-768-dark.jpg",
-        "route": "/#/plans",
+        "file": "migration/compare-fa-768-dark.jpg",
+        "route": "/fa/migrate",
         "viewport": {
           "width": 768,
           "height": 1024
         },
-        "state": "Persian, dark: plans list"
+        "state": "Persian, dark (RTL), tablet: comparison"
       },
       {
-        "file": "backstage-operations/entitlements-en-390-light.jpg",
-        "route": "/#/entitlements",
+        "file": "migration/hero-en-390-dark.jpg",
+        "route": "/en/migrate",
         "viewport": {
           "width": 390,
           "height": 844
         },
-        "state": "Entitlements list and the issue action at 390 px"
+        "state": "English, dark, phone: hero"
       },
       {
-        "file": "backstage-operations/trader-profile-en-390-light.jpg",
-        "route": "/#/users",
+        "file": "migration/steps-ar-390-light.jpg",
+        "route": "/ar/migrate",
         "viewport": {
           "width": 390,
           "height": 844
         },
-        "state": "Trader profile at 390 px"
+        "state": "Arabic (draft translation, RTL), light, phone: steps"
+      },
+      {
+        "file": "migration/compare-ru-390-dark.jpg",
+        "route": "/ru/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Russian (draft translation), dark, phone: comparison"
+      },
+      {
+        "file": "migration/evidence-zh-390-light.jpg",
+        "route": "/zh-CN/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Chinese (draft translation), light, phone: accepted evidence"
+      },
+      {
+        "file": "migration/challenges-card-en-1440-dark.jpg",
+        "route": "/en/challenges",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: migration card on the challenges page"
+      },
+      {
+        "file": "migration/challenges-card-fa-390-light.jpg",
+        "route": "/fa/challenges",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, light (RTL), phone: migration card on the challenges page"
+      },
+      {
+        "file": "migration/hero-motion-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: hero with motion (flyers crossing, landers in the water)"
+      },
+      {
+        "file": "migration/firms-en-1440-dark.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: accepted firms (monogram badges until a logo is uploaded; official sites; not-affiliated disclaimer)"
+      },
+      {
+        "file": "migration/firms-fa-390-light.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, light (RTL), phone: accepted firms"
+      },
+      {
+        "file": "migration/economy-menu-en-1440-dark.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Economy menu with the council and whitepaper banners"
+      },
+      {
+        "file": "migration/economy-menu-fa-1024-light.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1024,
+          "height": 900
+        },
+        "state": "Persian, light (RTL): Economy menu banners"
+      },
+      {
+        "file": "migration/challenges-menu-en-1440-dark.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Challenges menu flamingo banner without the mark or reflection"
+      },
+      {
+        "file": "migration/economy-drawer-en-390-light.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, light, phone: drawer with the Economy group open (council and whitepaper cards)"
       }
     ]
   },

@@ -71,6 +71,14 @@ migration scenes; it is not a second brand colour and never replaces mint.
 | Dark | `#f4a3b8` | 10.3:1 on `#060808` (9.8:1 on `#0b1010`) | birds, banner border, CTA text |
 | Light | `#b23a63` | 5.7:1 on `#ffffff` (5.3:1 on `#f4f8f6`) | same |
 
+Scenes (owner update 2026-11-23): the menu banner and drawer card show the
+flock over the lake **without** the OpenFi mark or its reflection. The
+`/migrate` hero (`features/migration/heroScene.ts`) is frameless and full
+bleed: birds at three depths cross the upper sky band, and three birds land
+in shallow water on the inline-end side, wade, and take off again. Birds
+never cross the copy or the call to action; phones show fewer, smaller birds
+with the scene above the copy; reduced motion is a static frame.
+
 Both pass WCAG AA for text and icons (4.5:1). Defined in
 `public/legacy/style.css` (site pages) and `src/styles/design-system.css`
 (React shell) with the light override under `html[data-theme=light]`.

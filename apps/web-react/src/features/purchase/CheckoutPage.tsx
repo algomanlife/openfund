@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import InformationShell, { useInformationLocale } from '../information/InformationShell'
-import { dirOf, pick } from '../../i18n/locales'
+import { dirOf, pick, pickFormat } from '../../i18n/locales'
 import { apiFetch, backendUrl, useSession } from '../../session/useOpenfundSession'
 import { closeDePayPayment, depayConfigured, depayOpenFor, openDePayPayment } from './depay'
 import { chainLabel, txExplorerUrl } from './chains'
@@ -78,6 +78,12 @@ interface Receipt {
 }
 
 const ERR: Record<string, [string, string]> = {
+  migration_pass_not_found: ['مجوز مهاجرت پیدا نشد.', 'Migration pass not found.'],
+  migration_pass_used: ['این مجوز مهاجرت قبلاً استفاده شده است.', 'This migration pass has already been used.'],
+  migration_pass_expired: ['مهلت مجوز مهاجرت تمام شده است.', 'This migration pass has expired.'],
+  migration_plan_not_eligible: ['این چلنج در مسیر مهاجرت در دسترس نیست.', 'This challenge is not available on the Migration path.'],
+  migration_size_above_cap: ['اندازهٔ حساب از سقف تأییدشده بیشتر است.', 'The account size is above your approved cap.'],
+  migration_no_coupon: ['در مسیر مهاجرت نمی‌توان کد تخفیف استفاده کرد.', 'A coupon cannot be used on the Migration path.'],
   purchases_disabled: ['خرید در حال حاضر فعال نیست.', 'Purchasing is not enabled right now.'],
   invalid_account_size: ['اندازهٔ حساب معتبر نیست.', 'Invalid account size.'],
   not_purchasable: ['این چلنج قابل خرید نیست.', 'This challenge cannot be purchased.'],
@@ -137,7 +143,7 @@ export default function CheckoutPage() {
   const orderParam = params.get('order')
 
   /* ---- catalog ---- */
-  const [plans, setPlans] = useState<PlanInfo[] | null>(null)
+  const [allPlans, setPlans] = useState<PlanInfo[] | null>(null)
   const [paymentsEnabled, setPaymentsEnabled] = useState(false)
   const [settlementChains, setSettlementChains] = useState<string[]>([])
   const [manualAvailable, setManualAvailable] = useState(false)
@@ -156,6 +162,26 @@ export default function CheckoutPage() {
     }).catch(() => setLoadError(t('دریافت چلنج‌ها ناموفق بود.', 'Could not load the challenges.')))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  /* ---- Migration path (ADR 0051): ?migration=<pass id> — the approved,
+     wallet-bound pass limits the plans and sizes; the price is the normal
+     price and the challenge starts at the funded stage ---- */
+  const migrationParam = params.get('migration')
+  const [migrationPass, setMigrationPass] = useState<{ id: string, plans: string[], maxSizeUsd: string, status: string } | null>(null)
+  const [migrationError, setMigrationError] = useState<string | null>(null)
+  useEffect(() => {
+    if (!migrationParam || session.status !== 'authenticated') { setMigrationPass(null); return }
+    void apiFetch('/migration/me').then(r => {
+      const p = r.ok ? r.data?.pass : null
+      if (p && p.id === migrationParam && p.status === 'issued') { setMigrationPass(p); setMigrationError(null) }
+      else { setMigrationPass(null); setMigrationError(errText(p && p.id === migrationParam ? 'migration_pass_used' : 'migration_pass_not_found')) }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [migrationParam, session.status])
+  const plans = useMemo(() => !allPlans || !migrationPass ? allPlans : allPlans
+    .filter(p => migrationPass.plans.includes(p.slug))
+    .map(p => ({ ...p, accountSizesUsd: p.accountSizesUsd.filter(s => s <= Number(migrationPass.maxSizeUsd)) }))
+    .filter(p => p.accountSizesUsd.length), [allPlans, migrationPass])
 
   /* ---- selection (URL is the source of truth so a link or refresh restores it) ---- */
   const planSlug = params.get('plan') || ''
@@ -327,7 +353,8 @@ export default function CheckoutPage() {
     setError(null)
     try { localStorage.setItem(customerKey, JSON.stringify({ name: name.trim(), email: email.trim() })) } catch { /* optional */ }
     const r = await apiFetch('/purchases/orders', { method: 'POST', body: JSON.stringify({
-      planSlug, accountSize: size, couponCode: quote?.couponCode || undefined, idempotencyKey: attemptKey.current,
+      planSlug, accountSize: size, couponCode: migrationPass ? undefined : quote?.couponCode || undefined, idempotencyKey: attemptKey.current,
+      migrationPassId: migrationPass?.id ?? undefined,
       customer: { name: name.trim() || undefined, email: email.trim() },
     }) })
     if (!r.ok) { setError(errText(r.data?.error || 'order_failed')); return null }
@@ -454,6 +481,9 @@ export default function CheckoutPage() {
         {!order && (
           <div className="of-co-card">
             <h2>{t('۲. انتخاب چلنج', '2. Choose your challenge')}</h2>
+            {migrationParam && <p className="of-co-note" role="status">{migrationPass
+              ? pickFormat(locale, 'مسیر مهاجرت: قیمت عادی، شروع از مرحلهٔ فاند، حداکثر ${size}.', 'Migration path: normal price, starts at the funded stage, up to ${size}.', { size: money(migrationPass.maxSizeUsd) })
+              : migrationError ?? t('در حال بررسی مجوز مهاجرت…', 'Checking your migration pass…')}</p>}
             {selectionNotice && <p className="of-co-note" role="status">{t('چلنج انتخاب‌شده در دسترس نیست؛ یکی دیگر انتخاب کن.', 'The selected challenge is not available — choose another.')}</p>}
             {!plans && !loadError && <p className="of-co-muted">…</p>}
             {plans && (
@@ -490,7 +520,7 @@ export default function CheckoutPage() {
               </>
             )}
 
-            {authenticated && plan && validSize && (
+            {authenticated && plan && validSize && !migrationParam && (
               <div className="of-co-coupon">
                 <label htmlFor="of-coupon">{t('کد تخفیف (اختیاری)', 'Coupon code (optional)')}</label>
                 <div className="of-checkout-coupon-row">

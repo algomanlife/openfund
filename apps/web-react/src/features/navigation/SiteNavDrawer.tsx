@@ -95,13 +95,14 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
                   <span className="mega-icon"><MegaIcon name={item.icon} /></span><span className="mega-text"><b>{item.label}{item.badge && <> <span className="mega-badge">{item.badge}</span></>}</b>{item.countdown && <small className="mega-countdown">{item.countdown}</small>}</span>
                 </a></li>)}</ul>
             </div>)}
-            {group.banner && <a className={`mega-banner is-compact is-${group.banner.kind}`} href={group.banner.href} onClick={close}>
-              {group.banner.kind === 'flamingo'
-                ? <FlamingoScene variant="compact" live={open && expanded} />
-                : <span className="mega-icon"><MegaIcon name={group.banner.kind === 'council' ? 'governance' : 'apps'} /></span>}
-              <span className="mega-banner-copy"><b>{group.banner.title}</b><small>{group.banner.body}</small>
-                {group.banner.description && <span className="mega-sr">{group.banner.description}</span>}</span>
-            </a>}
+            {group.banners.length > 0 && <div className={group.banners.length > 1 ? 'mega-banner-row' : undefined}>{group.banners.map(banner =>
+              <a key={banner.kind} className={`mega-banner is-compact is-${banner.kind}`} href={banner.href} onClick={close}>
+                {banner.kind === 'flamingo'
+                  ? <FlamingoScene variant="compact" live={open && expanded} />
+                  : <span className="mega-icon"><MegaIcon name={banner.kind === 'council' ? 'governance' : banner.kind === 'whitepaper' ? 'whitepaper' : 'apps'} /></span>}
+                <span className="mega-banner-copy"><b>{banner.title}</b><small>{banner.body}</small>
+                  {banner.description && <span className="mega-sr">{banner.description}</span>}</span>
+              </a>)}</div>}
           </div>
         </section></div>
       })}
