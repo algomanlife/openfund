@@ -56,3 +56,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0051 — Migration to Openfund: proof review, migration pass and private evidence storage](0051-migration-to-openfund.md)
 - [0050 — Openfund Premium League (tournament subsystem)](0050-openfund-premium-league.md)
 - [0052 — Site search and search analytics](0052-site-search.md)
+- [0053 — Terminal Funding and Details tabs, and our own funding history](0053-terminal-funding-history.md)

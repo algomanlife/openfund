@@ -62,6 +62,7 @@
     "test:browser:migration": "node e2e/test-migration.cjs",
     "test:browser:tournament": "node e2e/test-tournament.cjs",
     "test:browser:site-search": "node e2e/test-site-search.cjs",
+    "test:browser:terminal-funding": "node e2e/test-terminal-funding.cjs",
     "test:browser:hero-journey": "node e2e/test-hero-journey.cjs",
     "test:browser:developers": "node e2e/test-developers.cjs",
     "test:browser:council-chamber": "node e2e/test-council-chamber.cjs",

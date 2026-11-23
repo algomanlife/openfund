@@ -28,6 +28,7 @@ export const applicationCopy = {
   macUnsigned: text('Unsigned build: macOS Gatekeeper blocks it on a double-click. In Applications, right-click (or Control-click) Open Trade and choose Open.', 'نسخهٔ بدون امضا: Gatekeeper در macOS با دوبار کلیک آن را مسدود می‌کند. در Applications روی Open Trade راست‌کلیک (یا Control-کلیک) کن و Open را بزن.'),
   winUnsigned: text('Unsigned build: when SmartScreen shows “Windows protected your PC”, choose More info, then Run anyway.', 'نسخهٔ بدون امضا: وقتی SmartScreen پیام «Windows protected your PC» را نشان داد، More info و سپس Run anyway را بزن.'),
   linuxUnsigned: text('AppImage: make the file executable with chmod +x before running it. The .deb installs with your package manager.', 'AppImage: پیش از اجرا، فایل را با chmod +x اجراپذیر کن. فایل ‎.deb با مدیر بستهٔ سیستم نصب می‌شود.'),
+  capturedFrom: text('Captured from 0.0.2', 'تصویر از نسخهٔ ۰٫۰٫۲'),
   captured: text('Real captures from Open Trade 0.0.2 beta with live Gains market data. No wallet connected.', 'تصاویر واقعی از Open Trade نسخهٔ ۰٫۰٫۲ بتا با دادهٔ زندهٔ بازار Gains؛ بدون اتصال کیف پول.'),
   compare: text('Web or desktop?', 'وب یا دسکتاپ؟'),
   compareIntro: text('Both connect to the same Openfund accounts. The difference is the workflow, not the quality of the experience.', 'هر دو به همان حساب‌های اوپن‌فاند متصل می‌شوند. تفاوت در شیوهٔ کار است، نه کیفیت تجربه.'),

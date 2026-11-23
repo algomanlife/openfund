@@ -55,3 +55,17 @@ validated (own side of the entry, market price precision), sent through the
 existing position-update service and drawn only after the server confirms it;
 a rejected change restores the confirmed levels with a message. Sizing by
 [Lotage](LOTAGE.md) is described separately.
+
+## Funding and Details tabs
+
+The chart panel's tab bar is Chart | Funding | Details | News & info (arrow
+keys, Home and End; mirrored in RTL; phone workspace views of the same names).
+**Funding** shows the market's current hourly long and short funding,
+borrowing, an open-interest ratio bar and skew, read through
+`GET /markets/:symbol/funding` from the documented Gains endpoint, and a
+history chart from Openfund's own hourly samples
+(`GET /markets/:symbol/funding-history`). Ranges the samples do not yet cover
+are disabled and say from when data exists; nothing is estimated. The
+annualized toggle multiplies the hourly rate by 8,760. **Details** shows the
+Gains market specification and your Openfund account limits as two cards.
+See [ADR 0053](../decisions/0053-terminal-funding-history.md).

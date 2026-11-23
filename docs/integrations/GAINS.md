@@ -10,6 +10,8 @@ The maintained adapter is [gains-adapter.js](../../packages/openfund-gains-adapt
 | --- | --- |
 | `https://api.gains.trade/v1/arbitrum/markets` | Symbols, groups, precision, leverage bounds, funding/open-interest metadata; market counts are dynamic |
 | `/v1/arbitrum/prices` | Mark/index values and source timestamps; not executable bid/ask depth |
+| `/v1/arbitrum/markets/{SYMBOL-DASHED}/funding` | Current hourly long/short funding, borrowing, open interest and skew (terminal Funding tab, via `GET /markets/:symbol/funding`) |
+| `/v1/arbitrum/markets/{SYMBOL-DASHED}` | One market's specification: leverage bounds, minimums, fees, spread, collateral (terminal Details tab, via `GET /markets/:symbol/details`) |
 | `/v1/arbitrum/markets/{SYMBOL-DASHED}/candles` | OHLC candles for adapter-supported 1m, 5m, 15m, 30m, 1h, 4h and 1d; weekly bars are not assumed |
 | `wss://api.gains.trade/v1/arbitrum/ws` | Prices subscription, ping/pong, reconnect and sequence-gap resubscription |
 
@@ -19,7 +21,7 @@ The maintained adapter is [gains-adapter.js](../../packages/openfund-gains-adapt
 
 [gains-portfolio.js](../../apps/backend/gains-portfolio.js) derives the wallet from SIWE, reads official Arbitrum open trades, trading variables and personal history/statistics, and normalizes fixed-point values with collateral metadata. [Product contracts](../architecture/PRODUCT_TERMINALS.md#verified-read-sources) list exact paths, cache policy and error behavior.
 
-The backend returns explicit upstream errors and unsupported-value states. Gains events remain distinct from Prop simulation and Openfund journal metadata. Unavailable accrued fees, borrowing/funding and net unrealized PnL are not approximated.
+The backend returns explicit upstream errors and unsupported-value states. Gains events remain distinct from Prop simulation and Openfund journal metadata. Unavailable accrued fees, borrowing/funding and net unrealized PnL are not approximated. Gains publishes no funding history: the backend records the `/markets` funding block once per market per hour (`market_funding_samples`, 400 days; ADR 0053) and the terminal shows only ranges those samples cover.
 
 ## Read model contract
 

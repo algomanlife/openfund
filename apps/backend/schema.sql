@@ -3209,6 +3209,24 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_purchase_orders_migration_pass ON purchase_
   WHERE migration_pass_id IS NOT NULL AND status IN ('pending','paid');
 
 -- ============================================================
+-- Terminal Funding tab (item G). Gains publishes no funding history, so
+-- the backend samples the funding block of the documented /markets list
+-- once per hour (market-funding.js sampleFunding). Kept for 400 days.
+-- Market data only: no user or account columns.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS market_funding_samples (
+  market                text        NOT NULL CHECK (length(market) BETWEEN 3 AND 33),
+  sampled_at            timestamptz NOT NULL,
+  funding_long_hourly   numeric     NOT NULL,
+  funding_short_hourly  numeric     NOT NULL,
+  borrowing_hourly      numeric,
+  oi_long_usd           numeric,
+  oi_short_usd          numeric,
+  PRIMARY KEY (market, sampled_at)
+);
+CREATE INDEX IF NOT EXISTS idx_market_funding_samples_time ON market_funding_samples (sampled_at);
+
+-- ============================================================
 -- Site search analytics (ADR 0052). Aggregate counts per day, locale and
 -- masked normalized query only: no IP, wallet, user id, cookie or user agent.
 -- Retained for twelve months (site-search.js pruneSearchStats).
