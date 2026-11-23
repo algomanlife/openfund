@@ -62,6 +62,7 @@
     "test:browser:trading-objectives": "node e2e/test-trading-objectives.cjs",
     "test:browser:labs": "node e2e/test-labs.cjs",
     "test:browser:bug-bounty": "node e2e/test-bug-bounty.cjs",
+    "test:browser:terminal-guide": "node e2e/test-terminal-guide.cjs",
     "test:browser:migration": "node e2e/test-migration.cjs",
     "test:browser:tournament": "node e2e/test-tournament.cjs",
     "test:browser:site-search": "node e2e/test-site-search.cjs",

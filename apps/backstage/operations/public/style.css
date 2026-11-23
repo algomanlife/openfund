@@ -107,3 +107,8 @@ label.choice{display:inline-flex;align-items:center;gap:8px}
 textarea.code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; inline-size: 100%; }
 .plan-preview .problems { color: var(--danger, #e0596a); padding-inline-start: 18px; }
 .plan-preview code { white-space: pre-wrap; word-break: break-word; }
+/* terminal guide editor (guides.js) */
+.guide-steps { display: grid; gap: 12px; padding: 0; margin: 12px 0; list-style: none; }
+.guide-step { display: grid; gap: 8px; }
+.guide-preview-dialog { max-inline-size: min(640px, 92vw); }
+.guide-preview { display: grid; gap: 6px; }

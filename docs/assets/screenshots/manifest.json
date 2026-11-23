@@ -10246,6 +10246,81 @@
       }
     ]
   },
+  "terminal-guide": {
+    "branch": "agent/claude/terminal-guide",
+    "baseCommit": "27002bd",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T10:40:00+00:00",
+    "source": "Local build of agent/claude/terminal-guide served by the backend on a disposable Postgres (SIM_TEST_MODE)",
+    "cms": "Directus unreachable (requests aborted); bundled published-only fallback guide and its recorded media",
+    "marketData": "Public Gains Network reads; no fixtures",
+    "wallet": "Anonymous for the screenshots. The guide videos use a generated local test wallet with every address masked",
+    "screenshots": [
+      {
+        "file": "docs/assets/screenshots/terminal-guide/guide-390-en-dark.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Guide step 1 open, full screen on a phone, dark theme"
+      },
+      {
+        "file": "docs/assets/screenshots/terminal-guide/guide-390-fa-light.jpg",
+        "route": "/fa/prop/trade",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Guide step 1 open, RTL, light theme"
+      },
+      {
+        "file": "docs/assets/screenshots/terminal-guide/guide-768-en-dark.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Guide step 1 open, dark theme"
+      },
+      {
+        "file": "docs/assets/screenshots/terminal-guide/guide-768-fa-light.jpg",
+        "route": "/fa/prop/trade",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Guide step 1 open, RTL, light theme"
+      },
+      {
+        "file": "docs/assets/screenshots/terminal-guide/guide-1440-en-dark.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Guide step 1 open, video playing, dark theme"
+      },
+      {
+        "file": "docs/assets/screenshots/terminal-guide/guide-1440-fa-light.jpg",
+        "route": "/fa/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Guide step 1 open, RTL, light theme"
+      },
+      {
+        "file": "docs/assets/screenshots/terminal-guide/guide-reduced-motion.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "state": "Reduced motion: no autoplay, poster with a play button"
+      }
+    ]
+  },
   "bug-bounty": {
     "branch": "agent/claude/bug-bounty",
     "baseCommit": "27002bd",

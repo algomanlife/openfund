@@ -32,6 +32,8 @@ import { SearchTrigger } from "../search/SiteSearch";
 import LanguageSelect from "../../i18n/LanguageSelect";
 import TerminalMenu from "./TerminalMenu";
 import AnnouncementBar from "../campaigns/AnnouncementBar";
+import GuideModal from "../guide/GuideModal";
+import { openGuide } from "../guide/guide";
 import { BrandWordmark } from "../../brand/BrandWordmark";
 import { dirOf, normalizeLocale, pick, pickRecord, switchLocalePath } from "../../i18n/locales";
 export default function TerminalShell({ product }: { product: Product }) {
@@ -133,6 +135,10 @@ export default function TerminalShell({ product }: { product: Product }) {
             aria-current={page === id ? "page" : undefined} to={route(locale, product, id)}>{t(fa, en)}</Link>)}
           <Link className="of-compact-destination" to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</Link>
           <Link className="of-compact-destination" to={accountsHref}>{t("حساب‌ها", "Accounts")}</Link>
+          {/* reopens the terminal guide at any time (features/guide) */}
+          <button type="button" className="of-guide-entry" onClick={event => {
+            const menu = event.currentTarget.closest("details"); if (menu) menu.open = false; openGuide();
+          }}>{t("راهنما", "Guide")}</button>
         </div>
       </details>
     </nav>
@@ -263,6 +269,7 @@ export default function TerminalShell({ product }: { product: Product }) {
           <Outlet key={`${product}:${session.user?.id || "guest"}:${new URLSearchParams(search).get("account") || "default"}`} />
         </main>
       </div>
+    <GuideModal locale={locale} />
     </TerminalContext.Provider>
   );
 }

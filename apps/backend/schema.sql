@@ -2640,6 +2640,21 @@ CREATE TABLE IF NOT EXISTS campaign_daily_stats (
   PRIMARY KEY (campaign_id, placement, day)
 );
 
+-- Terminal guide counters (guides.js, ADR 0056). The guide itself lives in
+-- Directus (site_guides, site_guide_steps). This table holds anonymous daily
+-- counts per guide version only: no IP address, wallet, user id, cookie or
+-- user agent. Additive and idempotent.
+CREATE TABLE IF NOT EXISTS guide_daily_stats (
+  guide_id     text NOT NULL CHECK (guide_id ~ '^[0-9a-fA-F-]{1,36}$'),
+  version      integer NOT NULL CHECK (version BETWEEN 1 AND 100000),
+  day          date NOT NULL,
+  shown        integer NOT NULL DEFAULT 0 CHECK (shown >= 0),
+  completed    integer NOT NULL DEFAULT 0 CHECK (completed >= 0),
+  opted_out    integer NOT NULL DEFAULT 0 CHECK (opted_out >= 0),
+  updated_at   timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (guide_id, version, day)
+);
+
 -- ==================================================================
 -- Openfund Pay — first-party payment ledger (ADR 0046,
 -- docs/payments/OPENFUND_PAY.md). Additive and idempotent.

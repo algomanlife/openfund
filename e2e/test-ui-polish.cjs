@@ -235,7 +235,7 @@ async function walletDisclosureFits(page){
     /* Trading challenges is a mega-menu group (item C of the second batch) */
     challenges: ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'rulebook'],
     economy: ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'],
-    resources: ['learn', 'learn/glossary', 'faq', 'apps', 'tools', 'roadmap', 'developers', 'about', 'contact', 'certificate-verification'],
+    resources: ['learn', 'learn/glossary', 'faq', 'apps', 'tools', 'roadmap', 'developers', 'about', 'contact', 'certificate-verification', 'bug-bounty'],
    };
    for (const [group, routes] of Object.entries(expectedNavigation)) {
     /* mega menu: destination tiles in section order; the featured banner is checked separately */

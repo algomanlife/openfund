@@ -33,6 +33,26 @@ def req(method, url, token=None, body=None):
         err = e.read().decode()[:400]
         raise SystemExit(f'HTTP {e.code} {method} {url}\n{err}')
 
+def upload_file(base, token, path, folder, title, content_type):
+    """Uploads one local file into a Directus folder (multipart, stdlib only)."""
+    boundary = 'openfund' + os.urandom(12).hex()
+    with open(path, 'rb') as f:
+        data = f.read()
+    parts = []
+    for name, value in (('folder', folder), ('title', title)):
+        parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"\r\n\r\n{value}\r\n'.encode())
+    parts.append((f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{os.path.basename(path)}"\r\n'
+                  f'Content-Type: {content_type}\r\n\r\n').encode() + data + b'\r\n')
+    parts.append(f'--{boundary}--\r\n'.encode())
+    r = urllib.request.Request(f'{base}/files', data=b''.join(parts), method='POST')
+    r.add_header('Content-Type', f'multipart/form-data; boundary={boundary}')
+    r.add_header('Authorization', f'Bearer {token}')
+    try:
+        with urllib.request.urlopen(r, timeout=120) as resp:
+            return json.loads(resp.read())['data']['id']
+    except urllib.error.HTTPError as e:
+        raise SystemExit(f'HTTP {e.code} upload {path}\n{e.read().decode()[:400]}')
+
 def license_preflight(base, token):
     """Directus 12 enforces a license tier (GET /license). The Core tier allows 25
     collections and ignores custom permission rules, which this schema needs
@@ -535,6 +555,45 @@ def main():
     ensure_relation('site_campaigns', 'image_desktop', 'directus_files')
     ensure_relation('site_campaigns', 'image_mobile', 'directus_files')
 
+    # ---------------- terminal guide (educational popup, ADR 0056) ---------
+    # A guide is an ordered list of steps (video or image, poster, fa/en title
+    # and body, fa/en WebVTT subtitles), managed from Backstage → Marketing →
+    # Terminal guide (apps/backstage/operations/guides.js). Guides are the only
+    # popup allowed on the trading terminal; promotional popups stay banned
+    # there. Media live in the same publicly readable campaign-media folder.
+    ensure_collection('site_guides', {'icon': 'school',
+        'note': 'راهنمای آموزشی ترمینال — مدیریت از بک‌استیج (Marketing). فقط آموزشی؛ تبلیغ ممنوع.'})
+    ensure_field('site_guides', 'status', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('draft', 'Draft'), ('published', 'Published'), ('archived', 'Archived')), 'special': ['status']},
+        schema={'default_value': 'draft'})
+    ensure_field('site_guides', 'active', 'boolean', meta={'interface': 'boolean'}, schema={'default_value': False})
+    ensure_field('site_guides', 'internal_name', 'string', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_field('site_guides', 'version', 'integer', meta={'interface': 'input', 'readonly': True,
+        'note': 'Raised by "Publish new version" in Backstage; shows the guide again to people who opted out'}, schema={'default_value': 1})
+    ensure_field('site_guides', 'pages', 'json', meta={'interface': 'select-multiple-checkbox', 'special': ['cast-json'],
+        'options': choice(('terminal', 'Trading terminal'))}, schema={})
+    ensure_field('site_guides', 'regions', 'json', meta={'interface': 'select-multiple-checkbox', 'special': ['cast-json'],
+        'options': choice(('GLOBAL', 'GLOBAL'), ('IRAN', 'IRAN'))}, schema={})
+    ensure_field('site_guides', 'cookie_days', 'integer', meta={'interface': 'input', 'note': '"Don\'t show again" lifetime in days (1 to 730)'},
+        schema={'default_value': 365})
+    ensure_collection('site_guide_steps', {'sort_field': 'sort', 'icon': 'slideshow', 'note': 'مراحل راهنمای ترمینال'})
+    ensure_field('site_guide_steps', 'site_guide_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    # "Delete" in Backstage archives a step: the editor role never deletes
+    ensure_field('site_guide_steps', 'status', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('published', 'Published'), ('archived', 'Archived')), 'special': ['status']}, schema={'default_value': 'published'})
+    ensure_field('site_guide_steps', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={})
+    ensure_field('site_guide_steps', 'media_kind', 'string', meta={'interface': 'select-dropdown', 'options': choice(
+        ('video', 'Video (MP4 + WebM)'), ('image', 'Image'))}, schema={'default_value': 'video'})
+    for f in ('video_mp4', 'video_webm', 'image', 'poster', 'subtitles_fa', 'subtitles_en'):
+        ensure_field('site_guide_steps', f, 'uuid', meta={'interface': 'file', 'special': ['file']}, schema={})
+        ensure_relation('site_guide_steps', f, 'directus_files')
+    for f, required in (('title_fa', True), ('title_en', True), ('body_fa', False), ('body_en', False)):
+        ensure_field('site_guide_steps', f, 'text', meta={'interface': 'input-multiline' if f.startswith('body') else 'input', 'required': required},
+                     schema={'is_nullable': not required})
+    ensure_relation('site_guide_steps', 'site_guide_id', 'site_guides', one_field='steps')
+    ensure_alias('site_guides', 'steps', None, meta={'special': ['o2m'], 'interface': 'list-o2m', 'options': {'template': '{{sort}}. {{title_en}}'}})
+
     # Campaign images live in one Directus folder; only files in that folder
     # are publicly readable (the site and the IRAN /cms snapshot load them).
     media = req('GET', f"{base}/folders?filter[name][_eq]=campaign-media&fields=id&limit=1", token)['data']
@@ -554,6 +613,30 @@ def main():
         })
         print('seed: site_campaigns iran-access-fa (announcement bar, fa only)')
 
+    # The terminal guide seed: two steps recorded from Openfund's own
+    # terminal (scripts/guides/record-terminal-guide.mjs). Created only when
+    # absent, so an editor's later changes are kept; skipped when the media
+    # files are not in the repository.
+    # one copy of the media: the site's bundled fallback is the same folder
+    guide_media = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'web-react', 'public', 'assets', 'guides')
+    guide_seed = os.path.join(guide_media, 'guide.json')
+    have_guide = req('GET', f"{base}/items/site_guides?filter[internal_name][_eq]=terminal-basics&fields=id&limit=1", token)['data']
+    if not have_guide and os.path.exists(guide_seed):
+        with open(guide_seed, encoding='utf-8') as f:
+            spec = json.load(f)
+        types = {'.mp4': 'video/mp4', '.webm': 'video/webm', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.vtt': 'text/vtt'}
+        steps = []
+        for i, step in enumerate(spec['steps']):
+            row = {'status': 'published', 'sort': i + 1, 'media_kind': step['media_kind'], **{k: step[k] for k in ('title_fa', 'title_en', 'body_fa', 'body_en')}}
+            for field, name in step['files'].items():
+                path = os.path.join(guide_media, name)
+                row[field] = upload_file(base, token, path, campaign_media_folder, name, types[os.path.splitext(name)[1]])
+            steps.append(row)
+        req('POST', f'{base}/items/site_guides', token, {
+            'internal_name': 'terminal-basics', 'status': 'published', 'active': True, 'version': 1,
+            'pages': ['terminal'], 'regions': ['GLOBAL', 'IRAN'], 'cookie_days': 365, 'steps': steps,
+        })
+        print(f'seed: site_guides terminal-basics ({len(steps)} steps, published and active)')
     # ---------------- bug bounty program (ADR 0057) -------------------------
     # Reward amounts per severity are owner-edited values (Backstage →
     # Security → Bug bounty, owner-gated). Labels, examples and the rest of the
@@ -1083,6 +1166,8 @@ def main():
         ('search_suggestion_translations', None),
         ('site_campaigns', {'_and': [{'status': {'_eq': 'published'}}, {'active': {'_eq': True}}]}),
         ('site_campaign_translations', None),
+        ('site_guides', {'_and': [{'status': {'_eq': 'published'}}, {'active': {'_eq': True}}]}),
+        ('site_guide_steps', {'_and': [{'status': {'_eq': 'published'}}, {'site_guide_id': {'status': {'_eq': 'published'}}}]}),
         ('bug_bounty_tiers', {'status': {'_eq': 'published'}}),
         ('bug_bounty_hall_of_fame', {'_and': [{'status': {'_eq': 'published'}}, {'consent': {'_eq': True}}]}),
         ('directus_files', {'folder': {'_eq': campaign_media_folder}}),

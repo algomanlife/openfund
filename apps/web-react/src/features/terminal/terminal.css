@@ -890,6 +890,11 @@ html[data-theme="light"] body:has(.of-terminal) {
 }
 .of-terminal-compact .of-terminal-more-links a { display: block; padding: 8px 10px; font-size: 12px; border: 0; }
 .of-terminal-compact .of-terminal-more-links a:hover { background: var(--of-bg); }
+/* the terminal guide entry (features/guide): styled like the links */
+.of-terminal-compact .of-terminal-more-links .of-guide-entry { display: block; inline-size: 100%; min-block-size: 44px; padding: 8px 10px; font: inherit; font-size: 12px;
+  text-align: start; color: inherit; background: none; border: 0; border-block-start: 1px solid var(--of-line, #ffffff1a); cursor: pointer; }
+.of-terminal-compact .of-terminal-more-links .of-guide-entry:hover { background: var(--of-bg); }
+.of-terminal-compact .of-terminal-more-links .of-guide-entry:focus-visible { outline: 2px solid var(--of-mint); outline-offset: -2px; }
 .of-terminal-compact .of-terminal-actions { flex-shrink: 0; gap: 5px; flex-wrap: nowrap; width: auto; }
 .of-terminal-compact .of-terminal-actions button {
   min-height: 28px; height: auto; padding: 3px 8px; font-size: 12px;

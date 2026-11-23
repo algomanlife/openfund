@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4906,
-    "mappedCalls": 2326,
+    "uniqueRecords": 4915,
+    "mappedCalls": 2335,
     "exceptions": 60,
     "validationFindings": 0,
     "reviewedExclusions": 52
@@ -1389,6 +1389,26 @@
       ]
     },
     {
+      "key": "react.00dbc4ff5096f053",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مرحلهٔ ${n}: ${title}",
+      "en": "Step ${n}: ${title}",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 161,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.00df40f6cafeb61a",
       "namespace": "react",
       "area": "Website",
@@ -2470,7 +2490,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 251,
+          "line": 257,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -7025,7 +7045,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 48,
+          "line": 49,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -10362,21 +10382,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 46,
+          "line": 47,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 51,
+          "line": 52,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 115,
+          "line": 117,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -15140,6 +15160,26 @@
       ]
     },
     {
+      "key": "react.22f72e58b1c5bdda",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دیگر نشان نده",
+      "en": "Don't show again",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 166,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.22f806caa7fba1f4",
       "namespace": "react",
       "area": "Website",
@@ -15352,7 +15392,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 250,
+          "line": 256,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -16841,7 +16881,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 129,
+          "line": 131,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -20627,7 +20667,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 46,
+          "line": 47,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29929,7 +29969,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 227,
+          "line": 233,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -31965,7 +32005,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 165,
+          "line": 171,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -32523,6 +32563,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 170,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
           "line": 94,
@@ -33412,6 +33459,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.4e80eccbd51c334f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مرحلهٔ ${n} از ${total}",
+      "en": "Step ${n} of ${total}",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 152,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -35027,21 +35094,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 55,
+          "line": 56,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 125,
+          "line": 127,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 135,
+          "line": 137,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -37510,6 +37577,26 @@
       ]
     },
     {
+      "key": "react.584023fe2cfc3ba2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "توقف ویدیو",
+      "en": "Pause video",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 60,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.584b92cc71185244",
       "namespace": "react",
       "area": "Website",
@@ -39400,6 +39487,26 @@
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.5c6ee01b073841d1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پخش ویدیو",
+      "en": "Play video",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 60,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -43626,7 +43733,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 215,
+          "line": 221,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -53514,7 +53621,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 259,
+          "line": 265,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -60303,6 +60410,26 @@
       ]
     },
     {
+      "key": "react.91cb7abbd3662745",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شروع معامله",
+      "en": "Start trading",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 173,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.91d0770b75ea59b1",
       "namespace": "react",
       "area": "Global Content",
@@ -60402,14 +60529,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 181,
+          "line": 187,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 183,
+          "line": 189,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -60856,7 +60983,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 257,
+          "line": 263,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -64735,14 +64862,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 53,
+          "line": 54,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 119,
+          "line": 121,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -69455,7 +69582,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 305,
+          "line": 312,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -70638,6 +70765,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 174,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/purchase/PayoutOperations.tsx",
           "line": 95,
@@ -72648,21 +72782,21 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 54,
+          "line": 55,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 123,
+          "line": 125,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 134,
+          "line": 136,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -76229,6 +76363,33 @@
           "line": 72,
           "page": "radar",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b8559284e4560be0",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "راهنما",
+      "en": "Guide",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
+          "line": 59,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
+          "line": 141,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -88049,6 +88210,26 @@
       ]
     },
     {
+      "key": "react.d68dca4dacdd4fbb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مراحل راهنما",
+      "en": "Guide steps",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 158,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.d6a9dbee633cd1be",
       "namespace": "react",
       "area": "Global Content",
@@ -89450,7 +89631,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 331,
+          "line": 338,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -90051,14 +90232,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 207,
+          "line": 213,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 208,
+          "line": 214,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -90445,7 +90626,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-          "line": 43,
+          "line": 44,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -93475,7 +93656,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 318,
+          "line": 325,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -94237,6 +94418,26 @@
       ]
     },
     {
+      "key": "react.e57a8890bd378378",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بستن راهنما",
+      "en": "Close the guide",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/guide/GuideModal.tsx",
+          "line": 147,
+          "page": "guide",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e58d4e0a2f178ed4",
       "namespace": "react",
       "area": "Global Content",
@@ -94269,7 +94470,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 248,
+          "line": 254,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -96760,7 +96961,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 247,
+          "line": 253,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -105436,7 +105637,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 53,
+      "line": 54,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -105444,7 +105645,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 119,
+      "line": 121,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -105452,7 +105653,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 133,
+      "line": 135,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -105460,7 +105661,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 304,
+      "line": 311,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -105775,7 +105976,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalMenu.tsx",
-      "line": 30,
+      "line": 31,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "helper-wrapper-definition",
@@ -105783,7 +105984,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 67,
+      "line": 69,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "helper-wrapper-definition",
@@ -105791,7 +105992,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 199,
+      "line": 205,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -105799,7 +106000,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 200,
+      "line": 206,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -105807,7 +106008,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 300,
+      "line": 307,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",

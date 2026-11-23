@@ -58,6 +58,7 @@ import { createTestClock } from './test-clock.js'
 import { createFootprintService } from './footprint/service.js'
 import { couponAdminRoutes } from './coupons.js'
 import { campaignRoutes } from './campaigns.js'
+import { guideRoutes } from './guides.js'
 import { paymentAdminRoutes } from './payments-admin.js'
 import { governanceRoutes } from './governance-routes.js'
 import { partnerRoutes, partnerAdminRoutes, attributeAmbassador } from './partners.js'
@@ -911,6 +912,7 @@ app.use('/admin/partners', partnerAdminRoutes({ pool }))
 app.use('/admin/live', liveAdminRoutes({ pool, treasury, config: live }))
 app.use('/admin/coupons', couponAdminRoutes({ pool }))
 app.use(campaignRoutes({ pool, limit }))
+app.use(guideRoutes({ pool, limit }))
 app.use('/admin/payments', paymentAdminRoutes({ pool, verifier: (...a) => defaultPaymentVerifier()(...a) }))
 app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/operations', operationsAdminRoutes({ pool, engine, marketData }))

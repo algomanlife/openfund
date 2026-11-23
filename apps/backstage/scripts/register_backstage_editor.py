@@ -78,6 +78,9 @@ def wanted_permissions():
         ('site_campaigns', 'read', ['*']), ('site_campaigns', 'create', ['*']), ('site_campaigns', 'update', ['*']),
         ('site_campaign_translations', 'read', ['*']), ('site_campaign_translations', 'create', ['*']),
         ('site_campaign_translations', 'update', ['headline', 'body', 'cta_label', 'image_alt']),
+        # terminal guide (ADR 0056): steps are archived, never deleted
+        ('site_guides', 'read', ['*']), ('site_guides', 'create', ['*']), ('site_guides', 'update', ['*']),
+        ('site_guide_steps', 'read', ['*']), ('site_guide_steps', 'create', ['*']), ('site_guide_steps', 'update', ['*']),
         # bug bounty (ADR 0057): reward amounts and the hall of fame; Backstage
         # validates amounts and consent and asks for the owner password
         ('bug_bounty_tiers', 'read', ['*']), ('bug_bounty_tiers', 'update', ['reward_min_usd', 'reward_max_usd']),
