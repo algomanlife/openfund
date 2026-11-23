@@ -28,6 +28,7 @@ import "./terminal.css";
 import { detailsPopover, registerPopover } from "./popovers";
 import { TerminalContext, useTerminal } from "./TerminalContext";
 import { chooseTheme, currentTheme, DAY_NIGHT_MARKUP } from "../../theme";
+import { SearchTrigger } from "../search/SiteSearch";
 import LanguageSelect from "../../i18n/LanguageSelect";
 import TerminalMenu from "./TerminalMenu";
 import AnnouncementBar from "../campaigns/AnnouncementBar";
@@ -218,6 +219,7 @@ export default function TerminalShell({ product }: { product: Product }) {
             </label>
             <div className="of-terminal-actions">
               {version}
+              <SearchTrigger locale={locale} />
               <button
                 type="button"
                 className="of-daynight"

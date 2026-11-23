@@ -27,7 +27,8 @@ import { Router } from 'express'
 export const CMS_COLLECTIONS = new Set([
   'challenge_plans', 'faq_categories', 'faqs', 'footer_links', 'glossary_terms', 'governance_content_blocks',
   'governance_milestones', 'home_content', 'learning_paths', 'legal_documents', 'navigation_items', 'pages',
-  'referral_content', 'site_campaigns', 'site_settings', 'terminal_sections', 'tools', 'trading_rules', 'ui_messages',
+  'referral_content', 'search_suggestions', 'search_synonyms', 'site_campaigns', 'site_settings', 'terminal_sections', 'tools',
+  'trading_rules', 'ui_messages',
   'whitepaper_chapters', 'whitepaper_datasets', 'whitepaper_documents', 'whitepaper_references',
 ])
 const PARAM = /^(fields|sort|limit|offset|search|filter(\[[\w-]+\])+|deep(\[[\w-]+\])+)$/
@@ -110,5 +111,20 @@ export function cmsSnapshotRoutes({ pool, origin, fetchImpl = (...a) => fetch(..
     if (q === null) return res.status(400).json({ error: 'invalid_query' })
     await serve(req, res, `assets/${req.params.id.toLowerCase()}${q ? '?' + q : ''}`, 'directus_files', MAX_ASSET_BYTES, () => true)
   }))
+  /* server-side reader for other backend modules (site search): the same
+     allowlist, canonical key, live read and snapshot fallback; parsed JSON */
+  router.read = async path => {
+    const at = path.indexOf('?'), base = at < 0 ? path : path.slice(0, at)
+    const c = /^items\/([a-z_]+)$/.exec(base)?.[1]
+    if (!c || !CMS_COLLECTIONS.has(c)) throw new Error('cms_collection_not_allowed')
+    const q = canonicalQuery(at < 0 ? '' : path.slice(at + 1), PARAM)
+    if (q === null) throw new Error('cms_query_not_allowed')
+    const key = `items/${c}${q ? '?' + q : ''}`
+    let body = null
+    const capture = { set() { return capture }, status() { return capture }, json() { return capture }, send(buf) { body = buf; return capture } }
+    await serve(null, capture, key, c, MAX_ITEMS_BYTES, live => { try { return JSON.parse(live.buf.toString('utf8'))?.data != null } catch { return false } })
+    if (!body) return null
+    try { return JSON.parse(Buffer.isBuffer(body) ? body.toString('utf8') : String(body)) } catch { return null }
+  }
   return router
 }

@@ -707,6 +707,12 @@
    "protected": true,
    "cms": "none"
   },
+  "search_query_stats": {
+   "domain": "analytics",
+   "protected": false,
+   "cms": "none",
+   "reason": "Anonymous search counts read by the backend admin API and Backstage only; no Directus access."
+  },
   "settlement_records": {
    "domain": "financial",
    "protected": true,
