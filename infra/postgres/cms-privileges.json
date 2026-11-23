@@ -408,6 +408,11 @@
    "cms": "none",
    "reason": "Operated through the backend admin API and Backstage only; no Directus access."
   },
+  "guide_daily_stats": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none"
+  },
   "ib_settlement_policies": {
    "domain": "financial",
    "protected": true,
