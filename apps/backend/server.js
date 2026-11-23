@@ -67,6 +67,7 @@ import { regionConfig, hasRole, assertDatabaseRegion, RuntimeState, regionGuard,
 import { syncConfig, SyncWorker, syncPeerRoutes, signedHeaders, PROTOCOL_VERSION } from './regional-sync.js'
 import { regionalAdminRoutes, remoteAccountRoutes } from './regional-admin.js'
 import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
+import { marketFundingRoutes, sampleFunding } from './market-funding.js'
 import { adminAuth, adminActor } from './admin.js'
 import { rateLimit } from 'express-rate-limit'
 import { internalTokenGuard, sweepExpiredAuth } from './auth-hygiene.js'
@@ -930,6 +931,8 @@ app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, r
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
 /* same-origin public CMS content with a last-known-good snapshot (primary on IRAN, fallback on GLOBAL) */
 app.use('/cms', limit(240), cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) }))
+/* terminal Funding and Details tabs: documented Gains reads plus our own hourly funding samples */
+app.use(marketFundingRoutes({ pool, marketData, limit }))
 app.use('/admin/backstage', backstageReads({ pool }))
 app.use('/admin', adminRoutes({ pool, audit, claimPayout: createPayoutClaimClient(sync, signedHeaders) }))
 
@@ -1132,6 +1135,9 @@ const tournamentTimer = region.region === 'GLOBAL' && hasRole(region, 'engine') 
   provisionAtStart(pool).then(() => sampleEquity(pool, marketData)).catch(e => console.error('[tournament]', e.message))
 }, Math.max(Number(process.env.TOURNAMENT_SAMPLE_INTERVAL_MS) || 300_000, 5_000)) : null
 tournamentTimer?.unref()
+/* funding history: one sample per market per hour from the in-memory /markets list (400-day retention) */
+const fundingSampleTimer = setInterval(() => { sampleFunding(pool, marketData).catch(e => console.error('[funding] sample', e.message)) }, 300_000)
+fundingSampleTimer.unref()
 const settlementTimer = hasRole(region, 'settlement') ? setInterval(() => {
   const adapter = settlementAdapter(live.settlement)
   if (adapter) processSettlements(pool, adapter).catch(e => console.error('[settlements]', e.message))
@@ -1148,6 +1154,6 @@ nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the
    process after 10 s (a long-lived peer or proxy connection), every socket is closed and it exits */
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(migrationPurgeTimer);clearInterval(tournamentTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(migrationPurgeTimer);clearInterval(tournamentTimer);clearInterval(fundingSampleTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
