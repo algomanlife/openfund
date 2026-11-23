@@ -46,7 +46,7 @@ export function navigationHref(route: string, locale: Locale): string {
 export interface NavigationLink { route: string; href: string; label: string; current: boolean; activeSection: boolean; description: string; icon: string; badge?: string; countdown?: string }
 export interface NavigationSection { id: string; label: string; links: NavigationLink[] }
 export interface NavigationBanner { kind: MegaBannerKind; href: string; title: string; body: string; cta: string; description: string }
-export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean; sections: NavigationSection[]; banner: NavigationBanner | null }
+export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean; sections: NavigationSection[]; banner: NavigationBanner | null; banners: NavigationBanner[] }
 export interface NavigationModel { primary: NavigationLink[]; groups: NavigationGroup[] }
 
 /** One source for the website's primary destinations and dropdown groups:
@@ -64,12 +64,13 @@ export function navigationModel(locale: Locale, pathname: string, navItems: CmsN
     return { route, href: navigationHref(route, locale), label: pickRecord(locale, label), current, activeSection: !current && pathname.startsWith(`/${locale}/${section}/`),
       description: description ? pickRecord(locale, description) : '', icon }
   }
-  const banner = (id: string): NavigationBanner | null => {
-    const b = MEGA_BANNERS[id]
-    return b ? { kind: b.kind, href: navigationHref(b.route, locale) + (b.hash || ''), title: pickRecord(locale, b.title), body: pickRecord(locale, b.body), cta: pickRecord(locale, b.cta), description: b.description ? pickRecord(locale, b.description) : '' } : null
+  const banners = (id: string): NavigationBanner[] => {
+    const defs = MEGA_BANNERS[id]
+    return (Array.isArray(defs) ? defs : defs ? [defs] : []).map(b => ({ kind: b.kind, href: navigationHref(b.route, locale) + (b.hash || ''), title: pickRecord(locale, b.title),
+      body: pickRecord(locale, b.body), cta: pickRecord(locale, b.cta), description: b.description ? pickRecord(locale, b.description) : '' }))
   }
   const group = (id: string, label: { fa: string; en: string }, links: NavigationLink[], sections?: NavigationSection[]): NavigationGroup =>
-    ({ id, label: pickRecord(locale, label), links, current: links.some(item => item.current), sections: sections || [{ id, label: '', links }], banner: banner(id) })
+    ({ id, label: pickRecord(locale, label), links, current: links.some(item => item.current), sections: sections || [{ id, label: '', links }], banner: banners(id)[0] ?? null, banners: banners(id) })
   const resourceLinks = resources.flatMap(route => route === 'learn' ? [link(route), link('glossary')] : [link(route)])
   const byRoute = new Map(resourceLinks.map(item => [item.route, item]))
   const resourceSections = RESOURCE_SECTIONS.map(section => ({ id: section.id, label: pickRecord(locale, section.label), links: section.routes.flatMap(route => byRoute.get(route) || []) }))
@@ -172,7 +173,8 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
       sections.append(block)
     }
     body.append(sections)
-    if (item.banner) body.append(bannerCard(item.banner))
+    if (item.banners.length === 1) body.append(bannerCard(item.banners[0]))
+    else if (item.banners.length > 1) { const column = document.createElement('div'); column.className = 'mega-banners'; column.append(...item.banners.map(bannerCard)); body.append(column) }
     dropdown.append(heading, body)
     group.append(trigger, dropdown)
     return group

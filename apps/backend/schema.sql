@@ -3086,3 +3086,124 @@ CREATE TABLE IF NOT EXISTS tournament_awards (
 -- tournament certificates (badges on certificates)
 ALTER TABLE certificates DROP CONSTRAINT IF EXISTS certificates_kind_check;
 ALTER TABLE certificates ADD CONSTRAINT certificates_kind_check CHECK (kind IN ('purchase','completion','payout','tournament'));
+
+-- ==================================================================
+-- Migration to Openfund (migration.js, ADR 0051). Additive.
+--   migration_firms     editable list of recognised prop firms (names only)
+--   migration_settings  singleton: proof rules, eligible plans, retention
+--   migration_requests  one trader's request (one approved migration per person)
+--   migration_evidence  evidence items; files live in private storage only
+--   migration_events    append-only audit of every request step
+--   migration_passes    single-use, wallet-bound pass issued on approval;
+--                       a normal-price order that carries it starts funded
+-- ==================================================================
+CREATE TABLE IF NOT EXISTS migration_firms (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        text NOT NULL UNIQUE CHECK (length(name) BETWEEN 2 AND 60),
+  status      text NOT NULL DEFAULT 'active' CHECK (status IN ('active','inactive')),
+  sort        integer NOT NULL DEFAULT 0,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+INSERT INTO migration_firms (name, sort) VALUES ('FTMO', 1), ('FundingPips', 2), ('FundedNext', 3), ('E8 Markets', 4)
+  ON CONFLICT (name) DO NOTHING;
+/* firm details shown on /migrate (owner update 2026-11-23): official site,
+   accepted program types, the evidence the firm provides, and an optional
+   logo uploaded by the owner in Backstage (never downloaded or recreated) */
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS website_url text CHECK (website_url IS NULL OR (length(website_url) <= 200 AND website_url ~ '^https://'));
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS program_types jsonb NOT NULL DEFAULT '[]' CHECK (jsonb_typeof(program_types) = 'array');
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS evidence_types jsonb NOT NULL DEFAULT '[]' CHECK (jsonb_typeof(evidence_types) = 'array');
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS logo bytea CHECK (logo IS NULL OR octet_length(logo) <= 204800);
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS logo_type text CHECK (logo_type IS NULL OR logo_type IN ('image/png','image/jpeg','image/webp'));
+ALTER TABLE migration_firms ADD COLUMN IF NOT EXISTS logo_updated_at timestamptz;
+/* seed values fill empty fields only, so owner edits are never overwritten */
+UPDATE migration_firms f SET website_url = v.site FROM (VALUES ('FTMO','https://ftmo.com'), ('FundingPips','https://fundingpips.com'),
+  ('FundedNext','https://fundednext.com'), ('E8 Markets','https://e8markets.com')) AS v(name, site) WHERE f.name = v.name AND f.website_url IS NULL;
+UPDATE migration_firms SET program_types = '["Funded account after an evaluation"]' WHERE program_types = '[]' AND name IN ('FTMO','FundingPips','FundedNext','E8 Markets');
+UPDATE migration_firms SET evidence_types = '["Payout certificate with a verification link","Payout history in the trader dashboard"]' WHERE evidence_types = '[]' AND name IN ('FTMO','FundingPips','FundedNext','E8 Markets');
+
+CREATE TABLE IF NOT EXISTS migration_settings (
+  id                  boolean PRIMARY KEY DEFAULT true CHECK (id),
+  min_payouts         integer NOT NULL DEFAULT 3 CHECK (min_payouts BETWEEN 1 AND 20),
+  window_months       integer NOT NULL DEFAULT 12 CHECK (window_months BETWEEN 1 AND 36),
+  plans               jsonb NOT NULL DEFAULT '["standard","one-phase"]' CHECK (jsonb_typeof(plans) = 'array'),
+  retention_days      integer NOT NULL DEFAULT 90 CHECK (retention_days BETWEEN 7 AND 365),
+  pass_expires_days   integer NOT NULL DEFAULT 30 CHECK (pass_expires_days BETWEEN 1 AND 180),
+  updated_by          text,
+  updated_at          timestamptz NOT NULL DEFAULT now()
+);
+INSERT INTO migration_settings (id) VALUES (true) ON CONFLICT (id) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS migration_requests (
+  id                     uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id                uuid NOT NULL REFERENCES openfund_users (id),
+  firm_id                uuid NOT NULL REFERENCES migration_firms (id),
+  status                 text NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','submitted','approved','rejected','withdrawn')),
+  claimed_max_size_usd   numeric(20,2) NOT NULL CHECK (claimed_max_size_usd > 0),
+  approved_max_size_usd  numeric(20,2) CHECK (approved_max_size_usd IS NULL OR approved_max_size_usd > 0),
+  full_name              text CHECK (full_name IS NULL OR length(full_name) BETWEEN 2 AND 120),
+  kyc_verified           boolean NOT NULL DEFAULT false,
+  name_matched           boolean NOT NULL DEFAULT false,
+  decision_reason        text,
+  decided_by             text,
+  decided_at             timestamptz,
+  files_purge_after      timestamptz,
+  files_purged_at        timestamptz,
+  submitted_at           timestamptz,
+  created_at             timestamptz NOT NULL DEFAULT now(),
+  updated_at             timestamptz NOT NULL DEFAULT now()
+);
+/* one open or approved request per person; a rejected trader may apply again */
+ALTER TABLE migration_requests ADD COLUMN IF NOT EXISTS contact_email text CHECK (contact_email IS NULL OR (length(contact_email) <= 254 AND contact_email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$'));
+CREATE UNIQUE INDEX IF NOT EXISTS uq_migration_requests_user_open ON migration_requests (user_id) WHERE status IN ('draft','submitted','approved');
+CREATE INDEX IF NOT EXISTS idx_migration_requests_queue ON migration_requests (status, submitted_at);
+CREATE INDEX IF NOT EXISTS idx_migration_requests_purge ON migration_requests (files_purge_after) WHERE files_purged_at IS NULL AND files_purge_after IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS migration_evidence (
+  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  request_id     uuid NOT NULL REFERENCES migration_requests (id),
+  kind           text NOT NULL CHECK (kind IN ('identity','funded_account','payout_certificate','payout_tx','statement','recording')),
+  payout_date    date,
+  amount_usd     numeric(20,2) CHECK (amount_usd IS NULL OR amount_usd > 0),
+  url            text CHECK (url IS NULL OR (length(url) <= 500 AND url ~ '^https://')),
+  chain_id       integer,
+  tx_hash        text CHECK (tx_hash IS NULL OR tx_hash ~ '^0x[0-9a-f]{64}$'),
+  object_key     text,
+  content_type   text,
+  size_bytes     integer,
+  sha256         text,
+  verification   jsonb,
+  note           text CHECK (note IS NULL OR length(note) <= 500),
+  created_at     timestamptz NOT NULL DEFAULT now(),
+  deleted_at     timestamptz
+);
+CREATE INDEX IF NOT EXISTS idx_migration_evidence_request ON migration_evidence (request_id, created_at);
+
+CREATE TABLE IF NOT EXISTS migration_events (
+  id          bigserial PRIMARY KEY,
+  request_id  uuid NOT NULL REFERENCES migration_requests (id),
+  actor       text NOT NULL,
+  action      text NOT NULL,
+  detail      jsonb NOT NULL DEFAULT '{}',
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_migration_events_request ON migration_events (request_id, id);
+DROP TRIGGER IF EXISTS migration_events_append_only ON migration_events;
+CREATE TRIGGER migration_events_append_only BEFORE UPDATE OR DELETE ON migration_events FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+CREATE TABLE IF NOT EXISTS migration_passes (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  request_id    uuid NOT NULL UNIQUE REFERENCES migration_requests (id),
+  user_id       uuid NOT NULL REFERENCES openfund_users (id),
+  plans         jsonb NOT NULL CHECK (jsonb_typeof(plans) = 'array'),
+  max_size_usd  numeric(20,2) NOT NULL CHECK (max_size_usd > 0),
+  status        text NOT NULL DEFAULT 'issued' CHECK (status IN ('issued','redeemed','revoked')),
+  expires_at    timestamptz NOT NULL,
+  purchase_order_id uuid UNIQUE,
+  redeemed_at   timestamptz,
+  created_at    timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_migration_passes_user ON migration_passes (user_id);
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS migration_pass_id uuid REFERENCES migration_passes (id);
+/* a pass backs at most one live order at a time */
+CREATE UNIQUE INDEX IF NOT EXISTS uq_purchase_orders_migration_pass ON purchase_orders (migration_pass_id)
+  WHERE migration_pass_id IS NOT NULL AND status IN ('pending','paid');

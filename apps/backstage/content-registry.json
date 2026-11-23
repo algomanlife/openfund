@@ -2,9 +2,9 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4597,
-    "mappedCalls": 2308,
-    "exceptions": 52,
+    "uniqueRecords": 4694,
+    "mappedCalls": 2310,
+    "exceptions": 56,
     "validationFindings": 0,
     "reviewedExclusions": 51
   },
@@ -1711,6 +1711,13 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 74,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -1934,7 +1941,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 524,
+          "line": 554,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2208,7 +2215,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 682,
+          "line": 712,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2232,6 +2239,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.026dc59a1136a24c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لغو درخواست",
+      "en": "Withdraw request",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 65,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -2708,10 +2735,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 351,
+          "line": 378,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.03c8e1bf9f9cbf7d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "محتوای فایل با نوع آن هم‌خوان نیست.",
+      "en": "The file content does not match its type.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 87,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -2788,7 +2835,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 56,
+          "line": 59,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -3205,6 +3252,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
           "line": 130,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.0547bbeab9d28abe",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بارگذاری فایل",
+      "en": "Upload a file",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 55,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -3911,6 +3978,26 @@
       ]
     },
     {
+      "key": "react.0750cc1fa64c1245",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بزرگ‌ترین اندازهٔ حساب فاندشده (دلار)",
+      "en": "Largest funded account size (USD)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 49,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0760716f9ac6a66b",
       "namespace": "react",
       "area": "Global Content",
@@ -3943,7 +4030,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 55,
+          "line": 56,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4021,6 +4108,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.078f8d7430edb466",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا مهاجرت ارزان‌تر است؟",
+      "en": "Is migration cheaper?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 76,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -4422,6 +4529,26 @@
       ]
     },
     {
+      "key": "react.082c2d24682545a0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "زنجیره",
+      "en": "Chain",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 62,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.087891b721ba2b71",
       "namespace": "react",
       "area": "User Dashboard",
@@ -4494,7 +4621,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 511,
+          "line": 541,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4514,7 +4641,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 469,
+          "line": 499,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -4901,7 +5028,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 619,
+          "line": 649,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -5195,7 +5322,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 711,
+          "line": 741,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -6736,14 +6863,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 554,
+          "line": 584,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 607,
+          "line": 637,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -8106,14 +8233,14 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 11,
+          "line": 16,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 91,
+          "line": 94,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -8315,7 +8442,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 58,
+          "line": 61,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -8502,7 +8629,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 728,
+          "line": 758,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -8624,6 +8751,26 @@
           "component": "apps/web-react/src/cms/seed/referralContent.ts",
           "line": 127,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.13e2a6fcad826422",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فهرست بررسی هنوز کامل نیست.",
+      "en": "The checklist is not complete yet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 89,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -9646,7 +9793,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 712,
+          "line": 742,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -10250,6 +10397,26 @@
       ]
     },
     {
+      "key": "react.186beb7251c481a0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرکت و بزرگ‌ترین اندازهٔ حساب فاندشده‌ات را انتخاب کن.",
+      "en": "Choose your firm and your largest funded account size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 29,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.18744657032407af",
       "namespace": "react",
       "area": "Website",
@@ -10326,6 +10493,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.18990cda3ed77f3c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فیلم صفحه",
+      "en": "Screen recording",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 57,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -11118,6 +11305,26 @@
       ]
     },
     {
+      "key": "react.1a81007c0aafe5e8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اثبات حساب فاندشده (تصویر یا فیلم)",
+      "en": "Funded account proof (screenshot or recording)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 53,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1a9706837cf496d3",
       "namespace": "react",
       "area": "Global Content",
@@ -11539,6 +11746,26 @@
       ]
     },
     {
+      "key": "react.1c2fb7f22bc0a9d8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارزیابی (مرحلهٔ ۱)",
+      "en": "Evaluation (stage 1)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 22,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1c351f9b2d97aa7b",
       "namespace": "react",
       "area": "Website",
@@ -11719,6 +11946,26 @@
       ]
     },
     {
+      "key": "react.1c8d093ec06e92e0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مجوز: ${plans}، تا ${size}، معتبر تا ${date}.",
+      "en": "Pass: ${plans}, up to ${size}, valid until ${date}.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 71,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1ca12a1755b1186f",
       "namespace": "react",
       "area": "Global Content",
@@ -11831,7 +12078,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 54,
+          "line": 55,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11985,7 +12232,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 64,
+          "line": 65,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12353,7 +12600,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 350,
+          "line": 377,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -12428,6 +12675,26 @@
       ]
     },
     {
+      "key": "react.1df08200134bc076",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افزودن لینک گواهی یا تراکنش",
+      "en": "Add a certificate link or transaction",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 61,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1e085992babbba38",
       "namespace": "react",
       "area": "Website",
@@ -12484,6 +12751,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.1e3bb93b6d93c959",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هش تراکنش برداشت روی زنجیره (در زنجیره‌های پشتیبانی‌شده خودکار بررسی می‌شود)",
+      "en": "On-chain payout transaction hashes (checked automatically where the chain is supported)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 36,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -12704,6 +12991,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.1f1e078170faad51",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک درخواست باز داری.",
+      "en": "You already have an open request.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 84,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -13033,8 +13340,15 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 19,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 93,
+          "line": 96,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -13054,7 +13368,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 353,
+          "line": 380,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -13365,6 +13679,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.20b51806d8b2e60a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قوانین مرحلهٔ فاند",
+      "en": "Funded rules",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 24,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -13821,7 +14155,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 708,
+          "line": 738,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -14028,7 +14362,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 503,
+          "line": 533,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -15830,7 +16164,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 352,
+          "line": 379,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -16038,6 +16372,26 @@
       ]
     },
     {
+      "key": "react.28247f5296f1b916",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درخواست‌ها پس از آماده شدن فضای خصوصی نگهداری مدارک باز می‌شوند. تا آن زمان اطلاعاتی دریافت نمی‌شود.",
+      "en": "Requests open once private evidence storage is ready. Nothing is collected before then.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 47,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2836a27f96c2ec4b",
       "namespace": "react",
       "area": "Global Content",
@@ -16074,6 +16428,26 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2846d396684cae4e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "از لینک https استفاده کن.",
+      "en": "Use an https link.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 85,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -16397,7 +16771,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 662,
+          "line": 692,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -16617,7 +16991,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 548,
+          "line": 578,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -16846,6 +17220,26 @@
       ]
     },
     {
+      "key": "react.2a744e65973f0a3d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.",
+      "en": "Illustration: a flock of flamingos migrating to a new home and landing on a calm lake, like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 98,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2a754d56643b96d8",
       "namespace": "react",
       "area": "Global Content",
@@ -16876,6 +17270,26 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2a7e175cf878892c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تاریخ برداشت",
+      "en": "Payout date",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 58,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -17036,6 +17450,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2ad05a8a65e082a8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شروع از",
+      "en": "Starts at",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 22,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -17641,6 +18075,46 @@
       ]
     },
     {
+      "key": "react.2c88a46f41c7ac29",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اثبات ${n} برداشت در ${m} ماه و احراز هویت",
+      "en": "Proof of ${n} payouts in ${m} months and identity checks",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 26,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2ca43fc5d5c544bb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت عادی پلن",
+      "en": "The normal plan price",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 23,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2cb08192261d2b24",
       "namespace": "react",
       "area": "Website",
@@ -17693,21 +18167,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 527,
+          "line": 557,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 589,
+          "line": 619,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 705,
+          "line": 735,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -17837,6 +18311,26 @@
           "component": "apps/web-react/src/data/toolCatalog.ts",
           "line": 49,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2d638b1e73717a86",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال بازبینی. تصمیم همراه با دلیل اعلام می‌شود.",
+      "en": "In review. We will decide and give a reason.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 68,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -19644,7 +20138,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 568,
+          "line": 598,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -19958,7 +20452,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 446,
+          "line": 473,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -20275,6 +20769,26 @@
       ]
     },
     {
+      "key": "react.3253dfd72d652569",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرکت تأمین سرمایه",
+      "en": "Prop firm",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 49,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.325bee3147767253",
       "namespace": "react",
       "area": "Website",
@@ -20535,7 +21049,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 734,
+          "line": 764,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -20557,6 +21071,26 @@
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 117,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.32cdd91fb525be8f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فایل‌ها خصوصی و رمزنگاری‌شده نگهداری می‌شوند، فقط بازبین‌ها با لینک‌هایی که چند دقیقه بعد منقضی می‌شوند آن‌ها را باز می‌کنند و ${d} روز پس از تصمیم حذف می‌شوند.",
+      "en": "Files are stored privately and encrypted, opened only by reviewers through links that expire in minutes, and deleted ${d} days after the decision.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 40,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -20697,6 +21231,26 @@
           "component": "apps/web-react/src/features/referral/Referral.tsx",
           "line": 74,
           "page": "referral",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.33322a531502c7e9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "صورت‌حساب بانک یا ارائه‌دهندهٔ پرداخت",
+      "en": "Bank or payment-provider statements",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 37,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -21586,7 +22140,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 675,
+          "line": 705,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -21649,6 +22203,26 @@
           "line": 62,
           "page": "applications",
           "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.35676b8dd4ce0aa7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدارک پذیرفته‌شده",
+      "en": "Accepted evidence",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 34,
+          "page": "migration",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -21946,7 +22520,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 574,
+          "line": 604,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -22625,7 +23199,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 362,
+          "line": 389,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -22785,7 +23359,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 532,
+          "line": 562,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -22825,7 +23399,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 586,
+          "line": 616,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -22865,7 +23439,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 102,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -23655,6 +24229,26 @@
       ]
     },
     {
+      "key": "react.3ae7fcb5905b23b9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اثبات حساب فاندشده",
+      "en": "Funded account proof",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 56,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3afdf2579db8d899",
       "namespace": "react",
       "area": "Global Content",
@@ -24256,6 +24850,13 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 23,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/radar/RadarPage.tsx",
           "line": 205,
           "page": "radar",
@@ -24291,7 +24892,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 431,
+          "line": 458,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -24592,7 +25193,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 430,
+          "line": 457,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -24788,6 +25389,26 @@
           "component": "apps/web-react/src/data/toolCatalog.ts",
           "line": 143,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.3e319fac350960aa",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کدام پلن‌ها را می‌توانم بخرم؟",
+      "en": "Which plans can I buy?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 77,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -25211,6 +25832,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3f8294b2a61dc4dc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند به هیچ‌یک از شرکت‌های فهرست‌شده وابسته نیست. نام آن‌ها فقط برای مشخص کردن محل حساب تو آمده است.",
+      "en": "Openfund is not affiliated with any of the firms listed. Their names are used only to identify where your account is.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 44,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -26944,26 +27585,6 @@
       ]
     },
     {
-      "key": "react.4414dfa640f0240a",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "تصویر: دسته‌ای از فلامینگوها به خانه‌ای تازه مهاجرت می‌کنند و روی دریاچه‌ای آرام فرود می‌آیند که نشان OpenFi را بازتاب می‌دهد؛ مانند فلامینگوهایی که زمستان را در دریاچهٔ مهارلو نزدیک شیراز، محل استقرار اوپن‌فاند، می‌گذرانند.",
-      "en": "Illustration: a flock of flamingos migrating to a new home, landing on a calm lake that reflects the OpenFi mark — like the flamingos that winter at Maharloo Lake near Shiraz, where Openfund is based.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 95,
-          "page": "navigation",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.441b7be17c17b695",
       "namespace": "react",
       "area": "Global Content",
@@ -27717,14 +28338,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 149,
+          "line": 155,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 156,
+          "line": 162,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -28698,7 +29319,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 93,
+          "line": 96,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -30361,7 +30982,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 592,
+          "line": 622,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -30648,7 +31269,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 106,
+          "line": 114,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30742,7 +31363,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 82,
+          "line": 83,
           "page": "information",
           "route": "/:locale/:page",
           "method": "pick-pipeline"
@@ -31379,6 +32000,26 @@
       ]
     },
     {
+      "key": "react.4f2946afc2977ebd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این تراکنش قبلاً در درخواستی آمده است.",
+      "en": "That transaction is already part of a request.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 86,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.4f395fc1424c2b09",
       "namespace": "react",
       "area": "Global Content",
@@ -31685,7 +32326,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 593,
+          "line": 623,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -32407,7 +33048,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 99,
+          "line": 102,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33316,7 +33957,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 529,
+          "line": 559,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -33750,7 +34391,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 588,
+          "line": 618,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -34045,6 +34686,26 @@
       ]
     },
     {
+      "key": "react.55c82b4eb67f9f2c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا می‌توانم دو بار مهاجرت کنم؟",
+      "en": "Can I migrate twice?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 78,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.55cfe31b2c6161bb",
       "namespace": "react",
       "area": "Global Content",
@@ -34161,6 +34822,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.56163dc1d8ebcad9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدارک را اضافه کن؛ فهرست بررسی نشان می‌دهد چه چیزی کم است.",
+      "en": "Add evidence; the checklist shows what is still missing.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 30,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -34757,7 +35438,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 101,
+          "line": 104,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -36078,7 +36759,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 637,
+          "line": 667,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -36177,6 +36858,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5ab4bdcbdd2f6b27",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مجوز تو برای یک خرید استفاده شده است.",
+      "en": "Your pass has been used for a purchase.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 72,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -36297,6 +36998,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5b47326ec9b9605c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اندازهٔ حساب معتبر وارد کن.",
+      "en": "Enter a valid account size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 82,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -37709,7 +38430,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 591,
+          "line": 621,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -38244,7 +38965,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 109,
+          "line": 110,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -38759,6 +39480,26 @@
       ]
     },
     {
+      "key": "react.61d4ed7aeb74c518",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قوانین عادی مرحلهٔ فاند پلن",
+      "en": "The plan’s normal funded rules",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 24,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.61f19c730cce1e1b",
       "namespace": "react",
       "area": "Website",
@@ -39146,6 +39887,26 @@
       ]
     },
     {
+      "key": "react.63034887ec0a9841",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هش تراکنش معتبر نیست.",
+      "en": "That transaction hash is not valid.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 85,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6311f78f149c4877",
       "namespace": "react",
       "area": "Website",
@@ -39346,6 +40107,26 @@
       ]
     },
     {
+      "key": "react.63d6ebaed64e6b8e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لغو شد.",
+      "en": "Withdrawn.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 70,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.63e9768b8e537bb5",
       "namespace": "react",
       "area": "Website",
@@ -39523,6 +40304,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 48,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 57,
@@ -40290,6 +41078,26 @@
       ]
     },
     {
+      "key": "react.665258aeb6f5d0cc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نیاز داری",
+      "en": "You need",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 25,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6657f7d535b1cccb",
       "namespace": "react",
       "area": "Global Content",
@@ -40386,6 +41194,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.66b1aba29f3b4dd8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "صورت‌حساب برداشت",
+      "en": "Payout statement",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 56,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -40810,7 +41638,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 576,
+          "line": 606,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -41464,7 +42292,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 641,
+          "line": 671,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -41852,7 +42680,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 644,
+          "line": 674,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -42190,6 +43018,26 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.6b68a37d49573497",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ایمیل برای اطلاع از وضعیت درخواست",
+      "en": "Email for updates on your request",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 43,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -43860,6 +44708,26 @@
       ]
     },
     {
+      "key": "react.6fba2f7dfe78765d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خرید",
+      "en": "Buy",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 33,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.6fc8c138472c7428",
       "namespace": "react",
       "area": "Global Content",
@@ -44019,7 +44887,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 456,
+          "line": 483,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -44130,6 +44998,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.706159e1df0c55dd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارسال برای بازبینی",
+      "en": "Submit for review",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 65,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -44427,7 +45315,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 59,
+          "line": 60,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44614,7 +45502,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 707,
+          "line": 737,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -45176,6 +46064,33 @@
       ]
     },
     {
+      "key": "react.745c23873c93d2bb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درخواست مهاجرت به‌زودی باز می‌شود.",
+      "en": "Migration requests are opening soon.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 46,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 89,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.745e2280a8a591e8",
       "namespace": "react",
       "area": "Website",
@@ -45535,7 +46450,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 76,
+          "line": 77,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45615,7 +46530,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 408,
+          "line": 435,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -46299,6 +47214,26 @@
       ]
     },
     {
+      "key": "react.7788783cecfaa690",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برداشت روی زنجیره",
+      "en": "On-chain payout",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 57,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.778cec108334495e",
       "namespace": "react",
       "area": "Global Content",
@@ -46431,7 +47366,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 721,
+          "line": 751,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -46513,6 +47448,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 341,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7837af00ec20243c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برنامه‌های پذیرفته‌شده",
+      "en": "Accepted programs",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 42,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -47405,7 +48360,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 658,
+          "line": 688,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -48259,6 +49214,13 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 75,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 73,
           "page": "tournament",
@@ -48491,6 +49453,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.7ca5d7880d993fb4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مراحل",
+      "en": "Steps",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 28,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -48807,7 +49789,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 708,
+          "line": 738,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -49069,6 +50051,26 @@
       ]
     },
     {
+      "key": "react.7e3544ddfa1ca15f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "وایت‌پیپر اوپن‌فاند",
+      "en": "Openfund whitepaper",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 107,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.7e3c1aba12fcc084",
       "namespace": "react",
       "area": "Website",
@@ -49121,7 +50123,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 695,
+          "line": 725,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -49141,14 +50143,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 531,
+          "line": 561,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 593,
+          "line": 623,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -49773,13 +50775,6 @@
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 14,
-          "page": "migration",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -49856,14 +50851,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 559,
+          "line": 589,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 608,
+          "line": 638,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -50372,7 +51367,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 710,
+          "line": 740,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -50699,6 +51694,33 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.832c4db71b4555a1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدرک هویتی",
+      "en": "Identity document",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 53,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 56,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -51409,7 +52431,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 680,
+          "line": 710,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51843,7 +52865,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 74,
+          "line": 75,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52592,6 +53614,26 @@
       ]
     },
     {
+      "key": "react.88ceec1548091d1d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارزیابی، اقتصاد و شورا چگونه کار می‌کنند، در یک سند.",
+      "en": "How the evaluation, the economy and the council work, in one document.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 108,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.88d759ea36fe9052",
       "namespace": "react",
       "area": "Global Content",
@@ -52761,6 +53803,26 @@
           "line": 64,
           "page": "applications",
           "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8956e48fd48d3935",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثبت درخواست",
+      "en": "Create request",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 51,
+          "page": "migration",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -53054,6 +54116,46 @@
       ]
     },
     {
+      "key": "react.89e206264a14c740",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پیش‌نویس: مدارک را اضافه و سپس ارسال کن.",
+      "en": "Draft: add evidence, then submit.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 67,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.89ef06b7594f1905",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک شرکت انتخاب کن.",
+      "en": "Choose a firm.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 82,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8a0d7eb47486d542",
       "namespace": "react",
       "area": "Website",
@@ -53304,6 +54406,26 @@
       ]
     },
     {
+      "key": "react.8a7a362af4ea2638",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی برداشت",
+      "en": "Payout certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 57,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8a83a06291a86eb8",
       "namespace": "react",
       "area": "Website",
@@ -53316,7 +54438,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 357,
+          "line": 384,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -53336,7 +54458,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 62,
+          "line": 63,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53621,6 +54743,13 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 83,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -53637,7 +54766,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 73,
+          "line": 74,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53677,14 +54806,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 551,
+          "line": 581,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 606,
+          "line": 636,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -54265,7 +55394,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 65,
+          "line": 66,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54423,6 +55552,26 @@
           "page": "radar",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8d6132a262ed1714",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "استاندارد یا تک‌مرحله‌ای، با اندازه‌ای نه بزرگ‌تر از بزرگ‌ترین حساب فاندشدهٔ اثبات‌شده.",
+      "en": "Standard or One-phase, at a size no larger than your largest proven funded account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 77,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -54953,7 +56102,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 68,
+          "line": 69,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55073,7 +56222,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 668,
+          "line": 698,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -55137,6 +56286,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8f1d553058b8d032",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مرحلهٔ فاند",
+      "en": "Funded stage",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 22,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -55260,7 +56429,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 619,
+          "line": 649,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -55714,7 +56883,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 58,
+          "line": 59,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56109,6 +57278,26 @@
       ]
     },
     {
+      "key": "react.910fb711d99a94e3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نام کامل مطابق مدرک هویتی",
+      "en": "Full name as on your identity document",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 50,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.9112798a17e1d4a4",
       "namespace": "react",
       "area": "Global Content",
@@ -56355,7 +57544,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 82,
+          "line": 83,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56636,7 +57825,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 645,
+          "line": 675,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -57016,7 +58205,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 648,
+          "line": 678,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -57047,6 +58236,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.939c20302ee28086",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید یا رد، همیشه با دلیل.",
+      "en": "Approval or rejection, always with a reason.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 32,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -57143,7 +58352,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 720,
+          "line": 750,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -57185,6 +58394,26 @@
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 47,
           "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.9451da28be6fc04a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید نشد.",
+      "en": "Not approved.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 70,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -57750,7 +58979,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 56,
+          "line": 57,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57810,7 +59039,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 510,
+          "line": 540,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -57873,6 +59102,26 @@
           "line": 16,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.96330d4472d018ec",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حجم فایل بیش از حد مجاز است.",
+      "en": "The file is too large.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 88,
+          "page": "migration",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -58070,21 +59319,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 564,
+          "line": 594,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 609,
+          "line": 639,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 619,
+          "line": 649,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58431,7 +59680,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 668,
+          "line": 698,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58953,7 +60202,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 85,
+          "line": 88,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -59042,6 +60291,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 304,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.98c63d12aea39858",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خرید با مجوز مهاجرت",
+      "en": "Buy with my migration pass",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 73,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -60115,7 +61384,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 539,
+          "line": 569,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -60569,7 +61838,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 539,
+          "line": 569,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -61639,7 +62908,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 105,
+          "line": 113,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61926,7 +63195,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 356,
+          "line": 383,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -61993,7 +63262,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 726,
+          "line": 756,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62428,7 +63697,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 708,
+          "line": 738,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62883,6 +64152,26 @@
       ]
     },
     {
+      "key": "react.a27a2a5af383bb96",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خیر. هر نفر یک بار. اگر درخواستی رد شود می‌توانی با مدارک کامل‌تر دوباره درخواست بدهی.",
+      "en": "No. One migration per person. If a request is rejected you may apply again with better evidence.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 78,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a2872119ed5129c9",
       "namespace": "react",
       "area": "Global Content",
@@ -63146,6 +64435,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a35f1bcae9db88ec",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید شد. مجوز یک‌بارمصرف تو آماده است.",
+      "en": "Approved. Your single-use pass is ready.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 69,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -63896,7 +65205,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 636,
+          "line": 666,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -64134,6 +65443,26 @@
       ]
     },
     {
+      "key": "react.a5a0b65bd0f009cd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این نوع فایل پذیرفته نمی‌شود.",
+      "en": "That file type is not accepted.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 87,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a5a0e843f1f19c67",
       "namespace": "react",
       "area": "Website",
@@ -64349,6 +65678,26 @@
           "line": 109,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a63414d9a26e30a3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال بررسی مجوز مهاجرت…",
+      "en": "Checking your migration pass…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 486,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         }
       ]
@@ -65015,7 +66364,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 594,
+          "line": 624,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -65846,7 +67195,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 670,
+          "line": 700,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66214,7 +67563,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 689,
+          "line": 719,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66334,7 +67683,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 635,
+          "line": 665,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66354,7 +67703,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 468,
+          "line": 498,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66394,7 +67743,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 648,
+          "line": 678,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66749,7 +68098,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 462,
+          "line": 492,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66851,7 +68200,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 500,
+          "line": 530,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -67394,6 +68743,26 @@
       ]
     },
     {
+      "key": "react.ae097c649e10cd6c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تو قبلاً یک بار مهاجرت کرده‌ای.",
+      "en": "You have already migrated once.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 83,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ae1d8d2257667118",
       "namespace": "react",
       "area": "Global Content",
@@ -67508,6 +68877,26 @@
           "component": "apps/web-react/src/features/referral/Referral.tsx",
           "line": 176,
           "page": "referral",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ae58e7f35fe2a3bd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هر اندازهٔ پلن",
+      "en": "Any size of the plan",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 27,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -67856,6 +69245,26 @@
           "line": 375,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.af276f7b581d1f75",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قبولی در ارزیابی",
+      "en": "To pass the evaluation",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 25,
+          "page": "migration",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -68270,10 +69679,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 621,
+          "line": 651,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.aff69171f9dd9311",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "${have} از ${need} برداشت در ${m} ماه اخیر",
+      "en": "${have} of ${need} payouts in the last ${m} months",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 54,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -68610,7 +70039,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 100,
+          "line": 103,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -68801,6 +70230,26 @@
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b15123ccb848973e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیر مهاجرت: قیمت عادی، شروع از مرحلهٔ فاند، حداکثر ${size}.",
+      "en": "Migration path: normal price, starts at the funded stage, up to ${size}.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 485,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -69137,7 +70586,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 702,
+          "line": 732,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -69286,6 +70735,26 @@
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 47,
           "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b2b3e6926b6af2c2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خیر. قیمت عادی پلن را می‌پردازی؛ از ارزیابی عبور می‌کنی و با قوانین عادی مرحلهٔ فاند شروع می‌کنی.",
+      "en": "No. You pay the normal plan price; you skip the evaluation and start with the plan’s normal funded rules.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 76,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -69612,7 +71081,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 83,
+          "line": 84,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70695,7 +72164,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 72,
+          "line": 73,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72282,6 +73751,26 @@
       ]
     },
     {
+      "key": "react.bb22c640cdf42a36",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدارکی که شرکت ارائه می‌دهد",
+      "en": "Evidence the firm provides",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 42,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.bb28debb1b2c064b",
       "namespace": "react",
       "area": "Website",
@@ -73101,6 +74590,13 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 79,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 77,
           "page": "tournament",
@@ -73264,6 +74760,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 106,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.bdf34f2edd4858f8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "درخواست",
+      "en": "Request",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 29,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -73518,6 +75034,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 36,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.becd06cd676f8c0f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازبین همهٔ موارد و هویت تو را بررسی می‌کند.",
+      "en": "A reviewer checks every item and your identity.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 31,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -73956,7 +75492,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 504,
+          "line": 534,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -73996,7 +75532,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 75,
+          "line": 76,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74537,7 +76073,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 694,
+          "line": 724,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -75364,6 +76900,13 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 31,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -76123,6 +77666,26 @@
       ]
     },
     {
+      "key": "react.c6275bff508a79db",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "PDF دارای اسکریپت یا فایل جاسازی‌شده پذیرفته نمی‌شود.",
+      "en": "PDFs with scripts or embedded files are not accepted.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 88,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c62a030bdbef5599",
       "namespace": "react",
       "area": "Website",
@@ -76182,7 +77745,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 60,
+          "line": 61,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76292,6 +77855,13 @@
           "line": 21,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 109,
+          "page": "navigation",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -76429,7 +77999,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 495,
+          "line": 525,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -76680,6 +78250,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c80eebfddf31bf57",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیر مهاجرت",
+      "en": "Migration path",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 21,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -77318,7 +78908,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 71,
+          "line": 72,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77511,8 +79101,15 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 48,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 448,
+          "line": 475,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -77655,6 +79252,26 @@
       ]
     },
     {
+      "key": "react.ca6d6323d3f73cdf",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیر مهاجرت در صفحهٔ خرید از مجوز یک‌بارمصرف تو استفاده می‌کند.",
+      "en": "Checkout’s Migration path uses your single-use pass.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 33,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ca84126f149b2a9f",
       "namespace": "react",
       "area": "Website",
@@ -77756,6 +79373,26 @@
           "component": "apps/web-react/src/features/company/aboutContent.ts",
           "line": 55,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.cad52ee92ff0c807",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیر عادی",
+      "en": "Normal path",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 21,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -79000,7 +80637,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 716,
+          "line": 746,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -79328,6 +80965,26 @@
       ]
     },
     {
+      "key": "react.cf3901d21a7cb012",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فهرست بررسی",
+      "en": "Checklist",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 52,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.cf47a57eb23fdaf6",
       "namespace": "react",
       "area": "Website",
@@ -79447,7 +81104,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 530,
+          "line": 560,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -79594,7 +81251,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 473,
+          "line": 503,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -79720,6 +81377,13 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 32,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/partners/shared.tsx",
           "line": 27,
           "page": "partners",
@@ -79741,7 +81405,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 660,
+          "line": 690,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -80122,14 +81786,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 13,
+          "line": 17,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 57,
+          "line": 58,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80531,6 +82195,26 @@
       ]
     },
     {
+      "key": "react.d1aa31089bdcd442",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مهاجرت تو",
+      "en": "Your migration",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 45,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d1aff24cb9f0948e",
       "namespace": "react",
       "area": "Website",
@@ -80730,7 +82414,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 66,
+          "line": 67,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80994,6 +82678,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.d3375825b6e75dd1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "به‌صورت خودکار تأیید نشد",
+      "en": "not verified automatically",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 64,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -81410,7 +83114,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 441,
+          "line": 468,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -81890,7 +83594,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 431,
+          "line": 458,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -81993,7 +83697,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 63,
+          "line": 64,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82033,7 +83737,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 717,
+          "line": 747,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -82194,7 +83898,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 654,
+          "line": 684,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -82361,7 +84065,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 316,
+          "line": 342,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -82669,7 +84373,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 70,
+          "line": 71,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82689,7 +84393,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 722,
+          "line": 752,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -83098,7 +84802,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 67,
+          "line": 68,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83425,36 +85129,43 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 27,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 478,
+          "line": 508,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 526,
+          "line": 556,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 528,
+          "line": 558,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 590,
+          "line": 620,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 706,
+          "line": 736,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -84169,7 +85880,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 81,
+          "line": 82,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84211,6 +85922,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 471,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.dad33674706b5654",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فیلم صفحه از ورود زنده که حساب و سابقهٔ برداشت را نشان دهد",
+      "en": "A screen recording of a live login showing the account and payout history",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 38,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -84477,7 +86208,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 544,
+          "line": 574,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -84521,6 +86252,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.db9a37ee157a89a2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "روی زنجیره تأیید شد",
+      "en": "verified on-chain",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 64,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -84831,14 +86582,14 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 425,
+          "line": 452,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 429,
+          "line": 456,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -85142,6 +86893,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.dd499bef2549aa31",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فایل (PDF، PNG، JPEG، WebP تا ۱۰ مگابایت؛ MP4 یا WebM تا ۴۰ مگابایت)",
+      "en": "File (PDF, PNG, JPEG, WebP up to 10 MB; MP4 or WebM up to 40 MB)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 59,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -86560,7 +88331,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 514,
+          "line": 544,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -86644,6 +88415,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e18669612edab93b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افزودن",
+      "en": "Add",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 63,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -87088,6 +88879,26 @@
       ]
     },
     {
+      "key": "react.e2de3feda57603e1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نام کامل را وارد کن.",
+      "en": "Enter your full name.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 83,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e2e95f7e1e83df58",
       "namespace": "react",
       "area": "Global Content",
@@ -87327,7 +89138,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 651,
+          "line": 681,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -87981,7 +89792,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 661,
+          "line": 691,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -88201,7 +90012,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 719,
+          "line": 749,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -88589,6 +90400,26 @@
       ]
     },
     {
+      "key": "react.e62c70d9365ca1e9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لینک تأیید گواهی (https)",
+      "en": "Certificate verification link (https)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 62,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e636fcafd80b695b",
       "namespace": "react",
       "area": "Website",
@@ -88761,7 +90592,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 61,
+          "line": 62,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89230,6 +91061,26 @@
       ]
     },
     {
+      "key": "react.e8226edcc3977f3e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدرک هویتی با نامی مطابق مدارک شرکت (KYC)",
+      "en": "An identity document whose name matches the firm’s documents (KYC)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 39,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e830dd0eb7643e5a",
       "namespace": "react",
       "area": "Global Content",
@@ -89459,14 +91310,21 @@
     {
       "key": "react.e8d2a7421fba10e0",
       "namespace": "react",
-      "area": "Global Content",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "نوع",
       "en": "Type",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 55,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
           "line": 543,
@@ -89629,14 +91487,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 12,
+          "line": 18,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 92,
+          "line": 95,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89656,7 +91514,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 577,
+          "line": 607,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90661,11 +92519,18 @@
       "en": "Transaction hash",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 62,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 713,
+          "line": 743,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91187,6 +93052,26 @@
       ]
     },
     {
+      "key": "react.eda1f14b101f3e9f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "روند کار",
+      "en": "How it works",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 19,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.edafdbe716984f6f",
       "namespace": "react",
       "area": "Website",
@@ -91359,7 +93244,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 118,
+          "line": 121,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -91567,8 +93452,15 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 66,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 601,
+          "line": 631,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91732,6 +93624,26 @@
       ]
     },
     {
+      "key": "react.eed50dd53d360625",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دو راه تا حساب فاندشده",
+      "en": "Two ways to a funded account",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 20,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.eedad7223c11a2ba",
       "namespace": "react",
       "area": "User Dashboard",
@@ -91774,14 +93686,21 @@
     {
       "key": "react.ef02c3611fb5c5d5",
       "namespace": "react",
-      "area": "Global Content",
+      "area": "Website",
       "owner": "Content editor",
       "fa": "حذف",
       "en": "Remove",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 63,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
           "line": 115,
@@ -92424,7 +94343,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 659,
+          "line": 689,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -92758,7 +94677,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 107,
+          "line": 115,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93126,6 +95045,26 @@
       ]
     },
     {
+      "key": "react.f29b55fae6b1f80c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تا بزرگ‌ترین حساب فاندشدهٔ اثبات‌شده",
+      "en": "Up to your largest proven funded size",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 27,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f2b2a69c3f10f642",
       "namespace": "react",
       "area": "Website",
@@ -93298,7 +95237,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 704,
+          "line": 734,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -93358,7 +95297,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 718,
+          "line": 748,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -93667,6 +95606,33 @@
       ]
     },
     {
+      "key": "react.f4126dc7827e7377",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بارگذاری",
+      "en": "Upload",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 30,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 60,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f4188d2545580871",
       "namespace": "react",
       "area": "Global Content",
@@ -93946,7 +95912,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 635,
+          "line": 665,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -94380,7 +96346,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 431,
+          "line": 458,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -94887,7 +96853,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 575,
+          "line": 605,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -95227,7 +97193,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 426,
+          "line": 453,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -95387,7 +97353,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 659,
+          "line": 689,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -95407,7 +97373,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 431,
+          "line": 458,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -95567,7 +97533,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 457,
+          "line": 487,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -95902,7 +97868,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 69,
+          "line": 70,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -96190,7 +98156,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 727,
+          "line": 757,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -96310,7 +98276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 629,
+          "line": 659,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -96666,7 +98632,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 116,
+          "line": 119,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -97274,6 +99240,26 @@
       ]
     },
     {
+      "key": "react.fd7f6860c7e53c98",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لینک یا QR تأیید گواهی برداشت در سایت شرکت",
+      "en": "Payout certificate verification links or QR codes on the firm’s site",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 35,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.fd857d1414af0aa8",
       "namespace": "react",
       "area": "Website",
@@ -97505,6 +99491,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.fddee3391cdb18b5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تاریخ برداشت را وارد کن.",
+      "en": "Enter the payout date.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 84,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -98017,6 +100023,26 @@
       ]
     },
     {
+      "key": "react.ff37f2401f9ebe9c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سایت رسمی",
+      "en": "Official site",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 42,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ff39b2cec61d9aea",
       "namespace": "react",
       "area": "Global Content",
@@ -98157,6 +100183,26 @@
       ]
     },
     {
+      "key": "react.ff945df8aff12aa4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرکت‌های پذیرفته‌شده",
+      "en": "Accepted firms",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 41,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ffbd01a9629c8903",
       "namespace": "react",
       "area": "Global Content",
@@ -98211,6 +100257,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 336,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ffe7922efa95c1b4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مبلغ (دلار، اختیاری)",
+      "en": "Amount (USD, optional)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 58,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -98387,6 +100453,38 @@
       "expression": "pick(locale, key, en)"
     },
     {
+      "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+      "line": 122,
+      "page": "migration",
+      "route": "/:locale/*",
+      "reason": "dynamic-pair",
+      "expression": "pickFormat(locale, c.rowNeedsM.fa, c.rowNeedsM.en, { n: num(rules.minPayouts), m: num(rules.windowMonths) })"
+    },
+    {
+      "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+      "line": 138,
+      "page": "migration",
+      "route": "/:locale/*",
+      "reason": "dynamic-pair",
+      "expression": "pickFormat(locale, c.privacy.fa, c.privacy.en, { d: num(rules.retentionDays) })"
+    },
+    {
+      "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+      "line": 230,
+      "page": "migration",
+      "route": "/:locale/*",
+      "reason": "dynamic-pair",
+      "expression": "pickFormat(locale, c.passLine.fa, c.passLine.en, { plans: p.plans.join(' / '), size: money(p.maxSizeUsd), date: date(p.expiresAt) })"
+    },
+    {
+      "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+      "line": 261,
+      "page": "migration",
+      "route": "/:locale/*",
+      "reason": "dynamic-pair",
+      "expression": "pickFormat(locale, c.cPayouts.fa, c.cPayouts.en, { have: new Intl.NumberFormat(intlLocale(locale)).format(list.payoutCount), need: new Intl.NumberFormat(intlLocale(locale)).format(list.minPayouts), m:"
+    },
+    {
       "component": "apps/web-react/src/features/partners/Coach.tsx",
       "line": 37,
       "page": "partners",
@@ -98396,7 +100494,7 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 131,
+      "line": 137,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
@@ -98847,7 +100945,7 @@
     },
     {
       "component": "apps/web-react/src/features/home/Home.tsx",
-      "line": 83,
+      "line": 86,
       "page": "home",
       "route": "/:locale/home",
       "reason": "language-neutral-brand-or-identifier",
@@ -98903,7 +101001,7 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 130,
+      "line": 136,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "helper-wrapper-definition",

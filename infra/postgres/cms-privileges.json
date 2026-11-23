@@ -437,6 +437,42 @@
    "protected": true,
    "cms": "none"
   },
+  "migration_events": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "migration_evidence": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "migration_firms": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "migration_passes": {
+   "domain": "commerce",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "migration_requests": {
+   "domain": "application",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
+  "migration_settings": {
+   "domain": "application",
+   "protected": false,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
   "notification_relay_state": {
    "domain": "application",
    "protected": false,

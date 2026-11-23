@@ -46,6 +46,7 @@ Plain values are in `stack.json`. Store the secrets listed below in the Liara ap
 | `REGION_SYNC_ACTIVE_KID` | web, worker, Render | The key id this side signs with |
 | `REGION_SYNC_PEER_URL` | Iran: `https://openfi.cloud`. Render: `https://openfi.live` (the canonical origins; never an alias) | The worker pushes here. Both sides use HTTPS in production. `/sync/` is never redirected on any host |
 | `DB_CONNECTION_STRING`, `KEY`, `SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `PUBLIC_URL` | cms | As for Render's Directus |
+| `MIGRATION_STORAGE_ENDPOINT`, `MIGRATION_STORAGE_BUCKET`, `MIGRATION_STORAGE_REGION`, `MIGRATION_STORAGE_ACCESS_KEY_ID`, `MIGRATION_STORAGE_SECRET_ACCESS_KEY`, `MIGRATION_STORAGE_PATH_STYLE` | web | Optional. A private bucket **in Iran** (for example Liara object storage, path style) for Migration to Openfund evidence from IRAN users; their requests and files stay in this runtime ([ADR 0051](../decisions/0051-migration-to-openfund.md)). Unset: the form says "opening soon" |
 | `LIARA_API_TOKEN` | GitHub environments `liara-iran-runtime-staging` / `liara-iran-runtime` | CI deploy only |
 
 GitHub environment variables: `LIARA_RUNTIME_WEB_APP`, `LIARA_RUNTIME_WORKER_APP`, `LIARA_RUNTIME_PUBLIC_URL` (values must equal the manifest), and for production `OPENFUND_GLOBAL_URL` (the Render origin the release is compared with).
