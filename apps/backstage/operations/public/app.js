@@ -1,5 +1,6 @@
 import { labels } from './strings.js'
 import { createMarketing } from './marketing.js'
+import { createGuides } from './guides.js'
 import { arrow } from './dir-arrow.js'
 
 let locale = localStorage.getItem('backstage-language') === 'fa' ? 'fa' : 'en'
@@ -129,7 +130,7 @@ const groups = [
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
   ['operations', ['audit', 'risk', 'search', 'notifications', 'system']],
   ['contentGroup', ['content']],
-  ['marketing', ['campaigns', 'announcements']],
+  ['marketing', ['campaigns', 'announcements', 'guides']],
 ]
 /* some section keys collide with existing table labels */
 const sectionLabels = { audit: 'auditViewer', search: 'searchx' }
@@ -1211,8 +1212,10 @@ async function contentWorkspace(main) {
   await contentExtras(main, catalog)
 }
 
-let marketingModule
+let marketingModule, guidesModule
 const marketing = () => (marketingModule ??= createMarketing({ el, t, labels, button, field, badge, technical, number, date, dialog, announce,
+  render: () => render(), csrf: () => session?.csrf ?? '' }))
+const guidesUi = () => (guidesModule ??= createGuides({ el, t, labels, button, field, badge, technical, number, dialog, announce,
   render: () => render(), csrf: () => session?.csrf ?? '' }))
 
 async function render() {
@@ -1231,6 +1234,7 @@ async function render() {
   try {
     if (page === 'dashboard') await dashboard(contents)
     else if (page === 'content') await contentWorkspace(contents)
+    else if (page === 'guides') await guidesUi().workspace(contents)
     else if (page === 'campaigns' || page === 'announcements') await marketing().workspace(contents, page === 'campaigns' ? 'modal' : 'announcement_bar')
     else if (page === 'system') {
       const data = await api('system')

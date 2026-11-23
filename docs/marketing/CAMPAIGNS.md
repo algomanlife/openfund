@@ -74,3 +74,32 @@ built-in fallback; other languages show nothing.
 
 After deployment, run the CMS bootstrap and `register_backstage_editor.py`
 against production Directus (owner step) before using Marketing.
+
+## Terminal guide
+
+**Backstage → Marketing → Terminal guide** manages the educational guide on
+the trading terminal ([ADR 0056](../decisions/0056-terminal-guide.md)). It is
+the only popup the terminal shows; promotional popups stay banned there.
+
+- **Steps.** Video (MP4 H.264 and WebM, up to 8 MB each, plus a poster) or an
+  image (up to 3 MB). Each step has a title and body in Persian and English;
+  other languages show the English copy. Subtitles are WebVTT files, one for
+  Persian and one for English. Use Move up / Move down to reorder steps.
+  Removing a step archives it.
+- **When it shows.** Every time someone enters the terminal, unless they
+  ticked "Don't show again" for this version. The terminal menu's **Guide**
+  entry reopens it at any time.
+- **"Don't show again".** A cookie that holds only the guide version.
+  Its lifetime is set per guide (default 365 days). **Publish new version**
+  shows the guide again to everyone.
+- **Activate / Deactivate** and **Publish / Unpublish** work as for campaigns
+  and ask for the owner password.
+- **Counters.** Shown, completed and "don't show again" per version. They are
+  anonymous daily counts.
+- **Seeded guide.** `terminal-basics` has two steps: "Connect your wallet and
+  activate your account for trading" and "Find a market and open a position".
+  Both videos were recorded from Openfund's own terminal with
+  `scripts/guides/record-terminal-guide.mjs`, using a local build, demo data
+  and a masked test wallet. To re-record, run the script against a local
+  build with a disposable database. The output replaces the files in
+  `apps/web-react/public/assets/guides/`.

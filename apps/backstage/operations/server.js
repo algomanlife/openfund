@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { validVerifier, verifyPassword } from './password.js'
 import { createContentApi } from './content.js'
 import { createCampaignsApi } from './campaigns.js'
+import { createGuidesApi } from './guides.js'
 
 const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
 const payoutHash = /^0x[a-f0-9]{64}$/i
@@ -19,6 +20,7 @@ const staticFiles = {
   '/app.js': ['public/app.js', 'application/javascript; charset=utf-8'],
   '/strings.js': ['public/strings.js', 'application/javascript; charset=utf-8'],
   '/marketing.js': ['public/marketing.js', 'application/javascript; charset=utf-8'],
+  '/guides.js': ['public/guides.js', 'application/javascript; charset=utf-8'],
   '/style.css': ['public/style.css', 'text/css; charset=utf-8'],
   '/dir-arrow.css': ['public/dir-arrow.css', 'text/css; charset=utf-8'],
   '/dir-arrow.js': ['public/dir-arrow.js', 'application/javascript; charset=utf-8'],
@@ -421,6 +423,7 @@ async function json(req, limit = 8192) {
 export function createBackstage(config, { now = Date.now, audit = event => console.log(JSON.stringify(event)), contentFetch } = {}) {
   const content = createContentApi({ cms: config.cms, token: config.contentToken, ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   /* `backend` is a hoisted function declaration below */
+  const guides = createGuidesApi({ cms: config.cms, token: config.contentToken, backend: (...a) => backend(...a), ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   const campaigns = createCampaignsApi({ cms: config.cms, token: config.contentToken, backend: (...a) => backend(...a), ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   const secure = config.origin.startsWith('https:')
   const cookieName = secure ? '__Host-openfund-backstage' : 'openfund-backstage-local'
@@ -588,6 +591,36 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
           return send(res, 200, { ok: true, id })
         } catch (error) {
           log('campaigns.' + action, 'denied', String(write.target))
+          throw error
+        }
+      }
+
+      /* Marketing: the terminal guide (guides.js, ADR 0056). Same gate as
+         campaigns: reads need the owner session; writes also need CSRF and
+         password re-entry in the GLOBAL region. */
+      if (path.startsWith('/api/guides/')) {
+        const action = path.slice('/api/guides/'.length)
+        if (req.method === 'GET') {
+          if (action === 'list') return send(res, 200, { rows: await guides.list() })
+          if (action === 'stats') return send(res, 200, await guides.stats(correlationId))
+          throw fail(404, 'not_found')
+        }
+        if (action === 'upload') {
+          const body = await json(req, 11.5 * 1024 * 1024)
+          const file = await guides.upload(body)
+          log('guides.upload', 'success', file.id)
+          return send(res, 200, file)
+        }
+        if (!['save', 'state'].includes(action)) throw fail(404, 'not_found')
+        const body = await json(req, 65536)
+        const write = action === 'save' ? await guides.prepareSave(body) : await guides.prepareState(body)
+        try {
+          await confirmOwner(current, body.password, correlationId)
+          const id = await write.apply()
+          log('guides.' + action, 'success', String(id))
+          return send(res, 200, { ok: true, id })
+        } catch (error) {
+          log('guides.' + action, 'denied', String(write.target))
           throw error
         }
       }

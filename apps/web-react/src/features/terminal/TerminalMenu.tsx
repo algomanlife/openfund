@@ -9,6 +9,7 @@ import { primary, route, type Locale, type Product } from './model'
 import { dirOf, pick, pickFormat } from '../../i18n/locales'
 import { BRAND_WORDMARK } from '../../brand/wordmark'
 import { BrandWordmark } from '../../brand/BrandWordmark'
+import { openGuide } from '../guide/guide'
 
 /**
  * Terminal compact navigation: the menu trigger and its off-canvas drawer.
@@ -53,6 +54,9 @@ function TerminalMenu({ locale, product, page, accountsHref, accountsSection, pa
           {primary[product].map(([id, fa, en]) => item(id, route(locale, product, id), id === 'trade' ? t('معاملات', 'Trading') : t(fa, en), current(id)))}
           {item('journal', route(locale, product, 'journal'), t('ژورنال', 'Journal'), current('journal'))}
           {item('accounts', accountsHref, t('حساب‌ها', 'Accounts'), accountsSection)}
+          {/* reopens the terminal guide at any time (features/guide) */}
+          <li><button type="button" className="mega-tile of-guide-entry" onClick={() => { close(); openGuide() }}>
+            <span className="mega-icon"><MegaIcon name="learn" /></span><span className="mega-text"><b>{t('راهنما', 'Guide')}</b></span></button></li>
         </ul>
         {challenges && <section className="of-drawer-subgroup of-terminal-challenges" aria-labelledby="terminal-challenges-heading">
           <h4 id="terminal-challenges-heading">{challenges.label}</h4>
