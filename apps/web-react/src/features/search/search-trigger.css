@@ -1,30 +1,29 @@
 /* Site search trigger beside the theme toggle (website, terminal, mobile
    headers): the same square box as the neighbouring header controls. */
 .of-search-trigger {
-  box-sizing: border-box; flex: 0 0 auto;
+  box-sizing: border-box; flex: 0 0 auto; position: relative;
   display: inline-grid; place-items: center;
-  width: var(--hc-h, 44px); height: var(--hc-h, 44px); min-width: 44px; min-height: 44px;
+  /* one square box: the header's own control height (--hc-h, set on every
+     header in styles/header-controls.css); 36 px outside a header */
+  width: var(--hc-h, 36px); height: var(--hc-h, 36px);
+  min-width: var(--hc-h, 36px); min-height: var(--hc-h, 36px); max-height: var(--hc-h, 36px);
   margin: 0; padding: 0;
-  border: 1px solid var(--hc-line, var(--line, #ffffff24)); border-radius: var(--hc-r, 12px);
+  border: 1px solid var(--hc-line, var(--line, #ffffff24)); border-radius: var(--hc-r, 6px);
   background: transparent; color: var(--white, #fff); cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.of-search-trigger svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.of-search-trigger svg { display: block; width: var(--hc-icon, 16px); height: var(--hc-icon, 16px); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .of-search-trigger:hover { border-color: #82e7bd88; }
 html[data-theme='light'] .of-search-trigger:hover { border-color: #12965D88; }
 .of-search-trigger:focus-visible { outline: 2px solid var(--mint, #82e7bd); outline-offset: 2px; }
-/* terminal header: the same height as its dense neighbours (mouse) … */
+/* terminal header: never under a neighbour's box when long (ru) labels
+   crowd it; the size comes from the terminal's --hc-h like its neighbours */
 :root .of-terminal-actions button.of-search-trigger {
-  flex: 0 0 auto; width: var(--hc-h, 30px); height: var(--hc-h, 30px); min-width: 28px; min-height: 28px; padding: 0;
-  /* never under a neighbour's box when long (ru) labels crowd the header */
-  position: relative; z-index: 1; margin-inline: 2px;
-  border-radius: var(--hc-r, 8px); background: transparent; color: inherit; box-shadow: none; transform: none;
+  z-index: 1; margin-inline: 2px; padding: 0;
+  background: transparent; color: inherit; box-shadow: none; transform: none;
 }
-:root .of-terminal-compact .of-terminal-actions button.of-search-trigger { width: 28px; height: 28px; }
-/* … and a 44 px target on touch screens everywhere */
-@media (pointer: coarse) {
-  :root button.of-search-trigger, :root .of-terminal-actions button.of-search-trigger { min-width: 44px; min-height: 44px; }
-}
+/* 44 px touch target on coarse pointers: an invisible hit area
+   (styles/header-controls.css), never a larger visual box */
 /* Smallest phones (≤360 px): the home header also drops its "enter terminal"
    button, as the information pages already do below 700 px, so the search
    trigger fits beside the theme switch without overflow */
