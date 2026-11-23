@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "groups": [
     { "id": "workspace", "title": "Trading workspace", "icon": "candles", "href": "docs/trading/TERMINAL.md",
-      "items": ["Dashboard, accounts, balances and challenge progress", "Market, limit and stop orders with risk preview", "Chart protection: SL/TP handles and P/L zones", "Collateral, quantity and lot sizing conventions", "Funding and Details tabs with our own hourly funding history"] },
+      "items": ["Dashboard, accounts, balances and challenge progress", "Market, limit and stop orders with risk preview", "Chart protection: SL/TP handles and P/L zones", "Collateral, quantity and lot sizing conventions", "Funding and Details tabs with our own hourly funding history", "Terminal guide with recorded walkthroughs"] },
     { "id": "journal", "title": "Journal and analytics", "icon": "notebook", "href": "docs/trading/JOURNAL_METRICS.md",
       "items": ["Daily journal, notebook, playbooks and missed trades", "Net PnL, win rate, profit factor, drawdown", "Edge Score v2 and calendar performance", "Account-scoped notes with safe import"] },
     { "id": "charts", "title": "Charts and Pine indicators", "icon": "layers", "href": "docs/trading/INDICATORS.md",
