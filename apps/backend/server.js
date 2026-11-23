@@ -402,6 +402,7 @@ const AUTH_CHAINS = [arbitrum]
 const clients = new Map(AUTH_CHAINS.map(chain => [chain.id, createClient({ chain, transport: http(process.env.AUTH_RPC_URL || undefined, { timeout: 5000, retryCount: 0 }) })]))
 
 import { referralRoutes, attributeReferral, sanitizeCode } from './referrals.js'
+import { siteSearchRoutes, siteSearchAdminRoutes, pruneSearchStats } from './site-search.js'
 
 /* =================  AUTH  ================= */
 
@@ -941,7 +942,11 @@ app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, 
 app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, runtime, adminAuth, adminActor, syncWorker, audit, health: regionalHealth }))
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
 /* same-origin public CMS content with a last-known-good snapshot (primary on IRAN, fallback on GLOBAL) */
-app.use('/cms', limit(240), cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) }))
+const cmsSnapshot = cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) })
+app.use('/cms', limit(240), cmsSnapshot)
+/* site search: published-only index per region (IRAN builds its own) and anonymous counts */
+app.use(siteSearchRoutes({ pool, cms: cmsSnapshot, marketData, limit }))
+app.use('/admin/search', siteSearchAdminRoutes({ pool }))
 /* terminal Funding and Details tabs: documented Gains reads plus our own hourly funding samples */
 app.use(marketFundingRoutes({ pool, marketData, limit }))
 app.use('/admin/backstage', backstageReads({ pool }))
@@ -1165,6 +1170,9 @@ nonceSweep.unref()
 let shuttingDown=false
 /* bounded graceful shutdown: idle keep-alive sockets close at once; if anything still holds the
    process after 10 s (a long-lived peer or proxy connection), every socket is closed and it exits */
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(migrationPurgeTimer);clearInterval(tournamentTimer);clearInterval(fundingSampleTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+/* site search analytics: twelve-month retention, checked daily */
+const searchPruneTimer = setInterval(() => { pruneSearchStats(pool).catch(e => console.error('[search] prune', e.message)) }, 86_400_000)
+searchPruneTimer.unref()
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(searchPruneTimer);clearInterval(migrationPurgeTimer);clearInterval(tournamentTimer);clearInterval(fundingSampleTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

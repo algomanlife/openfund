@@ -38,6 +38,7 @@ export const EDITORIAL_ROUTES: readonly EditorialRoute[] = [
   { path: '/:locale/labs', view: 'labs', collections: site },
   { path: '/:locale/tournament/terms', view: 'tournament', collections: ['legal_documents', ...site] },
   { path: '/:locale/migrate', view: 'migrate', collections: site },
+  { path: '/:locale/search', view: 'search', collections: ['search_suggestions', 'search_synonyms', ...site] },
   { path: '/:locale/about', view: 'about', collections: site },
   { path: '/:locale/contact', view: 'contact', collections: ['site_settings', ...site] },
   { path: '/:locale/faq', view: 'faq', collections: ['faqs', 'faq_categories', ...site] },

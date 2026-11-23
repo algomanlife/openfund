@@ -68,6 +68,29 @@ const routes = {
   /* Migration to Openfund (migration.js, ADR 0051) */
   migrations: ['/admin/migration/requests', 'requests', ['status']],
   migrationFirms: ['/admin/migration/firms'],
+  /* site search analytics (site-search.js, ADR 0052); record 'export.csv' is the CSV */
+  siteSearch: ['/admin/search/analytics', null, ['from', 'to', 'locale', 'q']],
+}
+const SEARCH_FILTERS = { from: /^\d{4}-\d{2}-\d{2}$/, to: /^\d{4}-\d{2}-\d{2}$/, locale: /^(fa|en|ar|ru|zh-CN)$/, q: /^[^\u0000-\u001f]{1,80}$/u }
+const SEARCH_ROUTE = /^[a-z0-9][a-z0-9/-]{0,80}$/
+
+/** one-click "add synonym or suggestion" from the dashboard → a validated Directus item */
+export function siteSearchTerm(body) {
+  const clean = v => (typeof v === 'string' ? v.replace(/[\u0000-\u001f<>]/g, '').trim() : '')
+  if (body?.kind === 'synonym') {
+    const terms = [...new Set((Array.isArray(body.terms) ? body.terms : []).map(clean).filter(v => v && v.length <= 60))]
+    if (terms.length < 2 || terms.length > 20) throw fail(400, 'invalid_terms')
+    return ['/items/search_synonyms', { status: 'published', terms, note: clean(body.note).slice(0, 300) || null }]
+  }
+  if (body?.kind === 'suggestion') {
+    const route = clean(body.route)
+    if (!SEARCH_ROUTE.test(route)) throw fail(400, 'invalid_route')
+    const fa = clean(body.labelFa), en = clean(body.labelEn)
+    if (!fa || !en || fa.length > 80 || en.length > 80) throw fail(400, 'invalid_label')
+    return ['/items/search_suggestions', { status: 'published', sort: 100, route,
+      translations: [{ language_code: 'fa', label: fa }, { language_code: 'en', label: en }] }]
+  }
+  throw fail(400, 'invalid_request')
 }
 const tournamentSlug = /^[a-z0-9][a-z0-9-]{2,59}$/
 
@@ -432,7 +455,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
     execution: readiness.value?.marketData?.execution ?? null, version: version.value?.version, commit: version.value?.commit,
   })
 
-  async function backend(path, method = 'GET', body, correlationId) {
+  async function backend(path, method = 'GET', body, correlationId, { text = false } = {}) {
     const target = new URL(config.backend)
     const queryStart = path.indexOf('?')
     // Assign URL components independently so operation data cannot change the origin.
@@ -460,7 +483,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         await res.body?.cancel()
         throw fail(res.status === 429 ? 429 : 502, 'backend_rejected')
       }
-      return await res.json()
+      return text ? await res.text() : await res.json()
     } catch (error) {
       if (error.status) throw error
       throw fail(502, 'backend_unavailable')
@@ -622,12 +645,39 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         res.writeHead(200, { 'Content-Type': type, 'Content-Length': bytes.length, 'Cache-Control': 'private, max-age=300', 'X-Content-Type-Options': 'nosniff' })
         return res.end(bytes)
       }
+      if (path === '/api/siteSearchTerms' && req.method === 'POST') {
+        const body = await json(req)
+        const [itemPath, item] = siteSearchTerm(body)
+        if (!config.contentToken) throw fail(409, 'content_read_only')
+        try {
+          await confirmOwner(current, body.password, correlationId)
+          const target = new URL(config.cms)
+          target.pathname = itemPath
+          const r = await fetch(target, { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(12_000),
+            headers: { Authorization: `Bearer ${config.contentToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(item) })
+          if (!r.ok) { await r.body?.cancel(); throw fail(502, 'cms_rejected') }
+          const created = (await r.json())?.data
+          log('siteSearch.' + body.kind, 'success', String(created?.id ?? ''))
+          return send(res, 200, { ok: true, id: created?.id ?? null })
+        } catch (error) {
+          log('siteSearch.' + body.kind, 'denied', '')
+          throw error
+        }
+      }
       const [, , section, record, extra] = path.split('/')
       /* write-only sections (notes, tags, challenge decisions) have no list route */
       const writeOnly = req.method === 'POST' && Object.hasOwn(operations, section)
       if (extra !== undefined || (!Object.hasOwn(routes, section) && !writeOnly)) throw fail(404, 'not_found')
       const [endpoint, list, filters] = routes[section] ?? []
       if (req.method === 'GET') {
+        if (section === 'siteSearch' && record !== undefined) {
+          if (record !== 'export.csv') throw fail(404, 'not_found')
+          const q = new URLSearchParams()
+          for (const [name, re] of Object.entries(SEARCH_FILTERS)) { const v = url.searchParams.get(name); if (v !== null && re.test(v)) q.set(name, v) }
+          const csv = await backend('/admin/search/export.csv?' + q, 'GET', undefined, correlationId, { text: true })
+          res.writeHead(200, { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="site-search.csv"', 'Cache-Control': 'no-store' })
+          return res.end(csv)
+        }
         if (section === 'support' && supportRef.test(record || ''))
           return send(res, 200, await backend(endpoint + '/' + encodeURIComponent(record), 'GET', undefined, correlationId))
         if (section === 'payments' && uuid.test(record || ''))

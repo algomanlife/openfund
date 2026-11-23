@@ -303,7 +303,8 @@ def main():
                  'faq_translations', 'faq_category_translations', 'legal_document_translations',
                  'footer_link_translations', 'terminal_section_translations',
                  'learning_path_translations', 'lesson_translations', 'glossary_term_translations',
-                 'tool_translations', 'referral_content_translations', 'trading_rule_translations']:
+                 'tool_translations', 'referral_content_translations', 'trading_rule_translations',
+                 'search_suggestion_translations']:
         if hide not in live_collections:
             continue
         cur = req('GET', f'{base}/collections/{hide}', token)['data']
@@ -956,6 +957,37 @@ def main():
     ensure_relation('governance_content_block_translations', 'governance_content_block_id', 'governance_content_blocks', one_field='translations')
     ensure_alias('governance_content_blocks', 'translations', None)
 
+    # ---------------- site search: synonyms and suggestions (ADR 0052) ------
+    # Edited in Backstage; published rows reach the search index of each region
+    # through the backend's CMS snapshot (IRAN builds its own index).
+    ensure_collection('search_synonyms', {'icon': 'sync_alt', 'display_template': '{{terms}}',
+        'note': 'Site search synonyms: each row is one group of words that find the same results'})
+    ensure_field('search_synonyms', 'terms', 'json',
+        meta={'interface': 'tags', 'required': True, 'note': 'Two to twenty words or short phrases, any language'}, schema={})
+    ensure_field('search_synonyms', 'note', 'text', meta={'interface': 'input', 'note': 'Why this group exists (editors only)'}, schema={})
+    ensure_field('search_synonyms', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_collection('search_suggestions', {'sort_field': 'sort', 'icon': 'lightbulb',
+        'note': 'Site search suggestions shown when a search finds nothing'})
+    ensure_field('search_suggestions', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    ensure_field('search_suggestions', 'route', 'string',
+        meta={'interface': 'input', 'required': True, 'options': {'placeholder': 'challenges'},
+              'note': 'Site path after the locale, for example challenges or learn/glossary', 'validation': {'route': {'_regex': '^[a-z0-9][a-z0-9/-]{0,80}$'}}},
+        schema={'is_nullable': False})
+    ensure_field('search_suggestions', 'status', 'string',
+        meta={'interface': 'select-dropdown', 'options': {'choices': [
+            {'text': 'Published', 'value': 'published'}, {'text': 'Draft', 'value': 'draft'}, {'text': 'Archived', 'value': 'archived'},
+        ]}, 'special': ['status']}, schema=STATUS_SCHEMA)
+    ensure_collection('search_suggestion_translations')
+    ensure_field('search_suggestion_translations', 'search_suggestion_id', 'integer',
+        meta={'interface': 'select-dropdown-m2o', 'special': ['m2o'], 'required': True}, schema={'is_nullable': False})
+    ensure_field('search_suggestion_translations', 'language_code', 'string', meta=dict(LANG_META), schema={'is_nullable': False})
+    ensure_field('search_suggestion_translations', 'label', 'text', meta={'interface': 'input', 'required': True}, schema={'is_nullable': False})
+    ensure_relation('search_suggestion_translations', 'search_suggestion_id', 'search_suggestions', one_field='translations')
+    ensure_alias('search_suggestions', 'translations', None)
+
     # ---------------- public (read-only) permissions ----------------------
     roles = req('GET', f'{base}/roles', token)['data']
     public = next((r for r in roles if r['name'] == 'Public'), None)
@@ -1013,6 +1045,9 @@ def main():
         ('whitepaper_dataset_translations', None),
         ('whitepaper_references', {'status': {'_eq': 'published'}}),
         ('whitepaper_reference_translations', None),
+        ('search_synonyms', {'status': {'_eq': 'published'}}),
+        ('search_suggestions', {'status': {'_eq': 'published'}}),
+        ('search_suggestion_translations', None),
         ('site_campaigns', {'_and': [{'status': {'_eq': 'published'}}, {'active': {'_eq': True}}]}),
         ('site_campaign_translations', None),
         ('directus_files', {'folder': {'_eq': campaign_media_folder}}),
@@ -1040,6 +1075,7 @@ def main():
         'whitepaper_dataset_translations': ('whitepaper_dataset_id', 'published'),
         'whitepaper_reference_translations': ('whitepaper_reference_id', 'published'),
         'site_campaign_translations': ('site_campaign_id', 'published'),
+        'search_suggestion_translations': ('search_suggestion_id', 'published'),
     }
     for coll, cond in wanted:
         if coll in translation_parents:

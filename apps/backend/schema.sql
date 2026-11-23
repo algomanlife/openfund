@@ -3226,6 +3226,22 @@ CREATE TABLE IF NOT EXISTS market_funding_samples (
 );
 CREATE INDEX IF NOT EXISTS idx_market_funding_samples_time ON market_funding_samples (sampled_at);
 
+-- ============================================================
+-- Site search analytics (ADR 0052). Aggregate counts per day, locale and
+-- masked normalized query only: no IP, wallet, user id, cookie or user agent.
+-- Retained for twelve months (site-search.js pruneSearchStats).
+-- ============================================================
+CREATE TABLE IF NOT EXISTS search_query_stats (
+  day       date    NOT NULL,
+  locale    text    NOT NULL CHECK (locale IN ('fa','en','ar','ru','zh-CN')),
+  query     text    NOT NULL CHECK (length(query) BETWEEN 1 AND 80),
+  searches  integer NOT NULL DEFAULT 0 CHECK (searches >= 0),
+  results   integer NOT NULL DEFAULT 0 CHECK (results >= 0 AND results <= searches),
+  clicks    integer NOT NULL DEFAULT 0 CHECK (clicks >= 0),
+  PRIMARY KEY (day, locale, query)
+);
+CREATE INDEX IF NOT EXISTS idx_search_query_stats_day ON search_query_stats (day);
+
 -- ==================================================================
 -- Funded-trader agreement (funded-agreement.js, ADR 0054). Additive.
 -- One signed acceptance per funded account: the wallet signs a fixed message

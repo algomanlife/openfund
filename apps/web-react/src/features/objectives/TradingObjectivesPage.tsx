@@ -100,7 +100,8 @@ export default function TradingObjectivesPage() {
   const [size, setSize] = useState(0)
   useEffect(() => {
     void apiFetch('/purchases/plans').then(r => {
-      const list: Plan[] = r.ok ? (r.data?.plans || []).filter((p: Plan) => !p.free && p.rules && p.accountSizesUsd?.length) : []
+      /* only plans the engine can evaluate (positive loss limits); anything else would read as 0% */
+      const list: Plan[] = r.ok ? (r.data?.plans || []).filter((p: Plan) => !p.free && p.rules && p.rules.dailyLossPct > 0 && p.rules.maxTotalLossPct > 0 && p.accountSizesUsd?.length) : []
       if (!list.length) { setPlans('error'); return }
       setPlans(list); setSlug(list[0].slug); setSize(list[0].accountSizesUsd.includes(100000) ? 100000 : list[0].accountSizesUsd[Math.floor(list[0].accountSizesUsd.length / 2)])
     }).catch(() => setPlans('error'))

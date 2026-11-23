@@ -20,7 +20,8 @@ const open = async (page, route) => {
 ;(async () => {
   const browser = await chromium.launch(); const errors = []
   const catalog = await (await fetch(`${BASE}/purchases/plans`)).json()
-  const plans = catalog.plans.filter(p => !p.free && p.rules)
+  /* the page's own filter: paid plans the engine can evaluate, with sizes */
+  const plans = catalog.plans.filter(p => !p.free && p.rules && p.rules.dailyLossPct > 0 && p.rules.maxTotalLossPct > 0 && p.accountSizesUsd?.length)
   try {
     for (const [locale, dir] of [['en', 'ltr'], ['fa', 'rtl'], ['ar', 'rtl'], ['ru', 'ltr'], ['zh-CN', 'ltr']]) {
       for (const theme of ['dark', 'light']) {
