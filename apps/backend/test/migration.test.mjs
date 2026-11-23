@@ -96,6 +96,14 @@ test('files are accepted by content, not by name: type, size and active PDF cont
   assert.throws(() => validateEvidenceFile(Buffer.from('MZ' + 'x'.repeat(100)), 'application/x-msdownload'), /file_type_not_accepted/)
   assert.throws(() => validateEvidenceFile(Buffer.from('%PDF-1.7 /OpenAction << /S /JavaScript /JS (app.alert(1)) >>'), 'application/pdf'), /file_active_content/)
   assert.throws(() => validateEvidenceFile(Buffer.concat([png, Buffer.alloc(11 * 1024 * 1024)]), 'image/png'), /file_too_large/)
+  /* inherited property names never resolve to a file type (CodeQL js/unvalidated-dynamic-method-call) */
+  for (const name of ['constructor', '__proto__', 'toString', 'hasOwnProperty']) {
+    assert.throws(() => validateEvidenceFile(png, name), /file_type_not_accepted/, name)
+  }
+  /* non-buffer bodies (an empty or parsed body) are refused, never measured */
+  assert.throws(() => validateEvidenceFile(['x'.repeat(32)], 'image/png'), /file_empty/)
+  assert.throws(() => validateEvidenceFile('x'.repeat(32), 'image/png'), /file_empty/)
+  assert.ok(Buffer.isBuffer(validateEvidenceFile(png, 'image/png').bytes))
 })
 
 test('the form says "opening soon" and stores nothing until storage is configured', async () => {
@@ -228,6 +236,9 @@ test('firms: the owner edits details and uploads a logo; the site serves it safe
   const logo = (bytes, contentType) => call('POST', `/admin/migration/firms/${id}/logo`, { admin: true, body: { contentType, dataBase64: bytes.toString('base64'), reason: 'logo provided by the firm' } })
   assert.equal((await logo(pdf, 'image/png')).data.error, 'file_type_mismatch')
   assert.equal((await logo(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'), 'image/svg+xml')).data.error, 'file_type_not_accepted', 'no SVG (script-capable)')
+  for (const contentType of ['constructor', '__proto__', 'toString']) {
+    assert.equal((await logo(png, contentType)).data.error, 'file_type_not_accepted', contentType)
+  }
   assert.equal((await logo(png, 'image/png')).status, 200)
   const firm = (await call('GET', '/migration/config')).data.firms.find(f => f.id === id)
   assert.match(firm.logoUrl, new RegExp(`^/migration/firms/${id}/logo\\?v=\\d+$`))

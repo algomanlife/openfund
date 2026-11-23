@@ -244,7 +244,7 @@ async function walletDisclosureFits(page){
     assert.deepEqual(hrefs, routes.map(route => `/${locale}/${route}`), prefix+' other-page '+group+' navigation');
    }
    check(prefix+' challenges banner leads to migration', await page.locator('#website-challenges a.mega-banner.is-flamingo').getAttribute('href') === `/${locale}/migrate`);
-   check(prefix+' mega menu banners', JSON.stringify(await page.locator('#website-economy a.mega-banner, #website-resources a.mega-banner').evaluateAll(l => l.map(a => a.getAttribute('href')))) === JSON.stringify([`/${locale}/governance`, `/${locale}/apps#desktop-builds`]));
+   check(prefix+' mega menu banners', JSON.stringify(await page.locator('#website-economy a.mega-banner, #website-resources a.mega-banner').evaluateAll(l => l.map(a => a.getAttribute('href')))) === JSON.stringify([`/${locale}/governance`, `/${locale}/whitepaper`, `/${locale}/apps#desktop-builds`]));
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));

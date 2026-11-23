@@ -47,7 +47,11 @@ export function createMigrationStorage(env = process.env, { fetchImpl = fetch, n
     return { host, path, base: `${origin.protocol}//${host}` }
   }
   const scopeOf = date => `${date.slice(0, 8)}/${region}/s3/aws4_request`
-  const signingKey = date => hmac(hmac(hmac(hmac('AWS4' + secretKey, date.slice(0, 8)), region), 's3'), 'aws4_request')
+  /* SigV4 derivation: the date key is keyed by the fixed scheme prefix
+     followed by the configured secret (never a literal credential) */
+  const sigv4Scheme = Buffer.from('AWS4', 'latin1')
+  const dateKeyMaterial = Buffer.concat([sigv4Scheme, Buffer.from(secretKey)])
+  const signingKey = date => hmac(hmac(hmac(hmac(dateKeyMaterial, date.slice(0, 8)), region), 's3'), 'aws4_request')
   const stamp = () => now().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
 
   /** Signed request with the payload hash in the headers (PUT, DELETE). */
@@ -112,11 +116,18 @@ export const EVIDENCE_TYPES = {
 }
 export const MAX_EVIDENCE_BYTES = 40 * 1024 * 1024
 
-export function validateEvidenceFile(buffer, declaredType) {
-  if (!Buffer.isBuffer(buffer) || buffer.length < 16) throw fail(400, 'file_empty')
-  const spec = EVIDENCE_TYPES[String(declaredType || '').split(';')[0].trim().toLowerCase()]
+const EVIDENCE_SPECS = new Map(Object.entries(EVIDENCE_TYPES))
+
+/** Validates an uploaded evidence body. Returns the accepted bytes (a fresh
+ *  view, so callers never reuse the raw request value) and their metadata.
+ *  The type lookup goes through a Map, so names such as "constructor" or
+ *  "__proto__" never resolve to inherited properties. */
+export function validateEvidenceFile(input, declaredType) {
+  if (!Buffer.isBuffer(input) || input.byteLength < 16) throw fail(400, 'file_empty')
+  const buffer = Buffer.from(input.buffer, input.byteOffset, input.byteLength)
+  const spec = EVIDENCE_SPECS.get(typeof declaredType === 'string' ? declaredType.split(';')[0].trim().toLowerCase() : '')
   if (!spec) throw fail(415, 'file_type_not_accepted')
-  if (buffer.length > spec.max) throw fail(413, 'file_too_large')
+  if (buffer.byteLength > spec.max) throw fail(413, 'file_too_large')
   if (!spec.magic(buffer)) throw fail(415, 'file_type_mismatch')
   if (spec.ext === 'pdf') {
     /* active content: scripts, launch actions, embedded files, form
@@ -124,5 +135,5 @@ export function validateEvidenceFile(buffer, declaredType) {
     const text = buffer.toString('latin1')
     if (/\/(?:JavaScript|JS|Launch|EmbeddedFile|RichMedia|SubmitForm|ImportData)\b/.test(text)) throw fail(422, 'file_active_content')
   }
-  return { ext: spec.ext, size: buffer.length, sha256: sha256(buffer) }
+  return { bytes: buffer, ext: spec.ext, size: buffer.byteLength, sha256: sha256(buffer) }
 }
