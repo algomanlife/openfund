@@ -9915,5 +9915,35 @@
         "state": "English, dark: terms page while no terms are published in the CMS (Directus not running)"
       }
     ]
+  },
+  "follow-ups": {
+    "branch": "agent/claude/follow-ups",
+    "baseCommit": "4eaac0d",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T05:44:35+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8093), reduced motion",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "follow-ups/apps-captured-label-en-1440.jpg",
+        "route": "/en/apps",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English: Open Trade frame labelled 'Captured from 0.0.2'"
+      },
+      {
+        "file": "follow-ups/apps-captured-label-fa-390.jpg",
+        "route": "/fa/apps",
+        "viewport": {
+          "width": 390,
+          "height": 900
+        },
+        "state": "Persian, phone: the same label in RTL"
+      }
+    ]
   }
 }

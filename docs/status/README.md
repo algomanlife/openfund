@@ -2,7 +2,7 @@
 
 <!-- Generated from docs/status/status.json by `node scripts/docs/status.mjs`; edit the JSON, not this page. -->
 
-Canonical, per-environment status. Last updated **2026-11-21**. Source states come from Git; every
+Canonical, per-environment status. Last updated **2026-11-23**. Source states come from Git; every
 runtime state names the time it was verified and its evidence. Older snapshots elsewhere in the
 documentation are historical unless they match this page.
 
@@ -15,7 +15,7 @@ documentation are historical unless they match this page.
 
 | Environment | Service | Role | Version | Commit | Official | Verified | Evidence | Note |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| GLOBAL — Render | `openfund` | Web/API | 0.8.0 | `0320cf7` | yes | 2026-11-20 18:14 UTC | [evidence](https://openfi.cloud/version) | — |
+| GLOBAL — Render | `openfund` | Web/API | 0.8.0 | `9f8b171` | no | 2026-11-23 05:50 UTC | [evidence](https://openfi.cloud/version) | GET /version reports version 0.8.0 at main commit 9f8b171 (Merge pull request #191), which contains the v0.8.0 tag plus #169–#191; it is not an official release build. |
 | GLOBAL — Render | `openfund-backstage` | Backstage | — | `cd057fa` | no | 2026-11-18 07:40 UTC | [evidence](https://dashboard.render.com/web/srv-dbsum1u7bikc73chqlfg) | Unreleased commit from a dashboard auto-deploy; its /health predates commit identity, so the commit comes from Render's deploy record. |
 | GLOBAL — Render | `openfund-cms` | Directus CMS | directus/directus:11.17.4 | — | — | 2026-11-18 07:40 UTC | [evidence](https://cms.openfi.cloud/server/health) | Independent image identity; health verified, image digest not re-verified on this date. |
 | IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-20 10:24 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |
