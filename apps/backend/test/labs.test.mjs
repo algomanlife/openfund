@@ -14,6 +14,7 @@ import { configurationProblems, labStatus } from '../../../packages/plan-validat
 import { validatePlanDraft } from '../admin-console.js'
 import { PLAN_SEEDS } from '../plan-catalog.js'
 import { publicPlanRules } from '../purchases.js'
+import { economyRoutes } from '../economy.js'
 
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use an isolated test DATABASE_URL')
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 20 })
@@ -129,4 +130,17 @@ test('GET /labs: current and previous drops with real counts and the comparison 
   assert.ok(body.current.find(d => d.slug === S('soon'))?.status === 'coming_soon')
   assert.ok(body.reference.length >= 3 && body.reference.every(r => r.dailyLossPct > 0), 'standard plans for the gauges')
   assert.ok(!body.reference.some(r => r.slug.startsWith('test-lab-')), 'drops are not their own reference')
+})
+
+test('transparency sales carry the drop number, so pages never show a drop slug', async () => {
+  const app = express(); app.use(economyRoutes({ pool, treasury: { view: async () => ({ configured: false }) } }))
+  const srv = app.listen(0)
+  try {
+    const res = await fetch(`http://127.0.0.1:${srv.address().port}/economy/transparency`)
+    const rows = (await res.json()).sales?.byAccount || []
+    const drop = rows.find(r => r.plan === S('sold'))
+    assert.ok(drop, 'the sold drop is in the sales table')
+    assert.equal(drop.labNumber, 9006)
+    assert.ok(rows.filter(r => !r.plan.startsWith('test-lab-')).every(r => r.labNumber == null), 'regular plans carry no drop number')
+  } finally { srv.close() }
 })

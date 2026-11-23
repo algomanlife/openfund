@@ -71,8 +71,9 @@ async function transparencyReport(pool, treasury) {
   const [states] = await q(`SELECT count(*) FILTER (WHERE status='paid' AND payment_required)::int AS paid, count(*) FILTER (WHERE status='expired')::int AS expired,
                                    count(*) FILTER (WHERE status='cancelled')::int AS cancelled, count(*) FILTER (WHERE status='pending')::int AS pending FROM purchase_orders`)
   const [pay] = await q(`SELECT count(*) FILTER (WHERE status='confirmed')::int AS confirmed, count(*) FILTER (WHERE status='failed')::int AS failed FROM payments`)
-  const bySize = await q(`SELECT p.slug AS plan, o.account_size_usd AS size, count(*)::int AS orders, sum(o.price_usd) AS gross
-                            FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id WHERE o.status='paid' AND o.payment_required GROUP BY 1,2 ORDER BY 1,2`)
+  const bySize = await q(`SELECT p.slug AS plan, p.configuration->>'model' AS model, (p.configuration->'lab'->>'number')::int AS lab_number,
+                                  o.account_size_usd AS size, count(*)::int AS orders, sum(o.price_usd) AS gross
+                            FROM purchase_orders o JOIN challenge_plans p ON p.id=o.challenge_plan_id WHERE o.status='paid' AND o.payment_required GROUP BY 1,2,3,4 ORDER BY 1,4`)
   const periods = (await q(`SELECT
       count(*) FILTER (WHERE paid_at > now() - interval '7 days')::int AS d7, coalesce(sum(price_usd) FILTER (WHERE paid_at > now() - interval '7 days'),0) AS g7,
       count(*) FILTER (WHERE paid_at > now() - interval '30 days')::int AS d30, coalesce(sum(price_usd) FILTER (WHERE paid_at > now() - interval '30 days'),0) AS g30,
@@ -149,7 +150,7 @@ async function transparencyReport(pool, treasury) {
       paymentSuccessRate: finalOrders ? ratio(states.paid, finalOrders) : null,
       paymentSuccessDefinition: 'paid ÷ (paid + expired + cancelled orders); pending orders excluded',
       pendingOrders: states.pending,
-      byAccount: bySize.map(r => ({ plan: r.plan, sizeUsd: r.size, orders: r.orders, grossUsd: usd(r.gross) })),
+      byAccount: bySize.map(r => ({ plan: r.plan, model: r.model ?? null, labNumber: r.lab_number ?? null, sizeUsd: r.size, orders: r.orders, grossUsd: usd(r.gross) })),
       periods: { d7: { orders: periods.d7, grossUsd: usd(periods.g7) }, d30: { orders: periods.d30, grossUsd: usd(periods.g30) }, d90: { orders: periods.d90, grossUsd: usd(periods.g90) } },
       monthly: monthly.map(m => ({ month: m.month, orders: m.orders, grossUsd: usd(m.gross) })),
     },
