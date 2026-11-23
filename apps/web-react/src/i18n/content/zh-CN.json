@@ -4099,5 +4099,6 @@
   "Type at least one word to search.": "请至少输入一个词进行搜索。",
   "Use the arrow keys to move, Enter to open, Esc to close.": "使用方向键移动，Enter 打开，Esc 关闭。",
   "You may be looking for": "您可能在找",
-  "results": "条结果"
+  "results": "条结果",
+  "Search": "搜索"
 }
