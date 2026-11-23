@@ -29,13 +29,22 @@ const compare = (a, b) => { const x = parts(a), y = parts(b); return x[0] - y[0]
  * - a minor or major allocation (e.g. 0.6.0) lets the owner choose the patch
  *   number inside that new line (0.6.0, 0.6.5 …), never a lower line, a later
  *   minor/major line, or a version that is already tagged. */
-export function requestedVersion({ latest, requested, allocated, tags = [] }) {
+export function requestedVersion({ latest, requested, allocated, tags = [], keepMinorLine = false }) {
   if (!semver.test(requested || '')) throw Error('Explicit release version must be MAJOR.MINOR.PATCH.');
   if (!/^v\d+\.\d+\.\d+$/.test(latest || '')) throw Error('An existing SemVer tag is required for an explicit release.');
   if (tags.includes(`v${requested}`)) throw Error(`v${requested} is already released; tags are immutable.`);
   if (compare(requested, latest) <= 0) throw Error(`Explicit release version must be newer than ${latest}.`);
-  if (compare(requested, allocated) < 0) throw Error(`The commits since ${latest} require at least ${allocated}.`);
   const [lMajor, lMinor] = parts(latest), [aMajor, aMinor] = parts(allocated), [rMajor, rMinor] = parts(requested);
+  /* Opt-in owner patch line (keep_minor_line): when the commits allocate only
+   * a minor bump (never a breaking change), an explicit dispatch may keep the
+   * release in the latest tag's minor line, for example 0.8.5 after v0.8.0. */
+  const minorBumpOnly = aMajor === lMajor && aMinor === lMinor + 1;
+  if (keepMinorLine) {
+    if (!minorBumpOnly || rMajor !== lMajor || rMinor !== lMinor)
+      throw Error(`keep_minor_line needs a feature-only batch and a version in the ${lMajor}.${lMinor}.x line.`);
+    return requested;
+  }
+  if (compare(requested, allocated) < 0) throw Error(`The commits since ${latest} require at least ${allocated}.`);
   const patchOnly = aMajor === lMajor && aMinor === lMinor;
   if (patchOnly) return requestedPatchVersion(latest, requested);
   if (rMajor !== aMajor || rMinor !== aMinor) throw Error(`Explicit release version must stay in the allocated ${aMajor}.${aMinor}.x line.`);
