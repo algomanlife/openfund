@@ -71,6 +71,11 @@ flowchart LR
   published tag. The planner rejects skipped, reused and different-line
   versions; this permits an owner-approved patch batch despite feature
   commit wording without moving any existing tag.
+- **Owner patch line (`keep_minor_line`):** with `release_version` and
+  `keep_minor_line=true`, a batch whose commits allocate only a minor bump
+  may stay in the latest tag's minor line (for example `0.8.5` after
+  `v0.8.0`). It is opt-in per dispatch, refuses breaking-change batches,
+  versions outside that line and reused tags, and never moves a tag.
 
 The frontend package now loads `/react/runtime-config.js` before its React
 module. The backend serves this no-store script from `CMS_PUBLIC_URL` (preferred

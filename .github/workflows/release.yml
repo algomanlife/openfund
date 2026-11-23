@@ -14,6 +14,11 @@ on:
         description: Optional owner-approved version — the exact next patch, or a patch inside a newly allocated minor/major line (e.g. 0.6.5 after v0.5.0 with feat commits)
         required: false
         type: string
+      keep_minor_line:
+        description: With release_version, keep a feature-only batch in the latest minor line (e.g. 0.8.5 after v0.8.0); never allowed for breaking changes
+        required: false
+        default: false
+        type: boolean
 permissions:
   contents: read
 concurrency:
@@ -99,6 +104,7 @@ jobs:
       - name: Allocate or resume immutable version
         env:
           RELEASE_REQUESTED_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.release_version || '' }}
+          RELEASE_KEEP_MINOR_LINE: ${{ github.event_name == 'workflow_dispatch' && inputs.keep_minor_line || false }}
           RELEASE_CANDIDATE: ${{ github.event_name != 'workflow_dispatch' || !inputs.publish }}
         run: node scripts/release/plan.mjs
       - name: Install browser runtime
@@ -285,6 +291,7 @@ jobs:
       - name: Resolve previously allocated version
         env:
           RELEASE_REQUESTED_VERSION: ${{ inputs.release_version }}
+          RELEASE_KEEP_MINOR_LINE: ${{ inputs.keep_minor_line }}
         run: node scripts/release/plan.mjs
       - name: Publish immutable tag, notes and verified artifacts
         id: published

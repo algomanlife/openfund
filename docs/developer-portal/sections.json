@@ -63,10 +63,10 @@
       "sort": 60,
       "status": "published",
       "source_path": "docs/deployment/RELEASES.md",
-      "last_verified_commit": "dc0899a",
-      "last_verified_at": "2026-11-21",
+      "last_verified_commit": "a1940d77",
+      "last_verified_at": "2026-11-23",
       "title": "Release process",
-      "body": "`main` is the integration branch; official SemVer releases are published after reviewed batches, not after every merge.\n\n- Only a manual dispatch of the **Unified release** workflow on `main` with `publish=true` publishes. Branch pushes and pull requests build unofficial candidates.\n- A release carries the versioned archive, `SHA256SUMS`, the release manifest and verification records. Deployment waits for approval in the protected `production` environment and deploys the exact commit.\n- Validate a candidate locally with `npm run release:build -- --candidate` (Node 26, isolated test database) and run an official version with `npm run release:local`.\n- Open Trade desktop builds come from the `Open Trade desktop` workflow; unsigned builds are named as such and published only as pre-releases."
+      "body": "`main` is the integration branch; official SemVer releases are published after reviewed batches, not after every merge.\n\n- Only a manual dispatch of the **Unified release** workflow on `main` with `publish=true` publishes. Branch pushes and pull requests build unofficial candidates.\n- The version comes from Conventional Commits. An owner may set `release_version`; with `keep_minor_line=true` a feature-only batch may stay in the latest minor line (for example `0.8.5` after `v0.8.0`). Breaking changes, reused tags and moved tags are always refused.\n- A release carries the versioned archive, `SHA256SUMS`, the release manifest and verification records. Deployment waits for approval in the protected `production` environment and deploys the exact commit.\n- Validate a candidate locally with `npm run release:build -- --candidate` (Node 26, isolated test database) and run an official version with `npm run release:local`.\n- Open Trade desktop builds come from the `Open Trade desktop` workflow; unsigned builds are named as such and published only as pre-releases."
     },
     {
       "slug": "editorial-content",

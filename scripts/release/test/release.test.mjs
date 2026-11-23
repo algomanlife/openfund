@@ -63,6 +63,14 @@ test('owner-approved version may choose the patch inside a newly allocated line,
  for(const bad of ['0.5.2','0.6.5'])assert.throws(()=>requestedVersion({latest:'v0.5.0',requested:bad,allocated:'0.5.1',tags}));
  /* a breaking change cannot be released inside the old major line */
  assert.throws(()=>requestedVersion({latest:'v0.5.0',requested:'0.6.5',allocated:'1.0.0',tags}));
+ /* opt-in keep_minor_line: a feature batch may stay in the latest minor line, only when asked */
+ const line=['v0.7.0','v0.8.0'];
+ assert.throws(()=>requestedVersion({latest:'v0.8.0',requested:'0.8.5',allocated:'0.9.0',tags:line}));
+ for(const ok of ['0.8.1','0.8.5'])assert.equal(requestedVersion({latest:'v0.8.0',requested:ok,allocated:'0.9.0',tags:line,keepMinorLine:true}),ok);
+ for(const bad of ['0.8.0','0.7.9','0.9.0','0.10.0','0.8','v0.8.5'])assert.throws(()=>requestedVersion({latest:'v0.8.0',requested:bad,allocated:'0.9.0',tags:line,keepMinorLine:true}));
+ assert.throws(()=>requestedVersion({latest:'v0.8.0',requested:'0.8.5',allocated:'1.0.0',tags:line,keepMinorLine:true}));
+ assert.throws(()=>requestedVersion({latest:'v0.8.0',requested:'0.8.1',allocated:'0.8.1',tags:line,keepMinorLine:true}));
+ assert.throws(()=>requestedVersion({latest:'v0.8.5',requested:'0.8.5',allocated:'0.9.0',tags:[...line,'v0.8.5'],keepMinorLine:true}));
  /* immutable tags cannot be reused */
  assert.throws(()=>requestedVersion({latest:'v0.6.5',requested:'0.6.5',allocated:'0.6.6',tags:[...tags,'v0.6.5']}));
 });
