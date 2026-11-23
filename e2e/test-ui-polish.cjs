@@ -239,12 +239,14 @@ async function walletDisclosureFits(page){
    };
    for (const [group, routes] of Object.entries(expectedNavigation)) {
     /* mega menu: destination tiles in section order; the featured banner is checked separately */
-    const selector = group === 'primary' ? '#navigation > a' : `#website-${group} a:not(.mega-banner)`;
+    const selector = group === 'primary' ? '#navigation > a' : `#website-${group} a:not(.mega-banner):not(.mega-banner a)`;
     const hrefs = await page.locator(selector).evaluateAll(links => links.map(link => link.getAttribute('href')));
     assert.deepEqual(hrefs, routes.map(route => `/${locale}/${route}`), prefix+' other-page '+group+' navigation');
    }
    check(prefix+' challenges banner leads to migration', await page.locator('#website-challenges a.mega-banner.is-flamingo').getAttribute('href') === `/${locale}/migrate`);
-   check(prefix+' mega menu banners', JSON.stringify(await page.locator('#website-economy a.mega-banner, #website-resources a.mega-banner').evaluateAll(l => l.map(a => a.getAttribute('href')))) === JSON.stringify([`/${locale}/governance`, `/${locale}/whitepaper`, `/${locale}/apps#desktop-builds`]));
+   /* the Resources banner is a container (owner fix 3): its main link plus three desktop platform badges */
+   check(prefix+' mega menu banners', JSON.stringify(await page.locator('#website-economy a.mega-banner, #website-resources a.mega-banner, #website-resources a.mega-banner-main').evaluateAll(l => l.map(a => a.getAttribute('href')))) === JSON.stringify([`/${locale}/governance`, `/${locale}/whitepaper`, `/${locale}/apps#desktop-builds`]));
+   check(prefix+' desktop platform badges', JSON.stringify(await page.locator('#website-resources a.mega-platform').evaluateAll(l => l.map(a => a.getAttribute('href')))) === JSON.stringify(['macos', 'windows', 'linux'].map(p => `/${locale}/apps#download-${p}`)));
    const tv=page.locator('.credits-row a[href="https://www.tradingview.com/news/"]');await tv.waitFor();
    check(prefix+' TradingView description',(await tv.innerText()).includes(locale==='fa'?'اطلاعات و اخبار بازارها':'Market Data & News'));
    check(prefix+' redundant external label removed',!(/منبع خارجی|External resource/.test(await tv.innerText())));
