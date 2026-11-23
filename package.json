@@ -67,6 +67,7 @@
     "test:browser:tournament": "node e2e/test-tournament.cjs",
     "test:browser:prize-wall": "node e2e/test-prize-wall.cjs",
     "test:browser:site-search": "node e2e/test-site-search.cjs",
+    "test:browser:header-controls": "node e2e/test-header-controls.cjs",
     "test:browser:terminal-funding": "node e2e/test-terminal-funding.cjs",
     "test:browser:hero-journey": "node e2e/test-hero-journey.cjs",
     "test:browser:developers": "node e2e/test-developers.cjs",
