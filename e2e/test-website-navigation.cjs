@@ -189,7 +189,7 @@ async function ancillary(page) {
 
 async function auditRoutes(page) {
   const library = loadLibrary();
-  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact','apps','roadmap','developers','certificate-verification','tournament','tournament/terms','migrate','trading-objectives',
+  const routes = ['home','challenges','markets','rulebook','transparency','revenue-model','live-market-access','ambassador','coach','faq','learn','learn/glossary','tools','referral','about','contact','apps','roadmap','developers','certificate-verification','tournament','tournament/terms','migrate','trading-objectives','labs',
     ...library.faqItems.map(item=>'faq/q/'+item.key),
     ...library.paths.flatMap(p=>['learn/paths/'+p.slug,...p.lessons.map(l=>'learn/lessons/'+l.slug)]),
     ...library.glossary.map(t=>'learn/glossary/'+t.slug),...library.tools.map(t=>'tools/'+t.slug)];

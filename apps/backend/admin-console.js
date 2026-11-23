@@ -21,7 +21,7 @@ import { rateLimit } from 'express-rate-limit'
 import { adminAuth, adminActor } from './admin.js'
 import { normalizeRules } from './evaluation.js'
 import { issueEntitlementTx } from './entitlements.js'
-import { planProblems, planFromConfiguration, configurationDiff } from '../../packages/plan-validation/index.mjs'
+import { planProblems, planFromConfiguration, configurationDiff, configurationProblems } from '../../packages/plan-validation/index.mjs'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const SLUG = /^[a-z0-9][a-z0-9-]{1,39}$/
@@ -42,7 +42,7 @@ export function validatePlanDraft(body) {
   for (const name of [nameFa, nameEn]) if (typeof name !== 'string' || !name.trim() || name.length > 80 || name.includes('—')) throw fail(400, 'invalid_name')
   if (!configuration || typeof configuration !== 'object' || Array.isArray(configuration) || JSON.stringify(configuration).length > 20000) throw fail(400, 'invalid_configuration')
   const name = `${nameFa.trim()} — ${nameEn.trim()}`
-  const problems = planProblems(planFromConfiguration(slug, name, configuration))
+  const problems = [...planProblems(planFromConfiguration(slug, name, configuration)), ...configurationProblems(slug, configuration)]
   const rules = normalizeRules(configuration)
   if (!rules.evaluationCapable) problems.push(`plan ${slug}: the engine cannot evaluate these loss limits`)
   return { slug, name, configuration, problems, rules }
@@ -181,6 +181,9 @@ export function consoleAdminRoutes({ pool, engine, audit }) {
     try {
       await client.query('BEGIN')
       const { rows: [current] } = await client.query('SELECT id, name, status, configuration FROM challenge_plans WHERE slug=$1 FOR UPDATE', [draft.slug])
+      /* Labs (ADR 0055): one drop per number */
+      if (draft.configuration.lab && (await client.query(`SELECT 1 FROM challenge_plans WHERE slug<>$1 AND (configuration->'lab'->>'number')::int=$2`,
+        [draft.slug, draft.configuration.lab.number])).rowCount) throw fail(409, 'lab_number_taken')
       const version = Number(current?.configuration?.catalogVersion ?? 0) + 1
       const configuration = { ...draft.configuration, catalogVersion: version }
       if (current && configurationDiff(current.configuration, configuration).length === 0 && current.name === draft.name) throw fail(409, 'plan_unchanged')

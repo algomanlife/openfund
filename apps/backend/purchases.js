@@ -36,6 +36,7 @@ import { recognizeCommissionTx, attributeAtFirstOrder } from './partners.js'
 import { createRpcVerifier, DEPAY_BLOCKCHAINS, SOLANA_CHAIN_ID, blockchainOf, isEvmChain, normalizeTxId, explorerAddressUrlFor, explorerTokenUrlFor, chainNameOf } from './payment-verification.js'
 import { createSolanaVerifier } from './solana-verification.js'
 import { evaluateCoupon, applyCoupon, isCouponCode, normalizeCode } from './coupons.js'
+import { labOf, labReserveTx, labQuoteCheck } from './labs.js'
 import { derivePaymentStatus } from './payment-status.js'
 import { settleVerifiedPayment, orderLedger, paymentMethodSettings, usdToMicros, microsToUnits, formatMicros, formatUsd, formatUnits, orderTotals } from './payment-ledger.js'
 
@@ -793,7 +794,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   router.get('/purchases/plans', wrap(async (req, res) => {
     const { rows } = await pool.query(
       `SELECT slug, name, configuration FROM challenge_plans WHERE status='active' ORDER BY created_at`)
-    const plans = await Promise.all(rows.map(async p => {
+    /* Labs drops (ADR 0055) live on /labs; checkout asks for one by slug */
+    const labSlug = typeof req.query.lab === 'string' ? req.query.lab : null
+    const plans = await Promise.all(rows.filter(p => !labOf(p.configuration) || p.slug === labSlug).map(async p => {
       const c = p.configuration || {}
       const blockers = c.free ? [] : await conduct.salesBlockers(c)
       return {
@@ -812,6 +815,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
           : null,
         /* public read-only rules, as the evaluation engine enforces them */
         rules: publicPlanRules(c),
+        ...(labOf(c) ? { lab: { number: labOf(c).number, perWalletCap: labOf(c).perWalletCap } } : {}),
       }
     }))
     const c = cfg()
@@ -867,6 +871,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
   router.post('/purchases/quote', requireAuth, limit(30), wrap(async (req, res) => {
     const { planSlug, accountSize, couponCode, dailyLossVariant = 'default' } = req.body || {}
     const { plan, size, listPrice } = await planPrice(pool, planSlug, accountSize, dailyLossVariant)
+    await labQuoteCheck(pool, { plan, userId: req.user.user_id, graceMinutes: cfg().lateGraceMinutes })
     const code = couponArg(couponCode)
     const pricing = code
       ? (await evaluateCoupon(pool, { code, userId: req.user.user_id, planId: plan.id, accountSize: size, listPriceUsd: listPrice })).pricing
@@ -912,6 +917,9 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
          trader's approved, single-use pass; no coupon can be combined */
       const pass = migrationPassId ? await passForOrderTx(client, { passId: migrationPassId, userId: req.user.user_id, planSlug: plan.slug, accountSize: size }) : null
       if (pass && code) throw fail(409, 'migration_no_coupon')
+      /* Labs (ADR 0055): reserve one unit under the plan row lock */
+      if (labOf(plan.configuration) && pass) throw fail(409, 'lab_no_migration')
+      await labReserveTx(client, { plan, userId: req.user.user_id, graceMinutes: cfg().lateGraceMinutes })
       let coupon = null, pricing = applyCoupon(listPrice, null)
       if (code) ({ coupon, pricing } = await evaluateCoupon(client, {
         code, userId: req.user.user_id, planId: plan.id, accountSize: size, listPriceUsd: listPrice, lock: true }))

@@ -233,7 +233,7 @@ async function walletDisclosureFits(page){
    const expectedNavigation = {
     primary: ['markets', 'rulebook'],
     /* Trading challenges is a mega-menu group (item C of the second batch) */
-    challenges: ['challenges', 'checkout', 'trading-objectives', 'migrate', 'tournament', 'rulebook'],
+    challenges: ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'rulebook'],
     economy: ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'],
     resources: ['learn', 'learn/glossary', 'faq', 'apps', 'tools', 'roadmap', 'developers', 'about', 'contact', 'certificate-verification'],
    };

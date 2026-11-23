@@ -84,3 +84,48 @@ export function configurationDiff(before = {}, after = {}) {
     .filter(k => k !== 'catalogVersion' && JSON.stringify(before?.[k] ?? null) !== JSON.stringify(after?.[k] ?? null))
     .map(k => ({ field: k, before: before?.[k] ?? null, after: after?.[k] ?? null }))
 }
+
+/* ---------- Labs (limited drops, ADR 0055) ----------
+ * A drop is a plan whose configuration carries a `lab` block. Displayed rules
+ * must equal enforced rules, so a rule the evaluation engine does not enforce
+ * is refused here instead of being published and silently ignored. */
+
+/** Configuration keys a plan may not use until the engine enforces them. */
+export const UNENFORCED_RULES = Object.freeze({
+  trailingEodLockPct: 'an end-of-day trailing maximum loss',
+  maxPayoutCount: 'a cap on the total number of payouts',
+  minTradingDayProfitPct: 'a minimum daily profit for a day to count as a trading day',
+})
+const DRAWDOWN_MODES = ['static', 'trailing']
+const isoDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})$/.test(v) && Number.isFinite(Date.parse(v))
+const int = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi
+
+/** Problems with rules the engine cannot enforce, and with a lab block. */
+export function configurationProblems(slug, c = {}) {
+  const out = []
+  const add = message => out.push(`plan ${slug || '(?)'}: ${message}`)
+  for (const [key, label] of Object.entries(UNENFORCED_RULES))
+    if (c?.[key] !== undefined && c[key] !== null) add(`${label} (${key}) is not enforced by the evaluation engine; remove it`)
+  if (c?.drawdownMode != null && !DRAWDOWN_MODES.includes(c.drawdownMode)) add(`drawdown mode ${c.drawdownMode} is not enforced by the evaluation engine`)
+  if (c?.lab == null) return out
+  const lab = c.lab
+  if (typeof lab !== 'object' || Array.isArray(lab)) { add('lab must be an object'); return out }
+  if (!int(lab.number, 1, 9999)) add('lab number must be a whole number from 1 to 9999')
+  if (!int(lab.inventory, 1, 100000)) add('lab inventory must be a whole number from 1 to 100000')
+  if (!int(lab.perWalletCap, 1, 5)) add('lab per-wallet cap must be 1 to 5')
+  if (!isoDate(lab.saleStartsAt)) add('lab sale start must be an ISO date-time')
+  if (lab.saleEndsAt != null && (!isoDate(lab.saleEndsAt) || Date.parse(lab.saleEndsAt) <= Date.parse(lab.saleStartsAt))) add('lab sale end must be an ISO date-time after the start')
+  if (c.free) add('a lab drop cannot be free')
+  const unknown = Object.keys(lab).filter(k => !['number', 'inventory', 'perWalletCap', 'saleStartsAt', 'saleEndsAt'].includes(k))
+  if (unknown.length) add(`unknown lab fields: ${unknown.join(', ')}`)
+  return out
+}
+
+/** A drop's state from its sale window, inventory and sales. */
+export function labStatus(lab, { sold = 0, active = true, now = Date.now() } = {}) {
+  if (!active) return 'closed'
+  if (now < Date.parse(lab.saleStartsAt)) return 'coming_soon'
+  if (sold >= lab.inventory) return 'sold_out'
+  if (lab.saleEndsAt && now >= Date.parse(lab.saleEndsAt)) return 'closed'
+  return 'open'
+}

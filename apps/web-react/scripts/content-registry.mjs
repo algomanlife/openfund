@@ -109,7 +109,7 @@ const VIEW_AREAS = {
   campaign: ['campaign'], markets: ['markets'], rulebook: ['rulebook'], transparency: ['transparency'],
   governance: ['governance'], 'governance-new': ['governance'], 'governance-workspace': ['governance'], 'governance-proposal': ['governance'],
   'economy-redirect': [], 'revenue-model': ['economy'], 'live-market-access': ['economy'], ambassador: ['partners'], coach: ['partners'],
-  whitepaper: ['whitepaper'], 'certificate-verification': ['certificates'], applications: ['applications'], roadmap: ['roadmap'], tournament: ['tournament'], 'trading-objectives': ['objectives'], migrate: ['migration'],
+  whitepaper: ['whitepaper'], 'certificate-verification': ['certificates'], applications: ['applications'], roadmap: ['roadmap'], tournament: ['tournament'], 'trading-objectives': ['objectives'], labs: ['labs'], migrate: ['migration'],
   about: ['company'], contact: ['company'], developers: ['developers'], faq: ['faq'], 'faq-question': ['faq'], tools: ['tools'], tool: ['tools'],
   learn: ['learn'], 'learning-path': ['learn'], lesson: ['learn'], glossary: ['learn'], 'glossary-term': ['learn'],
   referral: ['referral'], 'referral-entry': ['referral'], 'product-shell': ['terminal'], dashboard: ['terminal'], trade: ['terminal'],

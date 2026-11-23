@@ -4,13 +4,14 @@ import { labels, text } from './content'
 import { pickRecord, type AppLocale } from '../../i18n/locales'
 import { MEGA_BANNERS, MEGA_DESCRIPTIONS, MEGA_ICONS, RESOURCE_SECTIONS, megaBannerArt, megaIconNode, type MegaBannerKind } from '../navigation/megaMenu'
 import { PREMIUM_LEAGUE_START, daysUntil } from '../tournament/schedule'
-import { pickFormat } from '../../i18n/locales'
+import { openLabDrop } from '../labs/labsStatus'
+import { intlLocale, pickFormat } from '../../i18n/locales'
 type Locale = AppLocale
 
 const primary = ['markets', 'rulebook'] as const
 /** Trading challenges dropdown: compare, buy, migrate, the tournament and the rules.
  *  `challenges` is the comparison page (the former primary link). */
-const challengeGroup = ['challenges', 'checkout', 'trading-objectives', 'migrate', 'tournament', 'rulebook'] as const
+const challengeGroup = ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'rulebook'] as const
 /** Economy dropdown: governance, the consolidated Ambassador (IB) page and
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
@@ -23,18 +24,21 @@ const documentLabels = { whitepaper: text('Read the whitepaper', 'مطالعهٔ
  *  footer row naming one is skipped instead of producing a dead link. */
 const RETIRED_DESTINATIONS = new Set(['team', 'team-section'])
 const navigationLabels = { ...labels, glossary: text('Glossary', 'واژه‌نامه'),
-  migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'), tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند') }
+  migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'), tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند'), labs: text('Openfund Labs', 'آزمایشگاه اوپن‌فاند') }
 /** tile titles inside the Challenges group (the header keeps the page names) */
 const challengeTileLabels: Record<string, { en: string; fa: string }> = {
   challenges: text('Compare challenges', 'مقایسهٔ چلنج‌ها'),
   checkout: text('Buy a challenge', 'خرید چلنج'),
   'trading-objectives': text('Trading objectives', 'اهداف معاملاتی'),
+  labs: text('Openfund Labs', 'آزمایشگاه اوپن‌فاند'),
   migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'),
   tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند'),
   rulebook: text('Trading rules', 'قوانین معاملاتی'),
 }
 const tileIcons: Record<string, string> = { challenges: 'compare' }
 const newBadge = text('New', 'جدید')
+/** the open Labs drop's badge (labsStatus.ts; none until a drop is open) */
+const labBadge = (locale: Locale, n: number) => pickFormat(locale, 'دراپ ${n}', 'Drop #${n}', { n: new Intl.NumberFormat(intlLocale(locale)).format(n) })
 
 export function navigationHref(route: string, locale: Locale): string {
   if (route === 'accounts-section') return `/${locale}/challenges?section=accounts`
@@ -78,6 +82,7 @@ export function navigationModel(locale: Locale, pathname: string, navItems: CmsN
   const challengeLinks = challengeGroup.map(route => {
     const item = { ...link(route, challengeTileLabels[route]), icon: tileIcons[route] || route }
     if (tileIcons[route] && MEGA_DESCRIPTIONS[tileIcons[route]] && !cmsItems.get(route)?.description) item.description = pickRecord(locale, MEGA_DESCRIPTIONS[tileIcons[route]])
+    if (route === 'labs' && openLabDrop() != null) item.badge = labBadge(locale, openLabDrop()!)
     if (route === 'tournament') {
       const days = daysUntil(PREMIUM_LEAGUE_START, now)
       item.badge = pickRecord(locale, newBadge)
@@ -386,4 +391,16 @@ export function fitNavigation(root: ParentNode): () => void {
   void document.fonts?.ready.then(schedule)
   schedule()
   return () => { cancelAnimationFrame(frame); resize.disconnect(); content.disconnect() }
+}
+
+/** Add or remove the Labs badge on tiles already in the DOM (the drop status
+ *  arrives after the header has rendered). */
+export function patchLabsBadge(root: ParentNode, locale: Locale) {
+  const n = openLabDrop()
+  root.querySelectorAll<HTMLAnchorElement>(`a.mega-tile[href="/${locale}/labs"]`).forEach(a => {
+    const title = a.querySelector('.mega-text > b')
+    if (!title) return
+    title.querySelector('.mega-badge')?.remove()
+    if (n != null) { const badge = document.createElement('span'); badge.className = 'mega-badge'; badge.textContent = labBadge(locale, n); title.append(' ', badge) }
+  })
 }
