@@ -16,6 +16,8 @@ html[data-theme='light'] .of-search-trigger:hover { border-color: #12965D88; }
 /* terminal header: the same height as its dense neighbours (mouse) … */
 :root .of-terminal-actions button.of-search-trigger {
   flex: 0 0 auto; width: var(--hc-h, 30px); height: var(--hc-h, 30px); min-width: 28px; min-height: 28px; padding: 0;
+  /* never under a neighbour's box when long (ru) labels crowd the header */
+  position: relative; z-index: 1; margin-inline: 2px;
   border-radius: var(--hc-r, 8px); background: transparent; color: inherit; box-shadow: none; transform: none;
 }
 :root .of-terminal-compact .of-terminal-actions button.of-search-trigger { width: 28px; height: 28px; }
