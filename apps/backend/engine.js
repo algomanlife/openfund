@@ -28,6 +28,7 @@ import Decimal from 'decimal.js'
 import { D, SIM, feePct, spreadPct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
 import { ChallengeService, evaluateRules, normalizeRules, countTradingDays } from './evaluation.js'
 import { ConductService } from './conduct.js'
+import { assertAgreement } from './funded-agreement.js'
 export { SIM, feePct, spreadPct, withSpread } from './trading-math.js'
 
 /* ---------- per-account async mutex (safe concurrency) ---------- */
@@ -728,6 +729,8 @@ export class Engine {
       throw Object.assign(new Error(
         challenge.status === 'created' ? 'challenge_not_started'
         : `challenge_${challenge.status}`), { status: 409 })
+    /* a funded account trades only after the signed funded-trader agreement (ADR 0054) */
+    if (challenge) await assertAgreement(this.db, challenge)
     if (account.status !== "active")
       throw Object.assign(
         new Error(

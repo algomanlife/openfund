@@ -59,6 +59,7 @@
     "test:browser:arrows": "node e2e/test-dir-arrows.cjs",
     "test:browser:wallet-showcase": "node e2e/test-wallet-showcase.cjs",
     "test:browser:footer-banner": "node e2e/test-footer-banner.cjs",
+    "test:browser:trading-objectives": "node e2e/test-trading-objectives.cjs",
     "test:browser:migration": "node e2e/test-migration.cjs",
     "test:browser:tournament": "node e2e/test-tournament.cjs",
     "test:browser:site-search": "node e2e/test-site-search.cjs",

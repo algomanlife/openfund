@@ -10,7 +10,7 @@ type Locale = AppLocale
 const primary = ['markets', 'rulebook'] as const
 /** Trading challenges dropdown: compare, buy, migrate, the tournament and the rules.
  *  `challenges` is the comparison page (the former primary link). */
-const challengeGroup = ['challenges', 'checkout', 'migrate', 'tournament', 'rulebook'] as const
+const challengeGroup = ['challenges', 'checkout', 'trading-objectives', 'migrate', 'tournament', 'rulebook'] as const
 /** Economy dropdown: governance, the consolidated Ambassador (IB) page and
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
@@ -28,6 +28,7 @@ const navigationLabels = { ...labels, glossary: text('Glossary', 'واژه‌ن�
 const challengeTileLabels: Record<string, { en: string; fa: string }> = {
   challenges: text('Compare challenges', 'مقایسهٔ چلنج‌ها'),
   checkout: text('Buy a challenge', 'خرید چلنج'),
+  'trading-objectives': text('Trading objectives', 'اهداف معاملاتی'),
   migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'),
   tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند'),
   rulebook: text('Trading rules', 'قوانین معاملاتی'),

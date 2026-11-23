@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import type { OpenfundChallenge, OpenfundUser } from './useOpenfundSession'
 import DirArrow from '../ui/DirArrow'
+import FundedAgreementCard from './FundedAgreementCard'
 
 /**
  * Account panel — authenticated user profile + challenge list (fa/en).
@@ -133,6 +134,7 @@ export function ProfilePanel(props: {
           <div><span>{t('آخرین ورود', 'Last login')}</span><b>{fmtDate(user.lastLoginAt)}</b></div>
         </div>
 
+        <FundedAgreementCard />
         <h3>{t('چالش‌های من', 'My challenges')} <i className="of-count">{challenges.length}</i></h3>
         {challenges.length === 0 ? (
           <p className="of-empty">{t('هنوز چالشی نداری. از صفحهٔ چلنج‌ها یک پلن انتخاب و خرید کن.',

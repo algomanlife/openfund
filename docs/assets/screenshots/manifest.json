@@ -10068,5 +10068,98 @@
         "state": "English, tablet: Funding tab"
       }
     ]
+  },
+  "trading-objectives": {
+    "branch": "agent/claude/trading-objectives",
+    "baseCommit": "0aeabfb",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T07:42:48+00:00",
+    "source": "Local build of agent/claude/trading-objectives on a disposable Postgres; plans from the seeded catalog",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Public Gains Network reads where they loaded; no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-390.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-768.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-1440.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-fa-390.jpg",
+        "route": "/fa/trading-objectives",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-fa-768.jpg",
+        "route": "/fa/trading-objectives",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-fa-1440.jpg",
+        "route": "/fa/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-ar-390.jpg",
+        "route": "/ar/trading-objectives",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Page top, dark theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-en-1440-light.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Page top, light theme, reduced motion, anonymous"
+      },
+      {
+        "file": "docs/assets/screenshots/trading-objectives/objectives-cards-en-1440.jpg",
+        "route": "/en/trading-objectives",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Objective cards scrolled into view, dark theme, reduced motion, anonymous"
+      }
+    ]
   }
 }

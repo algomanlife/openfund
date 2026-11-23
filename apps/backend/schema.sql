@@ -3241,3 +3241,22 @@ CREATE TABLE IF NOT EXISTS search_query_stats (
   PRIMARY KEY (day, locale, query)
 );
 CREATE INDEX IF NOT EXISTS idx_search_query_stats_day ON search_query_stats (day);
+
+-- ==================================================================
+-- Funded-trader agreement (funded-agreement.js, ADR 0054). Additive.
+-- One signed acceptance per funded account: the wallet signs a fixed message
+-- naming the terms version, the account and the wallet. Append-only.
+-- ==================================================================
+CREATE TABLE IF NOT EXISTS funded_agreements (
+  id              bigserial PRIMARY KEY,
+  challenge_id    uuid NOT NULL UNIQUE REFERENCES openfund_challenges (id),
+  user_id         uuid NOT NULL REFERENCES openfund_users (id),
+  wallet_address  text NOT NULL CHECK (wallet_address = lower(wallet_address)),
+  terms_version   text NOT NULL CHECK (length(terms_version) BETWEEN 1 AND 40),
+  message         text NOT NULL CHECK (length(message) <= 2000),
+  signature       text NOT NULL CHECK (signature ~ '^0x[0-9a-fA-F]+$'),
+  signed_at       timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_funded_agreements_user ON funded_agreements (user_id, signed_at DESC);
+DROP TRIGGER IF EXISTS funded_agreements_append_only ON funded_agreements;
+CREATE TRIGGER funded_agreements_append_only BEFORE UPDATE OR DELETE ON funded_agreements FOR EACH ROW EXECUTE FUNCTION reject_mutation();

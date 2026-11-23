@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4716,
-    "mappedCalls": 2310,
-    "exceptions": 56,
+    "uniqueRecords": 4782,
+    "mappedCalls": 2319,
+    "exceptions": 57,
     "validationFindings": 0,
-    "reviewedExclusions": 51
+    "reviewedExclusions": 52
   },
   "editorial": {
     "locales": [
@@ -566,6 +566,19 @@
         ],
         "areas": [
           "tournament"
+        ]
+      },
+      {
+        "path": "/:locale/trading-objectives",
+        "view": "trading-objectives",
+        "collections": [
+          "ui_messages",
+          "pages",
+          "navigation_items",
+          "footer_links"
+        ],
+        "areas": [
+          "objectives"
         ]
       },
       {
@@ -1241,7 +1254,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 160,
+          "line": 161,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -1956,7 +1969,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 554,
+          "line": 555,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2230,7 +2243,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 712,
+          "line": 713,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -2964,7 +2977,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 47,
+          "line": 48,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -3191,7 +3204,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 133,
+          "line": 134,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -4053,6 +4066,26 @@
       ]
     },
     {
+      "key": "react.076f95ffb59ea717",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ قوانین هر پلن، در یک نگاه.",
+      "en": "Every rule of each plan, at a glance.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 61,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0771dd66f097a648",
       "namespace": "react",
       "area": "Website",
@@ -4065,7 +4098,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 56,
+          "line": 57,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4656,7 +4689,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 541,
+          "line": 542,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -5083,7 +5116,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 649,
+          "line": 650,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -5377,7 +5410,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 741,
+          "line": 742,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -6846,6 +6879,26 @@
       ]
     },
     {
+      "key": "react.0eb37acc6db6463e",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "امضا لغو شد.",
+      "en": "Signature cancelled.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+          "line": 36,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0ec5d432549b461a",
       "namespace": "react",
       "area": "Website",
@@ -6938,14 +6991,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 584,
+          "line": 585,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 637,
+          "line": 638,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -7590,6 +7643,26 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.10f5a35889292098",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این پلن قانون ثبات ندارد.",
+      "en": "No consistency rule on this plan.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 40,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -8301,7 +8374,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 31,
+          "line": 32,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -8315,8 +8388,15 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 94,
+          "line": 96,
           "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 60,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -8704,7 +8784,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 758,
+          "line": 759,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -8964,7 +9044,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 111,
+          "line": 112,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -9238,7 +9318,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 52,
+          "line": 53,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -9868,7 +9948,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 742,
+          "line": 743,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -10186,6 +10266,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.1788cab1ec7ac98f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "محدودیت معامله در زمان اخبار ندارد.",
+      "en": "No news-trading restriction.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 48,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -10788,6 +10888,26 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.192d31e9f5eb4171",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "وقتی سود به ${lock} برسد، دیگر جابه‌جا نمی‌شود.",
+      "en": "It stops trailing once profit reaches ${lock}.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 36,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -12160,7 +12280,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 55,
+          "line": 56,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12354,7 +12474,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 65,
+          "line": 67,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12457,6 +12577,13 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 127,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 23,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
@@ -13049,7 +13176,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 161,
+          "line": 162,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -13277,6 +13404,26 @@
       ]
     },
     {
+      "key": "react.1f6322650d5d491d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هر عدد از کجا می‌آید؟",
+      "en": "Where does each number come from?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 63,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1f8e15b3ffe90067",
       "namespace": "react",
       "area": "Global Content",
@@ -13470,7 +13617,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 96,
+          "line": 98,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14297,7 +14444,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 738,
+          "line": 739,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -14504,7 +14651,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 533,
+          "line": 534,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -14724,7 +14871,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 157,
+          "line": 159,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15092,6 +15239,46 @@
       ]
     },
     {
+      "key": "react.242424161feb9134",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فهرست پلن‌ها دریافت نشد. کمی بعد دوباره تلاش کن؛ همهٔ قوانین در رول‌بوک هست.",
+      "en": "The plan catalog could not be loaded. Please try again shortly; the rulebook has every rule.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 29,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.242ff2a1df5e8f89",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تا ${pct} از سود سهم توست.",
+      "en": "Up to ${pct} of the profit is yours.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 41,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2444f3c5883faff3",
       "namespace": "react",
       "area": "Global Content",
@@ -15164,7 +15351,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 136,
+          "line": 138,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15576,6 +15763,13 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 37,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
@@ -16514,6 +16708,26 @@
       ]
     },
     {
+      "key": "react.2823893e04173d44",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دست‌کم در ${n} روز جداگانه (UTC+3) معامله کن.",
+      "en": "Trade on at least ${n} separate days (UTC+3).",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 37,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.28247f5296f1b916",
       "namespace": "react",
       "area": "Website",
@@ -16913,7 +17127,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 692,
+          "line": 693,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -17133,7 +17347,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 578,
+          "line": 579,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -17374,7 +17588,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 98,
+          "line": 100,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -18049,7 +18263,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 120,
+          "line": 121,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -18071,6 +18285,26 @@
           "component": "apps/web-react/src/features/learn/Learn.tsx",
           "line": 57,
           "page": "learn",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2bbdc7f1e8e65fbb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در این مرحله به ${pct} (${usd}) برس.",
+      "en": "Reach ${pct} (${usd}) in this stage.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 31,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -18309,21 +18543,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 557,
+          "line": 558,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 619,
+          "line": 620,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 735,
+          "line": 736,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -19719,7 +19953,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 85,
+          "line": 86,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20181,6 +20415,26 @@
       ]
     },
     {
+      "key": "react.30beb00fc63e71e9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "KYC لازم نیست. امضای کیف پول مالکیت را ثابت می‌کند، پاداش فقط به همان کیف پول می‌رود و پیش از اولین معامله در حساب فاندشده توافق‌نامه را امضا می‌کنی.",
+      "en": "No KYC. Your wallet signature proves ownership, rewards go only to that wallet, and you sign the funded-trader agreement before your first funded trade.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 65,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.30c38d1c5e658402",
       "namespace": "react",
       "area": "Global Content",
@@ -20320,7 +20574,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 598,
+          "line": 599,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -21105,6 +21359,26 @@
       ]
     },
     {
+      "key": "react.32800482b2f5af58",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک بار، هنگام شروع حساب فاندشده، یکی از دوره‌ها را انتخاب می‌کنی:",
+      "en": "Choose one cycle once, when your funded account starts:",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 42,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3295f15a9abf71b2",
       "namespace": "react",
       "area": "Website",
@@ -21231,7 +21505,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 764,
+          "line": 765,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -21926,7 +22200,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 72,
+          "line": 73,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22362,7 +22636,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 705,
+          "line": 706,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -22742,7 +23016,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 604,
+          "line": 605,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -23581,7 +23855,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 562,
+          "line": 563,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -23621,7 +23895,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 616,
+          "line": 617,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -25637,6 +25911,26 @@
       ]
     },
     {
+      "key": "react.3e41e65a9823b94e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا این متن رسمی است؟",
+      "en": "Is this the official text?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 64,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3e44463d89ef3791",
       "namespace": "react",
       "area": "Global Content",
@@ -25913,6 +26207,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.3f30260bf133a881",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اهرم از سقف اوپن‌فاند برای هر بازار پیروی می‌کند.",
+      "en": "Leverage follows each market’s Openfund ceiling.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 46,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -26317,7 +26631,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 53,
+          "line": 54,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -27427,6 +27741,26 @@
       ]
     },
     {
+      "key": "react.42b0c6bd672961f7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نگهداری در آخر هفته: پوزیشن‌ها در حساب فاندشده روزانه بسته می‌شوند.",
+      "en": "Weekend holding: positions are closed daily on the funded account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 49,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.42c9d42aca2d7664",
       "namespace": "react",
       "area": "User Dashboard",
@@ -27443,6 +27777,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.42d286055594dbed",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تقسیم سود",
+      "en": "Profit split",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 41,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -27619,7 +27973,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 50,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -27681,6 +28035,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 60,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.43de12400e09c6b8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جای دیگر فاند شده‌ای و برداشت اثبات‌شده داری؟ از مرحلهٔ فاند شروع کن.",
+      "en": "Funded elsewhere with proven payouts? Start at the funded stage.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 60,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -30003,6 +30377,26 @@
       ]
     },
     {
+      "key": "react.49cca5df62d1b231",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "از فهرست پلن‌های منتشرشده که موتور ارزیابی اجرا می‌کند. اگر پلنی تغییر کند، این صفحه هم تغییر می‌کند؛ حساب‌های خریداری‌شده قوانین ثبت‌شدهٔ خود را حفظ می‌کنند.",
+      "en": "From the published plan catalog that the evaluation engine enforces. If a plan changes, this page changes with it; accounts already bought keep their frozen rules.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 63,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.49d432e7cb027f07",
       "namespace": "react",
       "area": "Global Content",
@@ -30335,7 +30729,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 104,
+          "line": 105,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30522,7 +30916,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 55,
+          "line": 56,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -31118,6 +31512,26 @@
       ]
     },
     {
+      "key": "react.4c74b9f8941b4610",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "امضای ورود مالکیت کیف پول را ثابت می‌کند؛ پاداش‌ها فقط به همان کیف پول می‌رود.",
+      "en": "Your sign-in signature proves wallet ownership; rewards go only to that wallet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 24,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.4c7a293841d5ccca",
       "namespace": "react",
       "area": "Global Content",
@@ -31211,7 +31625,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 622,
+          "line": 623,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -31498,7 +31912,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 114,
+          "line": 116,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -31592,7 +32006,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 83,
+          "line": 84,
           "page": "information",
           "route": "/:locale/:page",
           "method": "pick-pipeline"
@@ -32582,7 +32996,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 623,
+          "line": 624,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -33304,7 +33718,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 102,
+          "line": 104,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -34241,10 +34655,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 559,
+          "line": 560,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.538e5de21053482a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بدون هدف سود: حساب از ابتدا فاندشده است.",
+      "en": "No profit target: the account starts funded.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 32,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -34675,7 +35109,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 618,
+          "line": 619,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -35722,7 +36156,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 104,
+          "line": 106,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -36049,8 +36483,15 @@
       "en": "Daily loss limit",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 33,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/rulebook/content.ts",
           "line": 93,
@@ -36162,6 +36603,26 @@
           "component": "apps/web-react/src/cms/seed/toolsCopy.ts",
           "line": 143,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.58a508e77ce73853",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازگشت هزینه",
+      "en": "Fee refund",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 51,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -36360,6 +36821,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 31,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
           "line": 82,
           "page": "purchase",
@@ -36372,6 +36840,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5925a87bfa0aa489",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حداقل تعداد روز معاملاتی ندارد.",
+      "en": "No minimum number of trading days.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 38,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -36871,6 +37359,26 @@
       ]
     },
     {
+      "key": "react.5a024f74e003d35e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید کیف پول",
+      "en": "Wallet verified",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 22,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5a222a6fba4e3851",
       "namespace": "react",
       "area": "Global Content",
@@ -37043,7 +37551,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 667,
+          "line": 668,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -37182,6 +37690,13 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 22,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -38601,6 +39116,26 @@
       ]
     },
     {
+      "key": "react.5e8f34b5e401f35d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پیش از اولین معامله در حساب فاندشده، شرایط را با امضای کیف پول می‌پذیری.",
+      "en": "You accept the funded-trader terms by signing with your wallet before the first funded trade.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 25,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5e9c82b17ae950bf",
       "namespace": "react",
       "area": "Website",
@@ -38714,7 +39249,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 621,
+          "line": 622,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -39457,6 +39992,26 @@
       ]
     },
     {
+      "key": "react.60ad2d1c0d0a587c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "این پلن بازگشت هزینه ندارد.",
+      "en": "This plan has no fee refund.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 52,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.60b2e4b1df3b3ab5",
       "namespace": "react",
       "area": "Website",
@@ -39536,7 +40091,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 46,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -39758,6 +40313,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 180,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.61869fbb4ff9622b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بخش رول‌بوک",
+      "en": "Rulebook section",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 53,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -41342,6 +41917,26 @@
       ]
     },
     {
+      "key": "react.663d61f43322db80",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اخبار پراهمیت: پنجرهٔ ${min} دقیقه‌ای در حساب فاندشده اعمال می‌شود.",
+      "en": "High-impact news: a ${min}-minute window applies on the funded account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 47,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.664e4b8a86ddef7e",
       "namespace": "react",
       "area": "Global Content",
@@ -41496,6 +42091,26 @@
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
           "line": 56,
           "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.66c8e4be11584ff6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بر اساس درخواست",
+      "en": "on demand",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 43,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -41922,7 +42537,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 606,
+          "line": 607,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -42146,6 +42761,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.68a0c4f760ac22a3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نقض",
+      "en": "Breached",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 55,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -42576,7 +43211,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 671,
+          "line": 672,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -42658,6 +43293,26 @@
           "component": "apps/web-react/src/cms/seed/faqContent.ts",
           "line": 12,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.6a2d9550d0bed96c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "آیا احراز هویت لازم است؟",
+      "en": "Do I need identity verification?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 65,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -42785,6 +43440,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 184,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.6a7df951927a27f1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مجاز یا نقض؟",
+      "en": "Allowed or breached?",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 54,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -42964,7 +43639,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 674,
+          "line": 675,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -44016,6 +44691,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 333,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.6cf1189756efcc1d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خرید این چلنج",
+      "en": "Buy this challenge",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 66,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -45599,7 +46294,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 60,
+          "line": 62,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45786,7 +46481,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 737,
+          "line": 738,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -46734,7 +47429,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 77,
+          "line": 79,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -47277,6 +47972,26 @@
       ]
     },
     {
+      "key": "react.7709f661c137c3dd",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "امضا انجام نشد. دوباره تلاش کن.",
+      "en": "The agreement could not be signed. Please try again.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+          "line": 36,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.7710e5bd886edfcd",
       "namespace": "react",
       "area": "Website",
@@ -47650,7 +48365,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 751,
+          "line": 752,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -48270,7 +48985,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 131,
+          "line": 132,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -48664,7 +49379,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 688,
+          "line": 689,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -48804,7 +49519,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 33,
+          "line": 34,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -49525,6 +50240,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 62,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 73,
           "page": "tournament",
@@ -50093,7 +50815,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 738,
+          "line": 739,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -50268,6 +50990,26 @@
       ]
     },
     {
+      "key": "react.7dedee60f0524880",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هر ${n} روز",
+      "en": "every ${n} days",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 43,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.7df7a1ab0c2bc429",
       "namespace": "react",
       "area": "Global Content",
@@ -50367,7 +51109,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 107,
+          "line": 109,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -50427,7 +51169,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 725,
+          "line": 726,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -50447,14 +51189,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 561,
+          "line": 562,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 623,
+          "line": 624,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51155,14 +51897,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 589,
+          "line": 590,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 638,
+          "line": 639,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -51312,6 +52054,26 @@
           "line": 259,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8115724b1fb440e9",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "توافق‌نامهٔ معامله‌گر فاندشده",
+      "en": "Funded-trader agreement",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+          "line": 41,
+          "page": "global",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -51671,7 +52433,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 740,
+          "line": 741,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -52735,7 +53497,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 710,
+          "line": 711,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -52782,7 +53544,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 138,
+          "line": 140,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52802,7 +53564,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 51,
+          "line": 52,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -53169,8 +53931,28 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 75,
+          "line": 77,
           "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.87061785a6e21455",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سود هیچ روزی نباید بیش از ${pct} کل سود باشد.",
+      "en": "No single day may hold more than ${pct} of total profit.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 39,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -53930,7 +54712,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 108,
+          "line": 110,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54017,7 +54799,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 48,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -54184,7 +54966,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 54,
+          "line": 55,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -54762,7 +55544,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 63,
+          "line": 65,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54826,6 +55608,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8ab969608b6dc4ea",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هزینهٔ ارزیابی همراه با چهارمین پاداش بازگردانده می‌شود.",
+      "en": "The evaluation fee is refunded with your 4th reward.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 51,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -55031,6 +55833,26 @@
       ]
     },
     {
+      "key": "react.8b6234e127f755c9",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "نسخه",
+      "en": "version",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+          "line": 47,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8b86499d430ee1fd",
       "namespace": "react",
       "area": "Website",
@@ -55070,7 +55892,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 74,
+          "line": 76,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55110,14 +55932,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 581,
+          "line": 582,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 636,
+          "line": 637,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -55381,6 +56203,26 @@
           "page": "developers",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8c684073ef6cbd2d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نگهداری پوزیشن در آخر هفته مجاز است.",
+      "en": "Holding over the weekend is allowed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 50,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -55705,7 +56547,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 66,
+          "line": 68,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55819,7 +56661,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 49,
+          "line": 50,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56413,7 +57255,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 69,
+          "line": 71,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56533,7 +57375,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 698,
+          "line": 699,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -56669,8 +57511,15 @@
       "en": "Consistency",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
+      "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 39,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutRules.tsx",
           "line": 111,
@@ -56740,7 +57589,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 649,
+          "line": 650,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -57194,8 +58043,15 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 59,
+          "line": 60,
           "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 61,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
@@ -57503,6 +58359,26 @@
           "component": "apps/web-react/src/cms/seed/learning/glossary.ts",
           "line": 405,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.90fe27c2c7ff45c0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "توافق‌نامه",
+      "en": "Agreement",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 23,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -57855,7 +58731,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 83,
+          "line": 85,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58136,7 +59012,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 675,
+          "line": 676,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58516,7 +59392,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 678,
+          "line": 679,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58663,7 +59539,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 750,
+          "line": 751,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -58705,6 +59581,26 @@
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 47,
           "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.943bc013bbe55867",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ثابت: ارزش حساب نباید ${pct} (${usd}) زیر موجودی اولیه برود.",
+      "en": "Static: equity may not fall ${pct} (${usd}) below the starting balance.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 34,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -58903,7 +59799,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 96,
+          "line": 97,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -59238,6 +60134,26 @@
       ]
     },
     {
+      "key": "react.95bff3b1a46a4659",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ اهداف معاملاتی در یک نگاه",
+      "en": "Every trading objective at a glance",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 520,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.95c5508295a331c2",
       "namespace": "react",
       "area": "Global Content",
@@ -59290,7 +60206,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 57,
+          "line": 58,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59350,7 +60266,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 540,
+          "line": 541,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -59630,21 +60546,21 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 594,
+          "line": 595,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 639,
+          "line": 640,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 649,
+          "line": 650,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -59991,7 +60907,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 698,
+          "line": 699,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -60493,7 +61409,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 87,
+          "line": 88,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -60967,7 +61883,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 102,
+          "line": 103,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -61051,6 +61967,26 @@
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.9a3e04910e207695",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "امضا شد",
+      "en": "Signed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+          "line": 47,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -61695,7 +62631,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 569,
+          "line": 570,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -61715,7 +62651,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 55,
+          "line": 56,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62149,7 +63085,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 569,
+          "line": 570,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -62203,7 +63139,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 121,
+          "line": 122,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -62692,6 +63628,26 @@
       ]
     },
     {
+      "key": "react.9ed24c29ddb79283",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک روز ${a} از کل سود است: بالاتر از سقف ${pct}؛ پس هنوز پذیرفته نیست.",
+      "en": "One day holds ${a} of total profit: above the ${pct} cap, so it does not count yet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 58,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.9ef9e3bf6ea0f9f5",
       "namespace": "react",
       "area": "Website",
@@ -63080,6 +64036,26 @@
       ]
     },
     {
+      "key": "react.9f941c707e591dca",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در حال دریافت پلن‌های منتشرشده…",
+      "en": "Loading the published plans…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 28,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.9fbd2235b9f54d19",
       "namespace": "react",
       "area": "Global Content",
@@ -63219,7 +64195,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 113,
+          "line": 115,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63573,7 +64549,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 756,
+          "line": 757,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -64008,7 +64984,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 738,
+          "line": 739,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -65256,7 +66232,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 54,
+          "line": 55,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -65344,6 +66320,26 @@
       ]
     },
     {
+      "key": "react.a4488945ac2bc9eb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مجاز",
+      "en": "Allowed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 55,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a451a3d138d73115",
       "namespace": "react",
       "area": "Global Content",
@@ -65358,6 +66354,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 284,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.a45314f888a4c7ba",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اهداف",
+      "en": "Objectives",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 30,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -65516,7 +66532,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 666,
+          "line": 667,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -65606,6 +66622,26 @@
           "component": "apps/web-react/src/features/governance/governanceModel.ts",
           "line": 58,
           "page": "governance",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.a5659dc006dc45aa",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دنباله‌دار: کف از اوج ارزش حساب، ${pct} (${usd}) پایین‌تر، پیروی می‌کند.",
+      "en": "Trailing: the floor follows the equity peak, ${pct} (${usd}) below it.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 35,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -66206,7 +67242,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 49,
+          "line": 50,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -66284,6 +67320,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a708526bcdb9833b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خلاصهٔ تصویری قوانینی که موتور ارزیابی روی هر پلن اجرا می‌کند. متن رسمی همچنان رول‌بوک است.",
+      "en": "A visual summary of the rules the engine enforces on each plan. The rulebook remains the official text.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 20,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -66411,6 +67467,26 @@
           "page": "loading",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a750202915247575",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اهرم مرجع تا ${x}×، در محدودهٔ سقف هر بازار.",
+      "en": "Leverage up to ${x}× for reference, within each market’s ceiling.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 45,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -66675,7 +67751,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 624,
+          "line": 625,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -67131,7 +68207,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 159,
+          "line": 160,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67506,7 +68582,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 700,
+          "line": 701,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -67874,7 +68950,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 719,
+          "line": 720,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -67994,7 +69070,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 665,
+          "line": 666,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -68054,7 +69130,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 678,
+          "line": 679,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -68382,7 +69458,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 158,
+          "line": 159,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -68511,7 +69587,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 530,
+          "line": 531,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -68912,9 +69988,16 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 32,
+          "line": 33,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 61,
+          "page": "objectives",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
@@ -68923,6 +70006,26 @@
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.add5a9605ff1e904",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "پیش از اولین معامله در حساب فاندشده، شرایط را با امضای کیف پولت می‌پذیری. پاداش‌ها فقط به همین کیف پول پرداخت می‌شوند.",
+      "en": "Before the first trade on a funded account, you accept the terms by signing with your wallet. Rewards are paid only to this wallet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+          "line": 42,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -69770,7 +70873,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 36,
+          "line": 37,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -69990,7 +71093,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 651,
+          "line": 652,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -70350,7 +71453,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 103,
+          "line": 105,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70897,7 +72000,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 732,
+          "line": 733,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -71392,7 +72495,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 84,
+          "line": 86,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -71556,6 +72659,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b409ff1b4018956d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نمونه‌های نمادین با سقف‌های همین پلن.",
+      "en": "Illustrative examples using this plan’s limits.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 54,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -71946,7 +73069,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 131,
+          "line": 132,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72495,7 +73618,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 73,
+          "line": 75,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72519,6 +73642,40 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b710cd6abedca9e2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اهداف معاملاتی",
+      "en": "Trading objectives",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/content.ts",
+          "line": 46,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 31,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 18,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -72966,6 +74123,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 418,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b82a11bf5d983e7f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید مهارت",
+      "en": "Skill verification",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 22,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -74022,6 +75199,26 @@
       ]
     },
     {
+      "key": "react.bac1a6b1fb2a1e6f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مسیرهای دیگر",
+      "en": "Other paths",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 59,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.baf52ffa866ff966",
       "namespace": "react",
       "area": "Global Content",
@@ -74178,6 +75375,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.bb490b93e6bf826b",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "پیش از اولین معامله در حساب فاندشده، توافق‌نامهٔ معامله‌گر فاندشده را از پنل حساب کاربری با کیف پولت امضا کن.",
+      "en": "Before the first trade on a funded account, sign the funded-trader agreement with your wallet in your account panel.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 148,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -74623,6 +75840,13 @@
           "component": "apps/web-react/src/features/company/aboutContent.ts",
           "line": 145,
           "page": "company",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 34,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
@@ -75651,6 +76875,26 @@
       ]
     },
     {
+      "key": "react.bfaecced8d470b7d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند احراز هویت KYC انجام نمی‌دهد؛ کیف پول هویت توست.",
+      "en": "Openfund does not run KYC: the wallet is your identity.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 26,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.bfaf7633ec6cf54d",
       "namespace": "react",
       "area": "Website",
@@ -75863,7 +77107,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 534,
+          "line": 535,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -75903,7 +77147,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 76,
+          "line": 78,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76464,7 +77708,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 724,
+          "line": 725,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78163,7 +79407,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 61,
+          "line": 63,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78277,7 +79521,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 109,
+          "line": 111,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78417,7 +79661,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 525,
+          "line": 526,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -78891,7 +80135,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 132,
+          "line": 133,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79326,7 +80570,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 72,
+          "line": 74,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79746,6 +80990,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ca97f9acb9a80154",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خیر. متن رسمی رول‌بوک است؛ هر کارت به بخش مربوط پیوند دارد.",
+      "en": "No. The rulebook is the official text; each card links to its section.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 64,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -81055,7 +82319,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 746,
+          "line": 747,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -81323,6 +82587,26 @@
       ]
     },
     {
+      "key": "react.cf0ddb93e69b3ae1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ اهداف، در یک نگاه",
+      "en": "Every objective, at a glance",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 19,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.cf221eff59b113a3",
       "namespace": "react",
       "area": "Global Content",
@@ -81522,7 +82806,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 560,
+          "line": 561,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -81823,7 +83107,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 690,
+          "line": 691,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -82211,7 +83495,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 58,
+          "line": 59,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82832,7 +84116,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 67,
+          "line": 69,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83252,7 +84536,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 72,
+          "line": 73,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84095,7 +85379,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 128,
+          "line": 129,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -84135,7 +85419,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 64,
+          "line": 66,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84175,7 +85459,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 747,
+          "line": 748,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -84336,7 +85620,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 684,
+          "line": 685,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -84811,7 +86095,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 71,
+          "line": 73,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84831,7 +86115,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 752,
+          "line": 753,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -85240,7 +86524,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 68,
+          "line": 70,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85574,6 +86858,13 @@
           "method": "bilingual-record"
         },
         {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 27,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
           "line": 508,
           "page": "purchase",
@@ -85582,28 +86873,28 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 556,
+          "line": 557,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 558,
+          "line": 559,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 620,
+          "line": 621,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 736,
+          "line": 737,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -86318,7 +87609,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 82,
+          "line": 84,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -86646,7 +87937,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 574,
+          "line": 575,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -88789,7 +90080,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 544,
+          "line": 545,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -89596,7 +90887,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 681,
+          "line": 682,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90250,7 +91541,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 691,
+          "line": 692,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90354,6 +91645,26 @@
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e51d3f374fec343d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اهرم، اخبار و آخر هفته",
+      "en": "Leverage, news and weekends",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 44,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -90470,10 +91781,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 749,
+          "line": 750,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e5483a40a008ece6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افت ${a} در یک روز و سپس بازگشت: در محدودهٔ سقف روزانهٔ ${pct}.",
+      "en": "A ${a} dip in one day, then recovery: within the ${pct} daily limit.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 56,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -90633,6 +91964,26 @@
           "line": 157,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e5a92cd3b2518595",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "امضای توافق‌نامه",
+      "en": "Sign the agreement",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+          "line": 48,
+          "page": "global",
+          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -91050,7 +92401,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 62,
+          "line": 64,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -91905,7 +93256,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 93,
+          "line": 94,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91952,7 +93303,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 95,
+          "line": 97,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -91972,10 +93323,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 607,
+          "line": 608,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e9593bbcbff02024",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ارزش حساب نباید ${pct} (${usd}) زیر مبنای روز برود. روز ساعت ۰۰:۰۰ UTC+3 بازنشانی می‌شود.",
+      "en": "Equity may not fall ${pct} (${usd}) below the day’s basis. The day resets at 00:00 UTC+3.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 33,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -92834,7 +94205,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 149,
+          "line": 150,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -92914,7 +94285,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 107,
+          "line": 108,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -93008,7 +94379,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 743,
+          "line": 744,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -93938,7 +95309,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 631,
+          "line": 632,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -93994,7 +95365,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 130,
+          "line": 131,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -94181,7 +95552,7 @@
         },
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 115,
+          "line": 116,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -94203,6 +95574,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 353,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ef08706d72eeead5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "خواندن رول‌بوک",
+      "en": "Read the rulebook",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 21,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -94821,7 +96212,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 689,
+          "line": 690,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -95155,7 +96546,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 115,
+          "line": 117,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -95715,7 +97106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 734,
+          "line": 735,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -95775,7 +97166,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 748,
+          "line": 749,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -96410,7 +97801,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 665,
+          "line": 666,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -97351,7 +98742,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 605,
+          "line": 606,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -97369,6 +98760,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 27,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/purchase/purchaseContent.ts",
           "line": 12,
@@ -97453,6 +98851,26 @@
           "component": "apps/web-react/src/data/toolCatalog.ts",
           "line": 122,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f85c3fd275473b48",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دورهٔ پاداش",
+      "en": "Reward cycle",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 42,
+          "page": "objectives",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -97851,7 +99269,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 689,
+          "line": 690,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -98366,7 +99784,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 70,
+          "line": 72,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -98654,7 +100072,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 757,
+          "line": 758,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -98774,7 +100192,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 659,
+          "line": 660,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -99410,7 +100828,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/session/ProfilePanel.tsx",
-          "line": 129,
+          "line": 130,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -100841,6 +102259,26 @@
       ]
     },
     {
+      "key": "react.fff35e07eac9d0a5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "افت ${a} در یک روز: پایین‌تر از سقف روزانهٔ ${pct}؛ حساب رد می‌شود.",
+      "en": "A ${a} dip in one day: below the ${pct} daily limit, the account fails.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+          "line": 57,
+          "page": "objectives",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.fff7e3ca1672f7a2",
       "namespace": "react",
       "area": "Website",
@@ -101001,6 +102439,14 @@
       "route": "/:locale/*",
       "reason": "dynamic-pair",
       "expression": "pickFormat(locale, c.cPayouts.fa, c.cPayouts.en, { have: new Intl.NumberFormat(intlLocale(locale)).format(list.payoutCount), need: new Intl.NumberFormat(intlLocale(locale)).format(list.minPayouts), m:"
+    },
+    {
+      "component": "apps/web-react/src/features/objectives/TradingObjectivesPage.tsx",
+      "line": 94,
+      "page": "objectives",
+      "route": "/:locale/*",
+      "reason": "dynamic-pair",
+      "expression": "pickFormat(locale, v.fa, v.en, values)"
     },
     {
       "component": "apps/web-react/src/features/partners/Coach.tsx",
@@ -101686,8 +103132,8 @@
       "expression": "pick(locale, fa, en)"
     },
     {
-      "component": "apps/web-react/src/session/ProfilePanel.tsx",
-      "line": 48,
+      "component": "apps/web-react/src/session/FundedAgreementCard.tsx",
+      "line": 13,
       "page": "global",
       "route": "/:locale/*",
       "reason": "helper-wrapper-definition",
@@ -101695,7 +103141,15 @@
     },
     {
       "component": "apps/web-react/src/session/ProfilePanel.tsx",
-      "line": 155,
+      "line": 49,
+      "page": "global",
+      "route": "/:locale/*",
+      "reason": "helper-wrapper-definition",
+      "expression": "pick(locale, fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/session/ProfilePanel.tsx",
+      "line": 157,
       "page": "global",
       "route": "/:locale/*",
       "reason": "language-neutral-brand-or-identifier",

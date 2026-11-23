@@ -14,7 +14,7 @@ export const tx = (locale: AppLocale, value: Localized | { fa?: string; en?: str
 export const number = (value: number, locale: Locale, options?: Intl.NumberFormatOptions) =>
   new Intl.NumberFormat(intlLocale(locale), options).format(value)
 /** Public website pages — one authoritative navigation definition (menu order included). */
-export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign' | 'about' | 'contact' | 'apps' | 'certificate-verification' | 'roadmap' | 'developers' | 'tournament' | 'migrate' | 'search'
+export type InfoPage = 'rulebook' | 'transparency' | 'revenue-model' | 'live-market-access' | 'ambassador' | 'coach' | 'markets' | 'challenges' | 'home' | 'faq' | 'referral' | 'tools' | 'learn' | 'whitepaper' | 'governance' | 'checkout' | 'campaign' | 'about' | 'contact' | 'apps' | 'certificate-verification' | 'roadmap' | 'developers' | 'tournament' | 'migrate' | 'search' | 'trading-objectives'
 export const labels = {
   home: text('Home', 'خانه'),
   challenges: text('Trading Challenges', 'چلنج‌های معاملاتی'),
@@ -43,6 +43,7 @@ export const labels = {
   tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند'),
   migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'),
   search: text('Search', 'جستجو'),
+  'trading-objectives': text('Trading objectives', 'اهداف معاملاتی'),
   'certificate-verification': text('Certificate Verification', 'راستی‌آزمایی گواهی'),
   resources: text('Resources', 'منابع'),
   contents: text('On this page', 'در این صفحه'),

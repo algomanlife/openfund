@@ -37,6 +37,8 @@ import { createPaymentWatcher, escalatePendingPayments, reviewOverduePartialOrde
 import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
 import { consoleAdminRoutes } from './admin-console.js'
+import { fundedAgreementRoutes } from './funded-agreement.js'
+import { verifyMessage as verifyMessageAction } from 'viem/actions'
 import { migrationRoutes, migrationAdminRoutes, purgeMigrationFiles } from './migration.js'
 import { createMigrationStorage } from './migration-storage.js'
 import { tournamentRoutes, tournamentAdminRoutes, ensureTournamentSeed, provisionAtStart, sampleEquity } from './tournament.js'
@@ -911,6 +913,12 @@ app.use('/admin/support', supportAdminRoutes({ pool }))
 app.use('/admin/operations', operationsAdminRoutes({ pool, engine, marketData }))
 app.use('/admin/certificates', certificateAdminRoutes({ pool }))
 app.use('/admin/console', consoleAdminRoutes({ pool, engine, audit }))
+/* funded-trader agreement: EOA signatures by local recovery, contract wallets via the RPC client (EIP-1271) */
+app.use(fundedAgreementRoutes({ pool, requireAuth, limit, audit, verify: async ({ address, message, signature }) => {
+  try { if ((await recoverMessageAddress({ message, signature })).toLowerCase() === String(address).toLowerCase()) return true } catch { /* fall through */ }
+  const chainClient = clients.get(42161) ?? [...clients.values()][0]
+  return verifyMessageAction(chainClient, { address, message, signature })
+} }))
 /* Migration to Openfund (ADR 0051): each region keeps its own requests and
    files (MIGRATION_STORAGE_* per runtime); evidence is deleted after retention */
 const migrationStorage = createMigrationStorage(process.env)

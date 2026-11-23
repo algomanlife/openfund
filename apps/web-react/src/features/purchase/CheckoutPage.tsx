@@ -517,6 +517,7 @@ export default function CheckoutPage() {
                 )}
                 {plan?.rules && validSize && <ConditionsPanel locale={locale} rules={plan.rules} size={size} variant={plan.dailyLossVariant} />}
                 {plan?.rules && validSize && <MoreConditions locale={locale} rules={plan.rules} />}
+                {plan?.rules && validSize && <p className="of-co-muted"><Link className="text-link" to={`/${locale}/trading-objectives`}>{t('همهٔ اهداف معاملاتی در یک نگاه', 'Every trading objective at a glance')} <DirArrow kind="forward" /></Link></p>}
               </>
             )}
 

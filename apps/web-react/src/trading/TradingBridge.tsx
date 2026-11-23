@@ -144,7 +144,8 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
           tp_below_mark: L('تیک‌پرافیت باید بالای قیمت مارک باشد.', 'Take profit must be above the mark price.'),
           tp_above_mark: L('تیک‌پرافیت باید زیر قیمت مارک باشد.', 'Take profit must be below the mark price.'),
           margin_too_small: L('کولترال کمتر از حداقل است.', 'Collateral below the minimum.'),
-          target_price_required: L('قیمت تریگر لازم است.', 'Trigger price required.')
+          target_price_required: L('قیمت تریگر لازم است.', 'Trigger price required.'),
+          funded_agreement_required: L('پیش از اولین معامله در حساب فاندشده، توافق‌نامهٔ معامله‌گر فاندشده را از پنل حساب کاربری با کیف پولت امضا کن.', 'Before the first trade on a funded account, sign the funded-trader agreement with your wallet in your account panel.')
         }
         return { ok: false, errors: [reasons[data?.error] || data?.error || L('خطای سرور.', 'Server error.')] }
       },

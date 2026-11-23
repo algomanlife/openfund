@@ -15,6 +15,7 @@ const Whitepaper = lazy(() => import('./features/whitepaper/Whitepaper'))
 import Faq from './features/faq/Faq'
 const Roadmap = lazy(() => import('./features/roadmap/Roadmap'))
 const TournamentPage = lazy(() => import('./features/tournament/TournamentPage'))
+const TradingObjectivesPage = lazy(() => import('./features/objectives/TradingObjectivesPage'))
 const TournamentTermsPage = lazy(() => import('./features/tournament/TournamentTermsPage'))
 const MigratePage = lazy(() => import('./features/migration/MigratePage'))
 const SearchPage = lazy(() => import('./features/search/SearchPage'))
@@ -175,6 +176,7 @@ const routes = [
   { path: '/:locale/apps', element: <Applications /> },
   { path: '/:locale/roadmap', element: <Suspense fallback={null}><Roadmap /></Suspense> },
   { path: '/:locale/tournament', element: <Suspense fallback={null}><TournamentPage /></Suspense> },
+  { path: '/:locale/trading-objectives', element: <Suspense fallback={null}><TradingObjectivesPage /></Suspense> },
   { path: '/:locale/tournament/terms', element: <Suspense fallback={null}><TournamentTermsPage /></Suspense> },
   { path: '/:locale/migrate', element: <Suspense fallback={null}><MigratePage /></Suspense> },
   /* site search results (noindex; ADR 0052) */
