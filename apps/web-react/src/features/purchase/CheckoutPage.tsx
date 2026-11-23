@@ -38,6 +38,8 @@ import DirArrow from '../../ui/DirArrow'
  */
 
 interface PlanInfo { slug: string, name: string, names?: { en: string | null, fa: string | null } | null, accountSizesUsd: number[], priceUsd: Record<string, number>, free: boolean,
+  /* Labs drop (ADR 0055): only present when checkout asked for it with ?lab= */
+  lab?: { number: number, perWalletCap: number },
   /* false when a rule of the plan cannot be enforced yet (server sales gate) */
   available?: boolean, unavailableReasons?: string[],
   /* public rules as the evaluation engine enforces them (server) */
@@ -84,6 +86,11 @@ const ERR: Record<string, [string, string]> = {
   migration_plan_not_eligible: ['این چلنج در مسیر مهاجرت در دسترس نیست.', 'This challenge is not available on the Migration path.'],
   migration_size_above_cap: ['اندازهٔ حساب از سقف تأییدشده بیشتر است.', 'The account size is above your approved cap.'],
   migration_no_coupon: ['در مسیر مهاجرت نمی‌توان کد تخفیف استفاده کرد.', 'A coupon cannot be used on the Migration path.'],
+  lab_sold_out: ['موجودی این دراپ تمام شده است.', 'This drop is sold out.'],
+  lab_not_open: ['فروش این دراپ هنوز شروع نشده است.', 'This drop is not on sale yet.'],
+  lab_closed: ['فروش این دراپ بسته شده است.', 'Sales for this drop have closed.'],
+  lab_wallet_cap: ['به سقف خرید این دراپ برای هر کیف پول رسیده‌ای.', 'You have reached this drop’s limit per wallet.'],
+  lab_no_migration: ['دراپ‌های آزمایشگاه در مسیر مهاجرت در دسترس نیستند.', 'Lab drops are not available on the Migration path.'],
   purchases_disabled: ['خرید در حال حاضر فعال نیست.', 'Purchasing is not enabled right now.'],
   invalid_account_size: ['اندازهٔ حساب معتبر نیست.', 'Invalid account size.'],
   not_purchasable: ['این چلنج قابل خرید نیست.', 'This challenge cannot be purchased.'],
@@ -150,8 +157,11 @@ export default function CheckoutPage() {
   const [methods, setMethods] = useState<{ wallet: boolean, manual: boolean, depay: boolean }>({ wallet: false, manual: false, depay: false })
   const [walletChains, setWalletChains] = useState<WalletChain[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
+  /* Labs (ADR 0055): ?lab=<slug> asks for that drop, which the normal catalog hides */
+  const labParam = params.get('lab')
+  const qty = Math.max(1, Math.min(5, Math.floor(Number(params.get('qty') || 1)) || 1))
   useEffect(() => {
-    void apiFetch('/purchases/plans').then(r => {
+    void apiFetch(labParam ? `/purchases/plans?lab=${encodeURIComponent(labParam)}` : '/purchases/plans').then(r => {
       if (!r.ok) { setLoadError(t('دریافت چلنج‌ها ناموفق بود.', 'Could not load the challenges.')); return }
       setPlans((r.data?.plans || []).filter((p: PlanInfo) => !p.free && p.accountSizesUsd?.length))
       setPaymentsEnabled(!!r.data?.paymentsEnabled)
@@ -178,10 +188,11 @@ export default function CheckoutPage() {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [migrationParam, session.status])
-  const plans = useMemo(() => !allPlans || !migrationPass ? allPlans : allPlans
+  const plans = useMemo(() => !allPlans ? allPlans : labParam ? allPlans.filter(p => p.slug === labParam) : !migrationPass ? allPlans : allPlans
     .filter(p => migrationPass.plans.includes(p.slug))
     .map(p => ({ ...p, accountSizesUsd: p.accountSizesUsd.filter(s => s <= Number(migrationPass.maxSizeUsd)) }))
-    .filter(p => p.accountSizesUsd.length), [allPlans, migrationPass])
+    .filter(p => p.accountSizesUsd.length), [allPlans, migrationPass, labParam])
+  const labPlan = labParam ? allPlans?.find(p => p.slug === labParam && p.lab) ?? null : null
 
   /* ---- selection (URL is the source of truth so a link or refresh restores it) ---- */
   const planSlug = params.get('plan') || ''
@@ -484,6 +495,8 @@ export default function CheckoutPage() {
             {migrationParam && <p className="of-co-note" role="status">{migrationPass
               ? pickFormat(locale, 'مسیر مهاجرت: قیمت عادی، شروع از مرحلهٔ فاند، حداکثر ${size}.', 'Migration path: normal price, starts at the funded stage, up to ${size}.', { size: money(migrationPass.maxSizeUsd) })
               : migrationError ?? t('در حال بررسی مجوز مهاجرت…', 'Checking your migration pass…')}</p>}
+            {labPlan?.lab && <p className="of-co-note" role="status">{pickFormat(locale, 'دراپ آزمایشگاه شمارهٔ ${n}: موجودی محدود، حداکثر ${cap} حساب برای هر کیف پول. هر حساب یک سفارش جداست.', 'Labs drop #${n}: limited inventory, up to ${cap} accounts per wallet. Each account is its own order.', { n: labPlan.lab.number, cap: labPlan.lab.perWalletCap })}</p>}
+            {labParam && plans && !labPlan && <p className="of-co-note" role="status">{t('این دراپ اکنون برای خرید باز نیست.', 'This drop is not open for purchase right now.')}</p>}
             {selectionNotice && <p className="of-co-note" role="status">{t('چلنج انتخاب‌شده در دسترس نیست؛ یکی دیگر انتخاب کن.', 'The selected challenge is not available — choose another.')}</p>}
             {!plans && !loadError && <p className="of-co-muted">…</p>}
             {plans && (
@@ -755,6 +768,7 @@ export default function CheckoutPage() {
             {receipt.ledger && receipt.ledger.transactions.length > 0 && payView && <PaymentStatus t={t} view={{ ...payView, ledger: receipt.ledger }} money={money} dateTime={d => dateTime(d)} />}
             <div className="of-checkout-actions">
               <a className="button" href={`/${locale}/prop/dashboard`}>{t('رفتن به داشبورد', 'Go to Dashboard')}</a>
+              {labParam && qty > 1 && <a className="button" href={`/${locale}/checkout?plan=${encodeURIComponent(planSlug)}&size=${size}&lab=${encodeURIComponent(labParam)}&qty=${qty - 1}`}>{pickFormat(locale, 'خرید حساب بعدی (${n} باقی‌مانده)', 'Buy the next account (${n} left)', { n: qty - 1 })}</a>}
               {receipt.invoice && <a className="button" href={`${backendUrl()}/invoices/${receipt.invoice.id}`} target="_blank" rel="noreferrer">{t('دانلود فاکتور PDF', 'Download invoice PDF')}</a>}
               <button className="of-profile-plainbtn" onClick={() => window.print()}>{t('چاپ رسید', 'Print receipt')}</button>
             </div>

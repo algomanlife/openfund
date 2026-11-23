@@ -32,12 +32,13 @@ import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
-import { purchaseRoutes, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, chainReady, watcherSettle, DEPAY_SIGNED_PATHS } from './purchases.js'
+import { purchaseRoutes, cfg as purchaseConfig, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, chainReady, watcherSettle, DEPAY_SIGNED_PATHS } from './purchases.js'
 import { createPaymentWatcher, escalatePendingPayments, reviewOverduePartialOrders, watcherSettings } from './payment-watcher.js'
 import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
 import { consoleAdminRoutes } from './admin-console.js'
 import { fundedAgreementRoutes } from './funded-agreement.js'
+import { labRoutes } from './labs.js'
 import { verifyMessage as verifyMessageAction } from 'viem/actions'
 import { migrationRoutes, migrationAdminRoutes, purgeMigrationFiles } from './migration.js'
 import { createMigrationStorage } from './migration-storage.js'
@@ -877,6 +878,8 @@ app.put('/portfolio/notes', tradingAuth, limit(60), asyncRoute(async (req, res) 
 app.use('/products/:product', productRoutes({ pool, portfolio, engine, auth: tradingAuth }))
 app.use(referralRoutes({ pool, requireAuth, audit }))
 app.use(purchaseRoutes({ pool, requireAuth, audit, limit, conduct }))
+/* Labs: limited drops (ADR 0055); public counts only */
+app.use(labRoutes({ pool, graceMinutes: () => purchaseConfig().lateGraceMinutes }))
 app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
 app.use(certificateRoutes({ pool, requireAuth }))
 /* Trade Radar + heatmap: read-only public Hyperliquid data, one shared cache and socket */

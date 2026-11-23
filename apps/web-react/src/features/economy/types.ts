@@ -20,7 +20,7 @@ type Money = { count: number; totalUsd: string }
 export interface TransparencyReport {
   generatedAt: string
   sales: { source: string; challengesSold: number; uniqueCustomers: number; grossRevenueUsd: string; refundsUsd: string; chargebacksUsd: string; netRevenueUsd: string
-    averageOrderUsd: string | null; paymentSuccessRate: number | null; paymentSuccessDefinition: string; byAccount: { plan: string; sizeUsd: string; orders: number; grossUsd: string }[]
+    averageOrderUsd: string | null; paymentSuccessRate: number | null; paymentSuccessDefinition: string; byAccount: { plan: string; model?: string | null; labNumber?: number | null; sizeUsd: string; orders: number; grossUsd: string }[]
     periods: Record<'d7' | 'd30' | 'd90', { orders: number; grossUsd: string }>; monthly: { month: string; orders: number; grossUsd: string }[] }
   challenges: { source: string; accountsCreated: number; active: number; failed: number; expired: number; finalEvaluationsPassed: number; fundedSimulated: number; fundedDefinition: string
     accountsWithPayout: number; paidWithdrawals: Money; phase1PassRate: number | null; phase1Completed: number; phase2PassRate: number | null; phase2Completed: number; firstPayoutRate: number | null; rateDefinitions: string }

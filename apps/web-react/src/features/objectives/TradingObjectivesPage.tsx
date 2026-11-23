@@ -67,7 +67,7 @@ const c = {
 }
 
 interface Cycle { key: string; splitPct: number | null; everyDays: number | null }
-interface Rules { phases: number; phaseTargetsPct: number[]; dailyLossPct: number; maxTotalLossPct: number; drawdownMode: string; trailingLockAtProfitPct: number | null
+export interface Rules { phases: number; phaseTargetsPct: number[]; dailyLossPct: number; maxTotalLossPct: number; drawdownMode: string; trailingLockAtProfitPct: number | null
   minTradingDays: number; consistencyPct: number | null; profitSplitPct: number | null; rewardCycles: Cycle[] | null; refundPolicy: string; referenceLeverageX: number | null
   conduct: { news: { windowMin?: number } | null; holding: { mode?: string } | null } }
 interface Plan { slug: string; name: string; names?: { en: string | null; fa: string | null } | null; accountSizesUsd: number[]; free?: boolean; rules?: Rules }
@@ -145,29 +145,7 @@ export default function TradingObjectivesPage() {
             <select value={size} onChange={e => setSize(Number(e.target.value))} dir="ltr">{plan.accountSizesUsd.map(s => <option key={s} value={s}>{usd(s)}</option>)}</select>
           </label>
         </div>
-        <ul className="ob-cards" role="tabpanel">
-          <Card kind="target" title={t(c.target)} anchor="targets" locale={locale} t={t}>
-            {r.phaseTargetsPct.length ? r.phaseTargetsPct.map((p, i) => <p key={i}>{r.phaseTargetsPct.length > 1 ? `${nf(i + 1)}. ` : ''}{f(c.targetBody, { pct: pct(p), usd: usd(size * p / 100) })}</p>) : <p>{t(c.targetNone)}</p>}
-          </Card>
-          <Card kind="daily" title={t(c.daily)} anchor="daily-loss" locale={locale} t={t}><p>{f(c.dailyBody, { pct: pct(r.dailyLossPct), usd: usd(size * r.dailyLossPct / 100) })}</p></Card>
-          <Card kind={r.drawdownMode === 'trailing' ? 'trailing' : 'max'} title={t(c.max)} anchor="maximum-loss" locale={locale} t={t}>
-            <p>{f(r.drawdownMode === 'trailing' ? c.maxTrailing : c.maxStatic, { pct: pct(r.maxTotalLossPct), usd: usd(size * r.maxTotalLossPct / 100) })}</p>
-            {r.drawdownMode === 'trailing' && r.trailingLockAtProfitPct != null && <p>{f(c.maxTrailingLock, { lock: pct(r.trailingLockAtProfitPct) })}</p>}
-          </Card>
-          <Card kind="days" title={t(c.days)} anchor="conditions" locale={locale} t={t}><p>{r.minTradingDays > 0 ? f(c.daysBody, { n: nf(r.minTradingDays) }) : t(c.daysNone)}</p></Card>
-          <Card kind="consistency" title={t(c.consistency)} anchor="payouts" locale={locale} t={t}><p>{r.consistencyPct != null ? f(c.consistencyBody, { pct: pct(r.consistencyPct) }) : t(c.consistencyNone)}</p></Card>
-          {r.profitSplitPct != null && <Card kind="split" title={t(c.split)} anchor="payouts" locale={locale} t={t} style={{ ['--ob-split' as string]: r.profitSplitPct / 100 }}><p>{f(c.splitBody, { pct: pct(Math.max(r.profitSplitPct, ...(r.rewardCycles ?? []).map(x => x.splitPct ?? 0))) })}</p></Card>}
-          {r.rewardCycles?.length ? <Card kind="cycle" title={t(c.cycle)} anchor="payouts" locale={locale} t={t}>
-            <p>{t(c.cycleBody)}</p>
-            <ul className="ob-cycles">{r.rewardCycles.map(x => <li key={x.key}><b dir="ltr">{x.splitPct != null ? pct(x.splitPct) : '—'}</b> · {x.everyDays ? f(c.cycleEvery, { n: nf(x.everyDays) }) : t(c.cycleOnDemand)}</li>)}</ul>
-          </Card> : null}
-          <Card kind="conduct" title={t(c.conduct)} anchor="conduct" locale={locale} t={t}>
-            <p>{r.referenceLeverageX ? f(c.leverage, { x: nf(r.referenceLeverageX) }) : t(c.leverageNone)}</p>
-            <p>{r.conduct?.news ? f(c.news, { min: nf(r.conduct.news.windowMin ?? 0) }) : t(c.newsNone)}</p>
-            <p>{r.conduct?.holding ? t(c.weekend) : t(c.weekendNone)}</p>
-          </Card>
-          <Card kind="refund" title={t(c.refund)} anchor="fees" locale={locale} t={t}><p>{r.refundPolicy === 'fourth-reward' ? t(c.refundBody) : t(c.refundNone)}</p></Card>
-        </ul>
+        <ObjectiveCards r={r} size={size} locale={locale} />
 
         <section className="ob-scenarios" aria-labelledby="ob-scenarios">
           <h2 id="ob-scenarios">{t(c.scenarios)}</h2>
@@ -195,6 +173,38 @@ export default function TradingObjectivesPage() {
       {[[c.q1, c.a1], [c.q2, c.a2], [c.q3, c.a3]].map(([q, a], i) => <details key={i} className="ob-faq"><summary>{t(q)}</summary><p>{t(a)}</p></details>)}
     </section>
   </InformationShell>
+}
+
+/** One card per objective for a rules object (also used by Labs, item M). */
+export function ObjectiveCards({ r, size, locale, role = 'tabpanel' }: { r: Rules; size: number; locale: AppLocale; role?: string }) {
+  const t = (v: L) => tx(locale, v)
+  const f = (v: L, values: Record<string, string | number>) => pickFormat(locale, v.fa, v.en, values)
+  const nf = (n: number, o?: Intl.NumberFormatOptions) => new Intl.NumberFormat(intlLocale(locale), o).format(n)
+  const pct = (n: number) => nf(n / 100, { style: 'percent', maximumFractionDigits: 2 })
+  const usd = (n: number) => nf(n, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+  return <ul className="ob-cards" role={role}>
+    <Card kind="target" title={t(c.target)} anchor="targets" locale={locale} t={t}>
+      {r.phaseTargetsPct.length ? r.phaseTargetsPct.map((p, i) => <p key={i}>{r.phaseTargetsPct.length > 1 ? `${nf(i + 1)}. ` : ''}{f(c.targetBody, { pct: pct(p), usd: usd(size * p / 100) })}</p>) : <p>{t(c.targetNone)}</p>}
+    </Card>
+    <Card kind="daily" title={t(c.daily)} anchor="daily-loss" locale={locale} t={t}><p>{f(c.dailyBody, { pct: pct(r.dailyLossPct), usd: usd(size * r.dailyLossPct / 100) })}</p></Card>
+    <Card kind={r.drawdownMode === 'trailing' ? 'trailing' : 'max'} title={t(c.max)} anchor="maximum-loss" locale={locale} t={t}>
+      <p>{f(r.drawdownMode === 'trailing' ? c.maxTrailing : c.maxStatic, { pct: pct(r.maxTotalLossPct), usd: usd(size * r.maxTotalLossPct / 100) })}</p>
+      {r.drawdownMode === 'trailing' && r.trailingLockAtProfitPct != null && <p>{f(c.maxTrailingLock, { lock: pct(r.trailingLockAtProfitPct) })}</p>}
+    </Card>
+    <Card kind="days" title={t(c.days)} anchor="conditions" locale={locale} t={t}><p>{r.minTradingDays > 0 ? f(c.daysBody, { n: nf(r.minTradingDays) }) : t(c.daysNone)}</p></Card>
+    <Card kind="consistency" title={t(c.consistency)} anchor="payouts" locale={locale} t={t}><p>{r.consistencyPct != null ? f(c.consistencyBody, { pct: pct(r.consistencyPct) }) : t(c.consistencyNone)}</p></Card>
+    {r.profitSplitPct != null && <Card kind="split" title={t(c.split)} anchor="payouts" locale={locale} t={t} style={{ ['--ob-split' as string]: r.profitSplitPct / 100 }}><p>{f(c.splitBody, { pct: pct(Math.max(r.profitSplitPct, ...(r.rewardCycles ?? []).map(x => x.splitPct ?? 0))) })}</p></Card>}
+    {r.rewardCycles?.length ? <Card kind="cycle" title={t(c.cycle)} anchor="payouts" locale={locale} t={t}>
+      <p>{t(c.cycleBody)}</p>
+      <ul className="ob-cycles">{r.rewardCycles.map(x => <li key={x.key}><b dir="ltr">{x.splitPct != null ? pct(x.splitPct) : '—'}</b> · {x.everyDays ? f(c.cycleEvery, { n: nf(x.everyDays) }) : t(c.cycleOnDemand)}</li>)}</ul>
+    </Card> : null}
+    <Card kind="conduct" title={t(c.conduct)} anchor="conduct" locale={locale} t={t}>
+      <p>{r.referenceLeverageX ? f(c.leverage, { x: nf(r.referenceLeverageX) }) : t(c.leverageNone)}</p>
+      <p>{r.conduct?.news ? f(c.news, { min: nf(r.conduct.news.windowMin ?? 0) }) : t(c.newsNone)}</p>
+      <p>{r.conduct?.holding ? t(c.weekend) : t(c.weekendNone)}</p>
+    </Card>
+    <Card kind="refund" title={t(c.refund)} anchor="fees" locale={locale} t={t}><p>{r.refundPolicy === 'fourth-reward' ? t(c.refundBody) : t(c.refundNone)}</p></Card>
+  </ul>
 }
 
 function Card({ kind, title, anchor, locale, t, children, style }: { kind: ObjectiveKind; title: string; anchor: string; locale: AppLocale; t: (v: L) => string; children: ReactNode; style?: React.CSSProperties }) {

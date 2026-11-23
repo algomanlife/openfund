@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import { bindNavigation, closeNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
+import { loadLabsStatus, onLabsStatus } from '../features/labs/labsStatus'
 import '../features/information/information.css'
 import '../features/home/platform-orbs.css'
 import landingBody from './landing-body.html?raw'
@@ -181,6 +182,8 @@ export default function Landing() {
     const refresh = () => { clearTimeout(timer); timer = setTimeout(render, 80) }
     void Promise.all([fetchCmsNavigation(), fetchCmsFooterLinks()]).then(([n, f]) => { nav = n; footer = f; if (active) setDrawerNav(n); refresh() })
     addEventListener('of-language', refresh)
+    loadLabsStatus()
+    const offLabs = onLabsStatus(refresh)
     /* the header's .menu button opens SiteNavDrawer (it owns that click) */
     const click = (event: MouseEvent) => {
       if (navigationClick(event, document)) return
@@ -188,7 +191,7 @@ export default function Landing() {
     const keydown = (event: KeyboardEvent) => { navigationKeyDown(event, document) }
     document.addEventListener('click', click, true)
     document.addEventListener('keydown', keydown, true)
-    return () => { unbind(); unfit(); active = false; clearTimeout(timer); removeEventListener('of-language', refresh); document.removeEventListener('click', click, true); document.removeEventListener('keydown', keydown, true) }
+    return () => { unbind(); unfit(); offLabs(); active = false; clearTimeout(timer); removeEventListener('of-language', refresh); document.removeEventListener('click', click, true); document.removeEventListener('keydown', keydown, true) }
   }, [])
   useEffect(() => {
     /* the route locale is authoritative on entry — sync the stored preference

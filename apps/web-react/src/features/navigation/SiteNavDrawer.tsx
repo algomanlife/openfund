@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import OffCanvas from './OffCanvas'
 import { navigationModel } from '../information/navigation'
+import { onLabsStatus, openLabDrop } from '../labs/labsStatus'
 import type { CmsNavItem } from '../../cms/client'
 import LanguageSelect from '../../i18n/LanguageSelect'
 import { chooseTheme, currentTheme } from '../../theme'
@@ -29,7 +30,8 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
 }) {
   const [open, setOpen] = useState(false)
   const trigger = useRef<HTMLElement | null>(null)
-  const model = useMemo(() => navigationModel(locale, pathname, navItems), [locale, pathname, navItems])
+  const labDrop = useSyncExternalStore(onLabsStatus, openLabDrop, () => null)
+  const model = useMemo(() => navigationModel(locale, pathname, navItems), [locale, pathname, navItems, labDrop])
 
   useEffect(() => {
     const click = (event: MouseEvent) => {

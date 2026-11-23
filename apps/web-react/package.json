@@ -17,7 +17,7 @@
     "prebuild": "npm run build:charts",
     "predev": "npm run build:charts",
     "test:depth": "node --test test/market-depth.test.mjs",
-    "test:website": "node --test test/website-expansion.test.mjs test/seasonal-logo.test.mjs test/roadmap.test.mjs test/wordmark.test.mjs test/dir-arrow.test.mjs test/challenges-menu.test.mjs test/trading-objectives.test.mjs",
+    "test:website": "node --test test/website-expansion.test.mjs test/seasonal-logo.test.mjs test/roadmap.test.mjs test/wordmark.test.mjs test/dir-arrow.test.mjs test/challenges-menu.test.mjs test/trading-objectives.test.mjs test/labs.test.mjs",
     "test:whitepaper": "node --test test/whitepaper.test.mjs",
     "test:terminal": "node --test test/gains-view.test.mjs test/terminal-completion.test.mjs test/terminal-risk.test.mjs test/position-sizing.test.mjs test/chart-protection.test.mjs test/terminal-copy.test.mjs test/radar.test.mjs test/heatmap-layout.test.mjs",
     "test:i18n": "node scripts/i18n-sources.mjs --check && node --test test/geo-locale-boot.test.mjs",

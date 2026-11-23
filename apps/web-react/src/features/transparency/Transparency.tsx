@@ -20,6 +20,17 @@ const MISSING: Record<string, Localized> = {
   operational_reserve: t('Operational reserve not set by management', 'ذخیرهٔ عملیاتی توسط مدیریت تعیین نشده'), risk_reserve: t('Risk reserve not set by management', 'ذخیرهٔ ریسک توسط مدیریت تعیین نشده'),
 }
 
+/* plan labels come from the reviewed dictionary; a raw slug (for example a
+   Labs drop's) is never shown, since it is untranslated operator data */
+const PLAN_LABEL: Record<string, Localized> = {
+  standard: t('Standard', 'استاندارد'), 'one-phase': t('One-phase', 'تک‌مرحله‌ای'), instant: t('Instant', 'آنی'), 'free-trial': t('Free Trial', 'تست رایگان'),
+}
+const DROP_LABEL = t('Drop #${n}', 'دراپ شمارهٔ ${n}')
+export function planLabel(row: { plan: string; labNumber?: number | null }, locale: Locale): string {
+  if (row.labNumber != null) return DROP_LABEL[locale].replace('${n}', int(row.labNumber, locale))
+  return (PLAN_LABEL[row.plan] || labels.challenges)[locale]
+}
+
 function Treasury({ tv, locale }: { tv: TreasuryView; locale: Locale }) {
   if (!tv.configured) return <div className="econ-panel">
     <h3>{t('Treasury wallet not configured', 'کیف پول خزانه پیکربندی نشده است')[locale]}</h3>
@@ -77,7 +88,7 @@ function Report({ r, locale }: { r: TransparencyReport; locale: Locale }) {
       <div className="econ-grid two" style={{ marginTop: 16 }}>
         <div className="econ-panel"><h3>{t('Monthly gross sales', 'فروش ناخالص ماهانه')[locale]}</h3><Bars locale={locale} label="USD" points={s.monthly.map(m => ({ key: m.month, value: Number(m.grossUsd) }))} format={v => usd(v, locale)} /></div>
         <div className="econ-panel"><h3>{t('Sales by account', 'فروش به تفکیک حساب')[locale]}</h3>
-          {s.byAccount.length ? <div className="econ-list">{s.byAccount.map(b => <div key={b.plan + b.sizeUsd}><span dir="ltr">{b.plan} · {usd(b.sizeUsd, locale, 0)}</span><span>{int(b.orders, locale)} · {usd(b.grossUsd, locale)}</span></div>)}</div> : <p className="econ-empty">{t('No confirmed sales yet.', 'هنوز فروش تأییدشده‌ای ثبت نشده است.')[locale]}</p>}
+          {s.byAccount.length ? <div className="econ-list">{s.byAccount.map(b => <div key={b.plan + b.sizeUsd}><span>{planLabel(b, locale)} · <bdi dir="ltr">{usd(b.sizeUsd, locale, 0)}</bdi></span><span>{int(b.orders, locale)} · {usd(b.grossUsd, locale)}</span></div>)}</div> : <p className="econ-empty">{t('No confirmed sales yet.', 'هنوز فروش تأییدشده‌ای ثبت نشده است.')[locale]}</p>}
         </div>
       </div>
       <Source locale={locale}>{s.source}</Source>

@@ -12,7 +12,8 @@ import './information.css'
 import TelegramCommunity from '../community/TelegramCommunity'
 import AlienBannerSlot from '../footer/AlienBannerSlot'
 import SiteNavDrawer from '../navigation/SiteNavDrawer'
-import { bindNavigation, closeNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from './navigation'
+import { bindNavigation, closeNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown, patchLabsBadge } from './navigation'
+import { loadLabsStatus, onLabsStatus } from '../labs/labsStatus'
 import { chooseTheme, currentTheme, decorateThemeToggle } from '../../theme'
 import LanguageSelect from '../../i18n/LanguageSelect'
 import UntranslatedNotice from '../../i18n/UntranslatedNotice'
@@ -112,6 +113,14 @@ export function Chrome({ locale, part, nav = true }: { locale: AppLocale; part: 
   }, [locale, part, nav, dictionary, faDictionary, location.pathname, navItems, footerLinks])
 
   useEffect(() => { if (part === 'header' && host.current) return bindNavigation(host.current) }, [markup, part])
+  /* the open Labs drop badge arrives after the header renders (labsStatus.ts) */
+  useEffect(() => {
+    if (part !== 'header' || !nav || !host.current) return
+    const el = host.current
+    patchLabsBadge(el, locale)
+    loadLabsStatus()
+    return onLabsStatus(() => patchLabsBadge(el, locale))
+  }, [markup, part, nav, locale])
   /* a route change always closes an open mega-menu panel */
   useEffect(() => { if (part === 'header' && host.current) closeNavigation(host.current) }, [location.pathname, location.search, part])
   useEffect(() => { if (part === 'header' && nav && host.current) return fitNavigation(host.current) }, [markup, part, nav])

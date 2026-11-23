@@ -6,7 +6,7 @@
  * click and a route change (tile link or Back) close an open panel. Narrow layouts use the drawer: an
  * accordion per group, two-column icon tiles of at least 44 px, a compact
  * banner. The terminal menu uses the same tiles.
- * Trading challenges (item C, L): a group with six tiles (compare, buy, objectives,
+ * Trading challenges (items C, L, M): a group with seven tiles (compare, buy, objectives, labs,
  * migration, the tournament with a New badge and countdown, rules) and the
  * flamingo migration banner, animated only while the panel is open and static
  * under reduced motion; the drawer shows a compact card with fewer birds. */
@@ -95,7 +95,7 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
           described: (banner?.querySelector('.mega-sr')?.textContent || '').length > 40, inView: r.left >= 0 && r.right <= innerWidth, active: document.querySelector('.resources-toggle[aria-controls="website-challenges"]').getAttribute('aria-expanded') }
       })
       const open = await state()
-      ok(`${loc}: Trading challenges opens a group of six tiles (compare, buy, objectives, migration, tournament, rules)`, c.active === 'true' && c.tiles.join() === 'challenges,checkout,trading-objectives,migrate,tournament,rulebook' && c.icons && c.inView, JSON.stringify(c))
+      ok(`${loc}: Trading challenges opens a group of seven tiles (compare, buy, objectives, labs, migration, tournament, rules)`, c.active === 'true' && c.tiles.join() === 'challenges,checkout,trading-objectives,labs,migrate,tournament,rulebook' && c.icons && c.inView, JSON.stringify(c))
       ok(`${loc}: the tournament tile has a New badge and a compact countdown`, !!c.badge && (Date.now() >= Date.parse('2027-01-04T00:00:00Z') || !!c.countdown), JSON.stringify(c))
       ok(`${loc}: the flamingo banner links to migration with 7 birds, no mark or reflection (owner update), and a hidden description`, c.banner === `/${loc}/migrate` && c.birds === 7 && !c.mark && !c.reflection && c.described, JSON.stringify(c))
       if (motion === 'reduce') ok(`${loc}: reduced motion shows a static frame`, open.name === 'none', JSON.stringify(open))
@@ -127,7 +127,7 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
       /* on /rulebook the group holding the current page starts expanded */
       if (await ch.getAttribute('aria-expanded') === 'false') { await ch.click(); await page.waitForTimeout(250) }
       const f = await page.evaluate(() => { const b = document.querySelector('#website-challenges-drawer .mega-banner.is-compact.is-flamingo'); return { birds: b?.querySelectorAll('.fl-bird').length, h: b?.getBoundingClientRect().height, tiles: document.querySelectorAll('#website-challenges-drawer .mega-tile').length } })
-      ok(`${loc} ${w}: drawer Challenges group has six tiles and a compact flamingo card with fewer birds`, f.tiles === 6 && f.birds === 3 && f.h >= 44, JSON.stringify(f))
+      ok(`${loc} ${w}: drawer Challenges group has seven tiles and a compact flamingo card with fewer birds`, f.tiles === 7 && f.birds === 3 && f.h >= 44, JSON.stringify(f))
       ok(`${loc} ${w}: drawer accordion expands; two-column tiles at least 44 px; compact banner`, before === 'false' && d.expanded === 'true' && d.tiles >= 10 && d.minH >= 44 && d.cols === 2 && d.banner, JSON.stringify(d))
       await page.screenshot({ path: path.join(OUT, `drawer-${loc}-${w}.png`) })
       await page.close()
@@ -137,7 +137,7 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
       await page.goto(`${BASE}/en/prop/trade`, { waitUntil: 'load' }); await page.waitForTimeout(2500)
       await page.locator('.of-terminal-menu-trigger').click(); await page.waitForTimeout(400)
       ok('terminal menu uses the same icon tiles', await page.evaluate(() => { const t = [...document.querySelectorAll('.of-terminal-drawer .mega-tile')]; return t.length >= 8 && t.every(a => a.querySelector('svg')) }))
-      ok('terminal menu shows the Trading challenges tiles and the compact flamingo card', await page.evaluate(() => document.querySelectorAll('.of-terminal-challenges .mega-tile').length === 6 && document.querySelectorAll('.of-terminal-challenges .fl-bird').length === 3))
+      ok('terminal menu shows the Trading challenges tiles and the compact flamingo card', await page.evaluate(() => document.querySelectorAll('.of-terminal-challenges .mega-tile').length === 7 && document.querySelectorAll('.of-terminal-challenges .fl-bird').length === 3))
       await page.close()
     }
     ok('no uncaught page errors', errors.length === 0, errors.slice(0, 3).join(' | '))

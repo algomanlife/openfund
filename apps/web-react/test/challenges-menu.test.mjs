@@ -19,14 +19,14 @@ const { navigationModel } = load('../src/features/information/navigation.ts')
 const { MEGA_BANNERS } = load('../src/features/navigation/megaMenu.ts')
 const schedule = load('../src/features/tournament/schedule.ts')
 
-test('Trading challenges is a mega-menu group with six tiles in the agreed order', () => {
+test('Trading challenges is a mega-menu group with seven tiles in the agreed order', () => {
   for (const locale of ['fa', 'en', 'ar', 'ru', 'zh-CN']) {
     const model = navigationModel(locale, `/${locale}/home`, null, Date.parse('2026-11-22T12:00:00Z'))
     assert.deepEqual(model.primary.map(l => l.route), ['markets', 'rulebook'], 'the challenges link moved into the group')
     const group = model.groups[0]
     assert.equal(group.id, 'website-challenges')
-    assert.deepEqual(group.links.map(l => l.route), ['challenges', 'checkout', 'trading-objectives', 'migrate', 'tournament', 'rulebook'])
-    assert.deepEqual(group.links.map(l => l.href), ['challenges', 'checkout', 'trading-objectives', 'migrate', 'tournament', 'rulebook'].map(r => `/${locale}/${r}`))
+    assert.deepEqual(group.links.map(l => l.route), ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'rulebook'])
+    assert.deepEqual(group.links.map(l => l.href), ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'rulebook'].map(r => `/${locale}/${r}`))
     for (const link of group.links) { assert.ok(link.label, `${locale} ${link.route} label`); assert.ok(link.description, `${locale} ${link.route} description`) }
     assert.equal(group.links[0].icon, 'compare')
     assert.equal(group.banner.kind, 'flamingo')
@@ -34,7 +34,7 @@ test('Trading challenges is a mega-menu group with six tiles in the agreed order
     assert.ok(group.banner.description.length > 40, 'the scene has a screen-reader description')
   }
   const en = navigationModel('en', '/en/home', null, Date.parse('2026-11-22T12:00:00Z')).groups[0]
-  assert.deepEqual(en.links.map(l => l.label), ['Compare challenges', 'Buy a challenge', 'Trading objectives', 'Migration to Openfund', 'Openfund Premium League', 'Trading rules'])
+  assert.deepEqual(en.links.map(l => l.label), ['Compare challenges', 'Buy a challenge', 'Trading objectives', 'Openfund Labs', 'Migration to Openfund', 'Openfund Premium League', 'Trading rules'])
   assert.equal(en.links[0].description, 'Models, sizes and rules side by side.')
   assert.equal(en.banner.title, 'Migration to Openfund')
   assert.equal(en.banner.body, 'Proven funded trader? Skip evaluation with three verified payouts.')
