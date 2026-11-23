@@ -81,6 +81,7 @@ export function publicPlanRules(configuration = {}) {
     minTradingDays: r.minTradingDays, consistencyPct: r.consistencyPct, profitableDaysPer30: r.profitableDaysPer30,
     profitSplitPct: r.profitSplitPct, rewardCycles: r.rewardCycles, inactivityDays: r.inactivityDays,
     timeLimitDays: r.timeLimitDays, trialDaysPerPhase: r.trialDaysPerPhase, refundPolicy: r.refundPolicy,
+    referenceLeverageX: r.referenceLeverageX ?? null, payoutCapPct: num(r.payoutCapPct),
     conduct: { news: k.news || null, holding: k.holding || null, maxOpenRiskPct: k.maxOpenRiskPct ?? null, tradeIdea: k.tradeIdea || null, profitableDayRule: k.profitableDayRule || null },
     dailyLossVariant: null,
   }

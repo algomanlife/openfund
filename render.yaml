@@ -281,6 +281,8 @@ services:
       - key: FUNDED_PAYOUT_V1_FROM
         sync: false             # owner-approved UTC sale cutoff for new funded payout terms
       # ---- Economy / Openfund Treasury (docs/economy/TREASURY.md) ----
+      - key: FUNDED_AGREEMENT_FROM
+        sync: false             # UTC YYYY-MM-DD: funded accounts created from this date sign the funded-trader agreement before trading (ADR 0054); unset = not required
       - key: TREASURY_WALLET_ADDRESS
         sync: false             # PUBLIC treasury address only — unset = "Not configured";
                                 # never a private key or seed phrase

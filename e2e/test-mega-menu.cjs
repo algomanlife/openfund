@@ -75,7 +75,7 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
           described: (banner?.querySelector('.mega-sr')?.textContent || '').length > 40, inView: r.left >= 0 && r.right <= innerWidth, active: document.querySelector('.resources-toggle[aria-controls="website-challenges"]').getAttribute('aria-expanded') }
       })
       const open = await state()
-      ok(`${loc}: Trading challenges opens a group of five tiles (compare, buy, migration, tournament, rules)`, c.active === 'true' && c.tiles.join() === 'challenges,checkout,migrate,tournament,rulebook' && c.icons && c.inView, JSON.stringify(c))
+      ok(`${loc}: Trading challenges opens a group of six tiles (compare, buy, objectives, migration, tournament, rules)`, c.active === 'true' && c.tiles.join() === 'challenges,checkout,trading-objectives,migrate,tournament,rulebook' && c.icons && c.inView, JSON.stringify(c))
       ok(`${loc}: the tournament tile has a New badge and a compact countdown`, !!c.badge && (Date.now() >= Date.parse('2027-01-04T00:00:00Z') || !!c.countdown), JSON.stringify(c))
       ok(`${loc}: the flamingo banner links to migration with 7 birds, no mark or reflection (owner update), and a hidden description`, c.banner === `/${loc}/migrate` && c.birds === 7 && !c.mark && !c.reflection && c.described, JSON.stringify(c))
       if (motion === 'reduce') ok(`${loc}: reduced motion shows a static frame`, open.name === 'none', JSON.stringify(open))

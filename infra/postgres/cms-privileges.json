@@ -291,6 +291,12 @@
    "protected": false,
    "cms": "none"
   },
+  "funded_agreements": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none",
+   "reason": "Operated through the backend admin API and Backstage only; no Directus access."
+  },
   "gov_audit_events": {
    "domain": "governance",
    "protected": true,

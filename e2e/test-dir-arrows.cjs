@@ -30,7 +30,7 @@ const ROUTES = (process.env.DIR_ARROWS_ROUTES || [
   'home', 'challenges', 'markets', 'rulebook', 'transparency', 'revenue-model', 'live-market-access', 'economy',
   'ambassador', 'coach', 'referral', 'faq', 'tools', 'tools/position-size', 'learn', 'learn/glossary',
   'learn/paths/perpetual-futures-mechanics', 'learn/lessons/trading-journal-that-works', 'whitepaper', 'governance',
-  'roadmap', 'about', 'contact', 'apps', 'developers', 'campaign', 'checkout', 'certificate-verification', 'tournament', 'migrate',
+  'roadmap', 'about', 'contact', 'apps', 'developers', 'campaign', 'checkout', 'certificate-verification', 'tournament', 'migrate', 'trading-objectives',
 ].join(',')).split(',')
 
 function inspect() {

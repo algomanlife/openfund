@@ -1,0 +1,100 @@
+/* /:locale/trading-objectives. Motion is transform/opacity only and runs only
+   while its element is live (on screen, tab visible); reduced motion shows
+   the final state. */
+.ob-hero{padding-block:64px 32px}
+.ob-eyebrow{font-size:12px;letter-spacing:.08em;color:var(--mint)}
+.ob-hero h1{font-size:clamp(30px,5vw,52px);line-height:1.3;margin-block:12px;color:var(--white)}
+.ob-intro{max-inline-size:680px;color:var(--body);line-height:1.9}
+.ob-note{font-size:13px;color:var(--muted);line-height:1.9;margin-top:12px}
+:is(.ob-hero,.ob-section) .text-link{min-block-size:48px;align-items:center}
+
+/* progression: a light line advancing from stage to stage */
+.ob-path{list-style:none;margin:32px 0 0;padding:0;position:relative;display:grid;grid-template-columns:repeat(var(--ob-steps,5),minmax(0,1fr));gap:12px}
+.ob-path-line{position:absolute;inset-inline:0;inset-block-start:15px;block-size:2px;background:var(--line)}
+.ob-path-line i{position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--mint));transform-origin:0 50%;transform:scaleX(1)}
+[dir=rtl] .ob-path-line i{transform-origin:100% 50%;background:linear-gradient(270deg,transparent,var(--mint))}
+.ob-stage{position:relative;display:flex;flex-direction:column;gap:6px;min-inline-size:0}
+.ob-node{display:grid;place-items:center;inline-size:32px;block-size:32px;border-radius:50%;background:var(--surface);border:2px solid var(--mint);color:var(--white);font-size:13px;position:relative;z-index:1}
+.ob-stage b{color:var(--white);font-size:14px}
+.ob-stage small{font-size:12px;color:var(--body);line-height:1.7}
+.ob-hero[data-live] .ob-path-line i{animation:ob-advance 6s ease-in-out infinite}
+.ob-hero[data-live] .ob-node{animation:ob-pulse 6s ease-in-out infinite;animation-delay:calc(var(--i,0) * .9s)}
+@keyframes ob-advance{0%{transform:scaleX(0)}70%,100%{transform:scaleX(1)}}
+@keyframes ob-pulse{0%,8%{opacity:.55}14%,100%{opacity:1}}
+
+.ob-section{padding-block:48px;border-top:1px solid var(--line)}
+.ob-section h2{font-size:clamp(24px,3.4vw,34px);margin-bottom:20px}
+.ob-controls{display:flex;flex-wrap:wrap;gap:16px;align-items:end;justify-content:space-between;margin-bottom:20px}
+.ob-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.ob-tabs button{min-block-size:44px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--body);cursor:pointer}
+.ob-tabs button.is-active{border-color:var(--mint);color:var(--white);background:color-mix(in srgb,var(--mint) 12%,transparent)}
+.ob-size{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--body)}
+.ob-size select{min-block-size:44px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--white);font-size:16px}
+
+.ob-cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.ob-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface);display:flex;flex-direction:column;gap:8px;min-inline-size:0}
+.ob-card h3{font-size:16px;color:var(--white)}
+.ob-card p{font-size:13px;color:var(--body);line-height:1.8}
+.ob-card .text-link{margin-top:auto;font-size:13px}
+.ob-cycles{list-style:none;margin:0;padding:0;font-size:13px;color:var(--body);display:grid;gap:4px}
+.ob-art{inline-size:100%;block-size:auto;max-block-size:72px}
+.ob-line{fill:none;stroke:var(--mint);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ob-floor{fill:none;stroke:#e89483;stroke-width:1.6;stroke-dasharray:4 4}
+.ob-cap{fill:none;stroke:#e89483;stroke-width:1.6;stroke-dasharray:4 4}
+.ob-tick{stroke:var(--muted);stroke-width:1}
+.ob-pole{stroke:var(--body);stroke-width:1.4}.ob-flag{fill:var(--mint)}
+.ob-dot{fill:color-mix(in srgb,var(--mint) 70%,transparent)}
+.ob-bar{fill:color-mix(in srgb,var(--mint) 55%,transparent);transform-box:fill-box;transform-origin:50% 100%}
+.ob-bar:nth-child(4){fill:color-mix(in srgb,#e89483 60%,transparent)}
+.ob-track{fill:var(--line)}.ob-fill{fill:var(--mint);transform-box:fill-box;transform-origin:0 50%;transform:scaleX(var(--ob-split,.8))}
+[dir=rtl] .ob-fill{transform-origin:100% 50%}
+.ob-ring{fill:none;stroke:var(--line);stroke-width:2}.ob-arc{fill:none;stroke:var(--mint);stroke-width:2.4;stroke-linecap:round;transform-box:view-box;transform-origin:60px 30px}
+.ob-icon{fill:none;stroke:var(--mint);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ob-unlock{fill:none;stroke:var(--mint);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ob-draw,.ob-trail,.ob-dot,.ob-bar,.ob-reset{transform-box:fill-box}
+.ob-card[data-live] .ob-draw{animation:ob-fade 4s ease-out infinite}
+.ob-card[data-live] .ob-flag{animation:ob-wave 2s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:0 50%}
+.ob-card[data-live] .ob-reset{animation:ob-fade 3s ease-in-out infinite;animation-delay:calc(var(--i,0) * 1s)}
+.ob-card[data-live] .ob-trail{animation:ob-rise 4s ease-in-out infinite alternate}
+.ob-card[data-live] .ob-dot{animation:ob-fade 4.2s ease-out infinite;animation-delay:calc(var(--i,0) * .25s)}
+.ob-card[data-live] .ob-bar{animation:ob-grow 3.6s ease-out infinite;animation-delay:calc(var(--i,0) * .15s)}
+.ob-card[data-live] .ob-fill{animation:ob-split 3.6s ease-out infinite}
+.ob-card[data-live] .ob-arc{animation:ob-spin 6s linear infinite}
+.ob-card[data-live] .ob-unlock{animation:ob-fade 4s ease-in-out infinite;animation-delay:1s}
+@keyframes ob-fade{0%{opacity:.2}40%,100%{opacity:1}}
+@keyframes ob-wave{from{transform:scaleX(1)}to{transform:scaleX(.8)}}
+@keyframes ob-rise{from{transform:translateY(4px)}to{transform:translateY(-4px)}}
+@keyframes ob-grow{0%{transform:scaleY(.2)}50%,100%{transform:scaleY(1)}}
+@keyframes ob-split{0%{transform:scaleX(0)}50%,100%{transform:scaleX(var(--ob-split,.8))}}
+@keyframes ob-spin{to{transform:rotate(360deg)}}
+
+.ob-scenarios{margin-top:36px}
+.ob-scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.ob-scenario{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--surface)}
+.ob-scenario.is-ok{border-color:color-mix(in srgb,var(--mint) 50%,transparent)}
+.ob-scenario.is-bad{border-color:color-mix(in srgb,#e89483 50%,transparent)}
+.ob-scenario svg{inline-size:100%;block-size:auto;max-block-size:70px}
+.ob-sc-start{stroke:var(--line);stroke-width:1}
+.ob-sc-line{fill:none;stroke:var(--mint);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ob-scenario.is-bad .ob-sc-line{stroke:#e89483}
+.ob-sc-floor{stroke:#e89483;stroke-width:1.4;stroke-dasharray:4 4}
+.ob-scenario b{display:block;margin-block:8px 4px;color:var(--white)}
+.ob-scenario p{font-size:13px;color:var(--body);line-height:1.8}
+.ob-buy{margin-top:28px;justify-content:flex-start}
+.ob-buy .button{min-block-size:44px}
+
+.ob-other{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.ob-path-card{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface);color:var(--white);text-decoration:none;min-block-size:44px}
+.ob-path-card span{font-size:13px;color:var(--body)}
+.ob-path-card.is-migrate{border-color:color-mix(in srgb,var(--flamingo) 45%,transparent)}
+.ob-path-card:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.ob-faq{border-block-end:1px solid var(--line);padding-block:14px}
+.ob-faq summary{cursor:pointer;color:var(--white);min-block-size:44px;display:flex;align-items:center}
+.ob-faq p{color:var(--body);line-height:1.9;margin-top:8px}
+
+@media (max-width:760px){.ob-path{grid-template-columns:minmax(0,1fr)}.ob-path-line{inset-inline-start:15px;inset-inline-end:auto;inset-block:0;block-size:auto;inline-size:2px}
+  .ob-path-line i{transform-origin:50% 0;background:linear-gradient(180deg,transparent,var(--mint))}.ob-stage{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .ob-stage small{flex-basis:100%;padding-inline-start:44px}}
+@keyframes ob-advance-v{0%{transform:scaleY(0)}70%,100%{transform:scaleY(1)}}
+@media (max-width:760px){.ob-hero[data-live] .ob-path-line i{animation-name:ob-advance-v}}
+@media (prefers-reduced-motion:reduce){.ob-hero *,.ob-card *{animation:none!important}}

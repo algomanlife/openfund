@@ -102,6 +102,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `CSP_EXTRA_FRAME_SRC` | openfund | optional comma-separated https origins added to `frame-src` for the approved DePay widget |
 
 The application CSP (HTML documents only) always allows `https://widgets.tradingview-widget.com` in `script-src` and `https://www.tradingview-widget.com` in `frame-src` for the terminal's News & Information tab (official TradingView Economic Calendar widget, [ADR 0025](../decisions/0025-prop-leverage-sizing-and-economic-calendar.md)). No environment variable is involved.
+| `FUNDED_AGREEMENT_FROM` | openfund | Optional UTC date (YYYY-MM-DD). Funded accounts created on or after it must sign the funded-trader agreement with their wallet before the first trade ([ADR 0054](../decisions/0054-funded-trader-agreement.md)). Unset = not required, so accounts already trading are never blocked retroactively. Set it once the funded-trader terms are published. |
 | `FUNDED_PAYOUT_V1_FROM` | openfund | Optional owner-approved purchase cutoff (UTC YYYY-MM-DD) for the new funded payout terms. Leave unset until approved sales terms are published. |
 | `TREASURY_WALLET_ADDRESS` | openfund | public Openfund Treasury address read by the backend scheduler. Unset = `Not configured`; allocatable capital stays `Unknown`. Never a private key or seed phrase. See [Treasury](../economy/TREASURY.md). |
 | `TREASURY_CHAIN_ID` | openfund | treasury chain id (supported: 1, 42161, 8453, 11155111, 421614); defaults to `PURCHASE_PAYMENT_CHAIN` |
