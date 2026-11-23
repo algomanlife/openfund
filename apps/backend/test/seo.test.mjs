@@ -35,7 +35,7 @@ test('security.txt (RFC 9116): private advisory contact, policy on the same orig
   assert.match(txt, /^Policy: https:\/\/openfund\.cloud\/en\/bug-bounty$/m)
   assert.match(txt, /^Canonical: https:\/\/openfund\.cloud\/\.well-known\/security\.txt$/m)
   const expires = Date.parse(SECURITY_TXT_EXPIRES)
-  assert.match(txt, new RegExp(`^Expires: ${SECURITY_TXT_EXPIRES.replace(/\./g, '\\.')}$`, 'm'))
+  assert.ok(txt.split('\n').includes(`Expires: ${SECURITY_TXT_EXPIRES}`), 'the expiry line')
   assert.ok(expires - Date.now() > 60 * 86_400_000, 'security.txt expires within 60 days: renew SECURITY_TXT_EXPIRES')
   assert.ok(expires - Date.now() < 366 * 86_400_000, 'RFC 9116 recommends an expiry under a year away')
   assert.ok(PUBLIC_SITE_ROUTES.includes('bug-bounty'), 'the bounty page is in the sitemap')
