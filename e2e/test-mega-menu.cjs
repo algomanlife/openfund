@@ -9,7 +9,12 @@
  * Trading challenges (items C, L, M): a group with seven tiles (compare, buy, objectives, labs,
  * migration, the tournament with a New badge and countdown, rules) and the
  * flamingo migration banner, animated only while the panel is open and static
- * under reduced motion; the drawer shows a compact card with fewer birds. */
+ * under reduced motion; the drawer shows a compact card with fewer birds.
+ * Economy (owner fix 1): the council and whitepaper banners sit side by side
+ * in a 520–560 px column as two equal-height cards with aligned titles and
+ * CTAs, level with the tile list (no empty gap); single-banner groups keep
+ * the 260 px column; in the drawer they are two compact horizontal cards,
+ * stacked when the drawer row is narrower than 420 px. */
 const { chromium } = require('playwright')
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict')
 const BASE = (process.env.TEST_FRONTEND_URL || 'http://localhost:8080').replace(/\/$/, '')
@@ -130,6 +135,64 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
       ok(`${loc} ${w}: drawer Challenges group has seven tiles and a compact flamingo card with fewer birds`, f.tiles === 7 && f.birds === 3 && f.h >= 44, JSON.stringify(f))
       ok(`${loc} ${w}: drawer accordion expands; two-column tiles at least 44 px; compact banner`, before === 'false' && d.expanded === 'true' && d.tiles >= 10 && d.minH >= 44 && d.cols === 2 && d.banner, JSON.stringify(d))
       await page.screenshot({ path: path.join(OUT, `drawer-${loc}-${w}.png`) })
+      await page.close()
+    }
+    /* Economy: two banners side by side (owner fix 1) */
+    for (const [w, h] of [[1280, 800], [1440, 900], [1920, 1080]]) {
+      for (const loc of ['fa', 'en']) {
+        for (const theme of ['dark', 'light']) {
+          const page = await browser.newPage({ viewport: { width: w, height: h }, colorScheme: theme, reducedMotion: 'reduce' }); page.on('pageerror', e => errors.push(String(e)))
+          await page.goto(`${BASE}/${loc}/rulebook`, { waitUntil: 'load' }); await page.waitForTimeout(1200)
+          await page.locator('.openfund-header .resources-toggle[aria-controls="website-economy"]').click(); await page.waitForTimeout(400)
+          const e = await page.evaluate(() => {
+            const box = el => { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height, b: r.bottom } }
+            const banners = [...document.querySelectorAll('#website-economy .mega-banner')].map(box)
+            const titles = [...document.querySelectorAll('#website-economy .mega-banner-copy b')].map(box)
+            const ctas = [...document.querySelectorAll('#website-economy .mega-banner-copy em')].map(box)
+            const column = box(document.querySelector('#website-economy .mega-banners'))
+            const sections = box(document.querySelector('#website-economy .mega-sections'))
+            const panel = document.querySelector('#website-economy').getBoundingClientRect()
+            return { banners, titles, ctas, column, sections, pair: document.querySelector('#website-economy .mega-body').classList.contains('has-banner-pair'),
+              inView: panel.left >= 0 && panel.right <= innerWidth, overflow: document.documentElement.scrollWidth - innerWidth }
+          })
+          const [a, b] = e.banners
+          ok(`${loc} ${theme} ${w}: Economy banners sit side by side in a 520–560 px column`, e.pair && e.banners.length === 2 && Math.abs(a.y - b.y) <= 1 && Math.abs(a.x - b.x) >= a.w && e.column.w >= 520 && e.column.w <= 561, JSON.stringify(e))
+          ok(`${loc} ${theme} ${w}: equal heights and widths; titles and CTAs aligned`, Math.abs(a.h - b.h) <= 1 && Math.abs(a.w - b.w) <= 1 && Math.abs(e.titles[0].y - e.titles[1].y) <= 1 && Math.abs(e.ctas[0].y - e.ctas[1].y) <= 1, JSON.stringify(e))
+          ok(`${loc} ${theme} ${w}: the banners are level with the tile list (no empty gap) and the panel fits`, Math.abs(a.b - e.sections.b) <= 24 && e.inView && e.overflow <= 0, JSON.stringify(e))
+          if (theme === 'dark' && w === 1440) await page.screenshot({ path: path.join(OUT, `mega-economy-pair-${loc}-1440.png`) })
+          await page.close()
+        }
+      }
+    }
+    {
+      /* single-banner groups keep their 260 px banner column */
+      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } }); page.on('pageerror', e => errors.push(String(e)))
+      await page.goto(`${BASE}/en/rulebook`, { waitUntil: 'load' }); await page.waitForTimeout(1200)
+      await page.locator('.openfund-header .resources-toggle[aria-controls="website-resources"]').click(); await page.waitForTimeout(400)
+      const r = await page.evaluate(() => ({ pair: document.querySelector('#website-resources .mega-body').classList.contains('has-banner-pair'), w: document.querySelector('#website-resources .mega-banner').getBoundingClientRect().width }))
+      ok('single-banner groups keep the 260 px banner column', !r.pair && Math.abs(r.w - 260) <= 1, JSON.stringify(r))
+      await page.close()
+    }
+    for (const [w, h, loc] of [[768, 1024, 'en'], [430, 932, 'fa'], [390, 844, 'fa'], [360, 740, 'en']]) {
+      const page = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 768, hasTouch: w < 768 }); page.on('pageerror', e => errors.push(String(e)))
+      await page.goto(`${BASE}/${loc}/rulebook`, { waitUntil: 'load' }); await page.waitForTimeout(1200)
+      await page.locator('.openfund-header .menu').click(); await page.waitForTimeout(400)
+      const acc = page.locator('.of-drawer-accordion[aria-controls="website-economy-drawer"]')
+      if (await acc.getAttribute('aria-expanded') === 'false') { await acc.click(); await page.waitForTimeout(250) }
+      const d = await page.evaluate(() => {
+        const cards = [...document.querySelectorAll('#website-economy-drawer .mega-banner.is-compact')].map(el => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el); return { x: r.left, y: r.top, w: r.width, h: r.height, flex: cs.display, dir: cs.flexDirection } })
+        return { cards, row: document.querySelector('#website-economy-drawer .mega-banner-row').getBoundingClientRect().width, overflow: document.documentElement.scrollWidth - innerWidth }
+      })
+      const [a, b] = d.cards
+      const horizontal = d.cards.every(c => c.flex === 'flex' && c.dir === 'row' && c.h >= 44)
+      /* stacked when the drawer row has less than 420 px */
+      const stacked = d.row < 420
+      ok(`${loc} ${w}: drawer Economy shows two compact horizontal cards, ${stacked ? 'stacked' : 'side by side'}`, d.cards.length === 2 && horizontal && d.overflow <= 0
+        && (stacked ? b.y > a.y + a.h - 1 : Math.abs(a.y - b.y) <= 1 && Math.abs(a.h - b.h) <= 1), JSON.stringify(d))
+      if ([390, 768].includes(w)) {
+        await page.locator('#website-economy-drawer .mega-banner').last().scrollIntoViewIfNeeded(); await page.waitForTimeout(200)
+        await page.screenshot({ path: path.join(OUT, `drawer-economy-${loc}-${w}.png`) })
+      }
       await page.close()
     }
     {

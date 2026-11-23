@@ -10404,5 +10404,62 @@
         "state": "Top of page, light theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
       }
     ]
+  },
+  "mega-menu-banners": {
+    "branch": "agent/claude/mega-menu-banners",
+    "baseCommit": "a1940d77",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T16:26:07+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8294), reduced motion",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "mega-menu-banners/before-economy-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Before (main a1940d7, light): banners stacked in a 260 px column, empty gap in the panel"
+      },
+      {
+        "file": "mega-menu-banners/mega-economy-pair-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, dark: council and whitepaper banners side by side, equal height, level with the tile list"
+      },
+      {
+        "file": "mega-menu-banners/mega-economy-pair-fa-1440.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, Persian RTL dark: the pair mirrored"
+      },
+      {
+        "file": "mega-menu-banners/drawer-economy-en-768.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Tablet drawer: two compact horizontal cards stacked (drawer row under 420 px)"
+      },
+      {
+        "file": "mega-menu-banners/drawer-economy-fa-390.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Phone drawer, Persian: the two compact cards stacked"
+      }
+    ]
   }
 }
