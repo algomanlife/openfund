@@ -12,10 +12,14 @@ import DirArrow from '../../ui/DirArrow'
 
 const shot = (name: string) => `${import.meta.env.BASE_URL}assets/apps/open-trade/${name}.webp`
 /* the real app's title bar (product name and version are identifiers, not copy) */
-/* the captures on this page were taken from Open Trade 0.0.2 beta, so the
-   window frames around them keep that version even when newer builds exist */
-const CAPTURE_VERSION = '0.0.2'
-const WINDOW_TITLE = `${builds.product} · ${CAPTURE_VERSION} BETA`
+/* the captures on this page were taken from Open Trade 0.0.2 beta. The
+   frames are labelled "Captured from 0.0.2" so they are never read as the
+   current release (genuine 0.0.4 captures need a desktop build at the tag) */
+const WINDOW_TITLE = builds.product
+function CapturedFrom() {
+  const locale = useInformationLocale()
+  return <b className="of-seq-captured">{tx(locale, copy.capturedFrom)}</b>
+}
 /** platform + architecture/format name on each download button (identifiers, not copy) */
 const variantName = (r: { platform: Platform; architecture: string; format: string }) =>
   r.platform === 'macos' ? `macOS (${r.architecture === 'arm64' ? 'Apple Silicon' : 'Intel'})`
@@ -103,7 +107,7 @@ function useTilt<T extends HTMLElement>(live: boolean, ref: React.RefObject<T | 
 /** Desktop window chrome around a real capture. */
 function AppWindow({ src, alt = '', className = '', eager = false }: { src: string; alt?: string; className?: string; eager?: boolean }) {
   return <div className={`of-seq-window ${className}`}>
-    <div className="of-seq-bar" aria-hidden="true"><i /><i /><i /><span>{WINDOW_TITLE}</span></div>
+    <div className="of-seq-bar"><i aria-hidden="true" /><i aria-hidden="true" /><i aria-hidden="true" /><span aria-hidden="true">{WINDOW_TITLE}</span><CapturedFrom /></div>
     <img src={src} alt={alt} width={1440} height={960} loading={eager ? 'eager' : 'lazy'} decoding="async" />
   </div>
 }
@@ -146,7 +150,7 @@ function Sequence({ id, frames, label }: { id: string; frames: Frame[]; label: s
   const reveal = (i: number) => (i === active && previous !== null && !(i === 0 && previous === frames.length - 1) ? frames[i].reveal || 'fade' : 'fade')
   return <figure ref={root} className={`of-seq${running ? ' is-running' : ''}`} style={{ ['--frames' as string]: frames.length, ['--step' as string]: `${STEP_SECONDS}s` }}>
     <div className="of-seq-window">
-      <div className="of-seq-bar" aria-hidden="true"><i /><i /><i /><span>{WINDOW_TITLE}</span></div>
+      <div className="of-seq-bar"><i aria-hidden="true" /><i aria-hidden="true" /><i aria-hidden="true" /><span aria-hidden="true">{WINDOW_TITLE}</span><CapturedFrom /></div>
       <div className="of-seq-stage" role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-tab-${active}`}>
         {frames.map((f, i) => <img key={f.src + i} src={f.src} alt={i === active ? f.caption : ''} aria-hidden={i !== active}
           className={i === active ? 'is-active' : i === previous ? 'is-previous' : ''} data-reveal={reveal(i)}

@@ -2,7 +2,8 @@
  * (fine pointers), on click and from the keyboard; a page scrim sits behind
  * it; icon tiles with descriptions, Resources sub-groups and a featured
  * banner per group; the panel stays inside the viewport (LTR and RTL);
- * Escape returns focus to the trigger. Narrow layouts use the drawer: an
+ * Escape returns focus to the trigger; Escape (focus anywhere), an outside
+ * click and a route change (tile link or Back) close an open panel. Narrow layouts use the drawer: an
  * accordion per group, two-column icon tiles of at least 44 px, a compact
  * banner. The terminal menu uses the same tiles.
  * Trading challenges (item C): a group with five tiles (compare, buy,
@@ -51,6 +52,25 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
       ok('Escape closes and returns focus to the trigger', await page.evaluate(() => document.activeElement.getAttribute('aria-controls') === 'website-economy' && document.activeElement.getAttribute('aria-expanded') === 'false'))
       await economy.click(); await page.waitForTimeout(300)
       ok('click opens the panel', await page.evaluate(() => !!document.querySelector('#website-economy').closest('.resources-open')))
+      const isOpen = () => page.evaluate(() => !!document.querySelector('.nav-account.resources-open') || document.documentElement.classList.contains('mega-open'))
+      /* Escape closes wherever focus is (here: focus moved out of the menu) */
+      await page.evaluate(() => { document.activeElement?.blur(); document.body.focus() })
+      await page.keyboard.press('Escape'); await page.waitForTimeout(100)
+      ok('Escape closes the panel even when focus is outside the menu', !(await isOpen()))
+      /* outside click */
+      await economy.click(); await page.waitForTimeout(300)
+      await page.mouse.click(700, 760); await page.waitForTimeout(150)
+      ok('a click outside closes the panel and the scrim', !(await isOpen()))
+      /* route change: a tile link, then Back while a panel is open */
+      await economy.click(); await page.waitForTimeout(300)
+      await page.locator('#website-economy a.mega-tile[href="/en/transparency"]').click()
+      await page.waitForURL(/\/en\/transparency$/); await page.waitForTimeout(400)
+      ok('following a tile link closes the panel', !(await isOpen()))
+      await page.locator('.openfund-header .resources-toggle[aria-controls="website-economy"]').click(); await page.waitForTimeout(300)
+      await page.mouse.move(700, 760); await page.waitForTimeout(450) /* pointer off the header: hover cannot reopen it */
+      ok('the panel is open before Back (the clicked trigger keeps focus)', await isOpen())
+      await page.goBack(); await page.waitForURL(/\/en\/rulebook$/); await page.waitForTimeout(400)
+      ok('a route change (Back) closes the panel', !(await isOpen()))
       await page.close()
     }
     for (const [loc, motion] of [['en', 'no-preference'], ['ar', 'reduce']]) {

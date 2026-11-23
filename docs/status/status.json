@@ -1,7 +1,7 @@
 {
   "$comment": "Canonical Openfund status (docs/status/README.md is generated from this file by `node scripts/docs/status.mjs`; `npm run docs:check` validates both). Every state is recorded per environment. Source states come from Git; runtime states (deployed, enabled, verified, accepted) are valid only with `verifiedAt` and `evidence`. CI never probes production: a stale or wrong runtime claim must be corrected by re-verifying, not by editing the date.",
   "schemaVersion": 1,
-  "updatedAt": "2026-11-21",
+  "updatedAt": "2026-11-23",
   "release": {
     "latestOfficial": {
       "version": "0.8.0",
@@ -28,10 +28,11 @@
           "provider": "render",
           "resource": "srv-dbnfjajrjlhs738m4020",
           "version": "0.8.0",
-          "commit": "0320cf70fa42f0309764f26fc86604f90f2c498e",
-          "official": true,
-          "verifiedAt": "2026-11-20T18:14:00Z",
-          "evidence": "https://openfi.cloud/version"
+          "commit": "9f8b171f8073b25753f8b03bcb1f97cc07b7bdbd",
+          "official": false,
+          "verifiedAt": "2026-11-23T05:50:00Z",
+          "evidence": "https://openfi.cloud/version",
+          "note": "GET /version reports version 0.8.0 at main commit 9f8b171 (Merge pull request #191), which contains the v0.8.0 tag plus #169–#191; it is not an official release build."
         },
         {
           "id": "openfund-backstage",

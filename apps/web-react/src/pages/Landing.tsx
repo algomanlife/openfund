@@ -2,7 +2,7 @@ import AlienBannerSlot from '../features/footer/AlienBannerSlot'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom'
-import { bindNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
+import { bindNavigation, closeNavigation, fitNavigation, renderNavigation, navigationClick, navigationKeyDown } from '../features/information/navigation'
 import '../features/information/information.css'
 import '../features/home/platform-orbs.css'
 import landingBody from './landing-body.html?raw'
@@ -157,6 +157,7 @@ export default function Landing() {
   const isHome = routerLocation.pathname.endsWith("/home")
   const [searchParams] = useSearchParams()
   useEffect(() => {
+    closeNavigation(document) /* an in-page route change closes an open mega-menu panel */
     const section = searchParams.get('section')
     if (!section || !['accounts', 'rules', 'how', 'platform', 'model', 'legal'].includes(section)) return
     const timer = setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' }), 450)
