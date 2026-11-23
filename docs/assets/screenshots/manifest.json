@@ -9945,5 +9945,62 @@
         "state": "Persian, phone: the same label in RTL"
       }
     ]
+  },
+  "terminal-funding": {
+    "branch": "agent/claude/terminal-funding",
+    "baseCommit": "30e4cb2",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T05:28:21+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8093); Playwright e2e/test-terminal-funding.cjs",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Live Gains Network reads (BTC/USD); no funding samples yet, so history shows its empty state",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "terminal-funding/funding-en-1440.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Funding tab with live long/short funding, borrowing, open-interest bar and skew; history empty until hourly samples exist (ranges disabled)"
+      },
+      {
+        "file": "terminal-funding/details-en-1440.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, dark: Details tab with the Gains market specification and the Openfund account limits"
+      },
+      {
+        "file": "terminal-funding/details-fa-1440-light.jpg",
+        "route": "/fa/prop/trade",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian, light, RTL: Details tab"
+      },
+      {
+        "file": "terminal-funding/funding-en-390.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, phone: Funding workspace view"
+      },
+      {
+        "file": "terminal-funding/funding-en-768.jpg",
+        "route": "/en/prop/trade",
+        "viewport": {
+          "width": 768,
+          "height": 844
+        },
+        "state": "English, tablet: Funding tab"
+      }
+    ]
   }
 }
