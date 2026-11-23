@@ -1,5 +1,5 @@
 /**
- * Funded-trader agreement (funded-agreement.js, ADR 0052) on real PostgreSQL
+ * Funded-trader agreement (funded-agreement.js, ADR 0054) on real PostgreSQL
  * with a real wallet key: scope (funded stage, cutoff, no trials or
  * tournaments), the server-issued message, signature and template checks,
  * expiry, one append-only record per account, and the engine guard.

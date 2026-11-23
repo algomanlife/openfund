@@ -3,7 +3,7 @@ import { useAccount, useSignMessage } from 'wagmi'
 import { apiFetch } from './useOpenfundSession'
 import { currentLocale, pick } from '../i18n/locales'
 
-/* Funded-trader agreement (ADR 0052): funded accounts that need the signed
+/* Funded-trader agreement (ADR 0054): funded accounts that need the signed
    terms before their first trade, and the ones already signed. The wallet
    signs the exact message the server issues; nothing else is signed. */
 interface Row { challengeId: string; status: string; required: boolean; signed: boolean; termsVersion: string | null; signedAt: string | null }
