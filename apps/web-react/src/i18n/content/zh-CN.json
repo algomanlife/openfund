@@ -4386,5 +4386,14 @@
   "Who decides the severity?": "由谁决定严重程度？",
   "Yes, with your own accounts and wallets only, without hurting availability for others, and stopping as soon as you find something.": "可以，但只能使用你自己的账户和钱包，不得影响他人使用服务，并在发现问题后立即停止。",
   "Yes. Every bounty payout is recorded as an expense in the “bug bounty” category of the public economy figures.": "是的。每笔漏洞赏金支付都会作为支出记录在公开经济数据的“漏洞赏金”类别中。",
-  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "第三方服务：Gains、LI.FI、DePay、钱包、上游 Directus 以及我们的基础设施服务（我们自己对它们的配置在范围内）"
+  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "第三方服务：Gains、LI.FI、DePay、钱包、上游 Directus 以及我们的基础设施服务（我们自己对它们的配置在范围内）",
+  "$50,000 account": "50,000 美元账户",
+  "Coupon terms": "优惠券条款",
+  "For one challenge purchase": "用于一次挑战购买",
+  "OpenFi Premium League": "OpenFi 超级联赛",
+  "Prizes for ranks 4 to 10": "第 4 至 10 名奖品",
+  "Single use, bound to your wallet": "一次性使用，绑定您的钱包",
+  "The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.": "该账户是发放到您钱包的免费 5 万美元标准挑战。无法寄送的奖品可能以现金等值支付。",
+  "Valid for 90 days from the award": "自颁发之日起 90 天内有效",
+  "off one challenge": "一次挑战折扣"
 }

@@ -4386,5 +4386,14 @@
   "Who decides the severity?": "Кто определяет серьёзность?",
   "Yes, with your own accounts and wallets only, without hurting availability for others, and stopping as soon as you find something.": "Да, только на своих аккаунтах и кошельках, не нарушая доступность сервиса для других и останавливаясь, как только что-то найдёте.",
   "Yes. Every bounty payout is recorded as an expense in the “bug bounty” category of the public economy figures.": "Да. Каждая выплата по баг-баунти учитывается как расход в категории «баг-баунти» в публичных экономических показателях.",
-  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "Сторонние сервисы: Gains, LI.FI, DePay, кошельки, исходный Directus и наши инфраструктурные сервисы (наша собственная настройка этих сервисов входит в область программы)"
+  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "Сторонние сервисы: Gains, LI.FI, DePay, кошельки, исходный Directus и наши инфраструктурные сервисы (наша собственная настройка этих сервисов входит в область программы)",
+  "$50,000 account": "Счёт на $50 000",
+  "Coupon terms": "Условия купона",
+  "For one challenge purchase": "На одну покупку челленджа",
+  "OpenFi Premium League": "Премьер-лига OpenFi",
+  "Prizes for ranks 4 to 10": "Призы за места с 4 по 10",
+  "Single use, bound to your wallet": "Одноразовый, привязан к вашему кошельку",
+  "The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.": "Счёт — бесплатный стандартный челлендж на $50K на ваш кошелёк. Приз, который нельзя доставить, может быть выплачен денежным эквивалентом.",
+  "Valid for 90 days from the award": "Действует 90 дней с момента награждения",
+  "off one challenge": "скидка на один челлендж"
 }

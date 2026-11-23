@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4915,
+    "uniqueRecords": 4921,
     "mappedCalls": 2335,
     "exceptions": 60,
     "validationFindings": 0,
-    "reviewedExclusions": 52
+    "reviewedExclusions": 53
   },
   "editorial": {
     "locales": [
@@ -1261,7 +1261,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 74,
+          "line": 82,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -2063,7 +2063,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 56,
+          "line": 64,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3124,7 +3124,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 29,
+          "line": 30,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4903,7 +4903,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 63,
+          "line": 71,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -6808,7 +6808,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 24,
+          "line": 25,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -7366,7 +7366,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 42,
+          "line": 50,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -7506,7 +7506,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 85,
+          "line": 93,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -10282,7 +10282,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 80,
+          "line": 88,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -10476,7 +10476,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 67,
+          "line": 75,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -11628,6 +11628,26 @@
       ]
     },
     {
+      "key": "react.1a22de220dc22fda",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شرایط کوپن",
+      "en": "Coupon terms",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 39,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1a2764bedc9436e0",
       "namespace": "react",
       "area": "Global Content",
@@ -12060,7 +12080,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 56,
+          "line": 64,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12990,7 +13010,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 37,
+          "line": 45,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14913,6 +14933,26 @@
       ]
     },
     {
+      "key": "react.2220b434c7ce5a82",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تخفیف یک چلنج",
+      "en": "off one challenge",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 38,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.222273ad5a615dfb",
       "namespace": "react",
       "area": "Global Content",
@@ -15452,7 +15492,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 27,
+          "line": 28,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -15512,7 +15552,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 24,
+          "line": 25,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -16941,7 +16981,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 28,
+          "line": 29,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -20176,7 +20216,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 54,
+          "line": 62,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -21429,7 +21469,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 53,
+          "line": 61,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -21469,7 +21509,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 49,
+          "line": 57,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -21804,7 +21844,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 25,
+          "line": 26,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -22159,7 +22199,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 25,
+          "line": 26,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -22666,7 +22706,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 50,
+          "line": 58,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -23617,7 +23657,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 36,
+          "line": 44,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -24399,7 +24439,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 52,
+          "line": 60,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -26001,6 +26041,26 @@
       ]
     },
     {
+      "key": "react.3bca32c7b4209027",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حساب، یک چلنج استاندارد ۵۰ هزار دلاری رایگان روی کیف پول شماست. جایزه‌ای که ارسالش ممکن نباشد، معادل نقدی پرداخت می‌شود.",
+      "en": "The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 37,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3bcb711eafc868e6",
       "namespace": "react",
       "area": "Global Content",
@@ -26791,7 +26851,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 26,
+          "line": 27,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -26951,7 +27011,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 75,
+          "line": 83,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -27412,7 +27472,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 62,
+          "line": 70,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -28729,6 +28789,26 @@
       ]
     },
     {
+      "key": "react.4293e6567ed814ca",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "حساب ۵۰٬۰۰۰ دلاری",
+      "en": "$50,000 account",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 36,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.42aadcf4b6eb9b74",
       "namespace": "react",
       "area": "Global Content",
@@ -29642,7 +29722,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 51,
+          "line": 59,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -29977,6 +30057,26 @@
       ]
     },
     {
+      "key": "react.4628494528e94989",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اعتبار ۹۰ روز از زمان اهدا",
+      "en": "Valid for 90 days from the award",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 42,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.46286ec84a4c62fe",
       "namespace": "react",
       "area": "Website",
@@ -30163,7 +30263,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 26,
+          "line": 27,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33355,7 +33455,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 28,
+          "line": 29,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -34399,7 +34499,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 83,
+          "line": 91,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -34947,7 +35047,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 74,
+          "line": 82,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35034,7 +35134,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 42,
+          "line": 50,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35211,26 +35311,6 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 180,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.52156acc0a4e1c84",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "یک حساب ۵۰ هزار دلاری، به‌علاوهٔ PlayStation 5 Pro، به‌علاوهٔ Grand Theft Auto VI و EA SPORTS FC 27.",
-      "en": "A $50K account, plus a PlayStation 5 Pro, plus Grand Theft Auto VI and EA SPORTS FC 27.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 31,
-          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -35529,7 +35609,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 44,
+          "line": 52,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -36665,7 +36745,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 28,
+          "line": 29,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -37717,7 +37797,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 38,
+          "line": 46,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -38431,6 +38511,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.59c573d6187f8a0e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لیگ برتر OpenFi",
+      "en": "OpenFi Premium League",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 34,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -39483,7 +39583,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 47,
+          "line": 55,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -41934,7 +42034,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 61,
+          "line": 69,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42314,7 +42414,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 60,
+          "line": 68,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42488,7 +42588,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 57,
+          "line": 65,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42568,7 +42668,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 72,
+          "line": 80,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44097,6 +44197,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.6899d248f2ef2f4c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک‌بارمصرف و وابسته به کیف پول شما",
+      "en": "Single use, bound to your wallet",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 40,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -45696,7 +45816,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 38,
+          "line": 46,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -48017,7 +48137,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 66,
+          "line": 74,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -48391,7 +48511,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 33,
+          "line": 32,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49052,7 +49172,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 43,
+          "line": 51,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49152,7 +49272,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 47,
+          "line": 55,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51798,7 +51918,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 73,
+          "line": 81,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51938,7 +52058,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 59,
+          "line": 67,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52412,7 +52532,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 59,
+          "line": 67,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52773,7 +52893,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 41,
+          "line": 49,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53180,7 +53300,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 54,
+          "line": 62,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54090,7 +54210,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 20,
+          "line": 21,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54421,26 +54541,6 @@
       ]
     },
     {
-      "key": "react.833771b5e42f7ab9",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "تخفیف ۳۵٪ خرید: کوپن یک‌بارمصرف وابسته به کیف پول شما با اعتبار ۹۰ روز.",
-      "en": "A 35% purchase discount: a single-use coupon bound to your wallet, valid for 90 days.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 34,
-          "page": "tournament",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.833b9f4ba0a73d57",
       "namespace": "react",
       "area": "Global Content",
@@ -54667,7 +54767,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 71,
+          "line": 79,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55321,7 +55421,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 58,
+          "line": 66,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -55968,7 +56068,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 23,
+          "line": 24,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56208,7 +56308,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 26,
+          "line": 27,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58565,7 +58665,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 76,
+          "line": 84,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59099,7 +59199,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 62,
+          "line": 70,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59233,7 +59333,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 40,
+          "line": 48,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59694,7 +59794,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 41,
+          "line": 49,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59828,7 +59928,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 22,
+          "line": 23,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -60576,7 +60676,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 64,
+          "line": 72,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61370,7 +61470,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 47,
+          "line": 55,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61530,7 +61630,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 214,
+          "line": 233,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -63395,26 +63495,6 @@
       ]
     },
     {
-      "key": "react.98e5fb640107d872",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "حساب ۵۰ هزار دلاری یک چلنج استاندارد رایگان است که به کیف پول برنده صادر می‌شود. اگر ارسال یا پرداخت ممکن نباشد، معادل نقدی پیشنهاد می‌شود.",
-      "en": "The $50K account is a free Standard challenge issued to the winner’s wallet. Where shipping or payment is not possible, a cash equivalent may be offered.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 32,
-          "page": "tournament",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.98e7aa4030af0f16",
       "namespace": "react",
       "area": "Global Content",
@@ -63774,7 +63854,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 72,
+          "line": 80,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63794,7 +63874,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 35,
+          "line": 43,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -67943,7 +68023,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 70,
+          "line": 78,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70092,7 +70172,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 39,
+          "line": 47,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70319,7 +70399,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 30,
+          "line": 31,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72061,7 +72141,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 21,
+          "line": 22,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72456,6 +72536,26 @@
       ]
     },
     {
+      "key": "react.ae79bb89f94dfd09",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جوایز رتبه‌های ۴ تا ۱۰",
+      "en": "Prizes for ranks 4 to 10",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 35,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ae9e4aae31c31c08",
       "namespace": "react",
       "area": "Global Content",
@@ -72635,7 +72735,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 75,
+          "line": 83,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -73719,7 +73819,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 25,
+          "line": 26,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74266,7 +74366,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 47,
+          "line": 55,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78052,7 +78152,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 39,
+          "line": 47,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78386,7 +78486,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 77,
+          "line": 85,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79140,7 +79240,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 24,
+          "line": 25,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80758,7 +80858,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 40,
+          "line": 48,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80885,7 +80985,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 46,
+          "line": 54,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81961,7 +82061,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 325,
+          "line": 344,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -83052,7 +83152,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 57,
+          "line": 65,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83991,6 +84091,26 @@
       ]
     },
     {
+      "key": "react.ccd4af3f7c6c4bfb",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برای خرید یک چلنج",
+      "en": "For one challenge purchase",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 41,
+          "page": "tournament",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ccdd7a75621cdd01",
       "namespace": "react",
       "area": "Website",
@@ -84719,7 +84839,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 87,
+          "line": 95,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85454,7 +85574,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 65,
+          "line": 73,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85681,7 +85801,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 55,
+          "line": 63,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87244,7 +87364,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 45,
+          "line": 53,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87484,7 +87604,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 69,
+          "line": 77,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87664,7 +87784,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 25,
+          "line": 26,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87747,7 +87867,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 56,
+          "line": 64,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88537,7 +88657,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 56,
+          "line": 64,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88625,7 +88745,7 @@
         },
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 54,
+          "line": 62,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -88986,7 +89106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 223,
+          "line": 242,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -91915,7 +92035,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 86,
+          "line": 94,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92262,7 +92382,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 48,
+          "line": 56,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -95344,7 +95464,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 84,
+          "line": 92,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -100544,7 +100664,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 76,
+          "line": 84,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -102132,7 +102252,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 82,
+          "line": 90,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -102714,7 +102834,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 81,
+          "line": 89,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -102915,7 +103035,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 62,
+          "line": 70,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -103157,7 +103277,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 68,
+          "line": 76,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -104138,7 +104258,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 46,
+          "line": 54,
           "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -106021,6 +106141,14 @@
       "route": "/:locale/tools",
       "reason": "language-neutral-brand-or-identifier",
       "text": "USD"
+    },
+    {
+      "component": "apps/web-react/src/features/tournament/prizeWall.tsx",
+      "line": 78,
+      "page": "tournament",
+      "route": "/:locale/*",
+      "reason": "aria-hidden-not-rendered-copy",
+      "text": "OpenFi"
     },
     {
       "component": "apps/web-react/src/features/whitepaper/Whitepaper.tsx",
