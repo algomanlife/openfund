@@ -333,6 +333,25 @@
       }
     },
     {
+      "path": "labs",
+      "view": "labs",
+      "icon": "labs",
+      "title": {
+        "fa": "آزمایشگاه اوپن‌فاند",
+        "en": "Openfund Labs",
+        "ar": "مختبر أوبن‌فاند",
+        "ru": "Openfund Labs",
+        "zh-CN": "Openfund 实验室"
+      },
+      "description": {
+        "fa": "دراپ‌های محدود با قوانین آزمایشی.",
+        "en": "Limited drops with experimental rules.",
+        "ar": "إصدارات محدودة بقواعد تجريبية.",
+        "ru": "Ограниченные дропы с экспериментальными правилами.",
+        "zh-CN": "采用实验性规则的限量发售。"
+      }
+    },
+    {
       "path": "migrate",
       "view": "migrate",
       "icon": "migrate",
