@@ -9732,5 +9732,71 @@
         "state": "English, dark: terms page while no terms are published in the CMS (Directus not running)"
       }
     ]
+  },
+  "site-search": {
+    "branch": "agent/claude/site-search",
+    "baseCommit": "30e4cb2",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T05:16:52+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8093); Playwright e2e/test-site-search.cjs",
+    "cms": "Directus not running; the index holds the bundled routes, developer docs and market symbols only",
+    "marketData": "Public Gains Network market list (496 markets loaded); no fixtures",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "site-search/palette-fa-1440.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Persian, dark: palette opened from the header button; a query typed with Arabic yeh finds Persian page and docs results, highlighted and grouped"
+      },
+      {
+        "file": "site-search/palette-en-dark-390.jpg",
+        "route": "/en/faq",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "English, dark, phone: full-screen palette opened with '/', market results for 'btc'"
+      },
+      {
+        "file": "site-search/palette-fa-light-390.jpg",
+        "route": "/fa/faq",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian, light, phone: full-screen RTL palette, market results"
+      },
+      {
+        "file": "site-search/results-en-768.jpg",
+        "route": "/en/search?q=rules",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "English, tablet: results page with filter tabs and counts"
+      },
+      {
+        "file": "site-search/results-en-1440.jpg",
+        "route": "/en/search?q=rules",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, desktop: results page"
+      },
+      {
+        "file": "site-search/terminal-1440.jpg",
+        "route": "/en/prop/dashboard",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English, terminal header: search trigger beside the theme switch opens the palette"
+      }
+    ]
   }
 }

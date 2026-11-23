@@ -122,6 +122,7 @@ function login() {
 const groups = [
   ['prop', ['users', 'challenges', 'reviews', 'payouts', 'plans', 'entitlements']],
   ['tournamentGroup', ['tournaments']],
+  ['siteSearchGroup', ['siteSearch']],
   ['paymentsGroup', ['paymentOverview', 'paymentSearch', 'payments', 'deposits', 'refunds', 'paymentSettings']],
   ['business', ['coupons', 'support', 'partners', 'commissions']],
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
@@ -785,6 +786,67 @@ function tournamentView(main, data) {
       ['note', areaInput({ maxlength: '1000' }), readOptional], reason()], 'updateAward')) : '—']], awards))
 }
 
+/* ---------- site search analytics (ADR 0052) ---------- */
+function siteSearchAdd(kind, query) {
+  const password = el('input', { required: '', type: 'password', dir: 'ltr', autocomplete: 'current-password' })
+  const submit = el('button', { class: 'primary' }, t('confirm'))
+  const feedback = el('p', { role: 'alert' })
+  const terms = areaInput({ required: '', rows: '4', maxlength: '1200' }); terms.value = query + '\n'
+  const routeBox = textInput({ required: '', dir: 'ltr', maxlength: '80', pattern: '[a-z0-9][a-z0-9/-]*' })
+  const fa = textInput({ required: '', maxlength: '80' }), en = textInput({ required: '', maxlength: '80', dir: 'ltr' })
+  const fields = kind === 'synonym' ? [field('synonymTerms', terms)] : [field('suggestionRoute', routeBox), field('labelFa', fa), field('labelEn', en)]
+  const form = el('form', { on: { submit: async event => {
+    event.preventDefault()
+    submit.disabled = true
+    try {
+      const payload = kind === 'synonym'
+        ? { kind, terms: terms.value.split('\n').map(v => v.trim()).filter(Boolean), password: password.value }
+        : { kind, route: routeBox.value.trim(), labelFa: fa.value.trim(), labelEn: en.value.trim(), password: password.value }
+      await api('siteSearchTerms', payload)
+      dialog.close(); render(); announce('success')
+    } catch (error) { feedback.textContent = errorText(error) } finally { password.value = ''; submit.disabled = false }
+  } } }, el('h2', {}, t(kind === 'synonym' ? 'addSynonym' : 'addSuggestion')), el('p', { class: 'muted' }, technical(query)),
+  fields, field('password', password), feedback, el('div', { class: 'tools' }, button('cancel', () => dialog.close()), submit))
+  dialog.replaceChildren(form)
+  dialog.showModal()
+}
+async function siteSearchView(main, params) {
+  const pick = name => params.get(name) ?? ''
+  const from = textInput({ type: 'date', name: 'from', value: pick('from'), dir: 'ltr' }), to = textInput({ type: 'date', name: 'to', value: pick('to'), dir: 'ltr' })
+  const localeBox = selectInput([['', 'allLocales'], ...['fa', 'en', 'ar', 'ru', 'zh-CN'].map(l => [l, l])]); localeBox.name = 'locale'; localeBox.value = pick('locale')
+  const q = textInput({ name: 'q', value: pick('q'), maxlength: '80' })
+  const current = () => Object.fromEntries([['from', from.value], ['to', to.value], ['locale', localeBox.value], ['q', q.value.trim()]].filter(([, v]) => v))
+  main.append(el('p', { class: 'muted' }, t('siteSearchHint')),
+    el('form', { class: 'filters', on: { submit: e => {
+      e.preventDefault()
+      const next = route('siteSearch', current())
+      if (location.hash === next) render(); else location.hash = next
+    } } }, field('fromDate', from), field('toDate', to), field('language', localeBox), field('queryContains', q), el('button', { class: 'primary' }, t('apply')),
+      el('a', { class: 'button', href: '/api/siteSearch/export.csv?' + new URLSearchParams(current()), download: 'site-search.csv' }, t('exportCsv'))))
+  const data = await api('siteSearch?' + new URLSearchParams(current()))
+  const tot = data.totals ?? {}
+  main.append(table(null, [['searches', r => number(r.searches)], ['withResults', r => number(r.results)], ['zeroResults', r => number(r.searches - r.results)],
+    ['clicks', r => number(r.clicks)], ['distinctQueries', r => number(r.queries)]], [tot]))
+  const trend = data.trend ?? []
+  if (trend.length) {
+    const max = Math.max(1, ...trend.map(r => r.searches)), w = 640, h = 120, step = trend.length > 1 ? w / (trend.length - 1) : 0
+    const pts = key => trend.map((r, i) => `${(i * step).toFixed(1)},${(h - (r[key] / max) * (h - 8)).toFixed(1)}`).join(' ')
+    const NS = 'http://www.w3.org/2000/svg'
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', t('trend'))
+    svg.setAttribute('class', 'trend'); svg.style.width = '100%'; svg.style.maxWidth = w + 'px'
+    for (const [key, color] of [['searches', '#82e7bd'], ['results', '#e89483'], ['clicks', 'currentColor']]) {
+      const line = document.createElementNS(NS, 'polyline'); line.setAttribute('points', pts(key)); line.setAttribute('fill', 'none'); line.setAttribute('stroke', color); line.setAttribute('stroke-width', '2'); svg.append(line)
+    }
+    main.append(el('section', { class: 'panel' }, el('h2', {}, t('trend')), svg,
+      el('p', { class: 'muted' }, `${t('searches')} · ${t('withResults')} · ${t('clicks')}`)),
+    table(null, [['day', r => technical(r.day)], ['searches', r => number(r.searches)], ['withResults', r => number(r.results)], ['clicks', r => number(r.clicks)]], trend.slice(-31).reverse()))
+  }
+  const actions = r => el('div', { class: 'tools' }, button('addSynonym', () => siteSearchAdd('synonym', r.query)), button('addSuggestion', () => siteSearchAdd('suggestion', r.query)))
+  const cols = [['query', r => technical(r.query)], ['language', r => technical(r.locale)], ['searches', r => number(r.searches)], ['withResults', r => number(r.results)],
+    ['clicks', r => number(r.clicks)], ['actions', actions]]
+  main.append(table('topQueries', cols, data.top ?? []), table('zeroResultQueries', cols, data.zeroResults ?? []), table('noClickQueries', cols, data.noClicks ?? []))
+}
+
 /* ---------- plans: draft, preview diff, publish, retire ---------- */
 function plansView(main, rows) {
   main.append(el('div', { class: 'tools' }, button('createPlan', () => planEditor(null, rows[0]), 'primary')),
@@ -1182,6 +1244,8 @@ async function render() {
         contents.append(table('result', [['result', open], ['identity', r => technical(r.id ?? r.reference)],
           ['wallet', r => technical(r.wallet_address ?? r.tx_hash ?? r.payout_ref ?? '—')], ['status', status]], data.rows ?? []))
       }
+    } else if (page === 'siteSearch') {
+      await siteSearchView(contents, new URLSearchParams(query))
     } else await directory(contents, page, new URLSearchParams(query))
   } catch (error) {
     if (renderId === revision) contents.replaceChildren(el('p', { role: 'alert' }, labels[error.message] ? t(error.message) : t('unexpected_error')))

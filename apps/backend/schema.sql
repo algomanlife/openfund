@@ -3086,3 +3086,19 @@ CREATE TABLE IF NOT EXISTS tournament_awards (
 -- tournament certificates (badges on certificates)
 ALTER TABLE certificates DROP CONSTRAINT IF EXISTS certificates_kind_check;
 ALTER TABLE certificates ADD CONSTRAINT certificates_kind_check CHECK (kind IN ('purchase','completion','payout','tournament'));
+
+-- ============================================================
+-- Site search analytics (ADR 0052). Aggregate counts per day, locale and
+-- masked normalized query only: no IP, wallet, user id, cookie or user agent.
+-- Retained for twelve months (site-search.js pruneSearchStats).
+-- ============================================================
+CREATE TABLE IF NOT EXISTS search_query_stats (
+  day       date    NOT NULL,
+  locale    text    NOT NULL CHECK (locale IN ('fa','en','ar','ru','zh-CN')),
+  query     text    NOT NULL CHECK (length(query) BETWEEN 1 AND 80),
+  searches  integer NOT NULL DEFAULT 0 CHECK (searches >= 0),
+  results   integer NOT NULL DEFAULT 0 CHECK (results >= 0 AND results <= searches),
+  clicks    integer NOT NULL DEFAULT 0 CHECK (clicks >= 0),
+  PRIMARY KEY (day, locale, query)
+);
+CREATE INDEX IF NOT EXISTS idx_search_query_stats_day ON search_query_stats (day);

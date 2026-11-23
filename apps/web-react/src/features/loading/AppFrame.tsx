@@ -2,6 +2,7 @@ import { Component, useCallback, useEffect, useLayoutEffect, useRef, useState, t
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom'
 import { BrandedLoading, loadingGate } from './BrandedLoading'
 import { updateSeoHead } from './seoHead'
+import SiteSearch from '../search/SiteSearch'
 import { dirOf, normalizeLocale, pick, type AppLocale } from '../../i18n/locales'
 import { contentLoaded, ensureLocaleContent } from '../../i18n/messages'
 import './loading.css'
@@ -170,6 +171,7 @@ export default function AppFrame() {
       <BrandedLoading />
       <ContentCatalog locale={locale} />
       <ScrollRestoration />
+      {readyLocale === locale && <SiteSearch locale={locale} />}
     </ErrorBoundary>
   )
 }

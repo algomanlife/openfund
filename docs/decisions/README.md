@@ -54,3 +54,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0048 — Pine indicator optimization, lookahead corrections and provenance](0048-pine-indicator-optimization-and-provenance.md)
 - [0049 — Backstage plan administration, challenge decisions and granted entitlements](0049-backstage-plan-administration-and-entitlements.md)
 - [0050 — Openfund Premium League (tournament subsystem)](0050-openfund-premium-league.md)
+- [0052 — Site search and search analytics](0052-site-search.md)

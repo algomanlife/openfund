@@ -22,6 +22,8 @@
       "items": ["Sign-In with Ethereum on Arbitrum One", "Server-side HttpOnly sessions", "Every record scoped to its owner", "Product switch clears the previous view"] },
     { "id": "payments", "title": "Payments", "icon": "bolt", "href": "docs/payments/ORDER_LIFECYCLE.md",
       "items": ["Pay with Wallet and manual transfer", "On-chain verification of token, amount and finality", "Ledger with partial payments and refunds", "Exactly-once challenge activation"] },
+    { "id": "site-search", "title": "Site search", "icon": "compass", "href": "docs/decisions/0052-site-search.md",
+      "items": ["Command palette with Ctrl/⌘+K and /, in five locales", "Persian and Arabic normalization, typo tolerance and synonyms", "Published content only, one index per region", "Anonymous search analytics in Backstage"] },
     { "id": "tournament", "title": "Openfund Premium League", "icon": "award", "href": "docs/decisions/0050-openfund-premium-league.md",
       "items": ["30-day demo competition with daily, maximum-loss and consistency rules", "Email-verified registration, one entry per wallet", "Frozen standings, owner-gated awards and review signals", "Original prize artwork and rank badges"] },
     { "id": "backstage", "title": "Backstage operations", "icon": "sliders", "href": "docs/backstage/OPERATIONS_GUIDE.md",
