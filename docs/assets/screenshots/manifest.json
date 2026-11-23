@@ -10405,6 +10405,63 @@
       }
     ]
   },
+  "header-controls": {
+    "branch": "agent/claude/header-controls",
+    "baseCommit": "a1940d77",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T16:15:59+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8294), reduced motion",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "header-controls/header-website-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "English website header: search, theme, language, Enter Terminal and Connect Wallet at one height"
+      },
+      {
+        "file": "header-controls/header-website-fa-768.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Persian (RTL) tablet header, touch: equal boxes with 44 px hit areas"
+      },
+      {
+        "file": "header-controls/header-website-fa-390.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian phone header: square search and icon-only connect at the phone control height"
+      },
+      {
+        "file": "header-controls/header-terminal-en-1440.jpg",
+        "route": "/en/prop/dashboard",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Terminal header: search matches the 30 px terminal controls"
+      },
+      {
+        "file": "header-controls/header-terminal-fa-390.jpg",
+        "route": "/fa/prop/dashboard",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Persian terminal phone header at the 32 px phone control height"
+      }
+    ]
+  },
   "migration-flight": {
     "branch": "agent/claude/flamingo-flight",
     "baseCommit": "a1940d77",

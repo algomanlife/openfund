@@ -16,6 +16,7 @@
   --hc-px: 12px;         /* inline padding */
   --hc-gap: 8px;         /* gap between controls */
   --hc-fs: 12.5px;       /* label size */
+  --hc-icon: 16px;       /* icon size inside square controls */
   --hc-line: var(--line, #ffffff25);
   display: flex; flex-wrap: nowrap; align-items: center; gap: var(--hc-gap); min-width: 0;
 }
@@ -111,6 +112,31 @@ html[data-theme='light'] :is(.openfund-header .nav-actions, .of-terminal-actions
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(.of-daynight, .nav-cta, .rk-chip):focus-visible,
 :root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-language-select:focus-visible {
   outline: 2px solid var(--mint, #82e7bd); outline-offset: 2px;
+}
+
+/* ---- search: a square of the same height, border, radius and icon ----- */
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-search-trigger {
+  width: var(--hc-h); height: var(--hc-h); min-width: var(--hc-h); min-height: var(--hc-h); max-height: var(--hc-h);
+  border-color: var(--hc-line); border-radius: var(--hc-r); align-self: center;
+}
+:root :is(.openfund-header .nav-actions, .of-terminal-actions) .of-search-trigger:hover { border-color: #82e7bd88; }
+html[data-theme='light'] :is(.openfund-header .nav-actions, .of-terminal-actions) .of-search-trigger:hover { border-color: #12965D88; }
+
+/* ---- touch: 44 px hit area on coarse pointers -------------------------- */
+/* Every header control keeps its visual box (--hc-h) and gains an invisible,
+   centred hit area of at least 44 × 44 px, so touch targets meet the
+   minimum without making one control larger than its neighbours. */
+@media (pointer: coarse) {
+  :root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(
+    .of-search-trigger, .of-daynight, .of-language-select, .nav-cta, .rk-chip, .of-mobile-menu, .menu
+  ) { position: relative; }
+  :root :is(.openfund-header .nav-actions, .of-terminal-actions) :is(
+    .of-search-trigger, .of-daynight, .of-language-select, .nav-cta, .rk-chip, .of-mobile-menu, .menu
+  )::after {
+    content: ''; position: absolute; top: 50%; left: 50%; /* physical: same centre in RTL and LTR */
+    width: max(100%, 44px); height: max(100%, 44px);
+    transform: translate(-50%, -50%); background: transparent;
+  }
 }
 
 /* ---- terminal-specific neighbours keep the shared vertical axis -------- */

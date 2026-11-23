@@ -30,7 +30,9 @@ const dialog = page => page.locator('.of-search-dialog')
       await ready(page, '/fa/rulebook')
       const trigger = page.locator('.openfund-header [data-site-search]').first()
       const box = await trigger.boundingBox()
-      ok('fa: header trigger sits beside the theme toggle, 44 px, labelled', box && box.height >= 44 && await trigger.getAttribute('aria-label') === 'جستجو'
+      /* owner fix 5: the trigger matches the theme toggle's height (44 px touch target via ::after on coarse pointers) */
+      const themeBox = await page.locator('.openfund-header .of-daynight').first().boundingBox()
+      ok('fa: header trigger sits beside the theme toggle, same height, labelled', box && themeBox && Math.abs(box.height - themeBox.height) <= 1 && await trigger.getAttribute('aria-label') === 'جستجو'
         && await page.evaluate(() => document.querySelector('.openfund-header [data-site-search]')?.nextElementSibling?.id === 'theme-toggle'))
       await trigger.click()
       await dialog(page).waitFor()
@@ -93,7 +95,8 @@ const dialog = page => page.locator('.of-search-dialog')
       await page.waitForSelector('.of-search-result', { timeout: 20000 })
       const r = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth - innerWidth, robots: document.querySelector('meta[name=robots]')?.content,
         tabs: document.querySelectorAll('[role=tablist] [role=tab]').length, selected: document.querySelector('[role=tab][aria-selected=true]')?.textContent,
-        small: [...document.querySelectorAll('.of-search-tab, .of-search-result, .of-search-submit, [data-site-search]')].filter(e => e.offsetParent && e.getBoundingClientRect().height < 44).length }))
+        /* the header trigger is sized with its neighbours; test-header-controls.cjs checks its touch target */
+        small: [...document.querySelectorAll('.of-search-tab, .of-search-result, .of-search-submit')].filter(e => e.offsetParent && e.getBoundingClientRect().height < 44).length }))
       ok(`results ${w} px: noindex, tabs, no overflow, 44 px targets`, r.overflow <= 0 && r.robots === 'noindex' && r.tabs >= 2 && /All/.test(r.selected) && r.small === 0, JSON.stringify(r))
       if ([390, 768, 1440].includes(w)) await page.screenshot({ path: path.join(OUT, `site-search-results-en-${w}.png`), fullPage: false })
       if (w === 1440) {
@@ -117,8 +120,9 @@ const dialog = page => page.locator('.of-search-dialog')
       await page.goto(`${BASE}/en/prop/dashboard`, { waitUntil: 'domcontentloaded' })
       const t = page.locator('.of-terminal-actions [data-site-search]')
       await t.waitFor({ timeout: 20000 })
-      const r = await t.evaluate(el => ({ h: el.getBoundingClientRect().height, next: el.nextElementSibling?.classList.contains('of-daynight') }))
-      ok(`terminal ${w} px: trigger beside the theme switch${touch ? ', 44 px on touch' : ''}`, r.next && (!touch || r.h >= 44), JSON.stringify(r))
+      /* the visual box matches its neighbours (test-header-controls.cjs); on touch the 44 px target is the ::after hit area */
+      const r = await t.evaluate(el => ({ h: Math.max(el.getBoundingClientRect().height, parseFloat(getComputedStyle(el, '::after').height) || 0), next: el.nextElementSibling?.classList.contains('of-daynight') }))
+      ok(`terminal ${w} px: trigger beside the theme switch${touch ? ', 44 px target on touch' : ''}`, r.next && (!touch || r.h >= 44), JSON.stringify(r))
       await t.click()
       await dialog(page).waitFor()
       if (w === 1440) await page.screenshot({ path: path.join(OUT, 'site-search-terminal-1440.png') })

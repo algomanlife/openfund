@@ -37,7 +37,7 @@ They run locally against a disposable database with generated test wallets.
 runs the suite. None of this is deployed acceptance. Real-money and real-wallet
 acceptance stay **Blocked** on owner authorization.
 
-| Capability | Status | Launch scope | Acceptance evidence |
+| Capability | Status | Scope |
 | --- | --- | --- | --- |
 | Prop evaluation (purchase via test seam, start, trade, pass, daily/maximum-loss fail, minimum trading days, notifications) | Completed (local; simulated accounts) | Launch-essential | `test-challenge-lifecycle` (pass), `test-journey-acceptance` J2–J5 (fail paths, trading days, inbox), `test-controlled-challenges` (two-step); required checks |
 | Funded-demo progression (final-pass review → funded demo → simulated payout) | Completed (local; simulated settlement only) | Launch-essential | `test-controlled-challenges`, `test-backstage`, `test-payout-operations`; real payout settlement Blocked |
@@ -142,8 +142,8 @@ Canonical capability register reconciled with integrated source `d05b4b88fc2776e
 
 Statuses: **Completed** = implemented within the stated boundary with repository evidence; **In Progress** = partial delivery remains; **Planned** = future work; **Blocked** = explicit prerequisite prevents completion. Completed rows do not imply real-world wallet, network or deployment validation unless separately evidenced.
 
-| Capability | Status | Evidence and practical limits |
-| --- | --- | --- |
+| Capability | Status | Scope |
+| --- | --- | --- | --- |
 | React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
 | Home product gateway and market discovery | Completed | `features/home`, `features/markets`; Gains data with source/freshness handling; instrument counts vary |
 | Home hero card trader journey (evaluation → target → verification flip → funded loop) | Completed (merged #188; deployed on GLOBAL at `main` `9f8b171` (`/version` checked 2026-11-23; not yet in an official release)) | `features/home/heroJourney.ts`; illustration only, no real account data; `e2e/test-hero-journey.cjs`; checked at 360–1920 px, RTL/LTR, dark/light, reduced motion |
@@ -173,7 +173,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Cross-region operation forwarding (one wallet, both regions) | Planned | [ADR 0044](../decisions/0044-cross-region-operation-forwarding.md) proposed: signed forwarding of writes to the account's home region, idempotent, fail-safe when the home region is unreachable. Not implemented |
 | Developer documentation page (`/:locale/developers`) | Completed (merged #186; deployed on GLOBAL at `main` `9f8b171` (`/version` checked 2026-11-23; not yet in an official release); 21/21 browser checks) | Source `docs/developer-portal/`; Directus `developer_docs` with bundled fallback; merge rule enforced by `check-docs-impact.mjs`. Directus collection and seed not yet applied to any environment |
 | Migration to Openfund (proof review, migration pass, funded-stage checkout, private evidence storage) | Completed (merged to `main` via #194 on 2026-11-23; not released or deployed). Requests closed until the owner configures evidence storage | `apps/backend/migration.js`, `migration-storage.js`, `purchases.js`; `features/migration/`; Backstage Migration; `test/migration.test.mjs` ([ADR 0051](../decisions/0051-migration-to-openfund.md)); hero flight rewritten (owner fix 2: data-driven tracks, heads lead in RTL and LTR, depth, landing cycle) on `agent/claude/flamingo-flight`, `test/flamingo-flight.test.mjs`, `e2e/test-migration-flight.cjs` |
-| Site search and search analytics (palette, results page, per-region index, Backstage dashboard) | Completed (merged to `main` via #195 on 2026-11-23; not released or deployed). Synonyms and suggestions need the Directus schema applied (`apply_schema.py`, `register_backstage_editor.py`) | `packages/site-search`; `apps/backend/site-search.js`; `features/search/`; Backstage Search analytics; `test/site-search.test.mjs`, `e2e/test-site-search.cjs` ([ADR 0052](../decisions/0052-site-search.md)) |
+| Site search and search analytics (palette, results page, per-region index, Backstage dashboard) | Completed (merged to `main` via #195 on 2026-11-23; not released or deployed). Synonyms and suggestions need the Directus schema applied (`apply_schema.py`, `register_backstage_editor.py`) | `packages/site-search`; `apps/backend/site-search.js`; `features/search/`; Backstage Search analytics; `test/site-search.test.mjs`, `e2e/test-site-search.cjs`; header control sizing (search square at the shared `--hc-h`, 44 px touch hit areas) on `agent/claude/header-controls`, checked by `e2e/test-header-controls.cjs` ([ADR 0052](../decisions/0052-site-search.md)) |
 | Trading objectives page and funded-trader agreement (catalog-driven cards, rulebook links, wallet-signed acceptance before the first funded order) | Completed (local; branch `agent/claude/trading-objectives`, not merged or deployed). The agreement is enforced only after the owner sets `FUNDED_AGREEMENT_FROM` | `apps/web-react/src/features/objectives/`; `apps/backend/funded-agreement.js`; `apps/web-react/src/session/FundedAgreementCard.tsx`; `e2e/test-trading-objectives.cjs`; ADR 0054 |
 | Labs: limited drops (lab plans with inventory, sale window and per-wallet cap; page, checkout and menu badge) | Completed (merged #199, 2026-11-23; not released or deployed). No drop is published: the owner publishes the first from Backstage plan administration | `apps/backend/labs.js`; `packages/plan-validation`; `apps/web-react/src/features/labs/`; `e2e/test-labs.cjs`; ADR 0055 |
 | Terminal guide (educational popup on the terminal: video steps, fa/en subtitles, "Don't show again" cookie per version, menu entry, Backstage editor and anonymous counters) | Completed (local; branch `agent/claude/terminal-guide`, not merged or deployed). Seed guide `terminal-basics` with two videos recorded from Openfund's own terminal; activation in production needs the CMS schema script run | `apps/web-react/src/features/guide/`; `apps/backend/guides.js`; `apps/backstage/operations/guides.js`; `scripts/guides/record-terminal-guide.mjs`; `e2e/test-terminal-guide.cjs` (119 checks); ADR 0056 |
@@ -190,8 +190,8 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Iran edge (`iran.openfund.cloud` on Liara) | Blocked (dormant: never deployed; the Iran domains belong to the regional runtime, [ADR 0042](../decisions/0042-liara-infrastructure-source-of-truth.md)) | Its workflow targets only `openfund-iran-edge[-staging]` and refuses runtime apps. Same-origin reverse proxy to the Render origin, **not an independent Iranian deployment** ([ADR 0031](../decisions/0031-iran-edge-on-liara.md)). Locally and in CI: contract tests, plus wallet sign-in, cookies, CSRF and trusted client IP through the edge against the real backend. Not verified: Liara apps, the front-proxy client-IP chain, DNS, SSL, wallet sign-in on the host (needs `ALLOWED_DOMAINS`) and reachability from Iranian networks. Staging-first deploy path; country routing disabled. |
 | Referral attribution (invite code and link) | Completed | [Backend](../../apps/backend/referrals.js); server-side, one-time at account creation, self-referral impossible; session-scoped summary; no commission or reward data exists |
 | Referral rewards and partner agreement | Planned | Growth Partner invite codes still carry no reward; the separate Brand Ambassador program below is the only commission-bearing referral |
-| Brand Ambassador program | Completed (local) | [Partner programs](../economy/PARTNER_PROGRAMS.md); reviewed applications with recorded audience evidence, codes only after approval, 10% first-purchase commission recognized in the payment transaction, idempotent, refund/chargeback reversals, recorded payouts, referral dashboard; commission transfers are performed by operators |
-| Verified Trading Coach program | Completed (local) | Independent approval, trader linking and qualification, coach-scoped visibility, 10% of distributable realized live profit only |
+| Brand Ambassador program | Completed (local) | Post-launch | Backend partner tests, `test-backstage-operations` (application review); no browser trader journey |
+| Verified Trading Coach program | Completed (local) | Post-launch | Backend partner tests; no browser journey |
 | Economy › Governance and consolidated Ambassador (IB) page | In Progress (on `main`, released in v0.8.0 and deployed on GLOBAL (`/version` checked 2026-11-23)) | Economy menu: Governance, Ambassador (IB), Transparency, Revenue Model, Live Market Access; one `/{locale}/ambassador` page with independent Brand Ambassador and Verified Coach sections; `/coach` redirects; ar/ru/zh-CN strings added; navigation unit tests updated; real-browser mobile/RTL captures not refreshed in this branch |
 | Live Market Access control plane | Completed (local, execution disabled) | [Live Market Access](../economy/LIVE_MARKET_ACCESS.md); record-based eligibility (10 + 5 paid withdrawals, exact 2× second account, verified coach), explicit-tier approval, verified-capital gate ≥ $500,000, collateral-based risk checks, circuit breaker, idempotent profit split and settlement with reconciliation; only non-monetary sandbox adapters exist |
 | Live order execution on Gains and automatic payout transfers | Blocked | Approved signer/custody design, supported testnet contracts, simulation, security review and explicit management activation required |
@@ -254,8 +254,8 @@ of the Governance page. **Nothing is in production use.** Authoritative policy:
 [GOVERNANCE.md](../../GOVERNANCE.md); documentation: [docs/governance](../governance/README.md);
 decision: [ADR 0017](../decisions/0017-hybrid-governance.md).
 
-| Capability | Status | Scope and evidence |
-| --- | --- | --- |
+| Capability | Status | Scope |
+| --- | --- | --- | --- |
 | Governance policy and economic boundary documents | Completed (documentation) | `GOVERNANCE.md`, `ECONOMY.md`, `docs/governance/`; open decisions listed in GOVERNANCE.md section 18 |
 | Backend rules, schema, service and RBAC | Completed (local) | 10 seats, OFP lifecycle, quorum 7, approval 6 of 10 (7 for amendments), recusal, append-only evidence and hash-chained audit; automated tests, no production data |
 | Financial isolation | Completed (local) | Static and runtime tests: no financial table access, no financial endpoint, financial-shaped fields rejected |
@@ -316,8 +316,8 @@ verification is recorded here; Directus-backed text reaches production after an 
 seed refresh. Authority: [Content architecture](../website/CONTENT_ARCHITECTURE.md),
 [Product rules](PRODUCT_RULES.md).
 
-| Capability | Status | Scope and evidence |
-| --- | --- | --- |
+| Capability | Status | Scope |
+| --- | --- | --- | --- |
 | Hosting, development and placeholder copy removed | Completed (local) | Office-location legal document, hosting notes, provider footer credit, sample/illustrative product notes, placeholder documents and app badges removed; stale Directus rows are suppressed by code guards |
 | Public Team section removed | Completed (local) | Markup, dialog, navigation, footer seed and section routing; old links land on Challenges |
 | A-Book / B-Book labels and routing disclosure | Completed (local) | Exact labels in all five locales; copy states that orders are not routed to live markets in this release |
@@ -330,8 +330,8 @@ seed refresh. Authority: [Content architecture](../website/CONTENT_ARCHITECTURE.
 
 ## Website and distribution refresh
 
-| Capability | Status | Evidence and limits |
-| --- | --- | --- |
+| Capability | Status | Scope |
+| --- | --- | --- | --- |
 | Bilingual public footer and Telegram presentation (PR #42) | Completed within merged source scope; unreleased | Integrated at `d05b4b8`, excluded from official v0.2.0; historical candidate evidence does not verify the new addendum; owner-verified destination missing |
 | Shared Telegram/Discord public controls | Completed (local, unreleased) | Instagram promotion button retired from the public website (`codex/website-launch-content`); Telegram and Discord remain and show a link only when an owner-verified URL is configured. Production runtime configuration has no verified URLs, so both show the unavailable state |
 | Native white light-theme and service-logo corrections | Completed within local refinement scope; UNRELEASED | Exact white public/terminal/Vela/account canvases, text contrast >=4.5, five native service vectors and generated-session profile/purchase/portfolio/journal evidence; preserved dark-green theme; official review/deployment separate; [captures and gates](../reviews/community-theme/DELIVERY.md) |
@@ -346,8 +346,8 @@ seed refresh. Authority: [Content architecture](../website/CONTENT_ARCHITECTURE.
 Merged via #56; released in v0.8.0 and deployed on GLOBAL (`/version` checked 2026-11-23). Evidence
 is local verification against an isolated backend and disposable database.
 
-| Capability | Status | Scope and evidence |
-| --- | --- | --- |
+| Capability | Status | Scope |
+| --- | --- | --- | --- |
 | Share P&L card | Completed (local) | Open and closed positions; PNG export and Web Share where the browser supports files; live refresh observed while open |
 | Real-time feed stability | Completed (local) | Socket watchdog, reconnect, stale marking, row patching; unit tests in `test:depth`; Gains VOB only, no synthesized depth |
 | Persian gateway mobile layout | Completed (local) | `/fa/home` at 320–414px without horizontal overflow; landing e2e updated for phones |
@@ -369,7 +369,7 @@ and wallet. Public release/signing and existing license decisions remain Blocked
 ## Final product refinement
 
 | Capability | Status | Scope |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | Navigation, purchase history and Applications | In Progress | Local review branch. Web Terminal available; verified desktop installers remain pending. [Website evidence](../reviews/final-refinement/website.md) |
 | Position protection controls | In Progress | Isolated Prop simulation acceptance. Production and device acceptance remain open. |
 | Interface content registry | In Progress | Source-derived editing map and published overrides. See the coverage limits in the content evidence. |
@@ -380,8 +380,8 @@ and wallet. Public release/signing and existing license decisions remain Blocked
 
 Branch `agent/claude/v0.6.5-modernization`; **merged via #122 and part of every release since v0.6.5**. Evidence: [delivery record](../reviews/_archive/v0.6.5/DELIVERY.md).
 
-| Capability | Status | Scope / evidence |
-| --- | --- | --- |
+| Capability | Status | Scope |
+| --- | --- | --- | --- |
 | Certificate designs (purchase, completion, payout) | In Progress | Square Openfund designs on the existing issuance/verification APIs; anonymous previews for everyone; `e2e/test-certificates.cjs` 46/46 against the real local API. Production rollout open |
 | Certificate verification page | In Progress | Valid / revoked / not found / unavailable states (network failure never shown as invalid), three-step guide. Local only |
 | Trade Radar (Hyperliquid) | In Progress | Live tape, aggregated positioning, whale positions, leaderboard, wallet profile, alerts; read-only via a shared backend cache. Verified against live Hyperliquid locally; not deployed ([spec](../integrations/HYPERLIQUID_RADAR.md)). Compact table, new-trade highlight, scroll anchoring, wallet copy and phone cards merged via #145, released in v0.8.0 |
