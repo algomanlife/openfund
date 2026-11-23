@@ -52,10 +52,10 @@
       "sort": 50,
       "status": "published",
       "source_path": "docs/development/TESTING.md",
-      "last_verified_commit": "dc0899a",
-      "last_verified_at": "2026-11-21",
+      "last_verified_commit": "a1940d77",
+      "last_verified_at": "2026-11-23",
       "title": "Testing and CI",
-      "body": "Run what your change touches and record the real results, including failures.\n\n```bash\nnpm run docs:check\nnpm run typecheck\nnpm run test:web\nnpm run build:web\nnpm run validate:blueprint\n```\n\nBackend suites write records: use a new database whose name contains `test`, `audit` or `_ci`, start the backend on a private port, and point the tests at it.\n\n```bash\nTEST_BACKEND_URL=http://localhost:8294 npm run test:backend\n```\n\nOn every pull request `ci.yml` runs the documentation contract, type check, unit tests and production build (`Web`), migrations, backend suites and browser journeys (`Backend`), Blueprint validation and the sharded responsive matrix; `release.yml` runs the release package gates. Required checks are owned by the repository owner. Never weaken, skip or delete a check to make it pass; add new validation to `.github/workflows/ci.yml` in the same pull request (see `docs/development/CI.md`)."
+      "body": "Run what your change touches and record the real results, including failures.\n\n```bash\nnpm run docs:check\nnpm run typecheck\nnpm run test:web\nnpm run build:web\nnpm run validate:blueprint\n```\n\nBackend suites write records: use a new database whose name contains `test`, `audit` or `_ci`, start the backend on a private port, and point the tests at it.\n\n```bash\nTEST_BACKEND_URL=http://localhost:8294 npm run test:backend\n```\n\nOn every pull request `ci.yml` runs the documentation contract, type check, unit tests and production build (`Web`), migrations, backend suites and browser journeys (`Backend`), Blueprint validation, the sharded responsive matrix and browser suites such as `test:browser:open-trade-banner`; `release.yml` runs the release package gates. Required checks are owned by the repository owner. Never weaken, skip or delete a check to make it pass; add new validation to `.github/workflows/ci.yml` in the same pull request (see `docs/development/CI.md`)."
     },
     {
       "slug": "releases",

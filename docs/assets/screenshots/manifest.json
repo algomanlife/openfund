@@ -10404,5 +10404,87 @@
         "state": "Top of page, light theme, reduced motion (static scan frame), published default rewards, empty hall of fame, anonymous"
       }
     ]
+  },
+  "open-trade-banner": {
+    "branch": "agent/claude/open-trade-banner",
+    "baseCommit": "a1940d77",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T16:41:02+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8294)",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "open-trade-banner/before-resources-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Before (main a1940d7): download arrow over the chart; tall empty gap",
+        "sha256": "3d634383aa0e2a62701a460d7ae15dfe38f4c8647122a85631ca4c5625b4bae3"
+      },
+      {
+        "file": "open-trade-banner/resources-banner-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, dark: button outside the window, larger art, five platform badges",
+        "sha256": "5790970a33579f7a9bba774eef8d3a7c8d5cb6adf0e005015dd48989ff8fcf31"
+      },
+      {
+        "file": "open-trade-banner/resources-banner-fa-1440.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, Persian RTL dark",
+        "sha256": "c0d59409f2d57a9523f5ea575fbb7503b83f97fd9b6c3df297019159c5870df9"
+      },
+      {
+        "file": "open-trade-banner/drawer-resources-banner-en-768.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Tablet drawer: compact horizontal card with the badge row",
+        "sha256": "1f529db3df1a6635c1c4f28ba8fbf8d45e4012db39fd2007ea8e77cd5182323a"
+      },
+      {
+        "file": "open-trade-banner/drawer-resources-banner-fa-390.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Phone drawer, Persian",
+        "sha256": "6121f867b8bb93ddde7fb502ab11a76601348073c2a4541a497344655acb0126"
+      },
+      {
+        "file": "open-trade-banner/resources-banner-pulse-en.webm",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "About 6-second recording (Playwright video) of the download button's pulse, LTR",
+        "sha256": "cd67cef5717f8fa60d3e597f7ad7f31ef320966aca97f0964ee0a378e89e93f5"
+      },
+      {
+        "file": "open-trade-banner/resources-banner-pulse-fa.webm",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "About 6-second recording (Playwright video) of the download button's pulse, RTL",
+        "sha256": "4125999f6e767e167b975e07877bc98a609e446697dc6719bde63e6e3023cc50"
+      }
+    ]
   }
 }

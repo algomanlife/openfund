@@ -4386,5 +4386,7 @@
   "Who decides the severity?": "由谁决定严重程度？",
   "Yes, with your own accounts and wallets only, without hurting availability for others, and stopping as soon as you find something.": "可以，但只能使用你自己的账户和钱包，不得影响他人使用服务，并在发现问题后立即停止。",
   "Yes. Every bounty payout is recorded as an expense in the “bug bounty” category of the public economy figures.": "是的。每笔漏洞赏金支付都会作为支出记录在公开经济数据的“漏洞赏金”类别中。",
-  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "第三方服务：Gains、LI.FI、DePay、钱包、上游 Directus 以及我们的基础设施服务（我们自己对它们的配置在范围内）"
+  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "第三方服务：Gains、LI.FI、DePay、钱包、上游 Directus 以及我们的基础设施服务（我们自己对它们的配置在范围内）",
+  "Desktop app for macOS, Windows and Linux; mobile coming soon.": "桌面应用支持 macOS、Windows 和 Linux；移动版即将推出。",
+  "Platforms": "平台"
 }

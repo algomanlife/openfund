@@ -2,9 +2,9 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4915,
+    "uniqueRecords": 4916,
     "mappedCalls": 2335,
-    "exceptions": 60,
+    "exceptions": 61,
     "validationFindings": 0,
     "reviewedExclusions": 52
   },
@@ -7038,7 +7038,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 76,
+          "line": 81,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20625,7 +20625,7 @@
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 74,
+          "line": 79,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -32249,6 +32249,13 @@
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 148,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -33009,26 +33016,6 @@
       ]
     },
     {
-      "key": "react.4d1f8303e9a716a1",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "بتای دسکتاپ را برای macOS، ویندوز و لینوکس دانلود کن.",
-      "en": "Download the desktop beta for macOS, Windows and Linux.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 121,
-          "page": "navigation",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.4d4d2177bfcfafd3",
       "namespace": "react",
       "area": "Website",
@@ -33115,7 +33102,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 89,
+          "line": 96,
           "page": "information",
           "route": "/:locale/:page",
           "method": "pick-pipeline"
@@ -41060,7 +41047,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 112,
+          "line": 130,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41343,6 +41330,26 @@
           "line": 29,
           "page": "applications",
           "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.60d2b8a80ea2caea",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پلتفرم‌ها",
+      "en": "Platforms",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 146,
+          "page": "navigation",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -67442,7 +67449,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 84,
+          "line": 89,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -99993,6 +100000,13 @@
           "page": "labs",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 147,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -100731,14 +100745,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 74,
+          "line": 79,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/navigation/SiteNavDrawer.tsx",
-          "line": 86,
+          "line": 91,
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -103739,6 +103753,26 @@
       ]
     },
     {
+      "key": "react.fca4e35f6590891f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اپ دسکتاپ برای macOS، ویندوز و لینوکس؛ نسخهٔ موبایل به‌زودی.",
+      "en": "Desktop app for macOS, Windows and Linux; mobile coming soon.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 121,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.fca5f9e0fc13e9b8",
       "namespace": "react",
       "area": "Global Content",
@@ -105298,6 +105332,14 @@
       "route": "/:locale/:page",
       "reason": "dynamic-pair",
       "expression": "pick(locale, key, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/information/navigation.ts",
+      "line": 82,
+      "page": "information",
+      "route": "/:locale/:page",
+      "reason": "dynamic-pair",
+      "expression": "pickFormat(locale, MEGA_PLATFORM_COPY.download.fa, MEGA_PLATFORM_COPY.download.en, { platform: p.name })"
     },
     {
       "component": "apps/web-react/src/features/labs/LabsPage.tsx",

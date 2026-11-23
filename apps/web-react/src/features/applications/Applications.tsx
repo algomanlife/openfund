@@ -208,9 +208,9 @@ function WebPreview({ locale }: { locale: string }) {
   </div>
 }
 
-function SpotCard({ children, detected = false }: { children: React.ReactNode; detected?: boolean }) {
+function SpotCard({ children, detected = false, id }: { children: React.ReactNode; detected?: boolean; id?: string }) {
   const ref = useSpotlight<HTMLElement>()
-  return <article ref={ref} className={`of-app-card ds-spotlight${detected ? ' is-detected' : ''}`}>{children}</article>
+  return <article ref={ref} id={id} className={`of-app-card ds-spotlight${detected ? ' is-detected' : ''}`}>{children}</article>
 }
 
 /** Original line glyphs (no vendor logos): a laptop with a rounded screen,
@@ -233,6 +233,17 @@ export default function Applications() {
   const c = (key: keyof typeof copy) => tx(locale, copy[key])
   const system = useDetectedSystem()
   const r1 = useReveal<HTMLElement>(), r2 = useReveal<HTMLElement>(), r3 = useReveal<HTMLElement>(), r4 = useReveal<HTMLElement>()
+  /* Bug fix: a link such as /apps#desktop-builds or #download-windows arrived
+     before React rendered the target, so the browser's own jump found nothing
+     and the page opened at the top. Scroll to the target once it exists. */
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (!id) return
+    const target = document.getElementById(id)
+    if (!target) return
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    target.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
+  }, [])
   const rows: [keyof typeof copy, keyof typeof copy, keyof typeof copy][] = [
     ['rowBest', 'webBest', 'deskBest'], ['rowCharts', 'webCharts', 'deskCharts'], ['rowOrders', 'webOrders', 'deskOrders'],
     ['rowAccount', 'webAccount', 'deskAccount'], ['rowAnalytics', 'webAnalytics', 'deskAnalytics'], ['rowInstall', 'webInstall', 'deskInstall'], ['rowStatus', 'webStatus', 'deskStatus'],
@@ -299,7 +310,8 @@ export default function Applications() {
           const detected = system.platform === platform
           /* recommended file: the detected architecture, or the AppImage on Linux */
           const recommended = (r: (typeof published)[number]) => platform === 'linux' ? r.format === 'AppImage' : !detected || !system.arch || r.architecture === system.arch
-          return <SpotCard key={platform} detected={detected}>
+          /* id: the Resources menu's platform badges link here (#download-macos, -windows, -linux) */
+          return <SpotCard key={platform} id={`download-${platform}`} detected={detected}>
             <div className="of-app-card-head"><PlatformIcon platform={platform} /><h3 dir="ltr">{PLATFORM_NAME[platform]}</h3>{detected && <span className="of-app-detected">{c('yourSystem')}</span>}</div>
             {published.length ? <>
               <span className="of-app-status">{c(published[0].channel === 'beta' ? 'beta' : 'available')}{' · '}<bdi dir="ltr">{published[0].version}</bdi></span>
