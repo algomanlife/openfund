@@ -352,6 +352,25 @@
       }
     },
     {
+      "path": "bug-bounty",
+      "view": "bug-bounty",
+      "icon": "bug-bounty",
+      "title": {
+        "fa": "باگ بانتی",
+        "en": "Bug bounty",
+        "ar": "مكافأة الثغرات",
+        "ru": "Баг-баунти",
+        "zh-CN": "漏洞赏金"
+      },
+      "description": {
+        "fa": "آسیب‌پذیری را گزارش کن و جایزه بگیر.",
+        "en": "Report a vulnerability and get rewarded.",
+        "ar": "أبلغ عن ثغرة واحصل على مكافأة.",
+        "ru": "Сообщите об уязвимости и получите награду.",
+        "zh-CN": "报告漏洞并获得奖励。"
+      }
+    },
+    {
       "path": "migrate",
       "view": "migrate",
       "icon": "migrate",
@@ -611,8 +630,8 @@
         "fa": "تغییرات برای توسعه‌دهندگان"
       },
       "text": {
-        "en": "2026 11 23 Terminal guide (ADR 0056): Directus collections site guides and site guide steps (also on the /cms snapshot allowlist), anonymous counters through POST /guides/events (table guide daily stats), and the recording script scripts/guides/record terminal guide.mjs. Tests: backend test:guides, website test/terminal guide.test.mjs (in test:content), browser test:browser:terminal guide (in CI). Terminal Funding and Details tabs (ADR 0053): GET /markets/:symbol/funding, GET /markets/:symbol/details (documented Gains reads, 30 s cache) and GET /markets/:symbol/funding history?range=1d 1w 1m 3",
-        "fa": "۱۴۰۵/۰۹/۰۲ — 2026 11 23 راهنمای ترمینال (ADR 0056): کالکشن‌های Directus به نام site guides و site guide steps (در فهرست مجاز اسنپ‌شات /cms هم هستند)، شمارنده‌های ناشناس از طریق POST /guides/events (جدول guide daily stats) و اسکریپت ضبط scripts/guides/record terminal guide.mjs. آزمون‌ها: test:guides در بک‌اند، test/terminal guide.test.mjs در وب (داخل test:content) و test:browser:terminal guide در مرورگر (در CI). زبانه‌های فاندینگ و جزئیات ترمینال (ADR 0053): GET /markets/:symbol/funding، GET /markets/:symbol/details (خواندن از endpointهای مستند Gains با کش ۳۰ ثانیه) و GET /markets/:symbol/fundi"
+        "en": "2026 11 23 Bug bounty (ADR 0057): new route /:locale/bug bounty and GET /.well known/security.txt (RFC 9116, also at /security.txt). Directus collections bug bounty tiers (reward amounts, on the generic editor's forbidden list) and bug bounty hall of fame (published only with consent), both on the /cms snapshot allowlist. The verified expenses.category constraint gains bug bounty. Tests: backend test:bug bounty, browser test:browser:bug bounty (in CI). Terminal guide (ADR 0056): Directus collections site guides and site guide steps (also on the /cms snapshot allowlist), anonymous counters thro",
+        "fa": "۱۴۰۵/۰۹/۰۲ — 2026 11 23 باگ بانتی (ADR 0057): مسیر تازهٔ /:locale/bug bounty و GET /.well known/security.txt (طبق RFC 9116، همچنین در /security.txt). کالکشن‌های Directus به نام bug bounty tiers (مبلغ جایزه‌ها، در فهرست ممنوع ویرایشگر عمومی) و bug bounty hall of fame (فقط با رضایت منتشر می‌شود) که هر دو در فهرست مجاز اسنپ‌شات /cms هستند. قید verified expenses.category مقدار bug bounty را می‌پذیرد. آزمون‌ها: test:bug bounty در بک‌اند و test:browser:bug bounty در مرورگر (در CI). راهنمای ترمینال (ADR 0056): کالکشن‌های Directus به نام site guides و site guide steps (در فهرست مجاز اسنپ‌شات /cms هم ه"
       }
     }
   ]

@@ -12,7 +12,7 @@ import DirArrow from '../../ui/DirArrow'
 const CATEGORY: Record<string, Localized> = {
   render_infrastructure: t('Technical infrastructure', 'زیرساخت فنی'), database: t('Database', 'پایگاه داده'), cms: t('CMS', 'سیستم مدیریت محتوا'),
   market_data: t('Market data services', 'سرویس‌های دادهٔ بازار'), operational_services: t('Operational services', 'سرویس‌های عملیاتی'), marketing: t('Marketing', 'بازاریابی'),
-  ambassador_commissions: t('Ambassador commissions', 'کمیسیون سفیران'), salaries_administration: t('Salaries & administration', 'حقوق و امور اداری'), other: t('Other verified expenses', 'سایر هزینه‌های تأییدشده'),
+  ambassador_commissions: t('Ambassador commissions', 'کمیسیون سفیران'), salaries_administration: t('Salaries & administration', 'حقوق و امور اداری'), bug_bounty: t('Bug bounty', 'باگ بانتی'), other: t('Other verified expenses', 'سایر هزینه‌های تأییدشده'),
 }
 const MISSING: Record<string, Localized> = {
   treasury_snapshot: t('No treasury snapshot', 'تصویر موجودی خزانه وجود ندارد'), treasury_snapshot_fresh: t('Treasury snapshot is stale', 'تصویر موجودی خزانه منقضی است'),

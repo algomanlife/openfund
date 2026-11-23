@@ -60,3 +60,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0054 — Trading objectives page and the funded-trader agreement](0054-funded-trader-agreement.md)
 - [0055 — Labs: limited challenge drops](0055-labs-limited-drops.md)
 - [0056 — Terminal guide: an educational popup on the trading terminal](0056-terminal-guide.md)
+- [0057 — Bug bounty program](0057-bug-bounty.md)

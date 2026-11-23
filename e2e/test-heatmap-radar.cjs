@@ -23,6 +23,7 @@ fs.mkdirSync(OUT, { recursive: true })
 const results = []
 const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); results.push(name); console.log('PASS - ' + name) }
 const { FIXED_NOW, MARKETS, SMALLEST, EMPTY, V, trade, routeRadar } = require('./fixtures/radar-fixtures.cjs')
+const { fixtureCandles, FIXTURE_MARKETS, FIXTURE_PRICES } = require('./helpers/market-fixtures.cjs')
 
 ;(async () => {
   const browser = await chromium.launch()
@@ -33,6 +34,18 @@ const { FIXED_NOW, MARKETS, SMALLEST, EMPTY, V, trade, routeRadar } = require('.
     if (fixtures) {
       await routeRadar(context, radar)
       await context.clock.install({ time: FIXED_NOW })
+    } else {
+      /* the chart check keeps the real clock but not the live Gains API: an upstream
+         error response has no CORS header and would surface as a console error */
+      await context.route('https://api.gains.trade/v1/arbitrum/**', route => {
+        const url = new URL(route.request().url())
+        const candles = url.pathname.match(/\/markets\/([^/]+)\/candles$/)
+        const data = candles
+          ? fixtureCandles(decodeURIComponent(candles[1]).replace('-', '/'), url.searchParams.get('interval'), Number(url.searchParams.get('from')), Number(url.searchParams.get('to')))
+          : url.pathname.endsWith('/markets') ? FIXTURE_MARKETS : url.pathname.endsWith('/prices') ? FIXTURE_PRICES() : []
+        return route.fulfill({ json: { data }, headers: { 'access-control-allow-origin': '*' } })
+      })
+      await context.routeWebSocket('wss://api.gains.trade/**', () => {})
     }
     const page = await context.newPage()
     page.on('pageerror', e => errors.push(String(e)))

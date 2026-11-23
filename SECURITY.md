@@ -16,6 +16,32 @@ Please include:
 Never include real private keys, seed phrases, session cookies or other people's
 data. If you must demonstrate access, use your own test wallet.
 
+### Bug bounty
+
+Openfund pays for valid security reports, in USDC on Arbitrum. The program,
+reward table, scope, rules and safe-harbor statement are on the
+[bug bounty page](https://openfi.cloud/en/bug-bounty) ([ADR 0057](docs/decisions/0057-bug-bounty.md)).
+In short:
+
+| Severity | Reward (default) |
+| --- | --- |
+| Critical | $2,000 |
+| High | $1,000–$1,500 |
+| Medium | $500–$800 |
+| Low | $300 |
+
+Severity is set with CVSS 4.0 together with the impact demonstrated on this
+project. Exceptional findings may receive a higher discretionary reward. The
+current amounts are the ones published on the page (they are edited in
+Backstage). Only the first report of a duplicate is rewarded, rewards are
+paid after the fix is released and are subject to eligibility under
+applicable law, and every payout is recorded as a "bug bounty" expense in the
+public economy figures. A changed simulated demo balance is in scope only
+when it leads to a real reward or prize; then it is Critical.
+
+Machine-readable contact details are at `/.well-known/security.txt` (RFC 9116)
+on every official domain.
+
 ### What to expect
 
 Openfund is maintained by a small team; responses are best effort. The
@@ -27,8 +53,8 @@ be named. Please give a reasonable time to fix before any public disclosure.
 
 | In scope | Out of scope |
 | --- | --- |
-| Code in this repository and its release artifacts | Third-party services (Render, Directus upstream, Gains, wallets, DePay) — report to them directly |
-| The deployed Openfund application on its official domains | Denial-of-service, spam or social engineering |
+| Code in this repository and its release artifacts | Third-party services (Render, Directus upstream, Gains, LI.FI, wallets, DePay) — report to them directly; our own configuration of them is in scope |
+| The deployed Openfund application on its official domains | Denial-of-service, spam or social engineering; self-XSS, unproven scanner output and missing headers with no demonstrated impact |
 | GitHub Actions workflows and release integrity | Findings that need a compromised user device or browser |
 
 Test only against your own accounts and wallets. Do not access, modify or

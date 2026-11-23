@@ -547,7 +547,7 @@ test('Resources is a disclosure rather than a route, with arrow navigation and E
   /* ArrowDown focuses the first link of the panel: the Learn sub-group comes first */
   assert.equal(document.activeElement, document.querySelector('#website-resources a'))
   assert.equal(document.activeElement.getAttribute('href'), '/en/learn')
-  assert.deepEqual([...document.querySelectorAll('#website-resources .mega-section h3')].map(h => h.textContent), ['Learn', 'Product', 'Company'])
+  assert.deepEqual([...document.querySelectorAll('#website-resources .mega-section h3')].map(h => h.textContent), ['Learn', 'Product', 'Company', 'Security'])
   navigationKeyDown({ target: document.activeElement, key: 'Escape', preventDefault() {}, stopPropagation() {} }, document)
   assert.equal(document.activeElement, trigger)
   assert.equal(trigger.getAttribute('aria-expanded'), 'false')

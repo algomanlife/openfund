@@ -38,7 +38,7 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
           banner: document.querySelector('.resources-open .mega-banner')?.getAttribute('href'), inView: r && r.left >= 0 && r.right <= innerWidth, belowHeader: r && r.top >= document.querySelector('.openfund-header').getBoundingClientRect().bottom - 1 }
       })
       ok('hover opens only after the intent delay', !early && m.open && m.expanded === 'true', JSON.stringify({ early, open: m.open }))
-      ok('panel: sub-groups Learn / Product / Company, tiles with icon and description, banner to the desktop downloads', m.sections.join() === 'Learn,Product,Company' && m.tiles.length >= 10 && m.tiles.every(t => t[1] && t[2]) && m.tiles.some(t => t[0] === '/en/developers') && m.banner === '/en/apps#desktop-builds', JSON.stringify(m))
+      ok('panel: sub-groups Learn / Product / Company / Security, tiles with icon and description, banner to the desktop downloads', m.sections.join() === 'Learn,Product,Company,Security' && m.tiles.length >= 10 && m.tiles.every(t => t[1] && t[2]) && m.tiles.some(t => t[0] === '/en/developers') && m.banner === '/en/apps#desktop-builds', JSON.stringify(m))
       ok('panel sits below the header, inside the viewport, with a page scrim behind it', m.inView && m.belowHeader && m.scrim, JSON.stringify(m))
       await page.screenshot({ path: path.join(OUT, 'mega-resources-en-1440.png') })
       await page.mouse.move(700, 880); await page.waitForTimeout(450)

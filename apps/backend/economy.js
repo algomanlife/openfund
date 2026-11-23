@@ -24,7 +24,7 @@ const fail = (status, error) => Object.assign(new Error(error), { status })
 const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const CACHE_MS = 5 * 60_000
 const ratio = (a, b) => (D(b).gt(0) ? D(a).div(b).toDecimalPlaces(4).toNumber() : null)
-const EXPENSE_CATEGORIES = ['render_infrastructure', 'database', 'cms', 'market_data', 'operational_services', 'marketing', 'ambassador_commissions', 'salaries_administration', 'other']
+const EXPENSE_CATEGORIES = ['render_infrastructure', 'database', 'cms', 'market_data', 'operational_services', 'marketing', 'ambassador_commissions', 'salaries_administration', 'bug_bounty', 'other']
 
 /** Obligations, reserves and allocations from their single source tables. */
 export async function financialInputs(db) {

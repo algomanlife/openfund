@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { validVerifier, verifyPassword } from './password.js'
 import { createContentApi } from './content.js'
 import { createCampaignsApi } from './campaigns.js'
+import { createBountyApi } from './bounty.js'
 import { createGuidesApi } from './guides.js'
 
 const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i
@@ -20,6 +21,7 @@ const staticFiles = {
   '/app.js': ['public/app.js', 'application/javascript; charset=utf-8'],
   '/strings.js': ['public/strings.js', 'application/javascript; charset=utf-8'],
   '/marketing.js': ['public/marketing.js', 'application/javascript; charset=utf-8'],
+  '/bounty.js': ['public/bounty.js', 'application/javascript; charset=utf-8'],
   '/guides.js': ['public/guides.js', 'application/javascript; charset=utf-8'],
   '/style.css': ['public/style.css', 'text/css; charset=utf-8'],
   '/dir-arrow.css': ['public/dir-arrow.css', 'text/css; charset=utf-8'],
@@ -423,6 +425,7 @@ async function json(req, limit = 8192) {
 export function createBackstage(config, { now = Date.now, audit = event => console.log(JSON.stringify(event)), contentFetch } = {}) {
   const content = createContentApi({ cms: config.cms, token: config.contentToken, ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   /* `backend` is a hoisted function declaration below */
+  const bounty = createBountyApi({ cms: config.cms, token: config.contentToken, ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   const guides = createGuidesApi({ cms: config.cms, token: config.contentToken, backend: (...a) => backend(...a), ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   const campaigns = createCampaignsApi({ cms: config.cms, token: config.contentToken, backend: (...a) => backend(...a), ...(contentFetch ? { fetchImpl: contentFetch } : {}) })
   const secure = config.origin.startsWith('https:')
@@ -591,6 +594,26 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
           return send(res, 200, { ok: true, id })
         } catch (error) {
           log('campaigns.' + action, 'denied', String(write.target))
+          throw error
+        }
+      }
+
+      /* Security: the bug bounty reward table and hall of fame (bounty.js,
+         ADR 0057). Reads need the owner session; writes also need CSRF and
+         password re-entry in the GLOBAL region, and are audit-logged. */
+      if (path.startsWith('/api/bounty/')) {
+        const action = path.slice('/api/bounty/'.length)
+        if (req.method === 'GET' && action === 'list') return send(res, 200, await bounty.list())
+        if (req.method !== 'POST' || !['tiers', 'hall'].includes(action)) throw fail(404, 'not_found')
+        const body = await json(req, 16384)
+        const write = action === 'tiers' ? await bounty.prepareTiers(body) : await bounty.prepareHall(body)
+        try {
+          await confirmOwner(current, body.password, correlationId)
+          const id = await write.apply()
+          log('bounty.' + action, 'success', String(id))
+          return send(res, 200, { ok: true, id })
+        } catch (error) {
+          log('bounty.' + action, 'denied', String(write.target))
           throw error
         }
       }

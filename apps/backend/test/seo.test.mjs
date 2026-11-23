@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { siteOrigin, sitemapXml, robotsTxt, PUBLIC_SITE_ROUTES, SITE_LOCALES, localesFor } from '../seo.js'
+import { siteOrigin, sitemapXml, robotsTxt, securityTxt, SECURITY_TXT_EXPIRES, PUBLIC_SITE_ROUTES, SITE_LOCALES, localesFor } from '../seo.js'
 
 test('site origin accepts public hostnames and rejects forged Host headers', () => {
   assert.equal(siteOrigin('openfi.cloud'), 'https://openfi.cloud')
@@ -27,4 +27,16 @@ test('robots policy excludes product routes and points at the same-origin sitema
   assert.match(robots, /^User-agent: \*$/m)
   for (const locale of SITE_LOCALES) assert.match(robots, new RegExp(`^Disallow: /${locale}/prop/$`, 'm'))
   assert.match(robots, /^Sitemap: https:\/\/openfund\.cloud\/sitemap\.xml$/m)
+})
+
+test('security.txt (RFC 9116): private advisory contact, policy on the same origin, an expiry that is renewed in time', () => {
+  const txt = securityTxt('https://openfund.cloud')
+  assert.match(txt, /^Contact: https:\/\/github\.com\/algomanlife\/openfund\/security\/advisories\/new$/m)
+  assert.match(txt, /^Policy: https:\/\/openfund\.cloud\/en\/bug-bounty$/m)
+  assert.match(txt, /^Canonical: https:\/\/openfund\.cloud\/\.well-known\/security\.txt$/m)
+  const expires = Date.parse(SECURITY_TXT_EXPIRES)
+  assert.ok(txt.split('\n').includes(`Expires: ${SECURITY_TXT_EXPIRES}`), 'the expiry line')
+  assert.ok(expires - Date.now() > 60 * 86_400_000, 'security.txt expires within 60 days: renew SECURITY_TXT_EXPIRES')
+  assert.ok(expires - Date.now() < 366 * 86_400_000, 'RFC 9116 recommends an expiry under a year away')
+  assert.ok(PUBLIC_SITE_ROUTES.includes('bug-bounty'), 'the bounty page is in the sitemap')
 })

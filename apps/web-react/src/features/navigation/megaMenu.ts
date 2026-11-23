@@ -35,6 +35,7 @@ export const MEGA_ICONS: Record<string, string> = {
   'certificate-verification': 'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9 12l2 2 4-4',
   about: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 11v6M12 7.5v.1',
   contact: 'M4 6h16v12H4zM4 7l8 6 8-6',
+  'bug-bounty': 'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9.5 11.5h5M10 9l-1.5-1.5M14 9l1.5-1.5M12 9.5v6',
   /* terminal destinations */
   dashboard: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z',
   trade: 'M7 4v16M17 4v16M4 8h6M14 15h6M4 15h6M14 8h6',
@@ -79,6 +80,7 @@ export const MEGA_DESCRIPTIONS: Record<string, { en: string; fa: string }> = {
   'certificate-verification': text('Check that a certificate is genuine.', 'اصالت یک گواهی را بررسی کن.'),
   about: text('Who we are and how we work.', 'ما که هستیم و چگونه کار می‌کنیم.'),
   contact: text('Reach support, legal and technical teams.', 'تماس با پشتیبانی، واحد حقوقی و فنی.'),
+  'bug-bounty': text('Report a vulnerability and get rewarded.', 'آسیب‌پذیری را گزارش کن و جایزه بگیر.'),
 }
 
 /** Resources sub-groups (routes must also be in the Resources list) */
@@ -86,6 +88,7 @@ export const RESOURCE_SECTIONS: { id: string; label: { en: string; fa: string };
   { id: 'learn', label: text('Learn', 'یادگیری'), routes: ['learn', 'glossary', 'faq'] },
   { id: 'product', label: text('Product', 'محصول'), routes: ['apps', 'tools', 'roadmap', 'developers'] },
   { id: 'company', label: text('Company', 'شرکت'), routes: ['about', 'contact', 'certificate-verification'] },
+  { id: 'security', label: text('Security', 'امنیت'), routes: ['bug-bounty'] },
 ]
 
 export type MegaBannerKind = 'council' | 'desktop' | 'flamingo' | 'whitepaper'

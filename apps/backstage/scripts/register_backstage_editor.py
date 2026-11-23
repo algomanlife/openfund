@@ -81,6 +81,11 @@ def wanted_permissions():
         # terminal guide (ADR 0056): steps are archived, never deleted
         ('site_guides', 'read', ['*']), ('site_guides', 'create', ['*']), ('site_guides', 'update', ['*']),
         ('site_guide_steps', 'read', ['*']), ('site_guide_steps', 'create', ['*']), ('site_guide_steps', 'update', ['*']),
+        # bug bounty (ADR 0057): reward amounts and the hall of fame; Backstage
+        # validates amounts and consent and asks for the owner password
+        ('bug_bounty_tiers', 'read', ['*']), ('bug_bounty_tiers', 'update', ['reward_min_usd', 'reward_max_usd']),
+        ('bug_bounty_hall_of_fame', 'read', ['*']), ('bug_bounty_hall_of_fame', 'create', ['*']),
+        ('bug_bounty_hall_of_fame', 'update', ['status', 'display_name', 'profile_url', 'year', 'severity', 'consent', 'advisory_reference']),
         ('directus_files', 'create', ['*']), ('directus_files', 'read', ['*']), ('directus_folders', 'read', ['id', 'name']),
         # owner-gated protected editor (Backstage validates each address)
         ('site_settings', 'update', ['support_email', 'legal_email', 'technical_email', 'community_email']),

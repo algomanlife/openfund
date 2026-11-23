@@ -3275,3 +3275,8 @@ CREATE TABLE IF NOT EXISTS funded_agreements (
 CREATE INDEX IF NOT EXISTS idx_funded_agreements_user ON funded_agreements (user_id, signed_at DESC);
 DROP TRIGGER IF EXISTS funded_agreements_append_only ON funded_agreements;
 CREATE TRIGGER funded_agreements_append_only BEFORE UPDATE OR DELETE ON funded_agreements FOR EACH ROW EXECUTE FUNCTION reject_mutation();
+
+-- Bug bounty payouts are verified expenses (ADR 0057). The category list
+-- grows additively; the named constraint is replaced idempotently.
+ALTER TABLE verified_expenses DROP CONSTRAINT IF EXISTS verified_expenses_category_check;
+ALTER TABLE verified_expenses ADD CONSTRAINT verified_expenses_category_check CHECK (category IN ('render_infrastructure','database','cms','market_data','operational_services','marketing','ambassador_commissions','salaries_administration','bug_bounty','other'));
