@@ -35,7 +35,8 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
         const panel = document.querySelector('.resources-open .nav-mega'), r = panel?.getBoundingClientRect()
         return { open: !!panel, expanded: document.querySelector('.resources-toggle[aria-controls="website-resources"]').getAttribute('aria-expanded'), scrim: document.documentElement.classList.contains('mega-open'),
           sections: [...document.querySelectorAll('.resources-open .mega-section h3')].map(h => h.textContent), tiles: [...document.querySelectorAll('.resources-open .mega-tile')].map(a => [a.getAttribute('href'), !!a.querySelector('svg'), !!a.querySelector('small')]),
-          banner: document.querySelector('.resources-open .mega-banner')?.getAttribute('href'), inView: r && r.left >= 0 && r.right <= innerWidth, belowHeader: r && r.top >= document.querySelector('.openfund-header').getBoundingClientRect().bottom - 1 }
+          /* the desktop banner is a container; its main link carries the href (owner fix 3) */
+          banner: (document.querySelector('.resources-open a.mega-banner-main') || document.querySelector('.resources-open a.mega-banner'))?.getAttribute('href'), inView: r && r.left >= 0 && r.right <= innerWidth, belowHeader: r && r.top >= document.querySelector('.openfund-header').getBoundingClientRect().bottom - 1 }
       })
       ok('hover opens only after the intent delay', !early && m.open && m.expanded === 'true', JSON.stringify({ early, open: m.open }))
       ok('panel: sub-groups Learn / Product / Company / Security, tiles with icon and description, banner to the desktop downloads', m.sections.join() === 'Learn,Product,Company,Security' && m.tiles.length >= 10 && m.tiles.every(t => t[1] && t[2]) && m.tiles.some(t => t[0] === '/en/developers') && m.banner === '/en/apps#desktop-builds', JSON.stringify(m))

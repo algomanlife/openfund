@@ -4386,5 +4386,7 @@
   "Who decides the severity?": "Кто определяет серьёзность?",
   "Yes, with your own accounts and wallets only, without hurting availability for others, and stopping as soon as you find something.": "Да, только на своих аккаунтах и кошельках, не нарушая доступность сервиса для других и останавливаясь, как только что-то найдёте.",
   "Yes. Every bounty payout is recorded as an expense in the “bug bounty” category of the public economy figures.": "Да. Каждая выплата по баг-баунти учитывается как расход в категории «баг-баунти» в публичных экономических показателях.",
-  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "Сторонние сервисы: Gains, LI.FI, DePay, кошельки, исходный Directus и наши инфраструктурные сервисы (наша собственная настройка этих сервисов входит в область программы)"
+  "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "Сторонние сервисы: Gains, LI.FI, DePay, кошельки, исходный Directus и наши инфраструктурные сервисы (наша собственная настройка этих сервисов входит в область программы)",
+  "Desktop app for macOS, Windows and Linux; mobile coming soon.": "Приложение для компьютера: macOS, Windows и Linux; мобильная версия скоро.",
+  "Platforms": "Платформы"
 }

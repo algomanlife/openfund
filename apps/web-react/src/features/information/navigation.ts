@@ -2,7 +2,7 @@ import brandbookUrl from '../../../../../brand/brandbook/Openfund-brandbook.zip?
 import type { CmsNavItem, CmsFooterLink } from '../../cms/client'
 import { labels, text } from './content'
 import { pickRecord, type AppLocale } from '../../i18n/locales'
-import { MEGA_BANNERS, MEGA_DESCRIPTIONS, MEGA_ICONS, RESOURCE_SECTIONS, megaBannerArt, megaIconNode, type MegaBannerKind } from '../navigation/megaMenu'
+import { MEGA_BANNERS, MEGA_DESCRIPTIONS, MEGA_ICONS, MEGA_PLATFORMS, MEGA_PLATFORM_COPY, RESOURCE_SECTIONS, megaBannerArt, megaIconNode, type MegaBannerKind } from '../navigation/megaMenu'
 import { PREMIUM_LEAGUE_START, daysUntil } from '../tournament/schedule'
 import { openLabDrop } from '../labs/labsStatus'
 import { intlLocale, pickFormat } from '../../i18n/locales'
@@ -50,7 +50,10 @@ export function navigationHref(route: string, locale: Locale): string {
 
 export interface NavigationLink { route: string; href: string; label: string; current: boolean; activeSection: boolean; description: string; icon: string; badge?: string; countdown?: string }
 export interface NavigationSection { id: string; label: string; links: NavigationLink[] }
-export interface NavigationBanner { kind: MegaBannerKind; href: string; title: string; body: string; cta: string; description: string }
+/** one platform badge under the desktop banner: a link to its /apps card, or dimmed "coming soon" */
+export interface NavigationPlatform { id: string; name: string; glyph: string; href: string | null; label: string }
+export interface NavigationBanner { kind: MegaBannerKind; href: string; title: string; body: string; cta: string; description: string
+  platforms: NavigationPlatform[]; platformsLabel: string; soon: string }
 export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean; sections: NavigationSection[]; banner: NavigationBanner | null; banners: NavigationBanner[] }
 export interface NavigationModel { primary: NavigationLink[]; groups: NavigationGroup[] }
 
@@ -72,7 +75,11 @@ export function navigationModel(locale: Locale, pathname: string, navItems: CmsN
   const banners = (id: string): NavigationBanner[] => {
     const defs = MEGA_BANNERS[id]
     return (Array.isArray(defs) ? defs : defs ? [defs] : []).map(b => ({ kind: b.kind, href: navigationHref(b.route, locale) + (b.hash || ''), title: pickRecord(locale, b.title),
-      body: pickRecord(locale, b.body), cta: pickRecord(locale, b.cta), description: b.description ? pickRecord(locale, b.description) : '' }))
+      body: pickRecord(locale, b.body), cta: pickRecord(locale, b.cta), description: b.description ? pickRecord(locale, b.description) : '',
+      platformsLabel: pickRecord(locale, MEGA_PLATFORM_COPY.label), soon: pickRecord(locale, MEGA_PLATFORM_COPY.soon),
+      platforms: b.kind !== 'desktop' ? [] : MEGA_PLATFORMS.map(p => ({ id: p.id, name: p.name, glyph: p.glyph,
+        href: p.soon ? null : `${navigationHref('apps', locale)}#download-${p.id}`,
+        label: p.soon ? `${p.name}, ${pickRecord(locale, MEGA_PLATFORM_COPY.soon)}` : pickFormat(locale, MEGA_PLATFORM_COPY.download.fa, MEGA_PLATFORM_COPY.download.en, { platform: p.name }) })) }))
   }
   const group = (id: string, label: { fa: string; en: string }, links: NavigationLink[], sections?: NavigationSection[]): NavigationGroup =>
     ({ id, label: pickRecord(locale, label), links, current: links.some(item => item.current), sections: sections || [{ id, label: '', links }], banner: banners(id)[0] ?? null, banners: banners(id) })
@@ -132,7 +139,40 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     a.append(icon, textBox)
     return a
   }
-  const bannerCard = (b: NavigationBanner) => {
+  /* the platform row: each desktop badge is its own link; mobile badges are dimmed with no link */
+  const platformRow = (b: NavigationBanner) => {
+    const list = document.createElement('ul')
+    list.className = 'mega-platforms'; list.setAttribute('aria-label', b.platformsLabel)
+    for (const p of b.platforms) {
+      const li = document.createElement('li')
+      const badge = document.createElement(p.href ? 'a' : 'span')
+      badge.className = `mega-platform${p.href ? '' : ' is-soon'}`
+      if (p.href) (badge as HTMLAnchorElement).href = p.href
+      badge.setAttribute('aria-label', p.label)
+      if (!p.href) badge.setAttribute('role', 'img')
+      const icon = megaIconNode('apps'); icon.querySelector('path')?.setAttribute('d', p.glyph); icon.setAttribute('width', '18'); icon.setAttribute('height', '18')
+      const name = document.createElement('span'); name.className = 'mega-platform-name'; name.textContent = p.name; name.setAttribute('dir', 'ltr')
+      badge.append(icon, name); li.append(badge); list.append(li)
+    }
+    const soon = document.createElement('li'); soon.className = 'mega-platform-soon'; soon.setAttribute('aria-hidden', 'true'); soon.textContent = b.soon
+    list.append(soon)
+    return list
+  }
+  const bannerCard = (b: NavigationBanner): HTMLElement => {
+    if (b.platforms.length) {
+      /* a container, not one link: the main link (art and copy) and the badges are siblings */
+      const card = document.createElement('div')
+      card.className = `mega-banner is-${b.kind} has-platforms`
+      const main = document.createElement('a'); main.className = 'mega-banner-main'; main.href = b.href
+      const copy = document.createElement('span'); copy.className = 'mega-banner-copy'
+      const title = document.createElement('b'); title.textContent = b.title
+      const p = document.createElement('small'); p.textContent = b.body
+      const cta = document.createElement('em'); cta.textContent = b.cta
+      copy.append(title, p, cta)
+      main.append(megaBannerArt(b.kind), copy)
+      card.append(main, platformRow(b))
+      return card
+    }
     const a = document.createElement('a')
     a.className = `mega-banner is-${b.kind}`; a.href = b.href
     const copy = document.createElement('span'); copy.className = 'mega-banner-copy'

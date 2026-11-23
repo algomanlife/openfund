@@ -142,7 +142,7 @@ html[data-theme=light] .of-apps-hero-reflection { opacity: .1; }
 .of-app-card svg { color: var(--mint); }
 .of-app-glyph { flex: none; filter: drop-shadow(0 0 8px color-mix(in srgb, var(--mint) 35%, transparent)); transition: transform .45s var(--ease-expo, ease); }
 .of-app-card:hover .of-app-glyph { transform: translateY(-2px) scale(1.06); }
-.of-app-card { position: relative; isolation: isolate; }
+.of-app-card { position: relative; isolation: isolate; scroll-margin-top: 96px; }
 .of-app-card::after { content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; opacity: 0; pointer-events: none; transition: opacity .45s;
   background: radial-gradient(70% 60% at 50% 0%, color-mix(in srgb, var(--mint) 16%, transparent), transparent 70%); }
 .of-app-card:hover::after, .of-app-card:focus-within::after { opacity: 1; }

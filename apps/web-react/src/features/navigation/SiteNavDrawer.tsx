@@ -13,6 +13,11 @@ import FlamingoScene from './FlamingoScene'
 import './mega-menu.css'
 
 export const SITE_DRAWER_ID = 'site-navigation-drawer'
+
+/** original platform line glyph (megaMenu.ts MEGA_PLATFORMS), decorative */
+function PlatformGlyph({ d }: { d: string }) {
+  return <svg className="mega-icon-svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d={d} /></svg>
+}
 const TRIGGER = '.openfund-header .menu'
 
 /**
@@ -97,8 +102,21 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
                   <span className="mega-icon"><MegaIcon name={item.icon} /></span><span className="mega-text"><b>{item.label}{item.badge && <> <span className="mega-badge">{item.badge}</span></>}</b>{item.countdown && <small className="mega-countdown">{item.countdown}</small>}</span>
                 </a></li>)}</ul>
             </div>)}
-            {group.banners.length > 0 && <div className={group.banners.length > 1 ? 'mega-banner-row' : undefined}>{group.banners.map(banner =>
-              <a key={banner.kind} className={`mega-banner is-compact is-${banner.kind}`} href={banner.href} onClick={close}>
+            {group.banners.length > 0 && <div className={group.banners.length > 1 ? 'mega-banner-row' : undefined}>{group.banners.map(banner => banner.platforms.length
+              /* desktop banner: a compact horizontal card with its own link and the platform badges as sibling links */
+              ? <div key={banner.kind} className={`mega-banner is-compact is-${banner.kind} has-platforms`}>
+                <a className="mega-banner-main" href={banner.href} onClick={close}>
+                  <span className="mega-icon"><MegaIcon name="apps" /></span>
+                  <span className="mega-banner-copy"><b>{banner.title}</b><small>{banner.body}</small></span>
+                </a>
+                <ul className="mega-platforms" aria-label={banner.platformsLabel}>
+                  {banner.platforms.map(p => <li key={p.id}>{p.href
+                    ? <a className="mega-platform" href={p.href} aria-label={p.label} onClick={close}><PlatformGlyph d={p.glyph} /><span className="mega-platform-name" dir="ltr">{p.name}</span></a>
+                    : <span className="mega-platform is-soon" role="img" aria-label={p.label}><PlatformGlyph d={p.glyph} /><span className="mega-platform-name" dir="ltr">{p.name}</span></span>}</li>)}
+                  <li className="mega-platform-soon" aria-hidden="true">{banner.soon}</li>
+                </ul>
+              </div>
+              : <a key={banner.kind} className={`mega-banner is-compact is-${banner.kind}`} href={banner.href} onClick={close}>
                 {banner.kind === 'flamingo'
                   ? <FlamingoScene variant="compact" live={open && expanded} />
                   : <span className="mega-icon"><MegaIcon name={banner.kind === 'council' ? 'governance' : banner.kind === 'whitepaper' ? 'whitepaper' : 'apps'} /></span>}

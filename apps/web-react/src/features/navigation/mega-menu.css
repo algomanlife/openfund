@@ -136,3 +136,42 @@ html[data-theme=light] .wp-page{fill:#eef6f2}
 @keyframes wp-write{0%{transform:scaleX(0)}22%,100%{transform:scaleX(1)}}
 @keyframes wp-fade{0%,10%{opacity:0}30%,100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.openfund-header .nav-account.resources-open :is(.wp-page,.wp-line,.wp-chart,.wp-dot){animation:none}}
+
+/* Resources: the Open Trade desktop banner (owner fix 3). The card is a
+   container: one main link (art and copy) and a row of five platform badges,
+   each its own link (macOS, Windows, Linux → their card on /apps) or dimmed
+   with no link (Android, iOS: Planned, "Coming soon"). The download button sits
+   outside the app window's corner; its ring pulses only while the menu is
+   open (transform/opacity) and is static under reduced motion. */
+.mega-banner.has-platforms{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;align-content:stretch;gap:14px}
+.mega-banner.has-platforms:hover{border-color:color-mix(in srgb,var(--mint,#82e7bd) 30%,transparent)}
+.mega-banner.has-platforms:has(.mega-banner-main:hover){border-color:var(--mint,#82e7bd)}
+.mega-banner-main,.openfund-header .nav-mega a.mega-banner-main{display:grid;grid-template-rows:minmax(0,1fr) auto;align-content:stretch;gap:12px;min-height:0;
+  padding:0;border-radius:10px;color:inherit;text-decoration:none;font-size:inherit;font-weight:inherit;background:none}
+.openfund-header .nav-mega a.mega-banner-main:hover{background:none;color:inherit}
+.mega-banner-main:focus-visible{outline:2px solid var(--mint,#82e7bd);outline-offset:4px}
+.mega-banner.is-desktop .mega-banner-art{align-self:center;max-height:180px}
+.mega-art-button{fill:color-mix(in srgb,var(--mint,#82e7bd) 14%,var(--surface,#0b1510));stroke:var(--mint,#82e7bd);stroke-width:1.4}
+html[data-theme=light] .mega-art-button{fill:#e6f3ec}
+.mega-art-pulse{fill:none;stroke:var(--mint,#82e7bd);stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:center}
+.openfund-header .nav-account.resources-open .mega-art-pulse{animation:mega-pulse 2.4s ease-out infinite}
+@keyframes mega-pulse{0%{opacity:.55;transform:scale(1)}70%,100%{opacity:0;transform:scale(1.7)}}
+.mega-platforms{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;row-gap:4px}
+.mega-platforms>li{display:grid;min-inline-size:0}
+.mega-platform,.openfund-header .nav-mega a.mega-platform{display:grid;justify-items:center;align-content:center;gap:3px;min-block-size:44px;padding:5px 1px;border-radius:8px;
+  border:1px solid color-mix(in srgb,var(--mint,#82e7bd) 24%,transparent);color:var(--mint,#82e7bd);text-decoration:none;font-size:10px;font-weight:500;line-height:1.2;
+  background:color-mix(in srgb,var(--mint,#82e7bd) 5%,transparent)}
+.openfund-header .nav-mega a.mega-platform:hover,a.mega-platform:hover{border-color:var(--mint,#82e7bd);background:color-mix(in srgb,var(--mint,#82e7bd) 12%,transparent);color:var(--mint,#82e7bd)}
+a.mega-platform:focus-visible{outline:2px solid var(--mint,#82e7bd);outline-offset:1px}
+.mega-platform .mega-icon-svg{display:block}
+.mega-platform-name{color:var(--white,#eef5f1);white-space:nowrap;letter-spacing:0}
+html[data-theme=light] .mega-platform-name{color:#0f1714}
+.mega-platform.is-soon{opacity:.55;border-style:dashed;color:var(--muted,#8a9a92);background:none;cursor:default}
+.mega-platform-soon{grid-column:4 / span 2;text-align:center;font-size:10.5px;line-height:1.3;color:var(--muted,#8a9a92)}
+/* drawer: a compact horizontal card; the badges fill a row under the copy */
+.mega-banner.is-compact.has-platforms{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;align-items:stretch;gap:10px;padding:12px}
+.mega-banner.is-compact .mega-banner-main{display:flex;align-items:center;gap:12px;grid-template-rows:none}
+.mega-banner.is-compact .mega-platform{min-block-size:48px;font-size:11px}
+/* narrower panels (≤1180 px) keep the card vertical: art, copy, then the badges */
+@media (max-width:1180px){.mega-banner.has-platforms:not(.is-compact) .mega-banner-main{grid-template-columns:120px minmax(0,1fr);grid-template-rows:none;align-items:center}}
+@media (prefers-reduced-motion:reduce){.openfund-header .nav-account.resources-open .mega-art-pulse{animation:none;opacity:0}}

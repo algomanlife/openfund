@@ -118,9 +118,34 @@ export const MEGA_BANNERS: Record<string, MegaBannerDef | MegaBannerDef[]> = {
   'website-resources': {
     kind: 'desktop', route: 'apps', hash: '#desktop-builds',
     title: text('Open Trade for desktop', 'Open Trade برای دسکتاپ'),
-    body: text('Download the desktop beta for macOS, Windows and Linux.', 'بتای دسکتاپ را برای macOS، ویندوز و لینوکس دانلود کن.'),
+    body: text('Desktop app for macOS, Windows and Linux; mobile coming soon.', 'اپ دسکتاپ برای macOS، ویندوز و لینوکس؛ نسخهٔ موبایل به‌زودی.'),
     cta: text('Desktop downloads', 'دانلودهای دسکتاپ'),
   },
+}
+
+/** Open Trade platforms under the desktop banner (owner fix 3). Each glyph is
+ *  an original line drawing in the mega icon style — a laptop, a window with
+ *  two tiles, a shell prompt and a phone — never a vendor logo; the platform
+ *  name is plain text. Desktop builds link to their card on /apps; the mobile
+ *  apps are Planned (MILESTONES D2), so they stay dimmed with no link. */
+export interface MegaPlatform { id: 'macos' | 'windows' | 'linux' | 'android' | 'ios'; name: string; glyph: string; soon: boolean }
+const PLATFORM_GLYPHS = {
+  laptop: 'M5 5h14v10H5zM3 18h18l-1.5 2h-15z',
+  window: 'M3 5h18v14H3zM3 9h18M12 9v10',
+  prompt: 'M3 5h18v14H3zM7 10l3 2-3 2M12 15h5',
+  phone: 'M8 3h8a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM11 18h2',
+}
+export const MEGA_PLATFORMS: MegaPlatform[] = [
+  { id: 'macos', name: 'macOS', glyph: PLATFORM_GLYPHS.laptop, soon: false },
+  { id: 'windows', name: 'Windows', glyph: PLATFORM_GLYPHS.window, soon: false },
+  { id: 'linux', name: 'Linux', glyph: PLATFORM_GLYPHS.prompt, soon: false },
+  { id: 'android', name: 'Android', glyph: PLATFORM_GLYPHS.phone, soon: true },
+  { id: 'ios', name: 'iOS', glyph: PLATFORM_GLYPHS.phone, soon: true },
+]
+export const MEGA_PLATFORM_COPY = {
+  label: text('Platforms', 'پلتفرم‌ها'),
+  soon: text('Coming soon', 'به‌زودی'),
+  download: text('Download for ${platform}', 'دانلود برای ${platform}'),
 }
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
@@ -166,10 +191,16 @@ export function megaBannerArt(kind: MegaBannerKind): SVGSVGElement {
     }
     add('path', { d: 'M64 88h32l-4-12H68z', class: 'mega-art-rostrum' })
   } else {
-    add('rect', { x: 22, y: 12, width: 116, height: 66, rx: 6, class: 'mega-art-window' })
-    add('path', { d: 'M22 22h116', class: 'mega-art-line' })
-    add('path', { d: 'M32 64l14-14 10 8 18-20 12 10 16-18 14 8', class: 'mega-art-chart' })
-    add('path', { d: 'M80 32v20m0 0-7-7m7 7 7-7', class: 'mega-art-down' })
+    /* the app window with its chart; the download arrow is a small button
+       outside the window's lower corner (no overlap), its ring pulses while
+       the menu is open (transform/opacity only; static under reduced motion) */
+    svg.setAttribute('viewBox', '0 0 160 120') /* taller canvas: the art fills the card */
+    add('rect', { x: 14, y: 10, width: 112, height: 80, rx: 6, class: 'mega-art-window' })
+    add('path', { d: 'M14 22h112', class: 'mega-art-line' })
+    add('path', { d: 'M24 76l14-16 10 9 18-22 12 11 16-20 14 9', class: 'mega-art-chart' })
+    add('circle', { cx: 140, cy: 101, r: 11, class: 'mega-art-pulse' })
+    add('circle', { cx: 140, cy: 101, r: 11, class: 'mega-art-button' })
+    add('path', { d: 'M140 95v10m0 0-4-4m4 4 4-4', class: 'mega-art-down' })
   }
   return svg
 }
