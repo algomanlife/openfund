@@ -47,7 +47,7 @@ export function calculatePrice(marketId: string, observations: Observation[], ev
     catch { reason = 'invalid_reliability'; }
     const age = Math.max(0, evaluationTime - o.timestamp);
     const freshness = reason ? 0n : exp(-divRound(LN2 * BigInt(age), BigInt(policy.halfLifeMs)));
-    rows.push({ o, p, c: { source: o.source, sourceMarketId: o.sourceMarketId, rawPrice: o.price,
+    rows.push({ o, p, c: { source: o.source, sourceMarketId: o.sourceMarketId, rawPrice: o.rawPrice ?? o.price,
       normalizedPrice: o.price, timestamp: o.timestamp, receivedAt: o.receivedAt, timestampKind: o.timestampKind,
       ageMs: age, eligible: !reason, exclusionReason: reason, freshness: format(freshness),
       reliability: format(clamp(reliability)), deviation: '1', independence: '1', dependencyStatus: 'UNVERIFIED',

@@ -1,41 +1,43 @@
 # Open Oracle market coverage
 
-## Actual collection result
+## Verified remote inventory and collection
 
-The executed validation run attempted all three public providers. Every inventory
-request failed with a classified `NETWORK` error in the execution environment.
-The run accepted **zero observations**. No current total market universe or
-cross-provider overlap was verified. This is failed live validation, not an
-empty market universe and not successful adapter conformance.
+The remote public-data job completed successfully for implementation commit
+`15c0b1c9b1944b7396bce2fa59b3c69f7a150b2a`. It requested a 60-second observation
+window and took 67,185 ms including discovery and history reads. Counts are a
+timestamped snapshot, not permanent market totals.
 
-| Required coverage fact | Observed result |
-| --- | --- |
-| Gains market count | Unknown: network access failed |
-| Hyperliquid default, builder and spot market counts | Unknown: network access failed |
-| GMX Arbitrum and Avalanche markets/tokens | Unknown: network access failed |
-| Complete canonical union | Unverified |
-| Gains-only / Hyperliquid-only / GMX-only | Unknown |
-| Gains + Hyperliquid / Gains + GMX / Hyperliquid + GMX overlap | Unknown |
-| Triple-source markets | Unknown |
-| Real ambiguous mappings | Unknown |
-| Temporarily unavailable instruments by category | Unknown; provider inventory unavailable |
-| Asset-class counts | Unknown |
+| Provider | Discovered inventory entries | Reference observations parsed | Provider-reference historical bars |
+| --- | --- | --- | --- |
+| Gains | 496 | 3,397 | 10 |
+| Hyperliquid | 927 | 5,139 | 11 |
+| GMX | 305 | 2,592 | 3 |
 
-The machine-readable [actual failed coverage capture](../../packages/open-oracle/benchmarks/live-coverage.json)
-records collection timestamps and `complete: false`.
-[Live validation evidence](../../packages/open-oracle/benchmarks/live-validation.json)
-records attempted providers, elapsed time, requested duration and zero accepted
-observations. It must not be interpreted as a successful observation window.
+The engine accepted 10,117 deduplicated input events. Hyperliquid inventory
+includes default perps, every discovered builder dex and spot metadata. GMX
+includes both documented active networks and both market/token catalog records.
+These are inventory-entry counts; economic overlap and unique comparable
+underlyings still require a reviewed equivalence corpus. The adapter reports
+496 source-verified Gains identities, 235 Hyperliquid identities and 297 GMX
+identities. Remaining entries stay explicit rather than being discarded.
 
-## Remote collection follow-up
+[Actual aggregate capture](../../packages/open-oracle/benchmarks/ci-live-validated.json) ·
+[Successful public run](https://github.com/algomanlife/openfund/actions/runs/45487308364).
+Raw provider history remains local to the ephemeral runner; uploaded artifacts
+contain aggregate counts and health only pending redistribution-term review.
 
-[Initial CI capture](../../packages/open-oracle/benchmarks/ci-live-initial.json)
-observed a Gains inventory of 496 and a Hyperliquid inventory of 927 entries;
-these are timestamped captures, not permanent counts. Its GMX four-entry result
-revealed a catalog-envelope parsing defect and is explicitly rejected as complete
-GMX coverage. The parser and regression test were corrected; subsequent live
-validation is tracked in PR #223. The earlier local network-failure capture above
-remains historical evidence of the local environment, not the current CI result.
+## Coverage limits and historical attempts
+
+Gains-only/Hyperliquid-only/GMX-only economic counts, all pairwise/triple overlaps,
+comparable unique-market counts and representative asset-class validation are
+not established by source inventory discovery alone. Unverified identities stay
+source-scoped or ambiguous. Do not infer equivalence from ticker correlation.
+
+The [initial local capture](../../packages/open-oracle/benchmarks/live-coverage.json)
+failed every network request. The [first remote attempt](../../packages/open-oracle/benchmarks/ci-live-initial.json)
+reached Gains/Hyperliquid but exposed a GMX envelope defect. That defect was
+fixed and regression-tested before the successful revalidation above. Both
+failed captures are historical evidence, not the current conformance result.
 
 ## Implemented inventory behavior
 

@@ -5,10 +5,10 @@ reference-price research package. GAACP v1 combines eligible Gains Network,
 Hyperliquid and GMX underlying observations using auditable quality-adjusted
 weights. It is isolated from the terminal, execution, payments and production.
 
-**In Progress:** implemented and fixture-tested locally; live-provider
-conformance, complete current market inventory and empirical calibration are
-blocked by this environment's network access. The socket integration test also
-requires a host that permits loopback listeners. These are acceptance gates,
+**In Progress:** implemented and fixture-tested locally. Remote CI passed real
+REST/SSE, all three public inventories, nonempty reference observations and
+provider-history reads. Complete economic equivalence mapping and empirical
+calibration remain open; local network/socket restrictions are recorded separately. These are acceptance gates,
 not completed features. See [validation](../../docs/research/OPEN_ORACLE_VALIDATION.md).
 
 ## Run independently

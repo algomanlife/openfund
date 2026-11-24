@@ -45,7 +45,7 @@
         "Union registry with explicit identity and quote evidence",
         "Gains-anchored adaptive 40/30/30 pricing and confidence",
         "Native UTC candles, provenance and causal historical replay",
-        "Fixture-tested independently; live validation remains blocked"
+        "Independent CI and public reads verified; calibration remains open"
       ]
     }
   ]

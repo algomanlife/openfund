@@ -1,7 +1,7 @@
 export type Source = 'gains' | 'hyperliquid' | 'gmx';
 export type PricingMode = 'TRIPLE_SOURCE' | 'DUAL_SOURCE' | 'SINGLE_SOURCE' | 'DIVERGENT' | 'STALE' | 'UNAVAILABLE' | 'MARKET_CLOSED';
 export interface Observation {
-  source: Source; sourceMarketId: string; marketId: string; price: string;
+  source: Source; sourceMarketId: string; marketId: string; price: string; rawPrice?: string;
   timestamp: number; receivedAt: number; timestampKind: 'PROVIDER' | 'RECEIPT';
   mappingVerified: boolean; quoteValid: boolean; semantics: string;
   reliability?: string; calibrated?: boolean; dependencyGroup?: string;

@@ -14,7 +14,10 @@ export class MarketRegistry {
     const sourceId = String(metadata.sourceMarketId ?? 'unidentified:' + hash(JSON.stringify(metadata)));
     const key = `${source}:${sourceId}`;
     const rule = this.equivalences.find(r => r.members.some(m => m.source === source && m.sourceMarketId === sourceId));
-    const compatible = rule && rule.quoteAsset === metadata.quoteAsset && rule.unit === metadata.unit && metadata.semantics === 'UNDERLYING_REFERENCE';
+    const member = rule?.members.find(m => m.source === source && m.sourceMarketId === sourceId);
+    const multiplier = member?.priceMultiplier ?? '1';
+    if (decimal(multiplier) <= 0n) throw new Error('invalid_unit_multiplier');
+    const compatible = rule && rule.quoteAsset === metadata.quoteAsset && (member?.sourceUnit ?? rule.unit) === metadata.unit && metadata.semantics === 'UNDERLYING_REFERENCE';
     const id = compatible ? rule.canonicalId : `${source}:${hash(sourceId)}`;
     if (!this.entries.has(id) && this.entries.size >= this.maxMarkets) throw new Error('registry_capacity');
     const status = compatible ? 'VERIFIED_EQUIVALENCE' : metadata.identityVerified ? 'SOURCE_SCOPED' : 'AMBIGUOUS';
@@ -34,6 +37,7 @@ export class MarketRegistry {
       this.entries.set(id, entry);
     }
     const mapping = { source, sourceMarketId: sourceId, status, evidence: compatible ? rule.evidence : metadata.identityEvidence ?? null,
+      priceMultiplier: compatible ? multiplier : '1', canonicalUnit: compatible ? rule.unit : metadata.unit ?? null,
       semantics: metadata.semantics ?? 'UNKNOWN', unit: metadata.unit ?? null, metadata };
     const previous = entry.sourceMappings.findIndex(m => m.source === source && m.sourceMarketId === sourceId);
     if (previous >= 0) entry.sourceMappings[previous] = mapping; else entry.sourceMappings.push(mapping);
@@ -46,7 +50,9 @@ export class MarketRegistry {
     const market = this.resolve(observation.source, observation.sourceMarketId);
     if (!market) return { ...observation, marketId: 'UNREGISTERED', mappingVerified: false, quoteValid: false };
     const mapping = market.sourceMappings.find(m => m.source === observation.source && m.sourceMarketId === observation.sourceMarketId);
-    return { ...observation, marketId: market.id,
+    let price = observation.price;
+    try { if (mapping.priceMultiplier !== '1') price = format(mul(decimal(observation.price), decimal(mapping.priceMultiplier))); } catch { /* Invalid values remain diagnostic inputs for pricing eligibility. */ }
+    return { ...observation, price, rawPrice: observation.rawPrice ?? observation.price, marketId: market.id,
       mappingVerified: mapping.status !== 'AMBIGUOUS', quoteValid: Boolean(market.quoteAsset),
       semantics: mapping.semantics };
   }
@@ -66,6 +72,6 @@ export function convertQuote(observation, conversion, evaluationTime, maxAgeMs =
   if (!conversion?.evidence || conversion.from !== observation.quoteAsset || conversion.timestamp > evaluationTime ||
       conversion.receivedAt > evaluationTime || evaluationTime - conversion.timestamp > maxAgeMs) throw new Error('quote_conversion_unverified');
   const rate = decimal(conversion.rate); if (rate <= 0n) throw new Error('invalid_conversion');
-  return { ...observation, price: format(mul(decimal(observation.price), rate)), quoteAsset: conversion.to,
+  return { ...observation, rawPrice: observation.rawPrice ?? observation.price, price: format(mul(decimal(observation.price), rate)), quoteAsset: conversion.to,
     quoteValid: true, conversion: { ...conversion, originalPrice: observation.price, precision: format(SCALE) } };
 }

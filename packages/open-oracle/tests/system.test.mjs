@@ -121,3 +121,12 @@ test('server shutdown releases subscribers before delayed TCP close events', asy
   assert.equal(engine.listeners.size, 1); await api.close(); assert.equal(engine.listeners.size, 0);
   res.emit('close'); assert.equal(engine.listeners.size, 0);
 });
+test('evidence-bearing source units and multipliers normalize before multi-source pricing', () => {
+  const r = new MarketRegistry({ equivalences: [{ canonicalId: 'TEST/USD', quoteAsset: 'USD', unit: 'TEST', evidence: 'Synthetic verified contract-unit equivalence',
+    members: [{ source: 'gains', sourceMarketId: 'gains' }, { source: 'hyperliquid', sourceMarketId: 'hyperliquid' }, { source: 'gmx', sourceMarketId: 'gmx', sourceUnit: '1000_TEST_CONTRACT', priceMultiplier: '0.001' }] }] });
+  for (const source of sources) r.register(source, { sourceMarketId: source, quoteAsset: 'USD', unit: source === 'gmx' ? '1000_TEST_CONTRACT' : 'TEST', semantics: 'UNDERLYING_REFERENCE' });
+  const engine = new OracleEngine({ registry: r, candles: new CandleEngine({ timeframes: ['1s'] }) });
+  for (const source of sources) engine.ingest(o(source, source === 'gmx' ? '100000' : '100'));
+  const [price] = engine.evaluate(TIME); assert.equal(price.pricingMode, 'TRIPLE_SOURCE'); assert.equal(price.price, '100');
+  const gmx = price.sources.find(s => s.source === 'gmx'); assert.equal(gmx.rawPrice, '100000'); assert.equal(gmx.normalizedPrice, '100');
+});

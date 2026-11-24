@@ -6,8 +6,9 @@ Open Oracle is Openfund's independently developed multi-source market-data
 aggregation and composite reference-price discovery protocol. It calculates
 normalized, quality-adjusted reference prices, native candlesticks and audit
 history from eligible provider observations. It is **In Progress**, independently
-executable and fixture-verified. Live conformance and complete inventory
-verification remain blocked. It does not power the production chart.
+executable and fixture-verified. Remote CI has verified public inventory,
+nonempty reference observations and provider history for all three sources.
+Cross-source economic mapping and empirical calibration remain incomplete. It does not power the production chart.
 
 The existing Gains, Hyperliquid analytics and Iran fallback data paths are
 unchanged. No imports from this package have been added to any application.
@@ -17,9 +18,9 @@ The separate dormant Solidity `openfund-protocol` package is unchanged.
 
 | Adapter | Discovery | Price | History | Timestamp and acceptance limits |
 | --- | --- | --- | --- | --- |
-| Gains | `GET https://api.gains.trade/v1/arbitrum/markets` | `GET /prices`, `index` only; preserve `mark` separately | `/markets/{dashed-symbol}/candles?interval=...&from=...&to=...` | `updatedAt`; compatibility with the existing repo adapter is inspected, live access is unverified |
+| Gains | `GET https://api.gains.trade/v1/arbitrum/markets` | `GET /prices`, `index` only; preserve `mark` separately | `/markets/{dashed-symbol}/candles?interval=...&from=...&to=...` | `updatedAt`; public discovery, reference observations and provider history verified in the linked capture |
 | Hyperliquid | `POST https://api.hyperliquid.xyz/info`: `perpDexs`, `metaAndAssetCtxs` for every discovered dex, `spotMeta` | `metaAndAssetCtxs.oraclePx`; preserve `markPx`, `midPx`, funding, OI and source notional volume | `candleSnapshot`; trade OHLC stays provider-reference | Context snapshots have no documented per-price timestamp; receipt time is labelled and default-ineligible |
-| GMX | `GET https://{arbitrum,avalanche}-api.gmxinfra.io/tokens` and `/markets` | `GET https://{arbitrum,avalanche}.gmxapi.io/v1/prices/tickers`; midpoint of `minPrice` and `maxPrice`, divided by `10^30` per whole token | Oracle API `/prices/candles?tokenSymbol=...&period=...&limit=...` | `originTs` is the oldest snapshot price timestamp, used conservatively; deployment access and payload conformance remain unverified |
+| GMX | `GET https://{arbitrum,avalanche}-api.gmxinfra.io/tokens` and `/markets` | `GET https://{arbitrum,avalanche}.gmxapi.io/v1/prices/tickers`; midpoint of `minPrice` and `maxPrice`, divided by `10^30` per whole token | Oracle API `/prices/candles?tokenSymbol=...&period=...&limit=...` | `originTs` is the oldest snapshot price timestamp, used conservatively; public catalog/ticker/history payloads verified; conservative oldest-price timing retained |
 
 GMX's whole-token API price encoding is distinct from its Oracle keeper's
 per-unit contract encoding. The adapter deliberately does not interchange them.
@@ -43,7 +44,10 @@ until an evidence-bearing equivalence rule establishes comparability.
 
 An equivalence rule names `canonicalId`, `quoteAsset`, `unit`, `evidence` and
 explicit `{source, sourceMarketId}` members. Both the quote and unit must match
-source metadata. A separate quote-conversion utility requires an independently
+source metadata. A member may declare an evidenced `sourceUnit` and positive
+`priceMultiplier` to normalize contract/multiplier units into the canonical unit;
+raw and normalized prices remain separately visible. No multiplier is inferred
+from a ticker. A separate quote-conversion utility requires an independently
 verified, event-time-valid conversion rate; no USD/stablecoin peg is assumed.
 Default discovery does not invent cross-source equivalence based on ticker text.
 
