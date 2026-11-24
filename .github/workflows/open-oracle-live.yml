@@ -1,6 +1,10 @@
 name: Open Oracle public data validation
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - packages/open-oracle/**
+      - .github/workflows/open-oracle-live.yml
 permissions:
   contents: read
 jobs:
@@ -21,5 +25,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: open-oracle-public-validation
-          path: packages/open-oracle/reports/live
+          path: |
+            packages/open-oracle/reports/live/validation-summary.json
+            packages/open-oracle/reports/live/coverage-summary.json
           retention-days: 7

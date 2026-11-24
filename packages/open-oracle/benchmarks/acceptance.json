@@ -3,7 +3,7 @@
     "typecheck": "PASS",
     "lint": "PASS",
     "deterministicTests": {
-      "passed": 52,
+      "passed": 53,
       "failed": 0
     },
     "socketIntegration": {
@@ -29,7 +29,8 @@
     "englishLanguage": "PASS",
     "fullDocsCheck": "BLOCKED: stale unrelated cached assets in partial checkout",
     "fullApplicationRegressions": "NOT ESTABLISHED: incomplete checkout and dependencies",
-    "dependencyAudit": "BLOCKED: ENOTFOUND registry.npmjs.org; runtime dependency set is empty"
+    "dependencyAudit": "BLOCKED: ENOTFOUND registry.npmjs.org; runtime dependency set is empty",
+    "firstRemoteOracleCI": "52 deterministic tests, typecheck and lint passed; real socket exposed SSE cleanup race, now fixed with regression; rerun pending"
   },
   "productionIntegration": false,
   "merged": false,

@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 /** Local-only research API. No production mounting, CORS or external publication. */
 export function createOracleServer(engine, adapters = []) {
-  const clients = new Set();
+  const clients = new Map();
   const server = createServer((req, res) => {
     const send = (status, value) => { res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' }); res.end(JSON.stringify(value)); };
     if (req.headers.host && !/^localhost(?::\d+)?$|^127\.0\.0\.1(?::\d+)?$/.test(req.headers.host)) return send(403, { error: 'LOCAL_ONLY' });
@@ -10,10 +10,12 @@ export function createOracleServer(engine, adapters = []) {
     let url; try { url = new URL(req.url, 'http://localhost'); } catch { return send(400, { error: 'BAD_URL' }); }
     if (url.pathname === '/v1/stream') {
       if (clients.size >= 32) return send(503, { error: 'SUBSCRIBER_CAPACITY' });
-      res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-store', connection: 'keep-alive' }); res.write(': open-oracle\n\n'); clients.add(res);
+      res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-store', connection: 'keep-alive' }); res.write(': open-oracle\n\n');
       const unsubscribe = engine.subscribe(event => { if (!res.write(`event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`)) res.destroy(); });
       const heartbeat = setInterval(() => { if (!res.write(': heartbeat\n\n')) res.destroy(); }, 15000); heartbeat.unref();
-      res.once('close', () => { clearInterval(heartbeat); unsubscribe(); clients.delete(res); }); return;
+      let cleaned = false;
+      const cleanup = () => { if (cleaned) return; cleaned = true; clearInterval(heartbeat); unsubscribe(); clients.delete(res); };
+      clients.set(res, cleanup); res.once('close', cleanup); return;
     }
     const parts = url.pathname.split('/').filter(Boolean); let id;
     try { id = parts[2] ? decodeURIComponent(parts[2]) : null; } catch { return send(400, { error: 'BAD_ID' }); }
@@ -26,7 +28,7 @@ export function createOracleServer(engine, adapters = []) {
     if (parts[1] === 'methodology') return send(200, engine.config);
     return send(404, { error: 'NOT_FOUND' });
   });
-  server.on('close', () => { for (const res of clients) res.destroy(); });
+  server.on('close', () => { for (const [res, cleanup] of clients) { cleanup(); res.destroy(); } });
   return { server, async listen(port = 0) { await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', resolve); }); return server.address(); },
-    async close() { for (const res of clients) res.destroy(); await new Promise(resolve => server.close(resolve)); } };
+    async close() { for (const [res, cleanup] of clients) { cleanup(); res.destroy(); } await new Promise(resolve => server.close(resolve)); } };
 }

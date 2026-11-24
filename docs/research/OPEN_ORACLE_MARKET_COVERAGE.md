@@ -53,7 +53,7 @@ acceptance requirement.
 node packages/open-oracle/scripts/live.mjs /tmp/oracle-validation 60000
 ```
 
-Use a network-enabled development host or the manually dispatched
+Use a network-enabled development host or the separate pull-request/manual
 `Open Oracle public data validation` workflow. It performs no signing,
 transactions, deployment or terminal integration. Preserve actual failure
 records rather than replacing them with provider marketing counts.

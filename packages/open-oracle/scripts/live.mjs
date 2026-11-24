@@ -44,6 +44,10 @@ export async function collect({ durationMs = 15000, directory = 'reports/live', 
     limitations: ['Unverified mappings remain source-scoped or ambiguous.', 'Receipt-only Hyperliquid contexts are default-ineligible.',
       'Polling is the initial transport; upstream WebSocket conformance is not verified.', 'Historical provider OHLC is never native oracle history.'] };
   writeFileSync(resolve(directory, 'validation.json'), JSON.stringify(report, null, 2) + '\n');
+  // Only aggregate health/count summaries are eligible for CI artifacts. Raw provider data stays local.
+  writeFileSync(resolve(directory, 'validation-summary.json'), JSON.stringify({ startedAt: report.startedAt, completedAt: report.completedAt, elapsedMs: report.elapsedMs, actualCollectionMs: report.actualCollectionMs, inventoryStatus, accepted: report.accepted, samples, limitations: report.limitations }, null, 2) + '\n');
+  const { markets, ...coverageSummary } = coverage;
+  writeFileSync(resolve(directory, 'coverage-summary.json'), JSON.stringify(coverageSummary, null, 2) + '\n');
   return report;
 }
 if (process.argv[1] === new URL(import.meta.url).pathname) {

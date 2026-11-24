@@ -112,3 +112,12 @@ test('persisted raw/health history replays exactly and backfill stays provider-r
     assert.equal(result.persisted, 1); assert.equal(result.reconstructedCompositeCandles, false);
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
+test('server shutdown releases subscribers before delayed TCP close events', async () => {
+  const { EventEmitter } = await import('node:events');
+  const engine = new OracleEngine({ registry: registry() }), api = createOracleServer(engine);
+  const res = new EventEmitter(); res.writeHead = () => {}; res.write = () => true;
+  res.destroy = () => {}; // Real socket close delivery may follow the server-close callback.
+  api.server.emit('request', { method: 'GET', url: '/v1/stream', headers: {} }, res);
+  assert.equal(engine.listeners.size, 1); await api.close(); assert.equal(engine.listeners.size, 0);
+  res.emit('close'); assert.equal(engine.listeners.size, 0);
+});

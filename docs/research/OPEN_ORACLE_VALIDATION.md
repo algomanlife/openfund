@@ -23,7 +23,7 @@ claim of full application-regression acceptance in this checkout.
 | Package install | Successful offline `npm ci` using the exact existing TypeScript 6.0.3 archive and integrity-pinned package lock |
 | TypeScript | `npm --prefix packages/open-oracle run typecheck` passed |
 | Syntax / whitespace / import isolation | Package lint passed |
-| Deterministic tests | 52 passed, zero failed; includes 1,000 seeded property iterations |
+| Deterministic tests | 53 passed, zero failed; includes 1,000 seeded property iterations |
 | Socket integration | Executed and failed: `listen EPERM` on `127.0.0.1`; separate required CI test retained |
 | Public Gains discovery | Executed; `NETWORK` failure, no inventory verified |
 | Public Hyperliquid discovery | Executed; `NETWORK` failure, no inventory verified |
@@ -96,6 +96,16 @@ manual, preserving all failed as well as successful collection evidence.
 | 24 Deliverables | Reviewable implementation and measured evidence | Incomplete live/coverage/calibration requirements remain explicit |
 | 25 Done | Partial acceptance, not declared complete | All unverified gates above |
 | 26 Execution | Actual code, tests, measurements, docs and implementation branch | Review and remaining acceptance |
+
+## Remote CI follow-up
+
+The first GitHub Actions run passed all 52 initial deterministic tests, TypeScript
+and lint, then exposed an asynchronous SSE cleanup race in the real socket test.
+The server now releases subscribers synchronously during shutdown, independently
+of delayed TCP close events, with an additional deterministic regression test.
+The test remains required and its rerun is tracked in PR #223. A separate
+public-data workflow runs on protocol PRs and manual dispatches; only aggregate
+health/count summaries are uploaded, while raw provider observations remain local.
 
 ## Remaining integration work
 
