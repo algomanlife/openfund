@@ -23,7 +23,7 @@ claim of full application-regression acceptance in this checkout.
 | Package install | Successful offline `npm ci` using the exact existing TypeScript 6.0.3 archive and integrity-pinned package lock |
 | TypeScript | `npm --prefix packages/open-oracle run typecheck` passed |
 | Syntax / whitespace / import isolation | Package lint passed |
-| Deterministic tests | 53 passed, zero failed; includes 1,000 seeded property iterations |
+| Deterministic tests | 54 passed, zero failed; includes 1,000 seeded property iterations |
 | Socket integration | Executed and failed: `listen EPERM` on `127.0.0.1`; separate required CI test retained |
 | Public Gains discovery | Executed; `NETWORK` failure, no inventory verified |
 | Public Hyperliquid discovery | Executed; `NETWORK` failure, no inventory verified |
@@ -103,9 +103,18 @@ The first GitHub Actions run passed all 52 initial deterministic tests, TypeScri
 and lint, then exposed an asynchronous SSE cleanup race in the real socket test.
 The server now releases subscribers synchronously during shutdown, independently
 of delayed TCP close events, with an additional deterministic regression test.
-The test remains required and its rerun is tracked in PR #223. A separate
+The rerun passed 53 deterministic tests, the actual socket test, typecheck, lint and the full package audit with zero vulnerabilities (run 45486530875, job 138773510933). A separate
 public-data workflow runs on protocol PRs and manual dispatches; only aggregate
 health/count summaries are uploaded, while raw provider observations remain local.
+
+The first remote public collection reached Gains and Hyperliquid and accepted
+6,379 input events over approximately 72 seconds including discovery. It exposed
+a GMX catalog-envelope parsing defect (four wrapper entries), so that run is
+**not** evidence of complete GMX coverage. The follow-up unwraps catalog envelopes,
+supports explicit address-field identities, adds a regression, and requires
+nonempty per-provider price observations before live validation can pass. Live
+history retrieval now retains only provider-reference data and reports actual
+success/failure counts. Revalidation is tracked in PR #223.
 
 ## Remaining integration work
 

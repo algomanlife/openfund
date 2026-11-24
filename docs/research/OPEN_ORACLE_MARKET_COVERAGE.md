@@ -27,6 +27,16 @@ records collection timestamps and `complete: false`.
 records attempted providers, elapsed time, requested duration and zero accepted
 observations. It must not be interpreted as a successful observation window.
 
+## Remote collection follow-up
+
+[Initial CI capture](../../packages/open-oracle/benchmarks/ci-live-initial.json)
+observed a Gains inventory of 496 and a Hyperliquid inventory of 927 entries;
+these are timestamped captures, not permanent counts. Its GMX four-entry result
+revealed a catalog-envelope parsing defect and is explicitly rejected as complete
+GMX coverage. The parser and regression test were corrected; subsequent live
+validation is tracked in PR #223. The earlier local network-failure capture above
+remains historical evidence of the local environment, not the current CI result.
+
 ## Implemented inventory behavior
 
 Discovery traverses the complete supplied Gains catalog, every Hyperliquid perp

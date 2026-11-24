@@ -63,3 +63,9 @@ test('partial Hyperliquid discovery preserves perp metadata when spot discovery 
   }) });
   assert.equal((await adapter.discover()).length, 1); assert.equal(adapter.inventoryComplete, false);
 });
+test('GMX unwraps real catalog envelopes and explicit address-field identities', async () => {
+  const adapter = new GMXAdapter({ now: () => TIME, networks: [{ name: 'test', oracle: 'https://oracle.invalid', api: 'https://api.invalid' }],
+    transport: mock(url => url.endsWith('/tokens') ? { tokens: f.gmx.tokens } : url.endsWith('/markets') ? { markets: [{ marketTokenAddress: '0xtestmarket', indexTokenAddress: '0xtesteth' }] } : { originTs: TIME, prices: { '0xtesteth': { minPrice: '99000000000000000000000000000000', maxPrice: '101000000000000000000000000000000' } } }) });
+  const inventory = await adapter.discover(); assert.equal(inventory.length, 2); assert.equal(inventory[0].identityVerified, true); assert.equal(inventory[0].tokenAddress, '0xtesteth');
+  assert.equal((await adapter.snapshot())[0].price, '100');
+});

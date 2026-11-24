@@ -3,7 +3,7 @@
     "typecheck": "PASS",
     "lint": "PASS",
     "deterministicTests": {
-      "passed": 53,
+      "passed": 54,
       "failed": 0
     },
     "socketIntegration": {
@@ -30,7 +30,9 @@
     "fullDocsCheck": "BLOCKED: stale unrelated cached assets in partial checkout",
     "fullApplicationRegressions": "NOT ESTABLISHED: incomplete checkout and dependencies",
     "dependencyAudit": "BLOCKED: ENOTFOUND registry.npmjs.org; runtime dependency set is empty",
-    "firstRemoteOracleCI": "52 deterministic tests, typecheck and lint passed; real socket exposed SSE cleanup race, now fixed with regression; rerun pending"
+    "firstRemoteOracleCI": "52 deterministic tests, typecheck and lint passed; real socket exposed SSE cleanup race, now fixed with regression; rerun pending",
+    "remoteOracleCI": "Run 45486530875 passed 53 tests plus actual socket, typecheck, lint, full audit; subsequent GMX parsing regression adds one test; rerun pending",
+    "remoteLiveInitial": "Gains 496 and Hyperliquid 927 discovered; GMX wrapper count 4 exposed catalog parsing defect. Not accepted as complete coverage; parser corrected and rerun required."
   },
   "productionIntegration": false,
   "merged": false,

@@ -3,6 +3,8 @@ import { decimal, format, divRound, SCALE } from './decimal.ts';
 import { setTimeout as delay } from 'node:timers/promises';
 const valid = value => { if (typeof value !== 'string') throw new ProviderError('INVALID_PRICE'); const n = decimal(value); if (n <= 0n) throw new ProviderError('INVALID_PRICE'); return String(value); };
 const rows = response => array(response?.data);
+const catalog = (response, key) => response && typeof response === 'object' && Object.hasOwn(response, key) ? response[key] : response;
+const addressOf = value => typeof value === 'string' ? value : value?.address ?? value?.tokenAddress ?? null;
 const entries = response => Array.isArray(response) ? response : response && typeof response === 'object' ? Object.entries(response).map(([id, value]) => ({ ...value, _key: id })) : array(response);
 class Adapter {
   constructor(source, options = {}) {
@@ -12,7 +14,7 @@ class Adapter {
   }
   error(error, sourceMarketId) { this.errors.push({ code: error.code ?? 'SCHEMA_INVALID', sourceMarketId, at: this.now() }); if (this.errors.length > 200) this.errors.shift(); }
   health() { return { source: this.source, inventoryComplete: this.inventoryComplete, marketCount: this.inventory.length,
-    capabilities: this.capabilities, errors: this.errors, transport: { ...this.transport.metrics } }; }
+    capabilities: this.capabilities, verifiedIdentities: this.inventory.filter(m => m.identityVerified).length, schema: this.schema ?? null, errors: this.errors, transport: { ...this.transport.metrics } }; }
   observation(sourceMarketId, price, providerTime, raw, extra = {}) {
     const receivedAt = this.now(), ts = timestamp(providerTime);
     return { source: this.source, sourceMarketId, price: valid(price), timestamp: ts ?? receivedAt,
@@ -121,20 +123,24 @@ export class GMXAdapter extends Adapter {
   }
   async discover(signal) {
     this.inventoryComplete = false; const all = [];
-    let complete = true;
+    let complete = true; this.schema = [];
     for (const network of this.networks) {
       try {
-      const tokens = entries(await this.transport.request(`${network.oracle}/tokens`, undefined, signal));
-      const markets = entries(await this.transport.request(`${network.oracle}/markets`, undefined, signal));
+      const tokenResponse = await this.transport.request(`${network.oracle}/tokens`, undefined, signal);
+      const marketResponse = await this.transport.request(`${network.oracle}/markets`, undefined, signal);
+      this.schema.push({ network: network.name, tokenEnvelope: Array.isArray(tokenResponse) ? 'ARRAY' : Object.keys(tokenResponse ?? {}), marketEnvelope: Array.isArray(marketResponse) ? 'ARRAY' : Object.keys(marketResponse ?? {}) });
+      const tokens = entries(catalog(tokenResponse, 'tokens'));
+      const markets = entries(catalog(marketResponse, 'markets'));
       for (const [i, m] of markets.entries()) {
-        const address = m.marketToken ?? m.marketTokenAddress ?? m.address ?? m._key;
-        const token = tokens.find(t => (t.address ?? t.tokenAddress ?? t._key)?.toLowerCase() === String(m.indexToken ?? '').toLowerCase());
+        const address = addressOf(m.marketToken ?? m.marketTokenAddress ?? m.address ?? m._key);
+        const indexAddress = addressOf(m.indexToken ?? m.indexTokenAddress);
+        const token = tokens.find(t => addressOf(t.address ?? t.tokenAddress ?? t._key)?.toLowerCase() === indexAddress?.toLowerCase());
         const symbol = token?.symbol ?? token?.tokenSymbol ?? m.name ?? `unresolved:${i}`;
         all.push({ sourceMarketId: `${network.name}/${address ?? `unresolved:${i}`}`, symbol,
           baseAsset: symbol, quoteAsset: token ? 'USD' : null, assetClass: 'UNKNOWN', instrumentType: 'PERPETUAL_UNDERLYING',
           unit: token?.address ?? token?.tokenAddress ?? token?._key ?? null, priceDecimals: 24,
           identityVerified: Boolean(token && address), semantics: 'UNDERLYING_REFERENCE',
-          network: network.name, tokenAddress: m.indexToken ?? null, marketHours: null, raw: m,
+          network: network.name, tokenAddress: indexAddress, marketHours: null, raw: m,
           identityEvidence: 'GMX network-scoped indexToken contract identity; wrapped assets remain distinct' });
       }
       // Every oracle token also remains visible, including tokens with no active trading market.
