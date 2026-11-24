@@ -16,8 +16,9 @@ application**.
    `apps/` may import it, and its `package.json` is never hoisted into the root
    install (root `package.json` stays orchestration-only; per-app lockfiles are
    untouched).
-2. No changes to `render.yaml`, CI workflows or application code are needed to
-   add/modify protocol sources — protocol work must not touch them.
+2. Protocol changes do not modify `render.yaml` or application code. The
+   isolated dependency workflow may install module-local tooling; application
+   builds and release archives remain independent of it.
 3. No deployment, chain interaction, background service, scheduled job or new
    production environment variable.
 4. `npm run validate:blueprint`, the React build and the backend tests must
@@ -31,7 +32,7 @@ application**.
 git checkout -b qwen/protocol-<topic> origin/main
 
 cd packages/openfund-protocol
-npm install          # module-local node_modules (gitignored)
+npm ci               # exact module-local lockfile; node_modules is gitignored
 npx hardhat compile  # compile contracts
 npx hardhat test     # run the imported test suite
 ```
@@ -62,5 +63,17 @@ npx hardhat test     # run the imported test suite
 - [ ] `npm run validate:blueprint` still green (repository root)
 - [ ] React `tsc --noEmit` and app unit tests still green (they must be — the
       module is invisible to them; run them to prove it)
-- [ ] No file outside `packages/openfund-protocol/**` and `docs/protocol/**`
-      changed (except this documentation)
+- [ ] Application isolation is preserved; changes outside the module and its
+      docs are limited to the dedicated dependency workflow and change log
+
+## Isolated dependency CI
+
+[Protocol dependency integrity](../../.github/workflows/protocol-dependencies.yml)
+runs on protocol dependency changes and on their merge to main. It performs a
+clean lockfile installation with lifecycle scripts disabled, then loads Hardhat
+and the imported plugins with `hardhat help`. It uses no chain credentials and
+never invokes a deployment task. This verifies dependency installation and
+configuration compatibility; it is not contract compilation or test acceptance.
+The imported OrderBook compilation defect recorded above remains a separate
+protocol engineering task. Application CI and release packaging remain
+independent of this dormant module.
