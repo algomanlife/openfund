@@ -1,0 +1,37 @@
+name: Isolated glob compatibility experiment
+on:
+  push:
+    branches: [agent/codex/protocol-glob-validation]
+permissions:
+  contents: read
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/openfund-protocol
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 26
+      - name: Resolve the targeted Mocha override
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org
+      - name: Install the exact dependency graph
+        run: npm ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org
+      - name: Load the existing Hardhat 2 configuration
+        run: npm exec -- hardhat help
+      - name: Exercise Mocha glob discovery and test execution
+        run: node scripts/test-glob-compat.cjs
+      - name: Record the resolved public lockfile
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const data = fs.readFileSync("package-lock.json", "utf8");
+          const chunks = Math.ceil(data.length / 4000);
+          console.log("LOCK_TOTAL " + chunks);
+          for (let i = 0; i < chunks; i++) console.log("LOCK_CHUNK " + i + " " + JSON.stringify(data.slice(i * 4000, (i + 1) * 4000)));
+          NODE
