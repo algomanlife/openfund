@@ -267,12 +267,24 @@ async function boot(env) {
   let log = ''
   child.stdout.on('data', d => { log += d }); child.stderr.on('data', d => { log += d })
   const base = `http://127.0.0.1:${port}`
-  for (let i = 0; i < 100; i++) {
-    if (child.exitCode !== null) return { exited: child.exitCode, log }
-    try { if ((await fetch(base + '/health')).ok) break } catch {}
-    await new Promise(r => setTimeout(r, 100))
+  const stop = () => {
+    if (!child.pid || child.exitCode !== null || child.signalCode !== null) return Promise.resolve()
+    return new Promise(resolve => { child.once('exit', resolve); child.kill('SIGTERM') })
   }
-  return { base, log: () => log, stop: () => new Promise(r => { child.once('exit', r); child.kill('SIGTERM') }) }
+  /* Readiness is a successful health response, not an elapsed polling loop.
+     GLOBAL initializes more services than IRAN, so allow a bounded cold boot. */
+  const deadline = Date.now() + 30_000
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null)
+      return { exited: child.exitCode ?? child.signalCode, log }
+    try {
+      const response = await fetch(base + '/health', { signal: AbortSignal.timeout(1000) })
+      if (response.ok) return { base, log: () => log, stop }
+    } catch {}
+    await new Promise(resolve => setTimeout(resolve, 100))
+  }
+  await stop()
+  assert.fail(`Regional server did not become healthy within 30 seconds.\n${log}`)
 }
 
 test('server: an IRAN process refuses a GLOBAL database', withDb, async () => {

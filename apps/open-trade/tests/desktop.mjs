@@ -24,6 +24,23 @@ try {
   await page
     .getByRole("button", { name: "Explore charts", exact: true })
     .waitFor();
+  /* The welcome DOM can be ready before the hidden BrowserWindow is shown.
+     Capture only after the application's own show event and two paint frames. */
+  await app.evaluate(async ({ BrowserWindow }) => {
+    const window = BrowserWindow.getAllWindows()[0];
+    if (!window) throw new Error("Desktop window was not created");
+    if (window.isVisible()) return;
+    await new Promise((resolve, reject) => {
+      const shown = () => { clearTimeout(timer); resolve(); };
+      const timer = setTimeout(() => {
+        window.off("show", shown);
+        reject(new Error("Desktop window did not become visible within 15 seconds"));
+      }, 15_000);
+      window.once("show", shown);
+    });
+  });
+  await page.evaluate(() => new Promise(resolve =>
+    requestAnimationFrame(() => requestAnimationFrame(resolve))));
   const startupMs = Date.now() - started;
   await page.screenshot({ path: "artifacts/startup.png" });
   assert.equal(await page.evaluate(() => typeof window.require), "undefined");
