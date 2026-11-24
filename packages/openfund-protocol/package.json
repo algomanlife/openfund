@@ -36,5 +36,10 @@
     "@openzeppelin/contracts": "4.9.6",
     "@openzeppelin/contracts-upgradeable": "4.9.6"
   },
+  "overrides": {
+    "mocha@^11.0.0": {
+      "glob": "14.0.6"
+    }
+  },
   "private": true
 }

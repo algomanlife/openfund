@@ -31,7 +31,7 @@ application**.
 git checkout -b qwen/protocol-<topic> origin/main
 
 cd packages/openfund-protocol
-npm install          # module-local node_modules (gitignored)
+npm ci               # exact module-local lockfile; node_modules is gitignored
 npx hardhat compile  # compile contracts
 npx hardhat test     # run the imported test suite
 ```
@@ -64,3 +64,25 @@ npx hardhat test     # run the imported test suite
       module is invisible to them; run them to prove it)
 - [ ] No file outside `packages/openfund-protocol/**` and `docs/protocol/**`
       changed (except this documentation)
+
+## Toolchain dependency compatibility
+
+The existing plugins use Hardhat 2. The Mocha 11 dependency uses a targeted
+`glob` override at 14.0.6 so its test-file discovery does not retain the
+vulnerable 10.x release. The override is restricted to Mocha 11; older Mocha
+instances and the application dependency graph are unchanged.
+
+After a module-local `npm ci`, run:
+
+```bash
+npx hardhat help
+node scripts/test-glob-compat.cjs
+```
+
+The regression exercises glob patterns, recursive discovery, hidden-file
+exclusion, missing-file errors and actual Mocha execution. Installation,
+configuration loading and this regression were verified on Node 26 with
+Hardhat 2.29.2 and glob 14.0.6 in an isolated development experiment. These
+checks do not establish contract compilation or test acceptance; the imported
+OrderBook compile blocker above remains a separate protocol task. Application
+workflows retain the dormant-package execution guard.
