@@ -11,7 +11,9 @@
  * Motion (flamingo.css) is transform/opacity only. It runs only while the
  * host says so: `.resources-open` for the menu, `.is-live` for the page
  * (visible, tab active, motion allowed). Reduced motion shows a static frame.
- * Wing timing is offset per bird so the flock never flaps in unison. */
+ * Wing timing is offset per bird so the flock never flaps in unison, and the
+ * wingbeat period scales with size (flapFor). The flock moves only towards
+ * +x, the way every head faces (owner fix 2). */
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 export type FlamingoVariant = 'panel' | 'compact' | 'hero'
@@ -22,13 +24,21 @@ interface Layout { w: number; h: number; lakeY: number; birds: Bird[]; mark: num
 /* V-formation: a leader and alternating wings behind it. Offsets are fixed
    (not random) so the drawing is deterministic and testable. */
 function formation(count: number, lead: [number, number], dx: number, dy: number, scale: number): Bird[] {
-  const flaps = [1.05, 0.92, 1.18, 0.98, 1.12, 0.88, 1.24, 1.01, 0.95, 1.15, 1.08]
+  /* distinct phases: no two birds flap in sync (owner fix 2) */
   const delays = [0, -0.37, -0.71, -0.18, -0.93, -0.52, -0.11, -0.64, -0.29, -0.83, -0.45]
   return Array.from({ length: count }, (_, i) => {
     const rank = Math.ceil(i / 2), side = i % 2 ? -1 : 1
-    return { x: lead[0] - rank * dx, y: lead[1] + side * rank * dy + (i % 3) * 1.5, s: scale * (1 - rank * 0.035), flap: flaps[i % flaps.length], delay: delays[i % delays.length], bob: 3.2 + (i % 4) * 0.45 }
+    const s = scale * (1 - rank * 0.035)
+    /* wingbeat period from size, as in the /migrate hero: smaller birds flap faster */
+    return { x: lead[0] - rank * dx, y: lead[1] + side * rank * dy + (i % 3) * 1.5, s, flap: flapFor(s), delay: delays[i % delays.length], bob: 3.2 + (i % 4) * 0.45 }
   })
 }
+/** wingbeat period from size (shared rule with features/migration/heroScene.ts) */
+export const flapFor = (s: number) => +(0.42 + 0.26 * Math.sqrt(s)).toFixed(3)
+/** Every bird in this scene faces +x (head at +x) and the flock only ever
+ *  moves +x (flamingo.css fl-glide), so heads lead in both directions; the
+ *  scene is not mirrored in RTL. Exported for the facing test. */
+export const FLOCK_FACING = 1
 
 const LAYOUTS: Record<FlamingoVariant, Layout> = {
   panel: { w: 320, h: 200, lakeY: 136, mark: 0, birds: formation(7, [236, 70], 30, 14, 0.95) },

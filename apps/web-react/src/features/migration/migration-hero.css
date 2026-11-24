@@ -1,8 +1,12 @@
-/* /migrate hero scene (heroScene.ts). Transform/opacity only; paused
-   unless the hero is live; reduced motion removes every animation and shows
-   the landers standing in the water. --flamingo is reserved for migration. */
+/* /migrate hero scene (heroScene.ts). Each bird's path, pose and splash
+   @keyframes are generated from its track data inside the SVG; this sheet
+   sets the timing, colours, the live/paused gate and the phone subset.
+   Transform/opacity only; paused unless the hero is live; reduced motion
+   removes every animation and shows the composed still (stillCss()).
+   --flamingo is reserved for migration. */
 .mh-root{position:absolute;inset:0;z-index:-2;overflow:hidden}
 .mh-svg{display:block;inline-size:100%;block-size:100%}
+/* RTL mirrors the whole scene: movement and facing flip together, so heads still lead */
 [dir=rtl] .mh-svg{transform:scaleX(-1)}
 .mh-sky-top{stop-color:color-mix(in srgb,var(--flamingo) 14%,#07100d)}
 .mh-sky-mid{stop-color:color-mix(in srgb,var(--flamingo) 26%,#0b1512)}
@@ -17,59 +21,34 @@ html[data-theme=light] .mh-water-low{stop-color:color-mix(in srgb,var(--mint) 10
 .mh-sun{fill:color-mix(in srgb,var(--flamingo) 30%,transparent);opacity:.5}
 .mh-hills{fill:color-mix(in srgb,var(--mint) 9%,#08110e)}
 html[data-theme=light] .mh-hills{fill:color-mix(in srgb,var(--mint) 18%,#f1f5f2)}
-.mh-ripple{fill:none;stroke:color-mix(in srgb,var(--mint) 45%,transparent);stroke-width:1.2;opacity:.45;transform-box:fill-box;transform-origin:center}
 
-/* birds: --flamingo pink, depth by opacity and size */
-.mh-body,.mh-head,.mh-wing,.mh-wing-folded{fill:var(--flamingo)}
-.mh-wing.is-far,.mh-wing-folded{fill:color-mix(in srgb,var(--flamingo) 70%,#3a1a24)}
+/* birds: --flamingo pink; depth comes from size and the track's opacity */
+.mh-body,.mh-head,.mh-wing,.mh-wing-fixed,.mh-wing-folded{fill:var(--flamingo)}
+.mh-wing.is-far,.mh-wing-fixed.is-far,.mh-wing-folded{fill:color-mix(in srgb,var(--flamingo) 70%,#3a1a24)}
 .mh-neck{fill:none;stroke:var(--flamingo);stroke-width:2.6;stroke-linecap:round}
 .mh-neck.is-standing{stroke-width:3.4}
-.mh-legs{fill:none;stroke:color-mix(in srgb,var(--flamingo) 80%,#000);stroke-width:1.4;stroke-linecap:round}
+.mh-legs{fill:none;stroke:color-mix(in srgb,var(--flamingo) 80%,#000);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .mh-legs.is-standing{stroke-width:1.8}
-.mh-wake{fill:none;stroke:color-mix(in srgb,var(--mint) 55%,transparent);stroke-width:1.4}
-.mh-layer.is-far{opacity:.5}.mh-layer.is-mid{opacity:.8}
+.mh-splash{fill:none;stroke:color-mix(in srgb,var(--mint) 55%,transparent);stroke-width:1.4;opacity:0;transform-box:fill-box;transform-origin:center}
 .mh-wing{transform-box:fill-box;transform-origin:20% 100%}
+.mh-pose{opacity:0}
 
-/* static frame (no motion, reduced motion): flyers spread across the band,
-   landers standing in the water */
-.mh-flyer.f0{transform:translateX(220px)}.mh-flyer.f1{transform:translateX(760px)}.mh-flyer.f2{transform:translateX(1180px)}.mh-flyer.f3{transform:translateX(1460px)}
-.is-near .mh-flyer.f0{transform:translateX(980px)}.is-near .mh-flyer.f1{transform:translateX(1380px)}
-.mh-pose.is-air{opacity:0}
-
-/* motion: defined always, paused unless live */
-.mh-flyer{animation:mh-cross var(--mh-dur,40s) linear var(--mh-delay,0s) infinite}
-.mh-bob{animation:mh-bob 3.6s ease-in-out var(--mh-delay,0s) infinite alternate;transform-box:fill-box}
-.mh-wing{animation:mh-flap var(--mh-flap,1s) ease-in-out infinite alternate}
-.mh-lander{animation:mh-land var(--mh-dur,30s) ease-in-out var(--mh-delay,0s) infinite}
-.mh-pose.is-air{animation:mh-air var(--mh-dur,30s) linear var(--mh-delay,0s) infinite}
-.mh-pose.is-ground{animation:mh-ground var(--mh-dur,30s) linear var(--mh-delay,0s) infinite}
-.mh-wade{animation:mh-wade 7s ease-in-out var(--mh-delay,0s) infinite alternate}
-.mh-ripple{animation:mh-ripple 6s ease-out infinite}
-.mh-ripple.r1{animation-delay:-2s}.mh-ripple.r2{animation-delay:-4s}
-.mh-root :is(.mh-flyer,.mh-bob,.mh-wing,.mh-lander,.mh-pose,.mh-wade,.mh-ripple){animation-play-state:paused}
-.mh-root[data-live] :is(.mh-flyer,.mh-bob,.mh-wing,.mh-lander,.mh-pose,.mh-wade,.mh-ripple){animation-play-state:running}
-
-@keyframes mh-cross{from{transform:translateX(-260px)}to{transform:translateX(1860px)}}
-@keyframes mh-bob{from{transform:translateY(-4px)}to{transform:translateY(5px)}}
+/* timing: path, poses and splashes share the track's loop */
+.mh-bird,.mh-pose,.mh-splash{animation-duration:var(--mh-dur,24s);animation-delay:var(--mh-delay,0s);animation-timing-function:linear;animation-iteration-count:infinite;animation-fill-mode:both}
+/* wingbeats: period from size (flapFor), a phase of their own, never in sync */
+.mh-wing{animation:mh-flap var(--mh-flap,1s) ease-in-out var(--mh-phase,0s) infinite alternate}
+/* wading: the legs alternate */
+.mh-step{animation:mh-step 1.1s steps(1,end) infinite}
+.mh-step.b{animation-delay:-.55s}
+.mh-root :is(.mh-bird,.mh-pose,.mh-splash,.mh-wing,.mh-step){animation-play-state:paused}
+.mh-root[data-live] :is(.mh-bird,.mh-pose,.mh-splash,.mh-wing,.mh-step){animation-play-state:running}
 @keyframes mh-flap{from{transform:scaleY(1)}to{transform:scaleY(-.55)}}
-/* in from the upper inline-end corner, land, wade, take off the same way */
-@keyframes mh-land{
-  0%{transform:translate(520px,-640px)}
-  26%{transform:translate(0,0)}
-  70%{transform:translate(-40px,0)}
-  100%{transform:translate(560px,-700px)}}
-@keyframes mh-air{0%,24%{opacity:1}28%,68%{opacity:0}72%,100%{opacity:1}}
-@keyframes mh-ground{0%,24%{opacity:0}28%,68%{opacity:1}72%,100%{opacity:0}}
-@keyframes mh-wade{from{transform:translateX(-10px)}to{transform:translateX(12px)}}
-@keyframes mh-ripple{from{transform:scale(.6);opacity:.5}to{transform:scale(1.5);opacity:0}}
+@keyframes mh-step{0%{opacity:1}50%{opacity:0}}
 
-/* phones: fewer, smaller birds */
+/* phones: fewer birds */
 @media (max-width:760px){
-  .mh-layer.is-far,.mh-lander.l2,.is-near .mh-flyer.f1,.is-mid .mh-flyer.f2{display:none}
-  .mh-svg{transform:none}
-  [dir=rtl] .mh-svg{transform:scaleX(-1)}
+  .mh-root .is-desktop{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   .mh-root *{animation:none!important}
-  .mh-pose.is-air{opacity:0}.mh-pose.is-ground{opacity:1}
 }

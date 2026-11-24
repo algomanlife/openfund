@@ -72,10 +72,18 @@ html[data-theme=light] .mg-error{color:#a8321f}
 .mg-monogram{flex:none}
 .mg-monogram-shape{fill:color-mix(in srgb,var(--flamingo) 16%,var(--surface));stroke:color-mix(in srgb,var(--flamingo) 60%,transparent);stroke-width:1.5}
 .mg-monogram text{fill:var(--white);font:700 15px var(--ds-font-latin);letter-spacing:.04em}
-/* phones: the scene sits above the copy, so landing birds never meet the call to action */
-@media (max-width:760px){
+/* tablets and phones (≤1180 px): the copy spans most of the width, so the
+   scene sits above it and landing birds never meet the copy or the call to
+   action (owner fix 2; at 768–1180 px the old layout put birds behind the
+   headline) */
+@media (max-width:1180px){
   .mg-hero{min-block-size:0;display:block}
-  .mg-hero .mh-root{position:relative;inset:auto;block-size:min(58vw,300px);z-index:0}
+  .mg-hero .mh-root{position:relative;inset:auto;block-size:min(46vw,420px);z-index:0}
+  .mg-hero::before,[dir=rtl] .mg-hero::before,.mg-hero::after{display:none}
+  .mg-hero-copy{padding-block:28px 36px}
+}
+@media (max-width:760px){
+  .mg-hero .mh-root{block-size:min(58vw,300px)}
   .mg-hero::before,[dir=rtl] .mg-hero::before,.mg-hero::after{display:none}
   .mg-hero-copy{padding-block:24px 32px}
 }

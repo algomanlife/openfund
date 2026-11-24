@@ -90,13 +90,31 @@ const apart = (a, b) => a.r <= b.x || b.r <= a.x || a.b <= b.y || b.b <= a.y
       ok('reduced motion: the pulse is off', (await page.evaluate(measure)).pulse.name === 'none')
       await page.close()
     }
-    /* each badge target exists on /apps */
-    {
+    /* Direct entries and same-page badge clicks must both position the card.
+       Wait for the observable result, rather than assuming the gated route
+       and a long scroll finish within a fixed 1500 ms on every CI runner. */
+    for (const loc of ['en', 'fa']) {
       const page = await browser.newPage({ viewport: { width: 1440, height: 900 } }); page.on('pageerror', e => errors.push(String(e)))
-      await page.goto(`${BASE}/en/apps#download-windows`, { waitUntil: 'load' }); await page.waitForTimeout(1500)
+      const positioned = async (id, label) => {
+        await page.waitForFunction(id => {
+          const target = document.getElementById(id)
+          const header = document.querySelector('.openfund-header')
+          if (!target || !header) return false
+          const r = target.getBoundingClientRect(), h = header.getBoundingClientRect()
+          return r.top >= Math.max(0, h.bottom) - 1 && r.top < innerHeight
+        }, id, { timeout: 10000 })
+        ok(label, true)
+      }
+      await page.goto(`${BASE}/${loc}/apps#download-windows`, { waitUntil: 'load' })
+      await positioned('download-windows', `${loc}: direct /apps anchor positions Windows below the header`)
       const t = await page.evaluate(() => ['macos', 'windows', 'linux'].map(p => !!document.getElementById(`download-${p}`)))
-      ok('/apps has a card for each desktop badge (#download-macos, -windows, -linux)', t.every(Boolean), JSON.stringify(t))
-      ok('/apps scrolls the linked card into view below the header', await page.evaluate(() => { const r = document.getElementById('download-windows').getBoundingClientRect(); return r.top >= 0 && r.top < innerHeight }))
+      ok(`${loc}: /apps has a card for every desktop badge`, t.every(Boolean), JSON.stringify(t))
+      for (const platform of ['macos', 'linux']) {
+        await page.locator('.openfund-header .resources-toggle[aria-controls="website-resources"]').click()
+        await page.locator(`#website-resources a.mega-platform[href="/${loc}/apps#download-${platform}"]`).click()
+        await page.waitForURL(`**/${loc}/apps#download-${platform}`)
+        await positioned(`download-${platform}`, `${loc}: same-page ${platform} badge positions its card below the header`)
+      }
       await page.close()
     }
     /* drawer: a compact horizontal card that fits the badges */

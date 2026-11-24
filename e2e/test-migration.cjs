@@ -54,8 +54,10 @@ const open = async (page, route) => {
       ok('only uploaded logos are shown as images; the rest are original monograms',
         await page.locator('.mg-firm-logo').count() === (config?.firms ?? []).filter(f => f.logoUrl).length)
       const birds = await page.evaluate(() => { const ctas = [...document.querySelectorAll('.mg-hero .hero-actions a')].map(a => a.getBoundingClientRect())
-        return [...document.querySelectorAll('.mh-landers .mh-pose.is-ground')].map(b => b.getBoundingClientRect()).filter(r => r.width).some(r => ctas.some(cta => !(r.right < cta.left || r.left > cta.right || r.bottom < cta.top || r.top > cta.bottom))) })
-      ok('standing birds never overlap the call to action', !birds)
+        /* the standing poses of the landers (owner fix 2: one group per pose); at least one must exist so the check is not vacuous */
+        const standing = [...document.querySelectorAll('.mh-bird .mh-pose:is(.is-stand,.is-wade,.is-feed)')]
+        return { count: standing.length, overlap: standing.map(b => b.getBoundingClientRect()).filter(r => r.width).some(r => ctas.some(cta => !(r.right < cta.left || r.left > cta.right || r.bottom < cta.top || r.top > cta.bottom))) } })
+      ok('standing birds never overlap the call to action', birds.count > 0 && !birds.overlap, JSON.stringify(birds))
       const panel = await page.locator('#mg-request').textContent()
       ok('the request panel follows the API', config?.open ? /Connect wallet|Sign in with your wallet/.test(panel) : /opening soon/i.test(panel), panel.slice(0, 120))
       await page.close()

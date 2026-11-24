@@ -65,6 +65,7 @@
     "test:browser:terminal-guide": "node e2e/test-terminal-guide.cjs",
     "test:browser:migration": "node e2e/test-migration.cjs",
     "test:browser:tournament": "node e2e/test-tournament.cjs",
+    "test:browser:prize-wall": "node e2e/test-prize-wall.cjs",
     "test:browser:site-search": "node e2e/test-site-search.cjs",
     "test:browser:header-controls": "node e2e/test-header-controls.cjs",
     "test:browser:terminal-funding": "node e2e/test-terminal-funding.cjs",
@@ -93,7 +94,8 @@
     "test:browser:perpetual": "node e2e/test-perpetual-readiness.cjs",
     "test:browser:perpetual-simulation": "node e2e/test-perpetual-simulation.cjs",
     "test:browser:journeys": "node e2e/test-journey-acceptance.cjs",
-    "test:browser:typography": "node e2e/test-typography.mjs"
+    "test:browser:typography": "node e2e/test-typography.mjs",
+    "test:browser:migration-flight": "node e2e/test-migration-flight.cjs"
   },
   "devDependencies": {
     "axe-core": "4.14.1",

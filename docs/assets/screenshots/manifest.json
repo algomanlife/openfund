@@ -10543,5 +10543,266 @@
         "sha256": "4125999f6e767e167b975e07877bc98a609e446697dc6719bde63e6e3023cc50"
       }
     ]
+  },
+  "mega-menu-banners": {
+    "branch": "agent/claude/mega-menu-banners",
+    "baseCommit": "a1940d77",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T16:26:07+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8294), reduced motion",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "mega-menu-banners/before-economy-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Before (main a1940d7, light): banners stacked in a 260 px column, empty gap in the panel"
+      },
+      {
+        "file": "mega-menu-banners/mega-economy-pair-en-1440.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, dark: council and whitepaper banners side by side, equal height, level with the tile list"
+      },
+      {
+        "file": "mega-menu-banners/mega-economy-pair-fa-1440.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, Persian RTL dark: the pair mirrored"
+      },
+      {
+        "file": "mega-menu-banners/drawer-economy-en-768.jpg",
+        "route": "/en/rulebook",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Tablet drawer: two compact horizontal cards stacked (drawer row under 420 px)"
+      },
+      {
+        "file": "mega-menu-banners/drawer-economy-fa-390.jpg",
+        "route": "/fa/rulebook",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Phone drawer, Persian: the two compact cards stacked"
+      }
+    ]
+  },
+  "migration-flight": {
+    "branch": "agent/claude/flamingo-flight",
+    "baseCommit": "a1940d77",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T17:04:40+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8294)",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "migration-flight/before-migrate-en-768.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Before (main a1940d7): at 768 px a standing flamingo and a lander sit behind the headline",
+        "sha256": "b6413ec2fce9f37adad61812f49fb9e5e69781fe47a8faa1014f67859ac36f1f"
+      },
+      {
+        "file": "migration-flight/migrate-flight-en-1440.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, LTR, frame at 21 s of the loop",
+        "sha256": "cda874458447f8c791687fe6bfd37e46fbf83a3876fdb98f9c60821cb60cf198"
+      },
+      {
+        "file": "migration-flight/migrate-flight-fa-1440.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, RTL (mirrored scene), frame at 21 s",
+        "sha256": "7dc4d3ed462c6a8e3b5e89caf6c355867eca0c794205f7ef709f575df16b4214"
+      },
+      {
+        "file": "migration-flight/migrate-flight-en-768.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "After, tablet: the scene sits above the copy",
+        "sha256": "eb1178f70471bd2074efde453f3a6bb012f6a29c8d86e593039a5b886b6ec43a"
+      },
+      {
+        "file": "migration-flight/migrate-flight-fa-390.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "After, phone, Persian: fewer birds",
+        "sha256": "3d227509905247e9d7b5cd9500cab558a77ea548fc8f65c412daef4ee31419bc"
+      },
+      {
+        "file": "migration-flight/migrate-still-en-1440.jpg",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Reduced motion, light: one flying, one landing, two standing",
+        "sha256": "f20e78acdd8902553f65eb2dd55ff766aa58dde558473823f5bafc2f3fbc7f37"
+      },
+      {
+        "file": "migration-flight/migrate-still-fa-390.jpg",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Reduced motion, phone, Persian",
+        "sha256": "c7c391b87b35cd4b3617110bd485522b191b490e7a4aab167a7b71087ac672a7"
+      },
+      {
+        "file": "migration-flight/migrate-flight-en.webm",
+        "route": "/en/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "12-second recording (Playwright video), LTR, dark",
+        "sha256": "4b4b4f7b22595b3b176a56cf451645f3efbf9377f03e09f91139f0769b77b9ca"
+      },
+      {
+        "file": "migration-flight/migrate-flight-fa.webm",
+        "route": "/fa/migrate",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "12-second recording (Playwright video), RTL, dark",
+        "sha256": "10f7df982394e11745bdd5675ed27eb039338ab0faa46ccad38bfd6ce893d0a7"
+      }
+    ]
+  },
+  "prize-wall": {
+    "branch": "agent/claude/tournament-prize-wall",
+    "baseCommit": "ff6a65b6",
+    "status": "Unmerged branch; local verification only, not deployed",
+    "capturedAt": "2026-11-23T17:17:29+00:00",
+    "source": "Local production build served by apps/backend on a disposable Postgres (port 8294)",
+    "cms": "Directus not running; bundled published-only fallback",
+    "marketData": "Not shown",
+    "wallet": "Anonymous",
+    "screenshots": [
+      {
+        "file": "prize-wall/before-prizes-en-1440.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "Before (main a1940d7): flat purple scene; half-empty 35% card",
+        "sha256": "3cff052c48dd1e367ebc61244095edb5510bfb212137b79ab45cc3430cb07e94"
+      },
+      {
+        "file": "prize-wall/prize-wall-en-1440-light.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, LTR light: neon wall, prize list, coupon, glowing podium",
+        "sha256": "b4a82c3e17c2f17736f3067b755d9c13998eef7a40dd49aa5a8657b72b1870c8"
+      },
+      {
+        "file": "prize-wall/prize-wall-fa-1440-dark.jpg",
+        "route": "/fa/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "After, RTL dark",
+        "sha256": "e87d449e1726a47c269afd67fba083a242b91c4f9659f2dde06ece28ef103f14"
+      },
+      {
+        "file": "prize-wall/prize-wall-en-768-light.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Tablet: two-column tiles",
+        "sha256": "478e90f3a5150659f06900de093a27962898834372f5fe230be4d53607d42244"
+      },
+      {
+        "file": "prize-wall/prize-wall-fa-768-dark.jpg",
+        "route": "/fa/tournament",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "state": "Tablet, Persian dark",
+        "sha256": "4f6f156cca87f4cbdbe775a1254ddc8df6e6bd4b7b0e04e51ee223ef39a7d057"
+      },
+      {
+        "file": "prize-wall/prize-wall-en-390-light.jpg",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Phone: one-column tiles",
+        "sha256": "83cd178e62f0d1dfc32162251d1def17335bed6b872ac5643a701af5b9dd2f82"
+      },
+      {
+        "file": "prize-wall/prize-wall-fa-390-dark.jpg",
+        "route": "/fa/tournament",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "state": "Phone, Persian dark",
+        "sha256": "fb5bf6153a5291064504d6b3eacfe5a2efa3cc767d82b3e9e85e3b4d4032e422"
+      },
+      {
+        "file": "prize-wall/prize-wall-en.webm",
+        "route": "/en/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "8-second recording (Playwright video), LTR: sign flicker, controller sequence, shot, headlights, candles, coupon tear",
+        "sha256": "fd34912798fd3d775ea0aeefe965841d2973ab09e3639f0ddd4b92d041eb7409"
+      },
+      {
+        "file": "prize-wall/prize-wall-fa.webm",
+        "route": "/fa/tournament",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "state": "8-second recording (Playwright video), RTL",
+        "sha256": "9f5b94d27f1a65f3ef36414d61c138af1fcd3643ff3080c377a6e22266a20667"
+      }
+    ]
   }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import InformationShell, { useInformationLocale } from '../information/InformationShell'
 import { tx } from '../information/content'
 import { useReveal } from '../company/reveal'
@@ -230,20 +230,24 @@ function HashCheck({ label }: { label: string }) {
 
 export default function Applications() {
   const locale = useInformationLocale()
+  const { hash } = useLocation()
   const c = (key: keyof typeof copy) => tx(locale, copy[key])
   const system = useDetectedSystem()
   const r1 = useReveal<HTMLElement>(), r2 = useReveal<HTMLElement>(), r3 = useReveal<HTMLElement>(), r4 = useReveal<HTMLElement>()
-  /* Bug fix: a link such as /apps#desktop-builds or #download-windows arrived
-     before React rendered the target, so the browser's own jump found nothing
-     and the page opened at the top. Scroll to the target once it exists. */
+  /* Hash navigation can arrive before the gated route mounts. Wait until
+     the shell's scroll reset and router restoration finish, then jump to
+     the rendered card. A same-page platform link must also rerun this effect.
+     Initial anchor positioning is immediate, as with a native document jump;
+     a long smooth scroll must not race later layout and restoration work. */
   useEffect(() => {
-    const id = decodeURIComponent(window.location.hash.slice(1))
+    let id: string
+    try { id = decodeURIComponent(hash.slice(1)) } catch { return }
     if (!id) return
-    const target = document.getElementById(id)
-    if (!target) return
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    target.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
-  }, [])
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [hash, locale])
   const rows: [keyof typeof copy, keyof typeof copy, keyof typeof copy][] = [
     ['rowBest', 'webBest', 'deskBest'], ['rowCharts', 'webCharts', 'deskCharts'], ['rowOrders', 'webOrders', 'deskOrders'],
     ['rowAccount', 'webAccount', 'deskAccount'], ['rowAnalytics', 'webAnalytics', 'deskAnalytics'], ['rowInstall', 'webInstall', 'deskInstall'], ['rowStatus', 'webStatus', 'deskStatus'],

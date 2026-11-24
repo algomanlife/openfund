@@ -6,7 +6,8 @@ import { intlLocale, pickFormat, type AppLocale } from '../../i18n/locales'
 import { apiFetch, backendUrl, useSession } from '../../session/useOpenfundSession'
 import DirArrow from '../../ui/DirArrow'
 import { publicRuntimeConfig } from '../../config/runtime'
-import { BADGES, Badge, PrizeScene } from './art'
+import { BADGES, Badge } from './art'
+import { NeonCoupon, PRIZE_ICONS, PrizeWall } from './prizeWall'
 import { PREMIUM_LEAGUE_START, PREMIUM_LEAGUE_TRADING_DAYS, tradingEnd } from './schedule'
 import './tournament.css'
 
@@ -28,10 +29,17 @@ const c = {
   first: text('1st place', 'نفر اول'), second: text('2nd place', 'نفر دوم'), third: text('3rd place', 'نفر سوم'),
   cashNote: text('Cash prizes are paid after winner identity checks (KYC), subject to law and sanctions.', 'جوایز نقدی پس از احراز هویت برندگان (KYC) و مطابق قانون و تحریم‌ها پرداخت می‌شود.'),
   ranks4: text('Ranks 4 to 10', 'رتبه‌های ۴ تا ۱۰'),
-  ranks4Body: text('A $50K account, plus a PlayStation 5 Pro, plus Grand Theft Auto VI and EA SPORTS FC 27.', 'یک حساب ۵۰ هزار دلاری، به‌علاوهٔ PlayStation 5 Pro، به‌علاوهٔ Grand Theft Auto VI و EA SPORTS FC 27.'),
-  ranks4Note: text('The $50K account is a free Standard challenge issued to the winner’s wallet. Where shipping or payment is not possible, a cash equivalent may be offered.', 'حساب ۵۰ هزار دلاری یک چلنج استاندارد رایگان است که به کیف پول برنده صادر می‌شود. اگر ارسال یا پرداخت ممکن نباشد، معادل نقدی پیشنهاد می‌شود.'),
   ranks11: text('Ranks 11 to 100', 'رتبه‌های ۱۱ تا ۱۰۰'),
-  ranks11Body: text('A 35% purchase discount: a single-use coupon bound to your wallet, valid for 90 days.', 'تخفیف ۳۵٪ خرید: کوپن یک‌بارمصرف وابسته به کیف پول شما با اعتبار ۹۰ روز.'),
+  /* neon prize wall (owner fix 4) */
+  wallSign: text('OpenFi Premium League', 'لیگ برتر OpenFi'),
+  prizeList: text('Prizes for ranks 4 to 10', 'جوایز رتبه‌های ۴ تا ۱۰'),
+  prizeAccount: text('$50,000 account', 'حساب ۵۰٬۰۰۰ دلاری'),
+  ranks4Note: text('The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.', 'حساب، یک چلنج استاندارد ۵۰ هزار دلاری رایگان روی کیف پول شماست. جایزه‌ای که ارسالش ممکن نباشد، معادل نقدی پرداخت می‌شود.'),
+  couponOff: text('off one challenge', 'تخفیف یک چلنج'),
+  couponTerms: text('Coupon terms', 'شرایط کوپن'),
+  couponSingle: text('Single use, bound to your wallet', 'یک‌بارمصرف و وابسته به کیف پول شما'),
+  couponOne: text('For one challenge purchase', 'برای خرید یک چلنج'),
+  couponValid: text('Valid for 90 days from the award', 'اعتبار ۹۰ روز از زمان اهدا'),
   notAffiliated: text('Openfund is not affiliated with Sony, Rockstar Games or EA. Product names are used to describe prizes only.', 'اوپن‌فاند وابسته به Sony، Rockstar Games یا EA نیست. نام محصولات فقط برای معرفی جوایز آمده است.'),
   illustrative: text('Illustration', 'تصویر نمادین'),
   rulesTitle: text('The rules', 'قوانین'),
@@ -176,10 +184,21 @@ export default function TournamentPage() {
       <p className="tl-note">{t(c.cashNote)}</p>
       <div className="tl-prize-grid">
         <article className="tl-card tl-ranks4" ref={sceneRef} data-live={sceneLive || undefined}>
-          <figure><PrizeScene /><figcaption className="tl-illustrative">{t(c.illustrative)}</figcaption></figure>
-          <h3>{t(c.ranks4)}</h3><p>{t(c.ranks4Body)}</p><p className="tl-note">{t(c.ranks4Note)}</p>
+          <h3>{t(c.ranks4)}</h3>
+          <PrizeWall sign={t(c.wallSign)} markHref={markHref} amount={usd(50000)} illustrative={t(c.illustrative)} />
+          {/* product names are plain text; the wall above only illustrates them */}
+          <ul className="pw-prizes" aria-label={t(c.prizeList)}>
+            {([['account', t(c.prizeAccount)], ['console', 'PlayStation 5 Pro'], ['game', 'GTA VI'], ['game', 'EA SPORTS FC 27']] as const).map(([icon, name]) =>
+              <li key={name}><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d={PRIZE_ICONS[icon]} /></svg><span dir="auto">{name}</span></li>)}
+          </ul>
+          <p className="tl-note">{t(c.ranks4Note)}</p>
         </article>
-        <article className="tl-card"><h3>{t(c.ranks11)}</h3><p className="tl-big">35%</p><p>{t(c.ranks11Body)}</p></article>
+        <article className="tl-card tl-ranks11">
+          <h3>{t(c.ranks11)}</h3>
+          <NeonCoupon value={`${num(35)}%`} label={t(c.couponOff)} />
+          <h4>{t(c.couponTerms)}</h4>
+          <ul className="pw-terms"><li>{t(c.couponSingle)}</li><li>{t(c.couponOne)}</li><li>{t(c.couponValid)}</li></ul>
+        </article>
       </div>
       <p className="tl-note">{t(c.notAffiliated)}</p>
     </section>

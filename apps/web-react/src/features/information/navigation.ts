@@ -220,7 +220,11 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     }
     body.append(sections)
     if (item.banners.length === 1) body.append(bannerCard(item.banners[0]))
-    else if (item.banners.length > 1) { const column = document.createElement('div'); column.className = 'mega-banners'; column.append(...item.banners.map(bannerCard)); body.append(column) }
+    else if (item.banners.length > 1) {
+      /* two featured banners sit side by side in a wider banner column (owner fix 1) */
+      body.classList.add('has-banner-pair')
+      const column = document.createElement('div'); column.className = 'mega-banners'; column.append(...item.banners.map(bannerCard)); body.append(column)
+    }
     dropdown.append(heading, body)
     group.append(trigger, dropdown)
     return group
