@@ -49,6 +49,21 @@
       "tagline": "Planned venue aggregation and routing; today a dormant imported code base.",
       "highlights": ["Not built, shipped or operated", "Provenance and license recorded", "Roadmap phase 06"],
       "where": "packages/openfund-protocol", "href": "packages/openfund-protocol/PROVENANCE.md"
+    },
+    {
+      "id": "open-oracle",
+      "name": "Open Oracle",
+      "icon": "pulse",
+      "state": "candidate",
+      "stateNote": "standalone research",
+      "tagline": "Independent multi-source reference prices, native candles and audit history.",
+      "highlights": [
+        "Gains, Hyperliquid and GMX read-only adapters",
+        "GAACP quality weights, confidence and causal replay",
+        "Live conformance and complete inventory remain open"
+      ],
+      "where": "packages/open-oracle",
+      "href": "docs/integrations/OPEN_ORACLE.md"
     }
   ]
 }

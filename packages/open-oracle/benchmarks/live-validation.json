@@ -1,0 +1,96 @@
+{
+  "startedAt": "2026-11-24T20:44:38.388Z",
+  "completedAt": "2026-11-24T20:44:38.413Z",
+  "elapsedMs": 25,
+  "requestedCollectionMs": 15000,
+  "actualCollectionMs": 1,
+  "inventoryStatus": {
+    "hyperliquid": {
+      "complete": false,
+      "collectedAt": 1795553078412,
+      "error": "NETWORK",
+      "markets": null
+    },
+    "gains": {
+      "complete": false,
+      "collectedAt": 1795553078412,
+      "error": "NETWORK",
+      "markets": null
+    },
+    "gmx": {
+      "complete": false,
+      "collectedAt": 1795553078412,
+      "error": "NETWORK",
+      "markets": null
+    }
+  },
+  "observations": [],
+  "accepted": 0,
+  "outputs": [],
+  "health": [
+    {
+      "source": "gains",
+      "inventoryComplete": false,
+      "marketCount": 0,
+      "capabilities": {
+        "discovery": true,
+        "prices": true,
+        "streaming": "BOUNDED_REST_POLL",
+        "historical": "PROVIDER_REFERENCE_ONLY",
+        "oracleHistory": false
+      },
+      "errors": [],
+      "transport": {
+        "requests": 1,
+        "failures": 1,
+        "rateLimits": 0,
+        "bytes": 0
+      }
+    },
+    {
+      "source": "hyperliquid",
+      "inventoryComplete": false,
+      "marketCount": 0,
+      "capabilities": {
+        "discovery": true,
+        "prices": true,
+        "streaming": "BOUNDED_REST_POLL",
+        "historical": "PROVIDER_REFERENCE_ONLY",
+        "oracleHistory": false
+      },
+      "errors": [],
+      "transport": {
+        "requests": 1,
+        "failures": 1,
+        "rateLimits": 0,
+        "bytes": 0
+      }
+    },
+    {
+      "source": "gmx",
+      "inventoryComplete": false,
+      "marketCount": 0,
+      "capabilities": {
+        "discovery": true,
+        "prices": true,
+        "streaming": "BOUNDED_REST_POLL",
+        "historical": "PROVIDER_REFERENCE_ONLY",
+        "oracleHistory": false,
+        "priceEncoding": "GMX_API_30_DECIMALS_PER_WHOLE_TOKEN"
+      },
+      "errors": [],
+      "transport": {
+        "requests": 1,
+        "failures": 1,
+        "rateLimits": 0,
+        "bytes": 0
+      }
+    }
+  ],
+  "limitations": [
+    "Unverified mappings remain source-scoped or ambiguous.",
+    "Receipt-only Hyperliquid contexts are default-ineligible.",
+    "Polling is the initial transport; upstream WebSocket conformance is not verified.",
+    "Historical provider OHLC is never native oracle history."
+  ]
+}

@@ -94,3 +94,13 @@ The unmerged [desktop beta](../../apps/open-trade/README.md) adds a local Electr
 renderer and narrow main-process API adapter. Existing wallet sessions, account
 ownership and the trading engine remain authoritative. See
 [ADR 0030](../decisions/0030-open-trade-desktop.md).
+
+## Standalone Open Oracle research boundary
+
+[Open Oracle](OPEN_ORACLE_ARCHITECTURE.md) independently calculates composite
+reference prices from eligible Gains, Hyperliquid and GMX data, with quality
+weights, confidence, native candles and causal audit history. The source-scoped
+registry preserves every discovered instrument without assuming ticker or quote
+equivalence. Its loopback research API is not mounted by the application.
+Existing production and financial data paths above remain unchanged. Live
+provider and complete inventory acceptance are still open.

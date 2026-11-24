@@ -1,0 +1,64 @@
+
+> @openfund/open-oracle@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ Gains inventory includes closed non-crypto markets; index is distinct from mark (0.85ms)
+✔ Hyperliquid discovers default, every builder dex, and spot; no fabricated oracle timestamps (0.466666ms)
+✔ GMX keeps network and market/token identity; midpoint uses the whole-token 30-decimal API (0.701583ms)
+✔ malformed schemas fail closed; missing reference index never becomes mark (0.418167ms)
+✔ rate limits honor Retry-After and have bounded retries (10.463083ms)
+✔ network response limits and invalid JSON are enforced (3.469667ms)
+✔ poll stream recovers after disconnect and releases on abort (1003.364708ms)
+✔ partial multi-network discovery preserves every successfully discovered GMX market (0.4565ms)
+✔ partial Hyperliquid discovery preserves perp metadata when spot discovery fails (0.322916ms)
+✔ all source availability combinations: 0 (0.793167ms)
+✔ all source availability combinations: 1 (0.206541ms)
+✔ all source availability combinations: 2 (0.083834ms)
+✔ all source availability combinations: 3 (5.045625ms)
+✔ all source availability combinations: 4 (0.121334ms)
+✔ all source availability combinations: 5 (0.132292ms)
+✔ all source availability combinations: 6 (0.134708ms)
+✔ all source availability combinations: 7 (0.332458ms)
+✔ 40/30/30 example and automatic dual renormalization (0.537625ms)
+✔ divergent dual prices retain provenance and only an explicitly stale prior (0.187625ms)
+✔ unverified independence cannot authorize exclusion of a hard outlier (0.17825ms)
+✔ independent agreeing pair permits hard outlier exclusion and recalculation (0.211834ms)
+✔ invalid price: 0 (0.041792ms)
+✔ invalid price: -1 (0.065083ms)
+✔ invalid price: NaN (0.081833ms)
+✔ invalid price: Infinity (0.047958ms)
+✔ invalid price: 1e99 (0.030667ms)
+✔ invalid price: 0x40 (0.318375ms)
+✔ invalid price: 9999999999999999999999999 (0.040917ms)
+✔ eligibility: stale (0.050792ms)
+✔ eligibility: future (0.022917ms)
+✔ eligibility: futureReceipt (0.02125ms)
+✔ eligibility: wrongMarket (0.01925ms)
+✔ eligibility: invalidQuote (0.01825ms)
+✔ eligibility: wrongSemantics (0.01775ms)
+✔ eligibility: unverifiedMapping (0.02275ms)
+✔ eligibility: timestampMissing (0.029417ms)
+✔ eligibility: receiptOnly (0.022875ms)
+✔ freshness half-life, alignment, zero weights, closures, reliability and dependency adjustment (0.304541ms)
+✔ integer log and exponential round trips across scales (0.238333ms)
+✔ seeded property tests: convexity, exact weight sum, determinism and equal-price identity (243.973667ms)
+✔ per-source publication policies and clock-skew validation (0.145833ms)
+✔ registry retains ambiguous, synthetic, wrapped and depegged quote identities (6.128041ms)
+✔ explicit equivalence requires matching quote and unit, with registry capacity enforced (0.254792ms)
+✔ rolling health handles cold start, missing observations and market closures (0.140833ms)
+✔ event ingestion deduplicates, bounds queues, handles out of order and future receipts (0.955334ms)
+✔ deterministic causal replay excludes late-known prices and does not fabricate candle observations (1.175125ms)
+✔ source loss, stale reference, recovery and closed/reopened sessions (0.781917ms)
+✔ candle OHLC, calendar buckets, gaps, late finalization and explicit revisions (0.839958ms)
+✔ append-only history survives reopen, classifies provider history and rejects tampering (12.382334ms)
+✔ memory bounds remain enforced across long event/candle streams (20.152792ms)
+✔ read-only HTTP handlers and SSE publish/cleanup without socket permissions (1.146708ms)
+✔ persisted raw/health history replays exactly and backfill stays provider-reference (53.482167ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1174.234833

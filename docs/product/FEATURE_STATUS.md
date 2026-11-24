@@ -1,5 +1,7 @@
 # Feature status
 
+Open Oracle is **In Progress within standalone protocol scope**: independent adapters, GAACP v1, an evidence-based union registry, native candles, audit history, replay and local REST/SSE are implemented and fixture-tested. Live provider conformance, the complete current market union, socket acceptance and empirical calibration remain open. No terminal, production, execution or payment integration exists. [Validation and limitations](../research/OPEN_ORACLE_VALIDATION.md).
+
 Release stabilization is **In Progress**. The PostgreSQL 17 release gate
 recorded a deadlock between free-demo equity sampling and fixture cleanup.
 The fix locks the account before the regional ownership trigger runs. The

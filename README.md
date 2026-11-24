@@ -87,6 +87,7 @@ links to the document that owns its detail; the full walk-through is the
 <a href="docs/backstage/OPERATIONS_GUIDE.md"><img src="docs/assets/readme/products/backstage.svg" width="49%" alt="Backstage — Bilingual owner console for Prop business operations and website content." /></a>
 <a href="docs/product/PLATFORM_TOUR.md"><img src="docs/assets/readme/products/certificates.svg" width="49%" alt="Certificates — Purchase, completion and payout certificates derived from recorded evidence." /></a>
 <a href="packages/openfund-protocol/PROVENANCE.md"><img src="docs/assets/readme/products/protocol.svg" width="49%" alt="Openfund Protocol — Planned venue aggregation and routing; today a dormant imported code base." /></a>
+<a href="docs/integrations/OPEN_ORACLE.md"><img src="docs/assets/readme/products/open-oracle.svg" width="49%" alt="Open Oracle — Independent multi-source reference prices, native candles and audit history." /></a>
 </p>
 
 <!-- /products -->
@@ -110,7 +111,7 @@ per-capability evidence is in the feature register below.
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/compass.svg" width="26" height="26" alt="compass icon" />&nbsp;<b><a href="docs/decisions/0052-site-search.md">Site search</a></b><ul><li>Command palette with Ctrl/⌘+K and /, in five locales</li><li>Persian and Arabic normalization, typo tolerance and synonyms</li><li>Published content only, one index per region</li><li>Anonymous search analytics in Backstage</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/route.svg" width="26" height="26" alt="route icon" />&nbsp;<b><a href="docs/decisions/0051-migration-to-openfund.md">Migration to Openfund</a></b><ul><li>Proof of payouts reviewed with KYC</li><li>Single-use pass: normal price, funded-stage start</li><li>Private, encrypted evidence storage with retention</li><li>Editable firm list and rules</li></ul></td></tr>
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/award.svg" width="26" height="26" alt="award icon" />&nbsp;<b><a href="docs/decisions/0050-openfund-premium-league.md">Openfund Premium League</a></b><ul><li>30-day demo competition with daily, maximum-loss and consistency rules</li><li>Email-verified registration, one entry per wallet</li><li>Frozen standings, owner-gated awards and review signals</li><li>Original prize artwork and rank badges</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/scale.svg" width="26" height="26" alt="scale icon" />&nbsp;<b><a href="docs/decisions/0054-funded-trader-agreement.md">Trading objectives</a></b><ul><li>Every objective with the real numbers of each plan and size</li><li>Cards link to their rulebook section</li><li>Wallet-signed funded-trader agreement</li><li>Worked pass and fail scenarios</li></ul></td></tr>
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/flask.svg" width="26" height="26" alt="flask icon" />&nbsp;<b><a href="docs/decisions/0055-labs-limited-drops.md">Labs drops</a></b><ul><li>Numbered drops with limited inventory</li><li>Never oversold: reservations under a row lock</li><li>Rules shown are the rules enforced</li><li>Archive with the real number sold</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/sliders.svg" width="26" height="26" alt="sliders icon" />&nbsp;<b><a href="docs/backstage/OPERATIONS_GUIDE.md">Backstage operations</a></b><ul><li>Final-pass review and suspension decisions</li><li>Payment investigation, coupons, payouts</li><li>Partners, finance, risk board and audit</li><li>Owner re-authentication for privileged actions</li><li>Bug bounty rewards and a consent-only hall of fame</li></ul></td></tr>
-<tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/edit.svg" width="26" height="26" alt="edit icon" />&nbsp;<b><a href="docs/backstage/UNIVERSAL_VISUAL_EDITING.md">Editorial CMS</a></b><ul><li>Directus owns public editorial copy</li><li>Visual editing mapped to collection and field</li><li>Draft previews stay inside the editor</li><li>Financial collections are never editable</li></ul></td></tr>
+<tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/edit.svg" width="26" height="26" alt="edit icon" />&nbsp;<b><a href="docs/backstage/UNIVERSAL_VISUAL_EDITING.md">Editorial CMS</a></b><ul><li>Directus owns public editorial copy</li><li>Visual editing mapped to collection and field</li><li>Draft previews stay inside the editor</li><li>Financial collections are never editable</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/pulse.svg" width="26" height="26" alt="pulse icon" />&nbsp;<b><a href="docs/integrations/OPEN_ORACLE.md">Open Oracle research protocol</a></b><ul><li>Union registry with explicit identity and quote evidence</li><li>Gains-anchored adaptive 40/30/30 pricing and confidence</li><li>Native UTC candles, provenance and causal historical replay</li><li>Fixture-tested independently; live validation remains blocked</li></ul></td></tr>
 </table>
 
 <!-- /features -->
@@ -261,6 +262,10 @@ flowchart TB
   CMS --> DB
   API --> Gains
   API --> HL
+  subgraph OracleResearch["Standalone research — no terminal integration"]
+    OracleInputs["Gains, Hyperliquid and GMX public observations"] --> Oracle["Open Oracle · GAACP reference prices"]
+    Oracle --> OracleOutput["Native candles, confidence and audit history"]
+  end
   APIIR --> DBIR
   API <-.->|"signed sync · one home region per account"| APIIR
 ```
@@ -269,6 +274,7 @@ flowchart TB
 | --- | --- |
 | Server authority | Orders, positions, PnL, evaluation and payments are decided only by the backend |
 | Read-only analytics | Radar, Heatmap and Footprint cannot mutate accounts, trading or payments |
+| Oracle isolation | Open Oracle calculates independent reference prices in a standalone package; production data paths remain unchanged |
 | Content isolation | Directus never writes financial tables |
 | One origin per region | API and SPA share an origin; cookies stay first-party |
 
@@ -307,6 +313,7 @@ for each part is in the [engineering reference](docs/development/ENGINEERING_REF
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/plan-validation/` | Challenge plan rules shared by the site and the backend |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/site-search/` | Search normalization, matching and query masking shared by the site and the backend |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-protocol/` | Dormant protocol source and provenance |
+| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/open-oracle/` | Standalone multi-source reference pricing, candles and history; no terminal integration |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `docs/` | Documentation, ADRs, status, README data and assets |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `brand/` | Brand book, logos, imagery and typography reference |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `indicators/` | Three Openfund Pine indicators and two libraries |
@@ -350,6 +357,7 @@ tokens are in the [design system](docs/design/DESIGN_SYSTEM.md#typography-and-fo
 | **Desktop** | <img src="https://img.shields.io/badge/Electron-45.3.2-47848F?style=for-the-badge&logo=electron&logoColor=white&labelColor=0c1412" alt="Electron 45.3.2" /> <img src="https://img.shields.io/badge/electron--builder-26.18.0-47848F?style=for-the-badge&logo=electron&logoColor=white&labelColor=0c1412" alt="electron-builder 26.18.0" /> |
 | **Delivery** | <img src="https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?style=for-the-badge&logo=githubactions&logoColor=white&labelColor=0c1412" alt="GitHub Actions CI" /> <img src="https://img.shields.io/badge/Render-GLOBAL-46E3B7?style=for-the-badge&logo=render&logoColor=white&labelColor=0c1412" alt="Render GLOBAL" /> <img src="https://img.shields.io/badge/Liara-IRAN-2496ED?style=for-the-badge&logo=docker&logoColor=white&labelColor=0c1412" alt="Liara IRAN" /> <img src="https://img.shields.io/badge/Cloudflare-edge-F38020?style=for-the-badge&logo=cloudflare&logoColor=white&labelColor=0c1412" alt="Cloudflare edge" /> |
 | **Typography** | <img src="https://img.shields.io/badge/Ubuntu-Latin-E95420?style=for-the-badge&logo=ubuntu&logoColor=white&labelColor=0c1412" alt="Ubuntu Latin" /> <img src="https://img.shields.io/badge/Dastkhat-Persian%2FArabic-82E7BD?style=for-the-badge&logo=googlefonts&logoColor=white&labelColor=0c1412" alt="Dastkhat Persian/Arabic" /> |
+| **Standalone oracle research** | <img src="https://img.shields.io/badge/Open%20Oracle-GAACP%20v1-82E7BD?style=for-the-badge&logo=typescript&logoColor=white&labelColor=0c1412" alt="Open Oracle GAACP v1" /> <img src="https://img.shields.io/badge/GMX-public%20API-82E7BD?style=for-the-badge&logo=ethereum&logoColor=white&labelColor=0c1412" alt="GMX public API" /> |
 
 Versions are read from the package manifests when the README is generated.
 
@@ -460,7 +468,7 @@ new documents appear here automatically.
 | <img src="docs/assets/readme/icons/coins.svg" width="20" height="20" alt="coins icon" /> | [Economy and partner programs](docs/README.md#economy-and-partner-programs) | [Economy overview](docs/economy/README.md) · [Business model and operations overview](docs/economy/BUSINESS_MODEL.md) · [Business model in detail](docs/economy/BUSINESS_DETAIL.md) · +4 more |
 | <img src="docs/assets/readme/icons/bolt.svg" width="20" height="20" alt="bolt icon" /> | [Payments](docs/README.md#payments) | [Payment verification and recovery](docs/payments/VERIFICATION.md) · [Payment activation checklist](docs/payments/ACTIVATION.md) · [SIWE and DePay domain check](docs/payments/DOMAIN_READINESS.md) · +7 more |
 | <img src="docs/assets/readme/icons/package.svg" width="20" height="20" alt="package icon" /> | [Protocol (dormant)](docs/README.md#protocol-dormant) | [Overview](docs/protocol/OVERVIEW.md) · [Architecture](docs/protocol/ARCHITECTURE.md) · [Development](docs/protocol/DEVELOPMENT.md) · +1 more |
-| <img src="docs/assets/readme/icons/link.svg" width="20" height="20" alt="link icon" /> | [Integrations](docs/README.md#integrations) | [Gains VOB and Trades](docs/integrations/GAINS_DEPTH.md) · [Trade Radar and Heatmap](docs/integrations/HYPERLIQUID_RADAR.md) · [Gains Network](docs/integrations/GAINS.md) · +19 more |
+| <img src="docs/assets/readme/icons/link.svg" width="20" height="20" alt="link icon" /> | [Integrations](docs/README.md#integrations) | [Open Oracle](docs/integrations/OPEN_ORACLE.md) · [Oracle architecture](docs/architecture/OPEN_ORACLE_ARCHITECTURE.md) · [GAACP methodology](docs/research/OPEN_ORACLE_METHODOLOGY.md) · +24 more |
 | <img src="docs/assets/readme/icons/server.svg" width="20" height="20" alt="server icon" /> | [Deployment](docs/README.md#deployment) | [Unified releases](docs/deployment/RELEASES.md) · [Release and deployment checklists](docs/deployment/CHECKLISTS.md) · [Operations and monitoring](docs/operations/README.md) · +7 more |
 | <img src="docs/assets/readme/icons/terminal.svg" width="20" height="20" alt="terminal icon" /> | [Development](docs/README.md#development) | [Local setup](docs/development/LOCAL_DEVELOPMENT.md) · [Developer portal source](docs/developer-portal/README.md) · [Testing and CI](docs/development/TESTING.md) · +11 more |
 | <img src="docs/assets/readme/icons/shield.svg" width="20" height="20" alt="shield icon" /> | [Security](docs/README.md#security) | [Reporting policy](SECURITY.md) · [Architecture and release gates](docs/security/SECURITY.md) · [November 2026 assessment](docs/security/SECURITY-AUDIT-2026-11.md) · +3 more |

@@ -35,6 +35,18 @@
     { "id": "backstage", "title": "Backstage operations", "icon": "sliders", "href": "docs/backstage/OPERATIONS_GUIDE.md",
       "items": ["Final-pass review and suspension decisions", "Payment investigation, coupons, payouts", "Partners, finance, risk board and audit", "Owner re-authentication for privileged actions", "Bug bounty rewards and a consent-only hall of fame"] },
     { "id": "cms", "title": "Editorial CMS", "icon": "edit", "href": "docs/backstage/UNIVERSAL_VISUAL_EDITING.md",
-      "items": ["Directus owns public editorial copy", "Visual editing mapped to collection and field", "Draft previews stay inside the editor", "Financial collections are never editable"] }
+      "items": ["Directus owns public editorial copy", "Visual editing mapped to collection and field", "Draft previews stay inside the editor", "Financial collections are never editable"] },
+    {
+      "id": "open-oracle",
+      "title": "Open Oracle research protocol",
+      "icon": "pulse",
+      "href": "docs/integrations/OPEN_ORACLE.md",
+      "items": [
+        "Union registry with explicit identity and quote evidence",
+        "Gains-anchored adaptive 40/30/30 pricing and confidence",
+        "Native UTC candles, provenance and causal historical replay",
+        "Fixture-tested independently; live validation remains blocked"
+      ]
+    }
   ]
 }

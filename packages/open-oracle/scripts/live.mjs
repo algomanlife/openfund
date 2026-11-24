@@ -1,0 +1,53 @@
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { GainsAdapter, HyperliquidAdapter, GMXAdapter, MarketRegistry, OracleEngine, CandleEngine, HistoryStore, DEFAULT_CONFIG } from '../src/index.mjs';
+import { PublicTransport } from '../src/transport.mjs';
+import { setTimeout as delay } from 'node:timers/promises';
+export async function collect({ durationMs = 15000, directory = 'reports/live', config = DEFAULT_CONFIG, equivalences = [] } = {}) {
+  if (!Number.isInteger(durationMs) || durationMs < 0 || durationMs > 3600000) throw new Error('invalid_collection_duration');
+  directory = resolve(directory); mkdirSync(directory, { recursive: true });
+  const startedAt = Date.now(), adapters = [new GainsAdapter(), new HyperliquidAdapter(), new GMXAdapter()];
+  // A validation run fails promptly and explicitly when network access is unavailable.
+  for (const a of adapters) a.transport = new PublicTransport({ retries: 0, timeoutMs: 10000 });
+  const registry = new MarketRegistry({ equivalences }), inventoryStatus = {}, samples = [], history = new HistoryStore(resolve(directory, 'history'));
+  const engine = new OracleEngine({ registry, config, history, candles: new CandleEngine({ timeframes: ['1s', '1m'] }) });
+  await Promise.all(adapters.map(async adapter => {
+    try { for (const market of await adapter.discover()) registry.register(adapter.source, market);
+      inventoryStatus[adapter.source] = { complete: adapter.inventoryComplete, collectedAt: Date.now(), markets: adapter.inventory.length }; }
+    catch (error) { inventoryStatus[adapter.source] = { complete: false, collectedAt: Date.now(), error: error.code ?? error.message, markets: null }; }
+  }));
+  const collectionStart = Date.now(), deadline = collectionStart + durationMs;
+  do {
+    await Promise.all(adapters.map(async adapter => {
+      if (!adapter.inventory.length) return;
+      try {
+        const observations = await adapter.snapshot(); observations.forEach(o => engine.ingest(o));
+        engine.observeExpected(adapter.source, { time: Date.now(), received: true, valid: observations.length > 0, timely: observations.some(o => Date.now() - o.timestamp <= config.maxAgeMs) });
+        samples.push({ source: adapter.source, receivedAt: Date.now(), observations: observations.length, receiptTimestampCount: observations.filter(o => o.timestampKind === 'RECEIPT').length });
+      } catch (error) { engine.observeExpected(adapter.source, { time: Date.now(), received: false }); samples.push({ source: adapter.source, receivedAt: Date.now(), error: error.code ?? error.message }); }
+    }));
+    engine.evaluate(Date.now());
+    if (!Object.values(inventoryStatus).some(s => s.complete) || Date.now() >= deadline) break;
+    await delay(Math.min(2000, Math.max(0, deadline - Date.now())));
+  } while (Date.now() <= deadline);
+  const coverage = registry.coverage(new Date().toISOString(), inventoryStatus);
+  writeFileSync(resolve(directory, 'coverage.json'), JSON.stringify(coverage, null, 2) + '\n');
+  const lines = ['# Open Oracle live market coverage', '', `Collected at: ${coverage.collectedAt}`, '',
+    `Complete union verified: ${coverage.complete}. Canonical entries observed: ${coverage.canonicalCount}.`, '',
+    '| Provider | Inventory complete | Observed markets | Error |', '| --- | --- | --- | --- |',
+    ...Object.entries(inventoryStatus).map(([source, s]) => `| ${source} | ${s.complete} | ${s.markets ?? 'Unavailable'} | ${s.error ?? 'None'} |`), '',
+    'Unavailable inventories are unknown, not zero-market universes. No complete market-union claim is made for an incomplete collection.', ''];
+  writeFileSync(resolve(directory, 'coverage.md'), lines.join('\n'));
+  const report = { startedAt: new Date(startedAt).toISOString(), completedAt: new Date().toISOString(), elapsedMs: Date.now() - startedAt,
+    requestedCollectionMs: durationMs, actualCollectionMs: Date.now() - collectionStart, inventoryStatus,
+    observations: samples, accepted: engine.metrics.accepted, outputs: [...engine.prices.values()], health: adapters.map(a => a.health()),
+    limitations: ['Unverified mappings remain source-scoped or ambiguous.', 'Receipt-only Hyperliquid contexts are default-ineligible.',
+      'Polling is the initial transport; upstream WebSocket conformance is not verified.', 'Historical provider OHLC is never native oracle history.'] };
+  writeFileSync(resolve(directory, 'validation.json'), JSON.stringify(report, null, 2) + '\n');
+  return report;
+}
+if (process.argv[1] === new URL(import.meta.url).pathname) {
+  const report = await collect({ directory: process.argv[2] ?? 'reports/live', durationMs: Number(process.argv[3] ?? 15000) });
+  console.log(JSON.stringify({ directory: process.argv[2] ?? 'reports/live', elapsedMs: report.elapsedMs, inventoryStatus: report.inventoryStatus, accepted: report.accepted }, null, 2));
+  if (!Object.values(report.inventoryStatus).every(s => s.complete)) process.exitCode = 1;
+}

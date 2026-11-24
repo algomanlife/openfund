@@ -32,3 +32,14 @@ longer in the repository and are not listed above; see
 
 Service names and logos identify technologies only. They do not indicate
 partnership or endorsement.
+
+## Open Oracle standalone research package
+
+The original `packages/open-oracle/` implementation preserves the repository's
+existing unresolved first-party licensing policy. Gains Network, Hyperliquid and
+GMX retain rights in their services and data; no ownership of external data,
+partnership or redistribution permission is asserted. Provider interfaces and
+limits are documented in [Open Oracle](docs/integrations/OPEN_ORACLE.md). No
+provider SDK or source is copied. TypeScript 6.0.3 is a package-local
+development-only Apache-2.0 dependency, not an application runtime dependency.
+External publication remains disabled pending provider usage-term verification.

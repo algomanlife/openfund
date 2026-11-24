@@ -77,3 +77,12 @@ Notes:
 - The separate `apps/web-react/public/legacy/market-depth.js` reads authentic Gains VOB and executed-trade resources; see [provider-specific depth limits](../integrations/GAINS_DEPTH.md). This is not centralized matching or footprint data. Unsupported values remain unavailable; never fabricate volume or derive depth from oracle marks.
 - Per-market `maxLeverage` from `/markets` clamps the leverage control (bounds come from live metadata).
 - WS protocol: `{op:'subscribe',channel:'prices'}`, answer `{op:'ping'}` with `{op:'pong'}`, resubscribe on sequence gap.
+
+## Standalone reference-price research
+
+`packages/open-oracle/` uses Node 26 built-ins and pure TypeScript integer-decimal
+GAACP v1 calculations. TypeScript 6.0.3 is a package-local Apache-2.0 development
+dependency; there are no runtime npm dependencies. Gains Network, Hyperliquid
+and GMX public APIs supply external data subject to their own rights and terms.
+This package is isolated from the production market providers.
+[Interfaces and unverified live acceptance](../integrations/OPEN_ORACLE.md).
