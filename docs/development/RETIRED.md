@@ -17,7 +17,7 @@ Registry updated **2026-11-21**. Status meanings:
 | Dated README galleries ("Recent … captures — YYYY-MM-DD", "Full product gallery — recorded v0.6.5", the v0.4.4 capture set in `docs/assets/screenshots/readme/`) | documentation | retired | 2026-11-21 | One curated gallery generated from [docs/assets/gallery/gallery.json](../assets/gallery/gallery.json); the old sets are in [docs/reviews/_archive/readme-galleries/](../reviews/_archive/readme-galleries/README.md) | 0 |
 | Superseded release review snapshots (`docs/reviews/v0.4.1`, `v0.6.5`, `release-0.6.5`, `release-0.6.6`) | documentation | retired | 2026-11-21 | Kept as history under [docs/reviews/_archive/](../reviews/_archive/README.md); current state lives in [docs/status](../status/README.md) | 0 |
 | Vanilla JS/CSS legacy layer (`apps/web-react/public/legacy/`) and the tracked `dist/` snapshot | code | legacy-only pending removal | 2026-11-21 | React application (`apps/web-react/src/`); `dist/` stays source-critical until AGENTS.md says otherwise | 85 files |
-| Openfund Protocol (dormant import of mux-protocol, `packages/openfund-protocol/`) | code | dormant | — | None — not retired; not built, shipped or operated ([provenance](../../packages/openfund-protocol/PROVENANCE.md)) | 125 files |
+| Openfund Protocol (dormant import of mux-protocol, `packages/openfund-protocol/`) | code | dormant | — | None — not retired; not built, shipped or operated ([provenance](../../packages/openfund-protocol/PROVENANCE.md)) | 126 files |
 
 `Remaining refs` for a `retired` item counts active references and must be 0 (CI fails otherwise);
 for other statuses it counts the files still in the tree.

@@ -57,3 +57,12 @@ Validation:
 - Hardhat compilation: 133 Solidity files compiled successfully.
 - Hardhat tests: 89 passing.
 - No application runtime integration or deployment changes.
+
+## Dependency maintenance — 2026-11-24
+
+The imported contract sources and upstream revision remain unchanged. The
+module-local dependency graph now retains Hardhat 2.29.2 and its existing
+plugins, with a Mocha-11-only override for glob 14.0.6. The targeted discovery
+and Mocha execution regression is `scripts/test-glob-compat.cjs`. This does
+not activate protocol routing, alter contract storage or claim the imported
+OrderBook compilation defect has been repaired.
