@@ -115,7 +115,11 @@ html[data-theme=light] .mega-banner.is-flamingo{background:#f8f4f5}
 .mega-banners .mega-banner-art{max-height:84px}
 .mega-banner-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .mega-banner-row .mega-banner.is-compact{margin-top:10px;align-items:flex-start}
-@media (max-width:420px){.mega-banner-row{grid-template-columns:minmax(0,1fr)}}
+/* the drawer is narrower than the viewport (about 344 px even on tablets), so
+   the pair stacks by the space it actually has, not by the viewport width */
+.mega-banner-row{container-type:inline-size}
+@container (max-width:419px){.mega-banner-row>.mega-banner{grid-column:1 / -1}}
+@supports not (container-type:inline-size){@media (max-width:420px){.mega-banner-row{grid-template-columns:minmax(0,1fr)}}}
 @media (max-width:1180px){.mega-banners{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* whitepaper art: a page turns over the spine; mint lines and a chart draw in.
    transform/opacity only; runs only while the menu is open */
@@ -175,3 +179,25 @@ html[data-theme=light] .mega-platform-name{color:#0f1714}
 /* narrower panels (≤1180 px) keep the card vertical: art, copy, then the badges */
 @media (max-width:1180px){.mega-banner.has-platforms:not(.is-compact) .mega-banner-main{grid-template-columns:120px minmax(0,1fr);grid-template-rows:none;align-items:center}}
 @media (prefers-reduced-motion:reduce){.openfund-header .nav-account.resources-open .mega-art-pulse{animation:none;opacity:0}}
+
+/* Economy with two featured banners (owner fix 1): the banner column widens
+   to 520–560 px and the council and whitepaper banners sit side by side as
+   two equal cards. A subgrid shares the art, title, body and CTA rows, so
+   the two cards line up; both stretch to the tile list's height, so the
+   panel has no empty gap. Single-banner groups keep the 260 px column. */
+.mega-body.has-banner-pair{grid-template-columns:minmax(0,1fr) clamp(520px,52%,560px)}
+.has-banner-pair .mega-banners{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(96px,1fr) auto auto auto;
+  column-gap:12px;row-gap:0;align-content:stretch}
+.has-banner-pair .mega-banner,.openfund-header .nav-mega .has-banner-pair a.mega-banner{grid-row:1 / span 4;display:grid;grid-template-rows:subgrid;
+  grid-template-columns:minmax(0,1fr);align-content:stretch;gap:0;padding:16px}
+.has-banner-pair .mega-banner-copy{display:contents}
+.has-banner-pair .mega-banner-art{align-self:center;justify-self:center;width:100%;height:100%;max-height:180px;min-height:84px;margin-block-end:12px}
+.has-banner-pair .mega-banner-copy b{align-self:end;margin-block-end:6px}
+.has-banner-pair .mega-banner-copy small{align-self:start;margin-block-end:10px}
+.has-banner-pair .mega-banner-copy em{align-self:end}
+/* narrower desktops (1024–1180 px): the list on top, the pair side by side under it */
+@media (max-width:1180px){
+  .mega-body.has-banner-pair{grid-template-columns:minmax(0,1fr)}
+  .has-banner-pair .mega-banners{grid-template-rows:minmax(72px,auto) auto auto auto}
+  .has-banner-pair .mega-banner-art{max-height:96px}
+}
