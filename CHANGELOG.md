@@ -1,19 +1,16 @@
-Warning: truncated output (original token count: 41953)
-Total output lines: 1507
-
 # Changelog
 
 ## Unreleased
 
-- **Fix: application download anchors.** Position the platform card after the route shell finishes its scroll reset, and handle platform links when the Applications page is already open. Browser regression coverage checks direct Windows links and same-page macOS/Linux navigation in English and Persian, waiting for the card to reach the visible area below the header.
-
-- **Fix: Resources menu, Open Trade desktop banner (owner fix 3).** The download arrow was drawn on the chart line inside the app window, and the card stretched to the tile column's height with a large empty gap between the art and the text. The arrow is now a small download button outside the window's corner; its ring pulses only while the menu is open and stays still under reduced motion. The art is larger (a taller canvas), and a row of five platform badges fills the card: macOS, Windows and Linux each link to their own card on `/apps` (new anchors `#download-macos`, `#download-windows`, `#download-linux`); Android and iOS are dimmed and labelled "Coming soon" with no link, since the mobile apps are Planned (D2). The glyphs are original line drawings (a laptop, a window with two tiles, a shell prompt, a phone), not platform logos; the names are plain text. The card is now a container with sibling links, so each badge is its own link with an accessible name. In the drawer it is a compact horizontal card with the badges in one row. The copy reads "Desktop app for macOS, Windows and Linux; mobile coming soon." in five locales. New browser suite `test:browser:open-trade-banner` (109 checks, in CI) with pulse recordings in RTL and LTR. **Bug fixed:** a link to a section of `/apps` (`#desktop-builds`, now also the platform anchors) opened at the top of the page, because the browser jumped before React rendered the target; the page now scrolls to it once rendered (instantly under reduced motion).
-
-- **Fix: Economy menu banners side by side (owner fix 1).** The banner column was a fixed 260 px, so the whitepaper banner stacked under the council banner and left a tall banner column with an empty gap in the middle of the panel. A group with two banners now gets a `has-banner-pair` body with a 520 to 560 px banner column. The two banners are equal cards side by side; a subgrid lines up their art, titles, bodies and calls to action, and they stretch to the tile list's height, so no gap remains (the panel is 425 px tall instead of 510 px at 1440 px). Single-banner groups keep their layout. In the drawer, the two compact horizontal cards stack whenever the drawer row is narrower than 420 px (a container query, since the drawer is about 344 px wide even on tablets). `e2e/test-mega-menu.cjs` gains 41 checks (69 in total).
+- **Tournament prizes: neon prize wall (owner fix 4).** The ranks 4 to 10 card was a flat purple box with plain shapes, and the ranks 11 to 100 card was half empty. Ranks 4 to 10 now show an original neon prize wall under a flickering "OpenFi Premium League" sign: a bento grid of six tiles that fills the card width with no empty cell. The tiles are a generic standing console with a cyan and pink halo and a floor reflection; a generic controller whose round buttons light in sequence (no platform button symbols); a football on pitch lines with a looping shot; a night skyline with flickering neon signs and a car's headlights sweeping down the street; rising neon candles with a trend line; and an OpenFi account card with a glowing $50,000. Below it, an iconed prize list ($50,000 account, PlayStation 5 Pro, GTA VI, EA SPORTS FC 27, names as plain text) and a shorter note. Ranks 11 to 100 show a neon coupon with a large 35%, a perforated stub that tears off, and the coupon terms with the 90-day validity; both cards are the same height. The 1 to 3 podium is restyled in the same language, with gold, silver and bronze glow and subtle scanlines. SVG and CSS only; nothing reproduces a real product, game, logo or cover. Motion is transform/opacity only and runs only while on screen; reduced motion shows the signs lit and steady. Tiles reflow to two columns, then one. The "illustration" label and the not-affiliated line stay. New browser suite `test:browser:prize-wall` (235 checks at seven widths in five locales, in CI, with recordings in RTL and LTR).
 
 - **Fix: flamingo flight on `/migrate` and in the menu banner (owner fix 2).** The hero motion is rewritten from scratch. Every bird is now a track of keyframes (position, size, opacity, facing, pose) in `heroScene.ts`, and the CSS `@keyframes` are generated from that data. **Fixed defects:** landers arrived tail first and took off backwards; waders "moonwalked" (an `alternate` animation walked them backwards without turning); "far" birds were only smaller copies on the same lane; every lander shared one spot and size; long, offset loops left the sky mostly empty. **Now:** a head always leads the movement in RTL and LTR, and a bird turns only while standing in the water (the body turns first). Two birds appear small and faint at the horizon and fly towards the camera on a curve, growing larger, brighter and higher until they leave the frame; one recedes from the foreground to the horizon; others cross at three depths. Three birds (far, mid and near) approach from behind their heading, descend, glide with fixed wings, lower their legs and flare, fold their wings on touchdown with a ripple, wade forward, dip their heads to feed, take off forward with running steps and splashes and fast wingbeats, climb and leave on the same heading. Wingbeats scale with size (smaller birds flap faster) and no two birds share a phase. Every loop divides 48 seconds, and at least four birds are visible at every instant (three on phones, which show fewer birds). Reduced motion shows a composed still: one flying, one landing, two standing. Motion is still transform/opacity only and runs only while the hero is on screen and the tab is visible. The menu banner follows the same rules: its flock only moves the way its heads face, and its wingbeats follow the same size rule. **Bug fixed:** between 761 and 1180 px the scene sat behind the copy and birds crossed the headline; at 1180 px and below the scene now sits above the copy. New unit test `test/flamingo-flight.test.mjs` (in `test:website`) and browser suite `test:browser:migration-flight` (63 checks: animations scrubbed through the loop and measured on screen in five locales and six widths; in CI, with recordings in RTL and LTR). The existing CTA check in `test-migration.cjs` now targets the new standing poses, so it no longer passes on zero elements.
 
-- **Tournament prizes: neon prize wall (owner fix 4).** The ranks 4 to 10 card was a flat purple box with plain shapes, and the ranks 11 to 100 card was half empty. Ranks 4 to 10 now show an original neon prize wall under a flickering "OpenFi Premium League" sign: a bento grid of six tiles that fills the card width with no empty cell. The tiles are a generic standing console with a cyan and pink halo and a floor reflection; a generic controller whose round buttons light in sequence (no platform button symbols); a football on pitch lines with a looping shot; a night skyline with flickering neon signs and a car's headlights sweeping down the street; rising neon candles with a trend line; and an OpenFi account card with a glowing $50,000. Below it, an iconed prize list ($50,000 account, PlayStation 5 Pro, GTA VI, EA SPORTS FC 27, names as plain text) and a shorter note. Ranks 11 to 100 show a neon coupon with a large 35%, a perforated stub that tears off, and the coupon terms with the 90-day validity; both cards are the same height. The 1 to 3 podium is restyled in the same language, with gold, silver and bronze glow and subtle scanlines. SVG and CSS only; nothing reproduces a real product, game, logo or cover. Motion is transform/opacity only and runs only while on screen; reduced motion shows the signs lit and steady. Tiles reflow to two columns, then one. The "illustration" label and the not-affiliated line stay. New browser suite `test:browser:prize-wall` (235 checks at seven widths in five locales, in CI, with recordings in RTL and LTR).
+- **Fix: Economy menu banners side by side (owner fix 1).** The banner column was a fixed 260 px, so the whitepaper banner stacked under the council banner and left a tall banner column with an empty gap in the middle of the panel. A group with two banners now gets a `has-banner-pair` body with a 520 to 560 px banner column. The two banners are equal cards side by side; a subgrid lines up their art, titles, bodies and calls to action, and they stretch to the tile list's height, so no gap remains (the panel is 425 px tall instead of 510 px at 1440 px). Single-banner groups keep their layout. In the drawer, the two compact horizontal cards stack whenever the drawer row is narrower than 420 px (a container query, since the drawer is about 344 px wide even on tablets). `e2e/test-mega-menu.cjs` gains 41 checks (69 in total).
+
+- **Fix: application download anchors.** Position the platform card after the route shell finishes its scroll reset, and handle platform links when the Applications page is already open. Browser regression coverage checks direct Windows links and same-page macOS/Linux navigation in English and Persian, waiting for the card to reach the visible area below the header.
+
+- **Fix: Resources menu, Open Trade desktop banner (owner fix 3).** The download arrow was drawn on the chart line inside the app window, and the card stretched to the tile column's height with a large empty gap between the art and the text. The arrow is now a small download button outside the window's corner; its ring pulses only while the menu is open and stays still under reduced motion. The art is larger (a taller canvas), and a row of five platform badges fills the card: macOS, Windows and Linux each link to their own card on `/apps` (new anchors `#download-macos`, `#download-windows`, `#download-linux`); Android and iOS are dimmed and labelled "Coming soon" with no link, since the mobile apps are Planned (D2). The glyphs are original line drawings (a laptop, a window with two tiles, a shell prompt, a phone), not platform logos; the names are plain text. The card is now a container with sibling links, so each badge is its own link with an accessible name. In the drawer it is a compact horizontal card with the badges in one row. The copy reads "Desktop app for macOS, Windows and Linux; mobile coming soon." in five locales. New browser suite `test:browser:open-trade-banner` (109 checks, in CI) with pulse recordings in RTL and LTR. **Bug fixed:** a link to a section of `/apps` (`#desktop-builds`, now also the platform anchors) opened at the top of the page, because the browser jumped before React rendered the target; the page now scrolls to it once rendered (instantly under reduced motion).
 - **Fix: header controls are one size (owner fix 5).** The search button was 44 px while its neighbours were 36 px (40 px on phones, 30 px in the terminal), because it never read the header's control height. Every header now defines one height and radius (`--hc-h`, `--hc-r`, plus `--hc-icon`), and search, theme, language, "Enter terminal", "Connect wallet" and the menu all use it; search is a square of that height with the same border, radius and icon size. On touch screens each control gets an invisible 44 × 44 px hit area (a `::after` pseudo-element) instead of a larger visible box. This covers the website, terminal, compact terminal and phone headers in both themes and directions. New browser suite `test:browser:header-controls` (533 checks at seven widths, five locales, both themes, in CI).
 - **Release planner: opt-in owner patch line.** The Unified release workflow gains a `keep_minor_line` input. With an explicit `release_version`, it lets a batch whose commits allocate only a minor bump stay in the latest tag's minor line (for example `0.8.5` after `v0.8.0`). It is off by default, so existing allocation is unchanged; breaking-change batches, versions outside that line and reused tags are still refused, and no tag is moved.
 - **Bug bounty program (item J).** New `/:locale/bug-bounty` page ([ADR 0057](docs/decisions/0057-bug-bounty.md)), linked from Resources → Security, the footer and `SECURITY.md`. It has a security-scan hero (illustrative), reward cards (defaults: Critical $2,000; High $1,000 to $1,500; Medium $500 to $800; Low $300; exceptional findings may receive more), a filterable scope table, rules with a safe-harbor statement, a report → triage → fix → payout → disclosure timeline, a consent-only hall of fame (empty until someone agrees to be named) and a FAQ. Reports go through GitHub's private advisory flow. Reward amounts are owner-edited in Backstage → Security → Bug bounty (Directus `bug_bounty_tiers`, owner gated and audited). Payouts are recorded as verified expenses in the new `bug_bounty` category. The backend serves `/.well-known/security.txt` (RFC 9116) from each region's own origin.
@@ -116,7 +113,1084 @@ Total output lines: 1507
 - **Journey acceptance (workstream H).** New browser suite
   `npm run test:browser:journeys` covers expired sessions, the SIWE
   chain id, daily- and maximum-loss failures, the minimum-trading-days gate,
- …17953 tokens truncated…g, admin operations (candidate, unreleased)
+  inbox notifications, and localized responsive checkout with order recovery.
+  It runs in CI and in the release gates. The existing browser security suite
+  now runs in CI. Fix: deep routes returned 404 when the server ran from a
+  checkout under a dot directory. See the
+  [report](docs/reviews/journey-acceptance-2026-11/REPORT.md).
+- **Regional routing gates (ADR 0043, workstream B).** A read-only
+  `scripts/ops/geo-redirect-readiness.mjs` reads `/version`,
+  `/runtime-config.js`, `/runtime/ingress` and `/ready` of both regions and
+  reports each gate for the IRAN geographic redirect as pass, fail or
+  owner-approval-required; it never reports "ready" and changes nothing. A
+  new host-matrix test covers all eight website hosts: canonical 301s with
+  path and query, machine paths never redirected, the reversible region
+  cookie, no redirect loops, and only a trusted IR country qualifying. The
+  Liara IP database lookup now covers IPv6. The redirect stays disabled.
+
+- **Dastkhat is the Persian UI font** (#161; merged, not yet released). Dastkhat and Dastkhat Arabic (SIL OFL
+  1.1, by Dastyar) are self-hosted as unmodified variable WOFF2 files, pinned
+  at upstream commit `ac5b01542f36` (font version 1.210) with the OFL text,
+  upstream notices and SHA-256 hashes in
+  `apps/web-react/public/assets/fonts/dastkhat/`. New design-system tokens
+  (`--ds-font-persian`, `-arabic`, `-latin`, `-cjk`, `-numeric`) replace the
+  Irancell, Openfund Persian, Vazirmatn and Tahoma-first defaults on the site,
+  the legacy pages, the terminal iframe, Backstage, certificate exports, the
+  share card, the chart theme and the Open Trade desktop package. Arabic uses
+  Dastkhat Arabic for letters with Ubuntu digits. Latin, Cyrillic and CJK
+  fallbacks are unchanged. Technical numbers stay isolated LTR with tabular
+  Latin digits; the font no longer turns ASCII digits into Persian digits.
+  Checked by `apps/web-react/test/typography.test.mjs` and the browser test
+  `e2e/test-typography.mjs` (rendered font, font requests, CSP).
+
+- **Deterministic CI for two flaky browser suites** — the Market Heatmap and
+  Trade Radar suite now runs on fixed `/radar/*` fixtures and a fixed page
+  clock, with empty and unavailable states covered. The real Hyperliquid
+  feed check is a separate, non-blocking step. The controlled-challenge suite
+  uses a test-mode conduct clock (`POST /internal/test-clock`,
+  `SIM_TEST_CLOCK`; only with `SIM_TEST_MODE=1` and a test database) and
+  asserts the daily close window, the weekend and the summer/winter close
+  hour. Production keeps the real clock and unchanged rules.
+
+- **Geo-IP first-visit language now applies to returning visitors (ADR 0043
+  amendment).** The site, terminal and landing shells saved every displayed
+  locale as the visitor's preference, so a stale value (including the pre-0.7
+  Persian default) always beat the country default. Only the language
+  selector now records an explicit choice (`of-language-choice`); the static
+  document default is English/LTR. A new test runs the real pre-paint script
+  across the country matrix and storage cases. Not released or deployed.
+
+- **Security remediation (November 2026 follow-up)** — the
+  [remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md). Merged,
+  not released or deployed.
+  - Directus gets its own least-privilege PostgreSQL role, with a
+    table-by-table policy, `scripts/ops/db-roles.mjs plan|apply|verify`, a
+    migration guard against foreign-owned backend tables, an optional DML-only
+    runtime role (`MIGRATION_DATABASE_URL`) and a dedicated `openfund-cms`
+    connection secret (OF-2026-11-12, #149). Data Studio shows challenge,
+    account, position and user status as read-only; user suspension stays in
+    Backstage Operations.
+  - Directus 11.17.4 runs with verified compensating controls: response cache
+    off, an explicit file-import deny list including `0.0.0.0`, and image/PDF-
+    only uploads (OF-2026-11-11, #151). The 12.x upgrade still waits for a
+    licence.
+  - The IRAN edge image moves to nginx 1.31.7 mainline slim, pinned by digest,
+    with 0 Critical/High in the built image and a blocking Trivy gate
+    (OF-2026-11-20, #150).
+  - `uuid` (web) and `minimatch` (desktop build) advisories are fixed, and CI
+    now enforces the dormant protocol package's activation block (#152).
+  - Rate limits and audit logs use the visitor IP behind Cloudflare instead of
+    the Cloudflare edge address; the Blueprint forbids API autoscaling (#153).
+  - New `Security scans` workflow (actionlint, zizmor, Semgrep, Trivy, ZAP
+    baseline, OSV-Scanner, SBOM) and a CycloneDX SBOM attached to every
+    release (#154).
+
+- **Security assessment (November 2026)** — the first published
+  [security self-assessment](docs/security/SECURITY-AUDIT-2026-11.md), with a
+  [test matrix](docs/security/SECURITY-TEST-MATRIX.md) and a
+  [remediation plan](docs/security/SECURITY-REMEDIATION-PLAN.md). Not
+  released or deployed.
+  - The backend deletes expired SIWE nonces and sessions every hour.
+  - The test-only internal-seam token check returns 401, not 500, for a
+    token of any length, and accepts `Authorization: Bearer`.
+  - A malformed chart-workspace scope returns 400 instead of 500.
+  - CI gains a blocking production-dependency gate for the backend and
+    Backstage (`audit-production`).
+  - **Payments:** a DePay-attested payment signed by a wallet other than the
+    order owner's is held for operator review instead of provisioning
+    automatically. `DEPAY_ATTESTED_ANY_PAYER=true` restores the previous
+    behaviour (OF-2026-11-05).
+  - Malformed ids, NUL bytes and negative paging values return 4xx instead
+    of 500. A `Permissions-Policy` header is set. Exception text in the
+    terminal chart overlay is escaped. Referral codes are drawn without
+    modulo bias.
+  - The web app overrides `ws` 8.x to 8.23.0 (wallet SDK transitive
+    advisory).
+  - New security suites: `test:pentest` (15 HTTP penetration checks),
+    financial invariants in `test:security`, and `test:browser:security`.
+  - The report, now with a [penetration test](docs/security/PENETRATION-TEST-2026-11.md)
+    document, records three open High findings (Directus advisories, the
+    database credential Directus shares with the API, and the IRAN edge base
+    image) and a **NOT READY** decision for real customer funds.
+- **CI supply chain (security audit 2026-11, OF-2026-11-07)** — GitHub
+  Actions are pinned to commit SHAs (the commits their current tags point
+  to), checkouts no longer persist the job token except in the two
+  workflows that push proposal branches, and the image publish step reads
+  step outputs from `env`. No workflow behaviour changes.
+
+- **Openfund Pay** — first-party, provider-independent checkout and payment
+  ledger ([ADR 0046](docs/decisions/0046-openfund-pay.md),
+  [guide](docs/payments/OPENFUND_PAY.md)). Not released or deployed.
+  - **Pay with Wallet** (primary): the server freezes a payment intent
+    (approved stablecoin, treasury, exact base units of the remaining
+    balance). The connected wallet signs one ERC-20 `transfer` on any
+    configured network, and the hash is recorded before verification.
+    Sign-in stays Arbitrum-only, and the signer must be the signed-in wallet.
+  - **Partial payments and overpayments:** a verified amount below the order
+    total is recorded as *Partially Paid — Remaining X*. Further transactions
+    (any method or network) complete it, and the challenge activates exactly
+    once. Any excess becomes a refund liability that is never counted as
+    revenue. Refunds are reviewed, approved, recorded and verified on-chain,
+    never sent automatically.
+  - **Treasury watcher:** finds transfers without a customer TXID, using a
+    leased per-chain cursor, a rescan window for reorgs and RPC failover.
+    Attribution happens only when unambiguous: by intent, by attempt, by
+    Solana memo, or when the sender is the SIWE wallet of exactly one open
+    order. Every other transfer waits in a Backstage review queue.
+  - **Status:** a server-authoritative status with 21 codes. A rejected
+    payment is no longer shown as "Verification Pending". After 15 minutes
+    the page explains the delay. After 20 minutes the case escalates to
+    review, and it is never auto-failed.
+  - **Manual transfer:** a mandatory red Persian/English sender warning that
+    must be acknowledged, and the TXID is now optional.
+  - **DePay:** off for new payments by default (DePay announces shutdown on
+    2026-12-31). A runtime switch in Backstage controls it. Callbacks,
+    events and recovery of existing DePay payments continue.
+  - **Backstage Payments workspace:** overview, investigation search, deposit
+    review (associate with written proof, refund case, close), refund
+    lifecycle, payment-method settings, watcher and alert metrics.
+  - **Fixes:** an 18-decimal stablecoin above about $100 overflowed
+    `payments.amount`. Treasury inflow totals counted a multi-transaction
+    order more than once. A partially paid order could expire.
+- Documentation: README and canonical status record the published v0.7.0
+  release and the 2026-11-18 real-payment findings
+  ([incident report](docs/payments/INCIDENT_2026-11-18.md)).
+
+## v0.7.0 — 2026-11-18
+
+Official release ([notes](docs/releases/openfund-0.7.0.md)). Contents:
+
+- Terminal Heatmap and Trade Radar:
+  - **Heatmap tiles:** stay readable. Small markets are grouped into proportional "+N" tiles that open at readable size, and the order holds steady during live updates.
+  - **Heatmap controls:** colour is a separate metric (24h change or funding) with a selectable range. Details appear only for a selection (bottom sheet on phones), with a hover tooltip and symbol search.
+  - **Trade Radar:** compact table, a fading highlight for new trades, a stable scroll position, wallet copy, and labelled cards on phones.
+
+- Challenges page: an animated row of sample wallet cards after Market Pulse.
+  It shows shortened addresses, identicons and demo returns, risk and
+  activity from a fixed seed, every card is labelled demo, and a disclaimer
+  says they are not Openfund traders or verified results. It uses a CSS-only
+  seamless loop with depth, edge falloff, a breathing mint glow and drifting
+  figures, runs only while visible and is static for reduced motion
+  ([design](docs/marketing/WALLET_SHOWCASE.md)).
+
+- Marketing: promotional popups and announcement bars, managed in Backstage
+  (Marketing) and published without a deploy, on one Directus model with
+  separate behavior and anonymous counters ([ADR 0045](docs/decisions/0045-campaigns-and-announcements.md)).
+  Popups wait for visible time, cap at one per session, skip checkout and
+  trading pages, and are accessible modals. A campaign with a coupon appears
+  only while that coupon is valid, and its checkout link carries the code.
+  The long all-locale Iran notice is replaced by a short Persian-only bar
+  linking to https://openfi.live/.
+
+- Documentation: one canonical status source (`docs/status/status.json`,
+  rendered to `docs/status/README.md` and the README summary) records the
+  release and, separately for GLOBAL and IRAN, what is deployed, enabled,
+  verified and owner-accepted, each with a timestamp and evidence.
+  `npm run docs:check` now fails when a released version is still labelled
+  Unreleased, a current document contradicts the recorded state, or an old
+  operational snapshot is not marked Historical. Stale statements were
+  corrected: GLOBAL purchases are enabled (no real purchase recorded yet),
+  v0.6.5 is deployed and IRAN runs on Liara.
+
+- Coupons: Backstage creates a coupon and activates it in one step, generates
+  codes, picks eligible models and sizes from the plan catalog, and reports
+  the exact outcome. A date-only expiry now lasts the whole UTC day. A 100%
+  coupon needs a usage cap before it can be active. Checkout keeps the coupon
+  in the URL (campaign links, reload, size changes) and no longer creates a
+  full-price order when a typed code was not applied.
+
+- Equity sampling locks the account before ownership checks and skips a
+  concurrent deletion. The Challenges language selector keeps the route,
+  document locale and community portal in sync across repeated changes.
+  A deterministic two-session PostgreSQL test reproduces the former deadlock
+  with the pre-fix statement and proves both interleavings of sampling and
+  account deletion now complete, with ownership fencing unchanged.
+
+- Release orchestration: an official release now deploys GLOBAL Backstage at
+  the same commit as the Web/API and verifies it (`/health` reports the
+  commit). The deploy refuses to start unless auto-deploy is off on both
+  Render services. `scripts/release/regions-status.mjs` reports commit or
+  version skew across both regions. Root cause of the 2026-11-17 split:
+  dashboard auto-deploy built `cd057fa` before its release gates finished;
+  Backstage went live without a gate.
+- Live funding: a concurrency test proves that three settlement workers pay
+  each record exactly once (a deliberately broken claim is caught).
+- Canonical domains and Geo-IP language (ADR 0043): `openfi.cloud` (GLOBAL)
+  and `openfi.live` (IRAN) are canonical; aliases answer 301 with path and
+  query (Cloudflare rules for GLOBAL, applied; application redirect for the
+  `iran.*` hosts). First visits get a default language from the visitor's
+  Cloudflare country (IR fa, RU ru, CN zh-CN, Arab League ar, others en)
+  instead of Persian for everyone; the URL and a saved choice always win.
+  Cloudflare zones now use Full (strict), TLS 1.2+ and Always Use HTTPS. The
+  Iran web app runs market data so orders there are no longer refused as
+  stale; a two-engine race test proves exactly-once closes. Backstage shows
+  both regions. The IR geographic redirect exists disabled behind gates;
+  cross-region forwarding is proposed in ADR 0044.
+- Iran runtime deploy: a root `.liaraignore` keeps `liara deploy` from
+  dropping `apps/web-react/src/brand` (the root `.dockerignore` pattern
+  `brand` matched it under the Liara CLI's gitignore rules); `stack.json`
+  uses the live production names (`openfund-iran`, network `staging`) so the
+  create-only provisioner cannot create duplicates; the worker lists
+  `CMS_PUBLIC_URL`, without which it exits at boot.
+- Infrastructure source of truth (ADR 0042): `stack.json` now describes
+  GLOBAL, IRAN production, IRAN staging and the dormant edge with their
+  GitHub environments; `npm run infra:check` (CI) and `--live` detect drift.
+  Both Liara deploy workflows run a guard first: the edge can never target a
+  runtime app, the runtime deploys only the manifest's provisioned apps, the
+  web app before the worker, and production only an official release tag.
+  Audit: `docs/reviews/liara-iran-infrastructure/AUDIT.md`.
+
+## v0.6.5 — 2026-11-17
+
+Release notes: [docs/releases/openfund-0.6.5.md](docs/releases/openfund-0.6.5.md).
+
+- Fix: Render dashboard deploys of untagged `main` failed once more than
+  250 commits separated it from the latest release; the candidate check now
+  uses GitHub's exact compare total.
+- Observability: audit-write and payment-recovery failures are counted and
+  logged; `/admin/operations/metrics` reports engine-loop lag and feed
+  staleness.
+- Notifications: `purchase_paid` when a paid purchase provisions its
+  challenge.
+- Tooling: purchase-test readiness probe, backup/restore drill, engine load
+  report, framing-policy boot test.
+- Dependencies: `ws` 8.23.0, `express-rate-limit` 8.7.4,
+  `markdownlint-cli2` 0.24.1.
+- Includes the launch-completion batch below.
+
+## Launch completion (shipped in v0.6.5; first described as candidate v0.6.0)
+
+Release notes: [docs/releases/openfund-0.6.0.md](docs/releases/openfund-0.6.0.md).
+
+- Release manifest runtime is derived from `render.yaml` and the backend
+  engine (it claimed Node 22 and Directus 11.9.1); `engine-strict=true`.
+- Post-deploy live SIWE gate and runtime verification (`/version` official
+  on the tag commit, frontend manifest, CMS health).
+- Backstage: partner review and commissions, finance (expenses, reserves,
+  obligations, treasury refresh), unified audit trail, trader suspension,
+  commercial coupon wizard, support replies and departments, notification
+  records, read-only live risk board, global search, and a Content workspace
+  over Directus with a live read-only preview.
+- Traders get an Inbox with in-app notifications and support conversations.
+- Visual editing fix: the site lets the configured CMS origin frame it.
+- Additive migration: `notifications`, `notification_relay_state`, support
+  thread columns. No financial table changed.
+
+## Shipped in v0.6.5 — release archive
+
+- Include the shared footprint runtime in release archives so the extracted
+  backend can start.
+
+## Shipped in v0.6.5 — universal visual CMS editing
+
+- Editors can open the existing Directus 11.17.4 visual editor, click registered editorial text, and save a draft or publish it without a frontend rebuild.
+- Arabic, Russian and Simplified Chinese (`zh-CN`) are selectable translation slots. They are not auto-published.
+- Public pages keep the current layout and fall back to bundled copy when Directus is unavailable. Financial, trading and payment fields are not editable this way.
+
+## Shipped in v0.6.5 — Backstage operations
+
+- Add reward payout details and an opt-in owner control to verify and record
+  finalized Arbitrum One DAI settlement evidence.
+- Add a bilingual owner workspace with secure sign-in, linked operational
+  directories and password-confirmed Prop decisions.
+- Align the Backstage Blueprint with the existing production hostname,
+  `backstage.openfi.cloud`, and document the backend release prerequisite.
+- Use the trading engine's account-first lock order for reward requests and
+  reversals to prevent contention from deadlocking a payout workflow.
+
+## Shipped in v0.6.5 — controlled challenge acceptance
+
+- Add wallet-bound Instant and Two-Step test checkout with isolated rule
+  snapshots, operator review and a dedicated simulated payout settlement.
+
+## Shipped in v0.6.5 — funded financial controls and product roadmap
+
+- Add versioned 7-, 14-, 21-day and monthly UTC payout choices behind an owner-approved sales cutoff.
+- Verify manual funded rewards against finalized Arbitrum One DAI receipts before recording payment or issuing a new payout certificate.
+- Add payout discussions, operator appeals, funded IB settlement and cross-region receipt claims.
+- Journal approved revenue allocations and reconcile finalized treasury transfers against on-chain balances.
+- Add a shared four-quarter product roadmap to the website and whitepaper seed and clarify the prop-firm product scope in the README.
+
+## v0.6.5 candidate notes (shipped in v0.6.5; first prepared on branch `agent/claude/v0.6.5-modernization`)
+
+Implemented and locally verified; **not merged, not released, not deployed**.
+The release tooling would currently allocate 0.6.0 after v0.5.0; publishing as
+v0.6.5 needs an owner decision (see the delivery record).
+
+- **Certificates:** three branded square designs (purchase, completion,
+  payout) rendered on the existing region-aware issuance and verification
+  APIs; anonymous template previews for everyone; Persian/Latin-safe canvas
+  text; redesigned verification page with an explicit "unavailable" state.
+- **Trade Radar** and **Market Heatmap** terminal tabs: read-only public
+  Hyperliquid data behind one shared backend cache and socket (adapted from
+  drkxbt/whales and drkxbt/charts, MIT).
+- **Terminal copy:** the approved Persian "entry point" label is enforced over
+  CMS text; owner-specified virtual order book copy with Gains/Hyperliquid
+  marks; the footer shows only the Persian "live" label with source marks;
+  Support opens the localized Contact page.
+- **Website:** Applications page redesign with real Open Trade 0.0.2
+  captures and CI build evidence (no download links); Roadmap page mirroring
+  ROADMAP.md; shared design-system layer; the Persian ticker shows only the
+  owner-specified "live from the market" label (also on phones); `/en`, `/ru`, `/zh-CN` keep their
+  language; a phone-width overflow (670px) fixed.
+- ADR 0035; third-party notices for drkxbt/whales and drkxbt/charts.
+- **Website redesign:** homepage rebuilt on the shared tokens (hero, product
+  cards that stack on phones, consistent CTAs, technical-horizon cards,
+  aurora accents); a site-wide layer gives every information page the same
+  card system, hero treatment and scroll reveals; reduced-motion safe.
+- **Responsive and accessibility:** 480-load audit (9 widths in fa/en, 2 in
+  ar/ru/zh-CN) — fixed hidden-table overflow on Transparency, small targets
+  and 9-10px labels on Challenges, light-theme contrast below 4.5:1 on new
+  pages, and 110 missing ar/ru/zh-CN strings on Governance and Contact.
+- **Release tooling:** an owner-approved dispatch may choose the patch inside
+  the newly allocated line (0.6.0 -> 0.6.5); tests cover skips, reuse and
+  out-of-line versions.
+- **Open Trade 0.0.2:** CI installers verified (SHA-256, metadata, macOS
+  launch); publication pack and download-manifest generator prepared; no
+  release published.
+- **README** redesigned with current captures, regional architecture, verified
+  versions and status categories; licence decision addendum for desktop
+  distribution.
+
+## Shipped in v0.6.5 — Open Trade desktop beta
+
+- Add an isolated Electron desktop companion, shared Vela chart integration and
+  internal cross-platform packaging. Real-wallet acceptance, signing and public
+  distribution remain pending; see `apps/open-trade/ACCEPTANCE.md`.
+
+## Earlier changes (shipped by v0.6.5)
+
+- Independent Iran regional runtime and regional synchronization (branch
+  `infra/iran-regional-authority`, [ADR 0033](docs/decisions/0033-regional-authority-and-synchronization.md);
+  **not deployed, not merged**). A database-enforced single home region per
+  trading account (ownership fence with epochs, quarantine on conflicting
+  claims, explicit two-sided handoff); a trigger-written transactional outbox,
+  signed HTTPS delivery, an ordered idempotent inbox and read models of the
+  other region; initial state transfer; checkpoint reconciliation that gates
+  reopening after an outage; an operator API (`/admin/regional`); `/ready`;
+  the Liara image, desired-state manifest, create-only provisioning tool and
+  a gated deploy workflow. Render is unchanged until sync is configured and
+  enabled. Tested with two real regions, fault injection and a simulated
+  120-day backlog. Not implemented: purchases in IRAN, an operations UI.
+- Iran access notice: lists all three Iran addresses (`iran.openfund.cloud`,
+  `iran.openfi.cloud`, `openfi.live`) in every locale, with wording driven by
+  the verified serving region and mode; replaces the single-address proxy copy.
+- Same-origin `/cms` content path with last-known-good snapshots: the Iran
+  runtime reads published content through its own backend and keeps serving
+  it while the CMS is unreachable; GLOBAL uses it as a fallback. Certificates
+  (#118) are region-aware and verifiable across regions.
+
+- Keep public navigation above checkout content, add an Applications destination,
+  and improve the localized purchase history and checkout entry point.
+- Add direct chart controls for creating, moving and independently removing
+  position protection. Show estimated gross profit or loss during dragging.
+- Add an interface content registry and an editing workflow through Directus.
+- Add certificates for eligible purchase, approved completion and recorded
+  payout events, with public verification, QR codes, and PDF and PNG downloads.
+- SIWE: `ALLOWED_DOMAINS` gains `iran.openfund.cloud` (Iran edge on Liara,
+  [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md)); the Blueprint
+  validator now requires exactly the four hosts. Takes effect only after an
+  approved Blueprint sync. **Not deployed.**
+
+- Iran edge on Liara (branch `infra/liara-iran-mirror`,
+  [ADR 0031](docs/decisions/0031-iran-edge-on-liara.md); **not deployed**):
+  a stateless nginx reverse proxy for `iran.openfund.cloud`. It is not an
+  independent Iranian deployment: it serves the exact release Render serves,
+  caches hashed assets, blocks operator and DePay server routes, and runs no
+  backend, database or secret in Iran. Manual, reviewer-gated deploys go to
+  a staging Liara app first; production requires verified staging evidence for
+  the same commit. The backend can accept the visitor IP from the edge with an
+  opt-in shared key (`EDGE_CLIENT_IP_KEY`), so per-IP rate limits and audit
+  logs are not collapsed onto one address. Country routing is prepared but
+  disabled. The Persian Iran notice no longer promises access during an
+  international cutoff or domestic market data. Owner guide in Persian:
+  `docs/deployment/LIARA_IRAN_SETUP.md`.
+
+- Owner decisions D1–D8 (branch `agent/claude/launch-readiness`, **not
+  deployed**): per-model reward cycles chosen once; 30-day inactivity;
+  Instant open-risk, trade-idea, profitable-day, news and weekend rules;
+  on-demand strike system; funded auto-close and news deductions; fee refund
+  on the fourth paid Standard reward; Openfund leverage ceilings for new
+  challenges; daily-loss variants sold only when priced. Paid plans are not
+  sold until a licensed economic calendar is imported. Fixed: challenges
+  started without a frozen snapshot were provisioned from empty rules.
+  Draft Terms, Privacy and Refund policies prepared for legal review.
+
+- Launch readiness (branch `agent/claude/launch-readiness`,
+  [ADR 0029](docs/decisions/0029-reward-lifecycle-and-support-queue.md),
+  [report](docs/reviews/launch-readiness-2026-11-13/REPORT.md); **not deployed**):
+  server-computed reward requests on funded accounts enforce the published
+  split, first-payout wait, minimum request, consistency score, profitable days,
+  monthly cycle and fourth-reward fee refund (the free-amount withdrawal request
+  is removed); a final evaluation pass now goes to operator review, and an
+  approval creates exactly one funded-demo account; rules snapshots move to
+  version 2 (payout terms frozen; older snapshots untouched). New About Us and
+  Contact Us pages in all five locales with a working support form stored in
+  `support_messages` and handled in Directus by a new `Support Agent` role.
+  The terminal support link no longer points to an unverified mailbox.
+
+- Checkout, campaign, chart and trading completion (branch `agent/claude/checkout-campaign-chart-trading`, not deployed;
+  [ADR 0028](docs/decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md)):
+  **Manual Payment** next to Pay with DePay on the same order, verified on-chain
+  by the existing verifier (EVM: signed by the sign-in wallet; Solana: order id
+  in an SPL Memo), with Verification Pending / Payment Failed / Activation
+  statuses, rate limiting and two race fixes (`tx_already_used`,
+  `order_already_paid`); Openfund Treasury wallets per network on the
+  transparency page; a fa/en sales-campaign landing; the Vela chart layer is
+  English and LTR in every locale; SL/TP can be created by dragging from the
+  entry line; Lotage sizing for USD-quoted forex, gold, silver and WTI; "Buy
+  Challenge" CTAs on the Home Prop card and the connected-wallet card; "Entry Price" terminology (Persian
+  label "entry point"). No engine, PnL, drawdown, margin, price-feed
+  or DePay-signature change.
+- DePay checkout activation fixes (branch `agent/claude/depay-checkout-activation`,
+  **not deployed**): the DePay endpoints also answer at
+  `/api/payments/depay/{config,configuration,callback,events}`, the URLs the
+  production DePay integration calls (it received 404, so the widget could
+  never load a configuration); DePay-attested payments from smart-contract
+  wallets are verified through router or reported-payer Transfer logs; the
+  server logs why payments are disabled at startup and why a DePay request
+  was refused; the checkout shows DePay widget errors. Owner procedure with
+  verified USDC and DePayRouterV3 addresses:
+  [Owner setup](docs/payments/OWNER_SETUP.md).
+- Capacity optimization (branch `agent/claude/capacity-optimization`,
+  [ADR 0027](docs/decisions/0027-trading-stream-fan-out-and-engine-loop-isolation.md),
+  [report](docs/reviews/capacity-2026-11-13/REPORT.md); **not deployed**):
+  `/trading/stream` computes one fresh state per account per push for all of
+  its tabs and reacts only to that account's changes; `last_seen` is written at
+  most once per minute; the engine loop samples equity without a full state
+  read, on its own small connection pool, and equity samples are written in one
+  statement with provable no-op writes skipped; shutdown waits for the running
+  engine pass and ends streams. No rule, formula, rounding or API shape changed;
+  an equivalence check against `main` gives identical financial state. Measured
+  locally: stable concurrency A (100 + 200) → C (500 + 1,000), SL/TP p95 at C
+  28.3 s → 1.7 s. The 1,500 + 2,000 target is not reached.
+
+- Challenge checkout and DePay activation (branch `agent/claude/depay-checkout-chart-ux`,
+  [ADR 0026](docs/decisions/0026-dedicated-checkout-vendored-depay-widget-and-chart-position-tool.md);
+  **not deployed; first real payment pending the owner**): a dedicated
+  `/:locale/checkout` page (wallet, challenge, size, coupon, customer email,
+  review, Pay with DePay, live status, verified receipt, resume by link)
+  replaces the checkout dialog. The official DePay widget is vendored
+  same-origin and opened with the integration id and the order id only, so
+  Openfund no longer depends on a CDN bundle, a CSP exception or a
+  hand-computed hash, and never restricts DePay networks or tokens. A
+  provisioning failure after a verified payment is retried without a second
+  payment.
+- Chart trading UX (same branch): compact BUY/SELL markers that sit off the
+  wick (BUY ×n / SELL ×n per candle); the position box keeps the executed
+  entry fixed and lets only an existing SL/TP move vertically, with
+  validation, an unconfirmed preview and the existing position-update
+  service; position information moves to compact right-hand labels that can
+  be hidden and restored without touching the position; Chart Settings →
+  Trading → "Show Buy / Sell Markers" (with its requested Persian label),
+  saved per wallet.
+
+- Documentation: correct current pages that still described the app as
+  served at `/react/` (it is served from `/`; `/react/` redirects) and the
+  web README's Node 22 requirement (Node 26); replace the stale v0.2.0 audit
+  text in the documentation index with a canonical-source map; index the
+  dormant protocol docs and 11 unlisted review records; remove two orphaned
+  pointer pages (`docs/architecture/RENDER_DEPLOYMENT.md`,
+  `docs/development/ROADMAP.md`); remove duplicated rules from `AGENTS.md`
+  without changing any policy.
+- Repository: stop tracking 92 stale generated `react/assets/` files that
+  were re-committed by `afe173f` despite `.gitignore`; a fresh `build:web`
+  deletes all of them, so nothing served changes. A release test now fails if
+  any `react/` path is tracked
+  ([hygiene record](docs/development/REPOSITORY_HYGIENE.md#regression-fixed-on-2026-11-12)).
+- Licensing: component inventory covering fonts and images, a first-party
+  [license decision document](docs/legal/LICENSE_DECISION.md) (no license
+  chosen; owner approval gate), the missing Ubuntu Font Licence shipped beside
+  the Ubuntu fonts, `dist/` notices re-synced with the React notices, and the
+  unresolved Irancell font provenance recorded. README states plainly that
+  Openfund's own code is all rights reserved.
+- Terminal and Prop UI refinement (branch `agent/claude/terminal-prop-ui-refinement`,
+  [ADR 0025](docs/decisions/0025-prop-leverage-sizing-and-economic-calendar.md)):
+  BUY/SELL markers on the candle of each confirmed Prop fill (grouped with a
+  count per candle, re-mapped on timeframe change, details on the timeline
+  lane); SL/TP zones start at the entry candle with a dashed "Entry" boundary
+  at the position's own entry price; renamed Persian risk-editor and entry
+  labels (requested wording, terminal-wide); larger terminal typography; a separate
+  account summary panel (collapsible on short screens); Prop-only maximum
+  leverage (BTC/ETH 20×, other crypto 15×, forex/stocks/indices/commodities
+  50×) enforced by the engine and the ticket; Collateral / Quantity sizing
+  modes with Lots shown as unavailable until an approved contract
+  specification exists; a larger Edge Score radar; an aligned dashboard
+  Activity list; grouped journal toolbars; a visual journal settings form;
+  internal page layout fixes; and a "News & Information" tab with the official
+  TradingView Economic Calendar widget (two origins added to the application
+  CSP). Perpetual leverage and execution are unchanged.
+
+- Directus 11.17.4 (branch `agent/claude/directus-11.17.4`; **not deployed,
+  needs owner approval and a production-backup rehearsal**): the CMS image pin
+  moves from 11.9.1 to 11.17.4, the latest 11.x (same BUSL-1.1 licence) in
+  `render.yaml`, `infrastructure/directus/compose.yaml` and the release
+  workflow. Restored-backup rehearsal on seeded data: 103 of 104 checks, with
+  collections, relations, roles, policies and item counts unchanged
+  ([evidence](docs/reviews/directus-11.17.4-staging/README.md)). Directus 12
+  stays blocked on the licence decision.
+
+- Node.js 26 LTS (branch `agent/claude/node-26`; **needs owner approval
+  before deployment**): CI workflows, the release image
+  (`node:26-bookworm-slim`), the Render Blueprint `NODE_VERSION`, the backend
+  `engines` field and the release build guards move from Node 22 (maintenance
+  LTS) to Node 26 (Active LTS). Current development and release docs, and the
+  release-candidate rule in `AGENTS.md`, say Node 26. Historical audit and
+  review records are unchanged. No application code changed.
+
+- Footprint activation (branch `agent/claude/footprint-activation`): the
+  Render Blueprint sets `FOOTPRINT_ENABLED=1` on `openfund`, on the owner's
+  request, so the terminal offers Chart Style → Footprint and the Footprint
+  overlay (default Bid × Ask Ladder) with live Hyperliquid order flow over
+  Gains candles. No code, schema, retention or stream-capacity change. Gains
+  remains the price and candle source; trading, evaluation and PnL are
+  untouched. History starts when the service first runs in production.
+
+- Payments: [activation checklist](docs/payments/ACTIVATION.md) records the
+  production state verified on 2026-11-12 (`paymentsEnabled: false`; no
+  complete settlement chain, widget URL, SRI hash or CSP origins configured;
+  DePay endpoints closed by design). Documentation only.
+
+- Express 5 (branch `agent/claude/express-5`): `apps/backend` moves from
+  Express 4.22.3 to 5.3.0. No route, middleware or handler changes were
+  needed: the backend uses no Express 4-only path syntax or APIs. Observable
+  differences: static JavaScript is served as `text/javascript` (RFC 9239)
+  instead of `application/javascript`, and the HTML/CSS `charset` parameter is
+  lower case. Upstream registry updated.
+
+- Vite 8 (branch `agent/claude/vite-8`): `apps/web-react` moves from Vite
+  6.4.5 and `@vitejs/plugin-react` 4.7.0 to Vite 8.3.8 (Rolldown bundler) and
+  `@vitejs/plugin-react` 6.3.0. `vite.config.ts` needed no change. Production
+  build time fell from about 9 s to 1.4 s locally. Landing pages render
+  pixel-identically to the Vite 6 build (English, Persian, 390 px), and the
+  wallet, purchase, DePay, chart, layout, risk, completion and responsive
+  browser suites pass. Upstream registry updated.
+
+- TypeScript 7 (branch `agent/claude/typescript-7`): `npm run typecheck` in
+  `apps/web-react` moves from TypeScript 5.9.3 to 7.0.2 (native compiler,
+  about 1.4 s per run). TypeScript 7 no longer ships the stable JavaScript
+  compiler API, which `scripts/docs/check-language.mjs` uses to read comments;
+  that scanner now loads the pinned `typescript-js-api` alias
+  (`npm:typescript@6.0.3`, the newest stable release with the API). Vite and
+  esbuild do not use `tsc`, so build output is unaffected.
+
+- Vela 0.10.6 (branch `agent/claude/vela-0.10.6`;
+  [Vela upgrade](docs/integrations/VELA_UPGRADE.md#upgrade-to-vela-0106-2026-11-12)):
+  vendored LuxAlgo Vela 0.9.3 to 0.10.6 through the controlled update tool,
+  `@luxalgo/vela` 0.10.6 (adds `@luxalgo/vela-ui` 0.4.1) and
+  `@luxalgo/vela-pinets` 0.3.4; PineTS stays 0.13.1 (latest).
+  - Patch OF-VELA-001 retired: 0.10.x keeps menus above the chart upstream.
+    OF-VELA-002 and OF-VELA-003 re-apply cleanly. `LICENSE` and `NOTICE`
+    unchanged; the shipped AGPL notice only changed line endings upstream.
+  - OF-BUILD-001 re-anchored: the Pine worker's minified identifiers changed,
+    so `build-charts.mjs` now locates them structurally and still fails
+    unless each matches exactly once.
+  - Visual parity: Vela 0.10 moves its chrome CSS into the `vela.chrome`
+    cascade layer, so the terminal's unlayered element resets stripped the
+    toolbar and range-bar button padding. Those resets now live in an
+    `openfund-reset` layer ordered before Vela's, which restores the 0.9
+    appearance without changing any other terminal rule.
+  - `e2e/test-chart-indicators.mjs` finds numeric Pine inputs by the
+    `spinbutton` role (native number input on 0.9, Zag number input on 0.10).
+
+- Dependency patch updates (branch `agent/claude/deps-patch-2026-11`):
+  `viem` 2.57.16 to 2.57.19 in `apps/backend` and `apps/web-react`, and `ws`
+  8.22.1 to 8.22.2 in `apps/backend` (the version the capacity harness already
+  uses). Upstream registry updated. No application code changed.
+  The 30 open `npm audit` advisories in `apps/web-react` are all transitive
+  through the wallet stack and are resolved only by wagmi 3, which the latest
+  stable RainbowKit (2.2.11, peer `wagmi ^2.9.0`) does not support yet.
+
+- Footprint archive importer (branch `agent/claude/footprint-archive-import`;
+  [Footprint](docs/integrations/FOOTPRINT.md#archive-importer-prepared-not-yet-run-against-real-files)):
+  `apps/backend/footprint/archive.js` and `scripts/footprint/import-archive.mjs`
+  import decompressed Hyperliquid `node_fills_by_block` files into
+  `footprint_minutes` with `source = 'archive'`, using the live path's
+  normalization and deduplication. Taker fills only, fail-closed completeness
+  checks, dry run by default, one transaction with `--apply`, recorded gaps
+  trimmed to the imported window. Not yet run against real archive files: the
+  requester-pays bucket needs owner AWS access. No schema change; the feature
+  flag and production state are unchanged.
+
+- Community, footer, platform motion and responsive navigation (branch
+  `agent/claude/community-motion-responsive-ui`):
+  - Community: Telegram is the only public community action (home, hero,
+    footer) and links to the official `https://t.me/communitybuopenfund`;
+    the Discord button is removed. The Discord/Instagram validators and
+    runtime settings remain for configuration compatibility.
+  - Footer services: Hyperliquid added as the eighth provider (visual
+    listing only, no integration); balanced grid of 8 / 4 + 4 / 2 × 4.
+    Official logo provenance is recorded in `Public-brand-assets.txt`.
+  - Challenges platform flow: the static Gains mark is replaced by a CSS-only
+    composition of three floating glass orbs (Gains, Hyperliquid, GMX);
+    transform-only motion, static under reduced motion.
+  - Website header: one compact mode decided from measured widths (links,
+    then terminal entry, then language/theme move into the drawer) instead
+    of a two-row phone header that pushed controls off-screen; new shared
+    off-canvas drawer (`features/navigation/OffCanvas`) opening from the
+    right in fa/ar and the left in en/ru/zh-CN, with focus trap, Escape,
+    backdrop close, scroll lock and focus return.
+  - Terminal: at ≤1100px every destination moves into a terminal drawer
+    (`TerminalMenu`, own state, so the chart workspace is never re-rendered
+    or remounted); desktop tabs and the More menu are unchanged.
+  - New browser regression suite `e2e/test-responsive-navigation.cjs`
+    (11 widths × 5 locales, short viewports, terminal state persistence).
+- Capacity assessment (branch `agent/claude/capacity-assessment`): isolated
+  k6 + SSE + Playwright capacity harness (`scripts/capacity/`) and measured
+  report ([Capacity assessment 2026-11](docs/reviews/capacity-2026-11/REPORT.md)).
+  Measured: 100 chart users + 200 visitors stable on one uncapped core; not
+  stable at that stage under a Render-equivalent CPU quota; first bottleneck is
+  per-stream SSE database polling on the 10-connection pool and the serial
+  engine loop. No application code changed.
+  Harness dependencies pinned to patched `ws` 8.22.2 and `viem` 2.57.16
+  (GHSA-96hv-2xvq-fx4p); k6 dashboard HTML exports are no longer committed.
+
+- Hybrid footprint chart (branch `agent/claude/hybrid-footprint`, disabled by
+  default with `FOOTPRINT_ENABLED=0`; [Footprint](docs/integrations/FOOTPRINT.md),
+  ADR 0024):
+  - Gains stays the chart's price, candle and market source. Hyperliquid
+    executed trades (aggressor side, exact prices) drive a footprint built
+    only on Vela's public plugin SDK: a "Footprint" chart style and a
+    "Footprint" overlay. Five display modes, with Bid × Ask Ladder as the
+    default. POC, naked POC, value area, diagonal and stacked imbalances,
+    filters, a stat table, a visible-range profile and up to three instances.
+  - Footprint service: one shared Hyperliquid WebSocket per process, exact
+    one-minute per-price slices in `footprint_minutes` (with optional
+    `FOOTPRINT_DATABASE_URL`), recorded capture gaps, `/api/footprint/*`
+    history and SSE stream. It is read-only and isolated from the engine,
+    accounts and payments.
+  - Price compatibility: footprint prices are never shifted. Per-market
+    limits come from a measured Gains↔Hyperliquid basis, and the footprint
+    is flagged, hidden or marked stale accordingly. The status chip states
+    the offset.
+  - BTC, ETH, SOL, gold, silver, EUR/USD, GBP/USD and USD/JPY were verified
+    against live Hyperliquid metadata. History is captured from first run;
+    archive backfill is pending.
+
+- Production fix and terminal refinement (branch
+  `agent/claude/production-fix-ui-refinement`):
+  - Header controls: the theme switch is now a real box with the shared
+    height, border and radius (it was a 23px pill with a faked outline
+    frame); the signed-in wallet menu opts out of the landing FAQ `details`
+    border that made it 37px and half a pixel off; unified hover/focus.
+    Measured equal on 5 locales × 2 themes × 7 widths and while signed in.
+  - Per-wallet chart workspaces: drawings, indicators, timeframe, chart and
+    tool settings are saved to the backend for the signed-in wallet
+    (`chart_workspaces`, revisioned, session-owned) and restored on any
+    device; wallets never see each other's chart state
+    ([Chart workspaces](docs/trading/CHART_WORKSPACES.md), ADR 0023).
+  - Live position risk/reward overlay: SL-only and TP-only positions now get
+    their zone (previously only positions with both), correct LONG/SHORT
+    direction, theme colors, a compact per-position legend; the overlay's
+    options are now actually applied (Vela takes them under `props`), so the
+    fabricated "Loss · Size" line from a default 10,000 balance is gone.
+  - SL/TP dialog: Persian and Arabic-Indic digits are accepted exactly
+    (unreadable input previously became NaN and silently removed the level);
+    closes only after the server confirms; shortened position id with copy.
+  - Order review: one label/value row per field, LTR-isolated values, no
+    clipping in RTL; values and submission path unchanged.
+  - Seasonal header logo (designs approved by the owner): Yalda
+    pomegranates from 28 Azar through 1 Dey (Tehran date, Jalali via the
+    built-in Intl Persian calendar) and a Santa hat from 25 to 31 December
+    (visitor's local date), on the website and terminal header logo only.
+    The master mark is untouched (a CSS layer over the measured logo box);
+    the normal logo returns automatically after each holiday.
+  - Payments: no code defect found in the purchase/DePay path; production
+    `paymentsEnabled` is false because the owner-controlled payment
+    configuration is unset. The activation checklist now lists the DePay
+    events URL and the widget's `connect-src` origins.
+
+- Final frontend UI refinement (branch `agent/claude/final-ui-refinement`),
+  frontend only, no backend, trading, payment or SIWE change:
+  - One header-control geometry (wallet, terminal entry, language, theme) for
+    the website and the terminal (`src/styles/header-controls.css`); the
+    terminal now orders them like the website.
+  - The public header measures real label/action widths and falls back to the
+    menu only when they do not fit (replaces the fixed 1400px breakpoint that
+    clipped Russian labels); smallest-phone tier keeps every control on one row.
+  - Footer address no longer includes the "Land of Persia" parenthetical in
+    any locale; footer service credits gain Bitpin (official logo) and lay out
+    as one row of seven on desktop with balanced wrapping below; legacy
+    stylesheets are requested with a per-build version so a cached copy cannot
+    differ between domains.
+  - Persian-only: Iran access notice under the header (owner-approved for
+    production, `src/config/iranAccess.ts`; the iran.openfund.cloud host is
+    connected separately) and a fixed bottom Bitpin price strip in Toman
+    (read-only public API, one shared 30s poller, paused in hidden tabs,
+    backoff on failure, prices withdrawn after 10 minutes without data).
+  - Home: product cards share one structure with bottom-aligned CTAs; the
+    Perpetual card carries an "Inactive / In Development" badge in five
+    languages; the "Proposed design · product approval required" label is gone.
+  - Terminal: the open market list no longer rebuilds on every price tick
+    (rows under the pointer were detached, so the first click was lost or
+    closed the menu); market selector, More stats, the More menu and the
+    wallet menu share outside-click, Escape and one-open-at-a-time dismissal
+    across the shell and the workspace iframe; the market strip follows RTL/LTR
+    with symbols and numbers isolated LTR.
+  - Terminal: the status-bar "Vela" label is removed at the owner's
+    direction; chart engine, indicators and the website's Vela credit and
+    notices are unchanged.
+  - Challenges: the Web3 wallet card reflects the existing wallet and SIWE
+    session (restoring, connected but not signed in, signed in with address
+    and network) instead of always asking to connect.
+- Repository governance and security (branch `agent/claude/repo-governance`,
+  no application code changed): add `CODE_OF_CONDUCT.md`, `SUPPORT.md`,
+  `.github/CODEOWNERS`, `CLAUDE.md`, UI-problem and documentation issue
+  templates, [Repository governance](docs/development/REPOSITORY_GOVERNANCE.md)
+  and [Repository security settings](docs/development/REPOSITORY_SECURITY.md);
+  extend `CONTRIBUTING.md` with the fork-to-merge workflow, `SECURITY.md` with
+  scope and expectations, and `AGENTS.md` with agent safety rules. Pin the
+  third-party gitleaks action to a commit, validate the image workflow's
+  version input, add a dependency-review workflow, ignore local `.env` and key
+  files, and record reviewed full-history gitleaks false positives. Enabled on
+  GitHub: private vulnerability reporting, secret scanning, Dependabot alerts
+  and security updates, CodeQL default setup.
+- Fix the Render Blueprint SIWE allowlist for both public domains and the
+  onrender host. Add a Blueprint guard and CI coverage for signed Arbitrum
+  login, owned profile, session restore, wallet switching and logout through
+  both production origins. Production real-wallet acceptance remains pending.
+- UI refinement (branch `claude/ui-refinement`), frontend only:
+  - Wallet header chip no longer tilts (the FAQ accordion's `summary>span`
+    rotation leaked into it); the wallet menu is grouped into wallet
+    information (address, balance, network) and actions, RTL with LTR values.
+  - Persian/Arabic landing card copy spacing and wrapping; tiny decorative
+    English labels removed from the two landing illustrations.
+  - Footer partners: Render restored and Liara added; the corporate
+    information block is replaced by the address in five languages.
+  - Day/night theme switch (MIT design, attributed) on the website header and
+    terminal; "Growth Partner" is now Economy › Referral & Rewards (same URL).
+  - Terminal account tabs show one shared signed-out empty state that runs the
+    existing wallet flow.
+- PR #81 completion (branch `claude/pr81-completion`):
+  - Coupon administration acceptance now runs against a real Directus UI and
+    passes 16/16 (create a 100% internal coupon in Directus, zero-cost
+    checkout, provisioning, redemption history, reuse rejection, access
+    control). Test fixes only; no schema change.
+  - Checkout, profile and order dialogs: Latin digits outside Persian (the
+    Irancell font rendered `$80` as Persian numerals) and the localized plan
+    name instead of the bilingual catalog label (`/purchases/plans` adds
+    `names`).
+  - Payments: `payments.source_token` / `source_amount` now store DePay's
+    `sent_token` / `sent_amount` (the payer's token) instead of the settlement
+    values. DePay documentation rewritten for multi-chain settlement with the
+    exact dashboard and Render settings.
+  - Directus 12: second rehearsal shows the unlicensed Core tier also drops
+    field-restricted permissions (Commerce Admin loses coupon create/update).
+    `release.yml` probes use `/server/ping`; `render.yaml` adds a `LICENSE_KEY`
+    secret slot. The image stays on 11.9.1 pending a licence.
+  - README rewritten as a business-and-technical project homepage with real
+    screenshots; engineering sections moved to
+    `docs/development/ENGINEERING_REFERENCE.md` and checked by `docs:required`.
+
+- Production readiness (branch `codex/production-readiness`, ADR 0022):
+  - Wallet, SIWE and checkout are **Arbitrum One (42161) only**; other SIWE
+    chains are rejected (`invalid_chain`), wallets are asked to switch, and
+    `PURCHASE_PAYMENT_CHAIN` defaults to `42161` (any other chain disables
+    purchases). New optional `AUTH_RPC_URL`.
+  - DePay: the dynamic-configuration request is now verified (`x-signature`,
+    new `DEPAY_VERIFY_PUBLIC_KEY`, legacy `DEPAY_CALLBACK_PUBLIC_KEY` still
+    read); new signed `/purchases/depay/events`; callbacks compare chain,
+    receiver and token, record deliveries append-only (`depay_events`) and
+    return 500 on database failure so DePay retries; the configuration amount
+    is the net server price as a JSON number; the checkout renders the
+    official button with `blockchains='["arbitrum"]'`.
+  - Coupon engine (percent, fixed, 100%, plan/size/user/time/usage limits,
+    internal test coupons) with race-safe redemption, `/purchases/quote`,
+    `/admin/coupons` and an append-only audit; 100% coupons provision through
+    a dedicated zero-payment flow.
+  - Explicit, database-enforced order lifecycle (`lifecycle_state`,
+    `purchase_order_events`, immutable pricing, refund states). Additive
+    migration; existing `status` derived.
+  - Economy menu now holds Governance and a consolidated Ambassador (IB) page
+    (Brand Ambassador and Verified Coach remain independent); `/coach`
+    redirects to its section.
+  - `test:payments` and the new `test:commerce` suites run in `test:all` (CI).
+  - Documentation: README rebuilt around 38 required sections; DePay,
+    coupons, order lifecycle, business model, operating governance,
+    operations, licensing report, third-party notices, release/deployment
+    checklists, issue templates; `docs:required` gate (required documents,
+    README sections, every `render.yaml` variable documented).
+
+- Website launch content: removed hosting-provider and release notes, the
+  unverified office-location document, sample/illustrative product notes,
+  placeholder documents, unreleased app badges, the public Team section and the
+  Instagram promotion button from the public website; corrected the Challenges
+  page claim that no plan has minimum trading days; exact `A-Book` / `B-Book`
+  labels with a simulated-routing disclosure; protocol research labelled as not
+  active; `/sitemap.xml`, `/robots.txt`, `og:locale` and indexable Economy and
+  partner routes. Adds the five-locale content validation test
+  (`test:content`), the product-rules consistency check
+  (`check:product-rules`, backend mirror moved to `apps/backend/plan-catalog.js`)
+  and `docs/website/CONTENT_ARCHITECTURE.md` / `docs/product/PRODUCT_RULES.md`.
+- Fix (P0 production UI): explicit cache policy for the same-origin frontend
+  (`apps/backend/static-cache.js`). Content-hashed Vite assets are `immutable`,
+  unhashed files (`legacy/*`, fonts, `translations.json`, the Vela bundle)
+  revalidate with `no-cache`, and 404s are `no-store`. Previously Cloudflare's
+  4-hour Browser Cache TTL applied to every response without a stronger origin
+  header, so a deploy-cutover 404 for the new stylesheet stayed cached and the
+  site rendered unstyled (terminal collapsed to a 300x150 iframe).
+- Pull request governance: a required-sections pull request template with a
+  structural `PR description` check (and Conventional Commit title check),
+  documented stacked-PR policy, branch-update practice, Conventional Commit
+  scopes and merge-readiness checklist (`docs/development/PULL_REQUESTS.md`);
+  release-traceability authority hierarchy in `docs/deployment/RELEASES.md` and a
+  read-only release summary generator (`node scripts/release/summary.mjs`).
+- Upstream governance automation: `scripts/upstream/check-releases.mjs` reads upstream releases and
+  release notes, classifies risk by each provider's versioning policy (0.x, Directus breaking minors,
+  semver majors, source heads) and feeds the weekly read-only `Upstream watch` workflow, which opens one
+  draft proposal PR changing only `latest_observed`. `Upstream update candidate` (manual dispatch) runs
+  the controlled vendor update and opens a draft PR with the report. No auto-merge, no deployment.
+  ADR 0021 and `docs/integrations/UPSTREAM_AUTOMATION.md`.
+
+- Upstream isolation and dependency registry: separates upstream, integration and Openfund-custom
+  layers for Vela, the Pine addon and PineTS, the Gains API and SDK, the LuxAlgo journal core,
+  Directus and key libraries. Adds `infra/upstream/` (registry, patch registry with three reversible
+  Vela patches, customization guards, vendor manifest), `npm run check:upstream`, a controlled
+  `update-vendor` report/apply tool that proves vendored source equals upstream plus registered
+  patches, Gains market-data contract tests on recorded fixtures plus an optional live check, and the
+  Vela/Gains upgrade protection guides. Vela stays at 0.9.3 (0.10.4 assessed: patch conflict, not
+  adopted). `MarketData` gains an options seam with unchanged defaults; the trading engine is untouched.
+- Directus upgrade readiness (no version change): staged rehearsal of 11.9.1 to 12.6.1 on an isolated
+  PostgreSQL 17 database shows Directus 12 locks the current content model without a licence (Core tier:
+  25 collections, no custom permission rules; Openfund registers 43 and filters every public read by
+  status). The upgrade is blocked on an owner licensing decision; the repository stays on 11.9.1. Adds
+  `apps/backstage/upgrade/` (inventory and verification tool, staging harness), a licence preflight in
+  `apply_schema.py`, the Render health check on `/server/ping` and explicit `IP_TRUST_PROXY=true` (both
+  safe on 11.x), backup/restore guide, production migration and rollback runbook and ADR 0020.
+
+- Dependency governance: a machine-checked upstream registry (Vela, Vela Pine
+  addon, PineTS, Gains SDK and APIs, journal-core, Directus, wallet libraries,
+  protocol source) with versions, licenses, local modifications and update
+  procedures; a conservative `dependabot.yml` (weekly grouped minor/patch, no
+  automatic majors, upstream families excluded); and `npm run deps:check`, which
+  fails when a pin drifts from the registry. Records that only the journal-core
+  library of the LuxAlgo Trade Journal is integrated and that `vendor/gains-sdk`
+  is unused.
+- DePay checkout completed as the intended customer flow: **Buy Challenge**
+  creates the server-priced order and opens the official widget with the
+  integration id and only the order id; DePay asks the new signed dynamic
+  configuration endpoint for chain, token, amount and receiver; DePay's
+  signed callback is acknowledged at once and verified on-chain, then the
+  existing provisioning creates exactly one challenge and the checkout shows
+  *Payment successful*. Failed payments are shown in plain words, a pending
+  order resumes after a page refresh, and a tampered widget bundle is
+  blocked. Browser acceptance (`npm run test:browser:depay`) runs the real
+  backend against a stub widget and a mock chain; real-network acceptance
+  is still pending. Also fixes RPC HTTP errors (for example a 503) being
+  reported as a final rejection instead of a retryable `rpc_unavailable`,
+  and finality using a cached chain head.
+- Challenge payment verification rewritten around an explicit correlation
+  policy: the signer must be the signed-in wallet, only the approved ERC-20
+  counts, and the amount is the sum of that token's transfers to the
+  merchant from the payer or an approved router, so DePay router and swap
+  payments verify and unrelated transfers never do. A dedicated
+  `PURCHASE_RPC_URL` is required in production (no public-RPC fallback);
+  token decimals come from the contract; native value is no longer treated as
+  USD; production defaults to 12 confirmations with a reorg check; RPC
+  outages and pending transactions are retryable instead of failures.
+- Payment attempts are stored (`payment_attempts`), recovered by a
+  background sweep after restarts or lost browser requests, and surfaced to
+  operators through `/admin/payments` (lookup by order or hash, review
+  queue for underpayment, wrong token, late, duplicate and overpayment,
+  re-verify, audited resolution). Refunds stay manual.
+- Orders swept to `expired` can now be paid inside the late-payment grace
+  window as documented (previously unreachable).
+- DePay checkout: Subresource-Integrity-pinned bundle, explicit CSP origins,
+  mainnet token payments only, refresh-safe resume of a pending order and
+  automatic follow-up of a submitted hash. Optional signed DePay server
+  callback registers a retryable hint. Real-network acceptance is pending;
+  see [payment activation](docs/payments/ACTIVATION.md).
+- Repository: the generated `react/` build output (22.7 MB, 241 files) is no
+  longer tracked; `npm run build:web` creates it and `Backend` CI builds it
+  before booting the server. Removes the main source of merge conflicts between
+  frontend pull requests. See `docs/development/REPOSITORY_HYGIENE.md`.
+- CI: the locale matrix and the UI polish matrix (≈ 17 and ≈ 15.5 minutes
+  sequentially in the release gates) now run as concurrent, never-retried
+  shards, cutting the `Release package gates` job; documentation-only pull
+  requests skip the heavy gates through a change classifier; pull request runs
+  are cancelled when superseded while `main` and release runs never are; the
+  Playwright browser cache is shared. See `docs/development/CI.md`.
+- Terminal Chart tab and Quick Trade (branch `feat/terminal-chart-quick-trade`,
+  implementation candidate): a Chart tab beside Trading shows
+  the same Vela workspace full-viewport (order form, book and positions hidden)
+  without reloading the chart, market stream, indicators or drawings. Quick
+  Trade is a compact Buy/Sell control and order panel on that chart; it builds
+  the order form's request and submits through the existing account adapter
+  (validate, preview, submit with an idempotency key), so balance, leverage,
+  margin and permission checks are unchanged. No bid/ask is shown because the
+  market-data provider supplies a mark price only. No backend, engine or
+  routing-convention change.
+- Dependency lockfiles and npm configuration now use the official npm registry, avoiding CI timeouts from the previous package mirror.
+
+- Unofficial Render candidates now retain the latest published version number while identifying new code by its exact commit SHA and `official: false`; only an explicit publish action allocates a new version.
+
+- Hybrid Governance v1.0 (implementation candidate; council and voting remain inactive): off-chain, auditable governance with a ten-seat Community
+  Council, OFP proposals, a validated lifecycle, quorum 7 and approval 6 of 10
+  (7 for governance amendments), conflict-of-interest recusal, optional signed
+  vote evidence, an election architecture gated on management approval and a
+  hash-chained audit trail. Reserved company powers are advisory-only and the
+  governance code has no access to treasury, trading, pricing or payout data.
+  Adds `gov_*` tables (additive), `/governance` and `/admin/governance`, the
+  `/:locale/governance` pages, Directus editorial collections, `GOVERNANCE.md`,
+  `ECONOMY.md` and `docs/governance/`. No council is seated and no election is
+  scheduled.
+- Economy pages (Transparency, Revenue Model, Live Market Access) now show
+  definitions, provenance lines, term names, expense categories and
+  eligibility checks in Arabic, Russian and Simplified Chinese instead of
+  English, which the five-locale acceptance matrix rejects.
+- Official Openfund Whitepaper v1.0 at `/{locale}/whitepaper`: one
+  anchor-navigated page with twenty Persian and English chapters, a sticky
+  and mobile chapter navigator, copyable chapter links, data-driven
+  architecture and flow diagrams, accessible charts (including an
+  interactive hypothetical scenario) and catalog-derived pricing. Content
+  is managed in new Directus `whitepaper_*` collections with published-only
+  public reads, validated before rendering, and seeded idempotently by
+  `seed_whitepaper_content.mjs`. The footer "Whitepaper · coming soon"
+  placeholder is now the active link.
+- Economy menu (Transparency, Revenue Model, Live Market Access) replaces
+  the single Transparency link. Transparency now reports confirmed sales,
+  refunds, challenge outcomes, payouts, treasury, financial position and
+  verified expenses from operational records; the synthetic sample is gone.
+- Openfund Treasury snapshots: scheduled on-chain balances (60–120 min,
+  default 90) priced only by configured Chainlink feeds, with stale
+  fallback; the address is configuration (`TREASURY_WALLET_ADDRESS`).
+- Brand Ambassador program: reviewed applications, codes only after
+  approval, 10% commission on the referred customer's first confirmed
+  purchase (idempotent, refund/chargeback reversals, recorded payouts) and
+  an ambassador dashboard.
+- Verified Trading Coach program: independent approval, trader linking and
+  qualification, 10% of distributable realized live profit only.
+- Live Market Access control plane: record-based eligibility, explicit-tier
+  management approval, verified-capital gate (≥ $500,000), risk-checked
+  orders and idempotent profit-share settlement. Real execution and
+  transfers remain disabled; only non-monetary sandbox adapters exist.
+- Revenue Model page with cited single-firm research and a scenario
+  calculator kept separate from company data.
+- Release planning accepts an explicitly requested next patch on a manual
+  main-branch batch, while rejecting skipped or reused versions.
+- Stale market depth keeps readable text contrast in the light theme.
+- The document security policy now hashes the served pre-paint script so
+  clean-route recovery and locale direction remain allowed after builds.
+- Terminal Share P&L: a Share action beside Details (open positions) and in
+  Order History (closed positions with a recorded result) opens an
+  Openfund-branded card rendered on a canvas that is also the exported PNG
+  and the native-share file. Open-position values refresh from the live
+  account data; closed positions show the recorded realized P&L.
+- Terminal real-time stability: heartbeat watchdog and immediate reconnect
+  for the Gains price socket, out-of-order mark guard, retryable boot,
+  in-place table row patching with delegated actions, stale marking instead
+  of blanking for marks and the Gains VOB ladder, and no workspace reload on
+  locale changes. Depth remains the Gains virtual order book only.
+- Persian gateway (`/fa/home`): the MADE BY HUMANS badge is removed and
+  phones get readable, stable layout with natural scrolling.
+- Arabic (`ar`, RTL), Russian (`ru`) and Simplified Chinese (`zh-CN`)
+  interface locales with a five-language selector.
+- Wallet connection: the connect button opens an explicit wallet picker
+  (EIP-6963 wallets; generic browser wallet only when none announces
+  itself) instead of connecting the first detected provider. Declined
+  connection, network switch and signature requests show a neutral status;
+  real failures (locked wallet, pending request, unknown network, server
+  unreachable, SIWE domain/nonce/signature errors) name an actionable
+  cause. Perpetual signs in on Arbitrum One in every locale (it used Sepolia
+  for ar/ru/zh-CN). Explicit network-switch and disconnect controls;
+  WalletConnect is offered only with a configured project id.
+- Full content in all five languages: Perpetual and the two-product Home
+  are available in every locale (no language redirects); seeds, public
+  Directus content, the legacy landing and the terminal render in Arabic,
+  Russian and Chinese from reviewed dictionaries loaded per locale, with
+  Directus rows for those languages taking precedence. Untranslated text is
+  reported and fails `npm run test:i18n` and the locale matrix instead of
+  silently showing English. hreflang lists all five locales.
+- Position Details: full labels (a CMS list value no longer collapses to
+  one character per label) and a bidi-safe label/value layout.
+
+- Clean SEO-friendly URLs: the public site now uses browser-history routes at
+  the domain root (`/fa/challenges`, `/en/faq`) instead of
+  `/react/#/fa/challenges`. The `/react` document prefix is permanently
+  redirected (308) and old `#/…` bookmarks are recovered client-side by a
+  pre-paint normalizer (the hash never reaches the server), preserving locale
+  and query parameters. APIs, websockets and static assets are unaffected;
+  cached legacy shells keep loading their `/react/assets/…` files.
+- Branded loading experience: one shared Openfund-mark loader covers the
+  genuine boot window and locale transitions. A pre-paint script sets
+  `lang`/`dir` (and theme) before first paint so a language switch can never
+  show Persian text in an LTR layout (or the reverse); the legacy landing
+  loads its stylesheet before first paint instead of after the CMS fetch.
+  Fast transitions stay loader-free (short display threshold), and backstops
+  guarantee the loader never sticks. Route-driven SEO head: clean canonicals,
+  `fa`/`en`/`x-default` hreflang on public pages, `noindex` on the
+  authenticated product app.- Fix production deploys: GitHub's release download URL returned `504` to
+  automated clients on 2026-11-08, so Render builds of v0.4.2 could not read
+  the published manifest (three attempts failed; production stayed on
+  v0.4.1). `render-build.mjs` and `deploy.mjs` now download release assets
+  through the REST asset endpoint with bounded retries and still verify the
+  manifest's SHA-256 digest. v0.4.2 remains published and immutable; its
+  source cannot be deployed, so the next release supersedes it.
+- Release container image: each stable release also publishes
+  `ghcr.io/algomanlife/openfund:X.Y.Z`, built only from the verified release
+  archive, smoke-tested and attested, with its digest on the GitHub Release
+  ([ADR 0014](docs/decisions/0014-ghcr-release-image.md)). Render deployment
+  is unchanged.
+
+## v0.4.2 — 2026-11-08
+
+Changes since v0.4.1 (`b8389ca`). Publication and deployment status: the
+[GitHub Release](https://github.com/algomanlife/openfund/releases/tag/v0.4.2)
+and the live `/version` endpoint.
+
+
+- Initialize both public pages and the shared terminal from the OS light/dark
+  preference only when the user has not selected a theme. Keep explicit
+  user choices across routes, reloads and later OS changes.
+- Keep the trading iframe and Vela chart synchronized with the root theme.
+  Opera Force Dark Page remains a browser-level override; the user profile
+  needs a per-site exception when that setting recolors the final paint.
+  (PR #51)
+- Prop engine audit fixes: a challenge passes only when the closed profit after
+  settling open positions still meets the target; post-fill risk checks include
+  the opening fee; minimum trading days count fill days; breach settlement
+  finishes positions in closed markets once tradeable; the risk view reports
+  the enforced day-basis daily limit. New `test:engine` suites (31 checks).
+  See the [engine audit](docs/audits/PROP_ENGINE_AUDIT.md) and
+  [ADR 0012](docs/decisions/0012-challenge-pass-settlement-and-trading-days.md).
+  (PR #52)
+- Persian terminal: mirror the header, align text direction and tables, fit
+  the phone header and wallet label, open the wallet menu inside the viewport,
+  and fix the mobile order form (PR #50).
+- Release operations: a published stable release now chains its production
+  deployment (approval required) with prerelease, stale-tag and idempotent
+  retry guards, and rollback uses `rollback=true`
+  ([ADR 0013](docs/decisions/0013-release-driven-production-deployment.md)).
+- Documentation: README rewritten for the current architecture, release
+  pipeline and both production domains (`openfi.cloud`, `openfund.cloud`).
+  Wallet sign-in on a custom domain requires that hostname in
+  `ALLOWED_DOMAINS` on the Render service.
+- No schema change. On the first engine loop after deployment, closed
+  challenge accounts that still hold open positions have them settled at the
+  current mark. The Instant trailing "lock at breakeven" interpretation
+  remains an open product decision (audit F6); behavior is unchanged.
+
+## v0.4.1 — released 2026-11-07
+
+- Move public CMS and other browser configuration to a no-store runtime script,
+  outside the immutable frontend payload. The production CMS origin must be
+  configured and validated; release builds strip public build variables.
+- Resolve Render's official tag through GitHub rather than a checkout-specific
+  Git remote, then compare the rebuilt frontend/backend/schema to the published
+  verified manifest.
+- Include website expansion content in the repeatable Directus bootstrap and
+  resolve esbuild from the frontend lockfile without a manual symlink. Keep
+  administrator credentials in environment variables.
+- Narrow public translation-table reads to published parents; the earlier
+  direct child endpoint exposed draft translations in a disposable test.
+  Correct empty Home singleton detection and test that a rerun preserves edits.
+- Synchronize the embedded terminal's theme state, icon and chart when the
+  outer application changes theme. Follow-up work preserves the shell's theme
+  when a product switch boots a replacement trading iframe.
+
+The v0.4.1 tag is published and deployed.
+
+## v0.3.1 — Prop soft launch: evaluation engine, challenge trading, admin operations (candidate, unreleased)
 
 **New features**
 
