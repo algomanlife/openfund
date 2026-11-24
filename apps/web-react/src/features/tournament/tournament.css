@@ -39,37 +39,126 @@ html[data-theme=light] :is(.tl-hero,.tl-section){--tl-neon-a:#a5127f;--tl-neon-b
 .tl-card h3{font-size:18px;margin-block:12px 8px}
 .tl-card p{color:var(--body);line-height:1.9}
 
-/* podium: 2 · 1 · 3, the first place tallest */
-.tl-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:clamp(8px,2vw,20px);max-inline-size:760px;margin-inline:auto}
+/* podium: 2 · 1 · 3, the first place tallest; neon glow in gold, silver and
+   bronze with subtle scanlines (owner fix 4) */
+.tl-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:clamp(8px,2vw,20px);max-inline-size:760px;margin-inline:auto;padding-block-start:28px}
 .tl-step{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;padding:18px 8px;border-radius:14px 14px 4px 4px;text-align:center;position:relative;overflow:hidden;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--tl-metal) 26%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--tl-metal) 55%,transparent)}
-.tl-step strong{font:700 clamp(18px,3.6vw,32px)/1.2 var(--ds-font-numeric);color:var(--white)}
-.tl-step span{font-size:13px;color:var(--body)}
+  background:linear-gradient(180deg,color-mix(in srgb,var(--tl-metal) 22%,#0a0620),#0a0620);border:1.5px solid var(--tl-metal);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--tl-metal) 30%,transparent),0 0 22px -2px color-mix(in srgb,var(--tl-metal) 70%,transparent),inset 0 0 26px -6px color-mix(in srgb,var(--tl-metal) 60%,transparent)}
+.tl-step::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#ffffff0a 0 1px,transparent 1px 3px)}
+.tl-step strong{font:700 clamp(18px,3.6vw,32px)/1.2 var(--ds-font-numeric);color:#fff;text-shadow:0 0 6px var(--tl-metal),0 0 18px color-mix(in srgb,var(--tl-metal) 70%,transparent)}
+.tl-step span{font-size:13px;color:#e7e3f4}
 .tl-step.is-gold{--tl-metal:#f6d36b;min-block-size:220px}
 .tl-step.is-silver{--tl-metal:#c9d3d6;min-block-size:180px}
 .tl-step.is-bronze{--tl-metal:#e3a06a;min-block-size:150px}
-html[data-theme=light] .tl-step.is-gold{--tl-metal:#a8781e}
-html[data-theme=light] .tl-step.is-silver{--tl-metal:#6b7a7e}
-html[data-theme=light] .tl-step.is-bronze{--tl-metal:#8c5226}
 .tl-cash{position:absolute;inset:0;pointer-events:none}
 .tl-cash i{position:absolute;inset-block-start:-24px;inline-size:26px;block-size:14px;border-radius:2px;opacity:0;
-  background:color-mix(in srgb,var(--mint) 70%,transparent);transform:translateY(0) rotate(-8deg)}
+  background:color-mix(in srgb,var(--mint) 70%,transparent);box-shadow:0 0 8px var(--mint);transform:translateY(0) rotate(-8deg)}
 .tl-cash i:nth-child(1){inset-inline-start:18%}.tl-cash i:nth-child(2){inset-inline-start:48%;animation-delay:-1.1s}.tl-cash i:nth-child(3){inset-inline-start:74%;animation-delay:-2.2s}
 .tl-podium[data-live] .tl-cash i{animation:tl-cash 3.3s linear infinite}
 .tl-podium[data-live] .tl-cash i:nth-child(2){animation-delay:-1.1s}.tl-podium[data-live] .tl-cash i:nth-child(3){animation-delay:-2.2s}
 @keyframes tl-cash{0%{opacity:0;transform:translateY(0) rotate(-8deg)}15%{opacity:.85}85%{opacity:.6}100%{opacity:0;transform:translateY(240px) rotate(14deg)}}
 
-.tl-prize-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;margin-top:28px}
-.tl-ranks4 figure{margin:0;position:relative;border-radius:10px;overflow:hidden}
-.tl-prize-scene{display:block;inline-size:100%;block-size:auto;aspect-ratio:16/9}
+/* prize cards: equal height, no empty areas */
+.tl-prize-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:stretch}
+.tl-prize-grid>.tl-card{display:flex;flex-direction:column;gap:14px;
+  --pw-pink:#ff4fd8;--pw-cyan:#38e1ff;--pw-mint:var(--mint,#82e7bd);
+  background:linear-gradient(180deg,#120a2a,#0a0620);border-color:color-mix(in srgb,var(--pw-cyan) 35%,transparent);color:#f1eefb}
+.tl-prize-grid>.tl-card h3{color:#fff}
+.tl-prize-grid>.tl-card .tl-note{color:#c9c3de;margin:0}
+
+/* the neon prize wall: a sign over a bento grid */
+.pw-wall{margin:0;position:relative;display:grid;gap:12px;padding:16px;border-radius:14px;background:radial-gradient(120% 80% at 50% 0%,#2a0f4a,#0a0620 70%);border:1px solid #ffffff14;overflow:hidden}
+.pw-wall::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#ffffff08 0 1px,transparent 1px 3px)}
+.pw-sign-board{margin:0;text-align:center}
+.pw-sign-board span{display:inline-block;padding:6px 16px;border:2px solid var(--pw-pink);border-radius:12px;font:700 clamp(15px,2.4vw,22px)/1.3 var(--ds-font-latin,'Ubuntu',sans-serif);letter-spacing:.04em;color:#ffe3fa;
+  text-shadow:0 0 4px #fff,0 0 10px var(--pw-pink),0 0 22px var(--pw-pink);box-shadow:0 0 12px var(--pw-pink),inset 0 0 12px color-mix(in srgb,var(--pw-pink) 60%,transparent)}
+:lang(fa) .pw-sign-board span,:lang(ar) .pw-sign-board span{font-family:var(--ds-font-persian,'Dastkhat',sans-serif);letter-spacing:0}
+.pw-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(110px,auto));gap:10px}
+.pw-tile{position:relative;border-radius:10px;background:#0c0722;border:1px solid color-mix(in srgb,var(--pw-cyan) 30%,transparent);box-shadow:inset 0 0 18px -8px var(--pw-cyan);display:grid;place-items:center;overflow:hidden;min-inline-size:0}
+.pw-tile.is-console{grid-row:span 2;border-color:color-mix(in srgb,var(--pw-pink) 40%,transparent);box-shadow:inset 0 0 24px -8px var(--pw-pink)}
+.pw-art{display:block;inline-size:100%;block-size:100%;max-block-size:240px;direction:ltr;unicode-bidi:isolate}
+.pw-tile:not(.is-console) .pw-art{aspect-ratio:5/3}
+/* shared neon strokes */
+.pw-neon-cyan{fill:var(--pw-cyan)}.pw-neon-pink{fill:var(--pw-pink)}
+.pw-console-body{fill:#1b1438;stroke:#cfd4ff;stroke-width:1.5}
+.pw-floor-line{stroke:var(--pw-cyan);stroke-width:1.5;opacity:.6}
+.pw-halo{transform-box:fill-box;transform-origin:center}
+.pw-pad{fill:#1b1438;stroke:var(--pw-cyan);stroke-width:2}
+.pw-dpad{stroke:#cfd4ff;stroke-width:4;stroke-linecap:round;fill:none}
+.pw-button{fill:#2a2350;stroke:var(--pw-pink);stroke-width:1.5}
+.pw-button.b0,.pw-button.b2{stroke:var(--pw-cyan)}
+.pw-pitch{fill:none;stroke:color-mix(in srgb,var(--pw-mint) 55%,transparent);stroke-width:1.2}
+.pw-trail{fill:none;stroke:var(--pw-cyan);stroke-width:2;stroke-linecap:round;stroke-dasharray:2 6;opacity:.7}
+.pw-ball circle{fill:#fff}.pw-ball path{fill:#120a2a}
+.pw-ball{transform:translate(178px,58px)}
+.pw-skyline rect{fill:#1d1340;stroke:#3a2a70;stroke-width:.6}
+.pw-sign{fill:var(--pw-pink)}.pw-sign.s1{fill:var(--pw-cyan)}.pw-sign.s2{fill:var(--pw-mint)}
+.pw-street{stroke:#3a2a70;stroke-width:1}
+.pw-beam{fill:#fff6c8;opacity:.35}.pw-carbody{fill:#cfd4ff}
+.pw-car{transform:translate(120px,0)}
+.pw-axis{stroke:#3a2a70;stroke-width:1}
+.pw-candle path{stroke-width:1.5}.pw-candle.is-up path{stroke:var(--pw-mint)}.pw-candle.is-down path{stroke:#ff5a7a}
+.pw-candle.is-up rect{fill:var(--pw-mint)}.pw-candle.is-down rect{fill:#ff5a7a}
+.pw-candle{transform-box:fill-box;transform-origin:50% 100%}
+.pw-trend{fill:none;stroke:#fff;stroke-width:1.5;stroke-linecap:round;opacity:.8}
+.pw-card{fill:#160d33;stroke:var(--pw-mint);stroke-width:1.5}
+.pw-card-brand{font:700 13px var(--ds-font-latin,'Ubuntu',sans-serif);fill:#fff}
+.pw-card-amount{font:700 24px var(--ds-font-numeric,'Ubuntu',sans-serif);fill:#eafff5}
+.pw-art :is(.pw-neon-cyan,.pw-neon-pink,.pw-sign,.pw-button,.pw-card-amount,.pw-candle rect,.pw-trend){filter:drop-shadow(0 0 3px currentColor)}
+.pw-card-amount{filter:drop-shadow(0 0 4px var(--pw-mint)) drop-shadow(0 0 10px var(--pw-mint))}
 .tl-illustrative{position:absolute;inset-block-end:8px;inset-inline-end:10px;font-size:11px;color:#f1f3ef;background:#0a0620b3;padding:2px 8px;border-radius:999px}
-.tl-prize-scene .tl-float{transform-box:fill-box;transform-origin:center}
-.tl-ranks4[data-live] .tl-float{animation:tl-float 4s ease-in-out infinite alternate}
-.tl-ranks4[data-live] .tl-float.is-controller{animation-delay:-1.3s}
-.tl-ranks4[data-live] .tl-float.is-case-a{animation-delay:-2.1s}
-.tl-ranks4[data-live] .tl-float.is-case-b{animation-delay:-3s}
-.tl-ranks4[data-live] .tl-windows{animation:tl-pulse 3s ease-in-out infinite alternate}
-@keyframes tl-float{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+.pw-wall .tl-illustrative{z-index:1}
+/* the account card spans two columns so the bento grid has no empty cell */
+.pw-tile.is-account{grid-column:span 2}
+.pw-tile.is-account .pw-art{aspect-ratio:auto;max-block-size:150px}
+/* iconed prize list */
+.pw-prizes{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pw-prizes li{display:flex;align-items:center;gap:10px;min-block-size:44px;padding:8px 12px;border-radius:10px;background:#ffffff08;border:1px solid #ffffff14;font-weight:600}
+.pw-prizes svg{flex:none;fill:none;stroke:var(--pw-cyan);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 3px var(--pw-cyan))}
+
+/* ranks 11–100: a neon coupon with a perforated edge; the stub tears off */
+.tl-ranks11{justify-content:space-between}
+.pw-coupon{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 56px;min-block-size:170px;border-radius:14px;flex:1;
+  background:linear-gradient(135deg,#2a0f4a,#120a2a);border:2px solid var(--pw-pink);box-shadow:0 0 16px -2px var(--pw-pink),inset 0 0 22px -8px var(--pw-pink)}
+.pw-coupon-main{display:grid;place-content:center;justify-items:center;gap:4px;padding:16px}
+.pw-coupon-main b{font:800 clamp(52px,7vw,76px)/1 var(--ds-font-numeric,'Ubuntu',sans-serif);color:#fff;text-shadow:0 0 6px #fff,0 0 16px var(--pw-pink),0 0 32px var(--pw-pink)}
+.pw-coupon-main span{font-size:14px;color:#ffd9f6;letter-spacing:.02em}
+.pw-coupon-stub{position:relative;display:grid;align-content:center;justify-items:center;gap:10px;border-inline-start:2px dashed color-mix(in srgb,var(--pw-pink) 70%,transparent);transform-origin:0 0}
+[dir=rtl] .pw-coupon-stub{transform-origin:100% 0}
+.pw-coupon-stub i{inline-size:12px;block-size:12px;border-radius:50%;background:#0a0620;border:1.5px solid var(--pw-cyan);box-shadow:0 0 6px var(--pw-cyan)}
+.tl-ranks11 h4{margin:0;font-size:14px;color:#fff}
+.pw-terms{margin:0;padding-inline-start:18px;display:grid;gap:6px;color:#e7e3f4;line-height:1.7}
+.pw-terms li::marker{color:var(--pw-pink)}
+
+/* motion: only while the card is live; transform/opacity only */
+.tl-ranks4[data-live] .pw-sign-board span{animation:pw-flicker 2.6s steps(1,end) 1 both}
+.tl-ranks4[data-live] .pw-halo{animation:pw-breathe 4s ease-in-out infinite alternate}
+.tl-ranks4[data-live] .pw-button{animation:pw-blink 2.4s steps(1,end) infinite;opacity:.45}
+.tl-ranks4[data-live] .pw-button.b1{animation-delay:.6s}.tl-ranks4[data-live] .pw-button.b2{animation-delay:1.2s}.tl-ranks4[data-live] .pw-button.b3{animation-delay:1.8s}
+.tl-ranks4[data-live] .pw-ball{animation:pw-shot 3.2s cubic-bezier(.3,.1,.3,1) infinite}
+.tl-ranks4[data-live] .pw-trail{animation:pw-trail 3.2s ease-out infinite}
+.tl-ranks4[data-live] .pw-sign.s0{animation:pw-buzz 3.7s steps(1,end) infinite}.tl-ranks4[data-live] .pw-sign.s2{animation:pw-buzz 5.3s steps(1,end) -1.4s infinite}
+.tl-ranks4[data-live] .pw-car{animation:pw-drive 5s linear infinite}
+.tl-ranks4[data-live] .pw-candle{animation:pw-rise 4.8s ease-out infinite}
+.tl-ranks4[data-live] .pw-candle.c1{animation-delay:.12s}.tl-ranks4[data-live] .pw-candle.c2{animation-delay:.24s}.tl-ranks4[data-live] .pw-candle.c3{animation-delay:.36s}
+.tl-ranks4[data-live] .pw-candle.c4{animation-delay:.48s}.tl-ranks4[data-live] .pw-candle.c5{animation-delay:.6s}.tl-ranks4[data-live] .pw-candle.c6{animation-delay:.72s}.tl-ranks4[data-live] .pw-candle.c7{animation-delay:.84s}
+.tl-ranks4[data-live] .pw-card-amount{animation:pw-breathe 2.8s ease-in-out infinite alternate}
+.tl-prize-grid:has(.tl-ranks4[data-live]) .pw-coupon-stub{animation:pw-tear 5s ease-in-out infinite}
+@keyframes pw-flicker{0%{opacity:.15}8%{opacity:.9}12%{opacity:.2}20%{opacity:1}26%{opacity:.35}30%,100%{opacity:1}}
+@keyframes pw-breathe{from{opacity:.75}to{opacity:1}}
+@keyframes pw-blink{0%{opacity:1}25%,100%{opacity:.45}}
+@keyframes pw-shot{0%{transform:translate(40px,92px) scale(.9);opacity:0}8%{opacity:1}55%{transform:translate(110px,40px) scale(.75)}80%{transform:translate(178px,58px) scale(.7);opacity:1}100%{transform:translate(178px,58px) scale(.7);opacity:0}}
+@keyframes pw-trail{0%,10%{opacity:0}40%,75%{opacity:.75}100%{opacity:0}}
+@keyframes pw-buzz{0%,100%{opacity:1}46%{opacity:.25}48%{opacity:1}50%{opacity:.35}52%{opacity:1}}
+@keyframes pw-drive{from{transform:translate(-60px,0)}to{transform:translate(240px,0)}}
+@keyframes pw-rise{0%{transform:scaleY(0);opacity:0}30%{transform:scaleY(1);opacity:1}85%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+@keyframes pw-tear{0%,55%{transform:none;opacity:1}70%{transform:translate(10px,14px) rotate(9deg);opacity:.85}82%{transform:translate(16px,40px) rotate(14deg);opacity:0}83%{transform:none;opacity:0}100%{transform:none;opacity:1}}
+[dir=rtl] .tl-prize-grid:has(.tl-ranks4[data-live]) .pw-coupon-stub{animation-name:pw-tear-rtl}
+@keyframes pw-tear-rtl{0%,55%{transform:none;opacity:1}70%{transform:translate(-10px,14px) rotate(-9deg);opacity:.85}82%{transform:translate(-16px,40px) rotate(-14deg);opacity:0}83%{transform:none;opacity:0}100%{transform:none;opacity:1}}
+/* phones and tablets: two columns, then one; tiles keep a legible size */
+@media (max-width:900px){.pw-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none}.pw-tile.is-console{grid-row:span 2}}
+@media (max-width:480px){.pw-grid{grid-template-columns:minmax(0,1fr)}.pw-tile.is-console{grid-row:auto}.pw-tile.is-account{grid-column:auto}.pw-tile.is-console .pw-art{max-block-size:200px}.pw-prizes{grid-template-columns:minmax(0,1fr)}.pw-tile:not(.is-console) .pw-art{max-block-size:200px}}
 
 /* rule gauges */
 .tl-gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
@@ -136,4 +225,6 @@ html[data-theme=light] .tl-error{color:#a8321f}
   .tl-timeline{grid-template-columns:minmax(0,1fr)}
   .tl-badges{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}.tl-badge{inline-size:80px;block-size:80px}
 }
-@media (prefers-reduced-motion:reduce){.tl-hero *,.tl-section *{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.tl-hero *,.tl-section *{animation:none!important}
+  /* the prize wall stays lit and steady */
+  .tl-ranks4[data-live] .pw-button,.tl-ranks4 .pw-button{opacity:1}}

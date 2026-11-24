@@ -382,6 +382,12 @@ jobs:
           TEST_FRONTEND_URL: http://localhost:8080
           OUTPUT_DIR: output/playwright/tournament
         run: npm run test:browser:tournament
+      - name: Premium League neon prize wall (bento tiles, prize list, coupon, equal cards, reflow, live-only motion, reduced motion, recordings)
+        working-directory: .
+        env:
+          TEST_FRONTEND_URL: http://localhost:8080
+          OUTPUT_DIR: output/playwright/prize-wall
+        run: npm run test:browser:prize-wall
       - name: Site search (palette, shortcuts, ARIA, Arabic and Persian, five locales, themes, results page, terminal, reduced motion)
         working-directory: .
         env:
@@ -604,6 +610,7 @@ jobs:
             output/playwright/migration/
             output/playwright/migration-flight/
             output/playwright/tournament/
+            output/playwright/prize-wall/
             output/playwright/site-search/
             output/playwright/header-controls/
             output/playwright/terminal-funding/

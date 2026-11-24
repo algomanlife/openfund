@@ -4388,5 +4388,14 @@
   "Yes. Every bounty payout is recorded as an expense in the “bug bounty” category of the public economy figures.": "نعم. تُسجَّل كل مكافأة مدفوعة كمصروف في فئة «مكافأة الثغرات» ضمن الأرقام الاقتصادية العامة.",
   "Third-party services: Gains, LI.FI, DePay, wallets, upstream Directus and our infrastructure services (our own configuration of them is in scope)": "خدمات الأطراف الثالثة: Gains وLI.FI وDePay والمحافظ وDirectus الأصلي وخدمات البنية التحتية لدينا (إعداداتنا الخاصة لها ضمن النطاق)",
   "Desktop app for macOS, Windows and Linux; mobile coming soon.": "تطبيق سطح المكتب لأنظمة macOS وWindows وLinux؛ تطبيق الهاتف قريبًا.",
-  "Platforms": "المنصات"
+  "Platforms": "المنصات",
+  "$50,000 account": "حساب بقيمة 50,000 دولار",
+  "Coupon terms": "شروط القسيمة",
+  "For one challenge purchase": "لشراء تحدٍّ واحد",
+  "OpenFi Premium League": "دوري OpenFi الممتاز",
+  "Prizes for ranks 4 to 10": "جوائز المراكز من 4 إلى 10",
+  "Single use, bound to your wallet": "لاستخدام واحد، ومرتبطة بمحفظتك",
+  "The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.": "الحساب تحدٍّ قياسي مجاني بقيمة 50 ألف دولار على محفظتك. قد يُدفع ما يعادل نقدًا لأي جائزة يتعذّر شحنها.",
+  "Valid for 90 days from the award": "صالحة لمدة 90 يومًا من تاريخ المنح",
+  "off one challenge": "خصم على تحدٍّ واحد"
 }
