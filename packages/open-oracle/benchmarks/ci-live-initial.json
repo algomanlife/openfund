@@ -1,0 +1,23 @@
+{
+  "directory": "packages/open-oracle/reports/live",
+  "elapsedMs": 71950,
+  "inventoryStatus": {
+    "gains": {
+      "complete": true,
+      "collectedAt": 1795554017877,
+      "markets": 496
+    },
+    "gmx": {
+      "complete": true,
+      "collectedAt": 1795554018311,
+      "markets": 4
+    },
+    "hyperliquid": {
+      "complete": true,
+      "collectedAt": 1795554019986,
+      "markets": 927
+    }
+  },
+  "accepted": 6379,
+  "acceptanceNote": "Initial remote run. GMX four-entry inventory exposed an envelope parsing defect; do not treat this capture as complete GMX coverage. Follow-up parser correction and revalidation required."
+}

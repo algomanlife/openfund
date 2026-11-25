@@ -1,0 +1,142 @@
+{
+  "directory": "packages/open-oracle/reports/live",
+  "elapsedMs": 67185,
+  "inventoryStatus": {
+    "gains": {
+      "complete": true,
+      "collectedAt": 1795554277332,
+      "markets": 496
+    },
+    "gmx": {
+      "complete": true,
+      "collectedAt": 1795554277503,
+      "markets": 305
+    },
+    "hyperliquid": {
+      "complete": true,
+      "collectedAt": 1795554280096,
+      "markets": 927
+    }
+  },
+  "historicalChecks": {
+    "gains": {
+      "status": "SUCCESS",
+      "persisted": 10,
+      "classification": "PROVIDER_REFERENCE"
+    },
+    "hyperliquid": {
+      "status": "SUCCESS",
+      "persisted": 11,
+      "classification": "PROVIDER_REFERENCE"
+    },
+    "gmx": {
+      "status": "SUCCESS",
+      "persisted": 3,
+      "classification": "PROVIDER_REFERENCE"
+    }
+  },
+  "sourceHealth": [
+    {
+      "source": "gains",
+      "inventoryComplete": true,
+      "marketCount": 496,
+      "capabilities": {
+        "discovery": true,
+        "prices": true,
+        "streaming": "BOUNDED_REST_POLL",
+        "historical": "PROVIDER_REFERENCE_ONLY",
+        "oracleHistory": false
+      },
+      "verifiedIdentities": 496,
+      "schema": null,
+      "errors": [
+        {
+          "code": "INVALID_PRICE",
+          "sourceMarketId": "CHEEMS/USD",
+          "at": 1795554324633
+        }
+      ],
+      "transport": {
+        "requests": 11,
+        "failures": 0,
+        "rateLimits": 0,
+        "bytes": 770527
+      }
+    },
+    {
+      "source": "hyperliquid",
+      "inventoryComplete": true,
+      "marketCount": 927,
+      "capabilities": {
+        "discovery": true,
+        "prices": true,
+        "streaming": "BOUNDED_REST_POLL",
+        "historical": "PROVIDER_REFERENCE_ONLY",
+        "oracleHistory": false
+      },
+      "verifiedIdentities": 235,
+      "schema": null,
+      "errors": [],
+      "transport": {
+        "requests": 113,
+        "failures": 0,
+        "rateLimits": 0,
+        "bytes": 2333228
+      }
+    },
+    {
+      "source": "gmx",
+      "inventoryComplete": true,
+      "marketCount": 305,
+      "capabilities": {
+        "discovery": true,
+        "prices": true,
+        "streaming": "BOUNDED_REST_POLL",
+        "historical": "PROVIDER_REFERENCE_ONLY",
+        "oracleHistory": false,
+        "priceEncoding": "GMX_API_30_DECIMALS_PER_WHOLE_TOKEN"
+      },
+      "verifiedIdentities": 297,
+      "schema": [
+        {
+          "network": "arbitrum",
+          "tokenEnvelope": [
+            "tokens"
+          ],
+          "marketEnvelope": [
+            "markets"
+          ]
+        },
+        {
+          "network": "avalanche",
+          "tokenEnvelope": [
+            "tokens"
+          ],
+          "marketEnvelope": [
+            "markets"
+          ]
+        }
+      ],
+      "errors": [],
+      "transport": {
+        "requests": 23,
+        "failures": 0,
+        "rateLimits": 0,
+        "bytes": 230738
+      }
+    }
+  ],
+  "sampleCounts": {
+    "gains": 3397,
+    "gmx": 2592,
+    "hyperliquid": 5139
+  },
+  "accepted": 10117,
+  "evidence": {
+    "run": "https://github.com/algomanlife/openfund/actions/runs/45487308364",
+    "implementationCommit": "15c0b1c9b1944b7396bce2fa59b3c69f7a150b2a",
+    "job": 138776008141,
+    "collectedAt": "2026-11-24T21:05:43Z",
+    "classification": "Public inventory/price/history conformance window; cross-source economic equivalence and absolute accuracy not established."
+  }
+}

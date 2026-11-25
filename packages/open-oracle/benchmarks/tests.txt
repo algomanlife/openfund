@@ -1,0 +1,67 @@
+
+> @openfund/open-oracle@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ Gains inventory includes closed non-crypto markets; index is distinct from mark (0.780875ms)
+✔ Hyperliquid discovers default, every builder dex, and spot; no fabricated oracle timestamps (0.413292ms)
+✔ GMX keeps network and market/token identity; midpoint uses the whole-token 30-decimal API (0.450875ms)
+✔ malformed schemas fail closed; missing reference index never becomes mark (0.341333ms)
+✔ rate limits honor Retry-After and have bounded retries (9.591166ms)
+✔ network response limits and invalid JSON are enforced (3.913ms)
+✔ poll stream recovers after disconnect and releases on abort (1002.792458ms)
+✔ partial multi-network discovery preserves every successfully discovered GMX market (0.663542ms)
+✔ partial Hyperliquid discovery preserves perp metadata when spot discovery fails (0.412542ms)
+✔ GMX unwraps real catalog envelopes and explicit address-field identities (0.584584ms)
+✔ all source availability combinations: 0 (0.802125ms)
+✔ all source availability combinations: 1 (0.212125ms)
+✔ all source availability combinations: 2 (0.090125ms)
+✔ all source availability combinations: 3 (4.849459ms)
+✔ all source availability combinations: 4 (0.085209ms)
+✔ all source availability combinations: 5 (0.117208ms)
+✔ all source availability combinations: 6 (0.093708ms)
+✔ all source availability combinations: 7 (0.260959ms)
+✔ 40/30/30 example and automatic dual renormalization (0.506958ms)
+✔ divergent dual prices retain provenance and only an explicitly stale prior (0.186166ms)
+✔ unverified independence cannot authorize exclusion of a hard outlier (0.228708ms)
+✔ independent agreeing pair permits hard outlier exclusion and recalculation (0.30425ms)
+✔ invalid price: 0 (0.056458ms)
+✔ invalid price: -1 (0.033958ms)
+✔ invalid price: NaN (0.036167ms)
+✔ invalid price: Infinity (0.030833ms)
+✔ invalid price: 1e99 (0.027417ms)
+✔ invalid price: 0x40 (0.028208ms)
+✔ invalid price: 9999999999999999999999999 (0.05825ms)
+✔ eligibility: stale (0.045625ms)
+✔ eligibility: future (0.022958ms)
+✔ eligibility: futureReceipt (0.027292ms)
+✔ eligibility: wrongMarket (0.019417ms)
+✔ eligibility: invalidQuote (0.017209ms)
+✔ eligibility: wrongSemantics (0.016833ms)
+✔ eligibility: unverifiedMapping (0.016708ms)
+✔ eligibility: timestampMissing (0.02525ms)
+✔ eligibility: receiptOnly (0.022458ms)
+✔ freshness half-life, alignment, zero weights, closures, reliability and dependency adjustment (0.283584ms)
+✔ integer log and exponential round trips across scales (0.223708ms)
+✔ seeded property tests: convexity, exact weight sum, determinism and equal-price identity (249.842625ms)
+✔ per-source publication policies and clock-skew validation (0.153416ms)
+✔ registry retains ambiguous, synthetic, wrapped and depegged quote identities (5.535875ms)
+✔ explicit equivalence requires matching quote and unit, with registry capacity enforced (0.244042ms)
+✔ rolling health handles cold start, missing observations and market closures (0.140708ms)
+✔ event ingestion deduplicates, bounds queues, handles out of order and future receipts (0.890333ms)
+✔ deterministic causal replay excludes late-known prices and does not fabricate candle observations (1.19875ms)
+✔ source loss, stale reference, recovery and closed/reopened sessions (0.853ms)
+✔ candle OHLC, calendar buckets, gaps, late finalization and explicit revisions (0.774292ms)
+✔ append-only history survives reopen, classifies provider history and rejects tampering (15.389917ms)
+✔ memory bounds remain enforced across long event/candle streams (26.798166ms)
+✔ read-only HTTP handlers and SSE publish/cleanup without socket permissions (0.895208ms)
+✔ persisted raw/health history replays exactly and backfill stays provider-reference (57.853417ms)
+✔ server shutdown releases subscribers before delayed TCP close events (0.522084ms)
+✔ evidence-bearing source units and multipliers normalize before multi-source pricing (0.292ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 55
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1163.220584

@@ -425,6 +425,37 @@
         "Glyph metrics may change between versions and shift RTL layouts.",
         "The OFL forbids selling the fonts on their own and requires the licence text to ship with them."
       ]
+    },
+    {
+      "id": "open-oracle-data",
+      "name": "Open Oracle research data providers and compiler",
+      "category": "standalone-research",
+      "upstream": "https://docs.gains.trade/ ; https://hyperliquid.gitbook.io/hyperliquid-docs/ ; https://docs.gmx.io/ ; https://github.com/microsoft/TypeScript",
+      "license": "Provider data and redistribution rights unverified; TypeScript Apache-2.0 (development only)",
+      "version": "GAACP v1; TypeScript 6.0.3",
+      "pins": [
+        {
+          "file": "packages/open-oracle/package.json",
+          "pattern": "\"typescript\": \"6\\.0\\.3\""
+        }
+      ],
+      "locations": [
+        "packages/open-oracle/"
+      ],
+      "vendoring": "No SDK or provider source vendored; public HTTP reads only. Package-local compiler development dependency.",
+      "localModifications": "Original isolated protocol implementation; no modifications to provider services or production integrations.",
+      "usedAtRuntime": false,
+      "tests": [
+        "npm --prefix packages/open-oracle test",
+        "npm --prefix packages/open-oracle run typecheck",
+        "npm --prefix packages/open-oracle run validate:live"
+      ],
+      "updateProcedure": "Review official price semantics, timestamps, schemas and terms; rerun deterministic tests and public-data conformance before changing configuration versions.",
+      "risks": [
+        "Live provider access was unavailable during implementation.",
+        "Unverified economic equivalences remain source-scoped.",
+        "External redistribution is disabled until usage rights are verified."
+      ]
     }
   ]
 }

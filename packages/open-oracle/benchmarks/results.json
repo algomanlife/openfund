@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-11-24T21:10:21.741Z",
+  "retainedHeap": [
+    {
+      "round": 0,
+      "heapUsed": 38284368,
+      "retainedObservations": 256,
+      "retainedCandles": 5
+    },
+    {
+      "round": 1,
+      "heapUsed": 38303224,
+      "retainedObservations": 256,
+      "retainedCandles": 7
+    },
+    {
+      "round": 2,
+      "heapUsed": 38304720,
+      "retainedObservations": 256,
+      "retainedCandles": 9
+    },
+    {
+      "round": 3,
+      "heapUsed": 38311992,
+      "retainedObservations": 256,
+      "retainedCandles": 11
+    },
+    {
+      "round": 4,
+      "heapUsed": 38222752,
+      "retainedObservations": 256,
+      "retainedCandles": 13
+    }
+  ],
+  "environment": {
+    "node": "v26.13.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M4"
+  },
+  "workload": "Synthetic offline workload; not provider throughput, network latency, production capacity or absolute price accuracy.",
+  "results": [
+    {
+      "name": "synthetic_inventory_registration",
+      "count": 10000,
+      "durationMs": 14.518875000000008,
+      "operationsPerSecond": 688758.5987206305,
+      "heapDeltaBytes": 10087440,
+      "rssBytes": 68458352,
+      "cpuUserMs": 21.621,
+      "cpuSystemMs": 1.957
+    },
+    {
+      "name": "triple_composite",
+      "count": 20000,
+      "durationMs": 1344.601542,
+      "operationsPerSecond": 14874.29500508486,
+      "heapDeltaBytes": 1687272,
+      "rssBytes": 81124072,
+      "cpuUserMs": 1425.684,
+      "cpuSystemMs": 5.086
+    },
+    {
+      "name": "normalization",
+      "count": 100000,
+      "durationMs": 6.836540999999897,
+      "operationsPerSecond": 14627280.082135323,
+      "heapDeltaBytes": 6806616,
+      "rssBytes": 81238760,
+      "cpuUserMs": 12.978,
+      "cpuSystemMs": 0.12
+    },
+    {
+      "name": "three_timeframe_candle_generation",
+      "count": 20000,
+      "durationMs": 325.9117919999999,
+      "operationsPerSecond": 61366.29754102302,
+      "heapDeltaBytes": 3788800,
+      "rssBytes": 81517384,
+      "cpuUserMs": 364.767,
+      "cpuSystemMs": 2.199
+    },
+    {
+      "name": "causal_replay",
+      "count": 3000,
+      "durationMs": 58.173500000000104,
+      "operationsPerSecond": 51569.87288026326,
+      "heapDeltaBytes": 17299576,
+      "rssBytes": 102967328,
+      "cpuUserMs": 66.732,
+      "cpuSystemMs": 2.442
+    },
+    {
+      "name": "10000_single_source_markets_batch_evaluation",
+      "count": 10000,
+      "durationMs": 139.470458,
+      "operationsPerSecond": 71699.7717179648,
+      "heapDeltaBytes": 36701392,
+      "rssBytes": 158827896,
+      "cpuUserMs": 178.297,
+      "cpuSystemMs": 5.474
+    }
+  ]
+}

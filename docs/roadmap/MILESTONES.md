@@ -143,3 +143,13 @@ history. Depends on the current Prop engine, registered test wallets and a
 disposable GLOBAL runtime. Owner acceptance includes checkout, both 1%
 evaluation passes, simulated settlement, financial isolation, regional
 projection and archiving. [Procedure](../payments/CONTROLLED_CHALLENGES.md)
+
+## Open Oracle standalone acceptance
+
+**In Progress:** independently executable read-only multi-provider discovery,
+GAACP pricing, native candles, confidence, history and replay. Dependencies are
+public provider access, verified economic mappings and provider usage terms.
+Acceptance requires a complete live union inventory, representative-category
+conformance, socket and regression checks, measured live calibration and review.
+Production terminal integration is a separate future authorization.
+[Evidence](../research/OPEN_ORACLE_VALIDATION.md).

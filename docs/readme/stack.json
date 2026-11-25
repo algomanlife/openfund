@@ -45,6 +45,23 @@
     { "layer": "Typography", "items": [
       { "name": "Ubuntu", "version": "Latin", "logo": "ubuntu", "color": "E95420" },
       { "name": "Dastkhat", "version": "Persian/Arabic", "logo": "googlefonts", "color": "82E7BD" }
-    ] }
+    ] },
+    {
+      "layer": "Standalone oracle research",
+      "items": [
+        {
+          "name": "Open Oracle",
+          "version": "GAACP v1",
+          "logo": "typescript",
+          "color": "82E7BD"
+        },
+        {
+          "name": "GMX",
+          "version": "public API",
+          "logo": "ethereum",
+          "color": "82E7BD"
+        }
+      ]
+    }
   ]
 }

@@ -1,0 +1,56 @@
+{
+  "checks": {
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "deterministicTests": {
+      "passed": 55,
+      "failed": 0
+    },
+    "socketIntegration": {
+      "result": "BLOCKED",
+      "error": "listen EPERM 127.0.0.1"
+    },
+    "livePublicData": {
+      "result": "BLOCKED",
+      "providers": [
+        "gains",
+        "hyperliquid",
+        "gmx"
+      ],
+      "error": "NETWORK",
+      "acceptedObservations": 0
+    },
+    "readmeStructure": "PASS: 18 sections; 165 images; 339 links",
+    "statusTests": "PASS: 9 tests",
+    "blueprint": "PASS",
+    "requiredDocumentation": "PASS",
+    "upstreamRegistry": "PASS: 15 entries",
+    "licenseInventory": "PASS",
+    "englishLanguage": "PASS",
+    "fullDocsCheck": "BLOCKED: stale unrelated cached assets in partial checkout",
+    "fullApplicationRegressions": "NOT ESTABLISHED: incomplete checkout and dependencies",
+    "dependencyAudit": "BLOCKED: ENOTFOUND registry.npmjs.org; runtime dependency set is empty",
+    "firstRemoteOracleCI": "52 deterministic tests, typecheck and lint passed; real socket exposed SSE cleanup race, now fixed with regression; rerun pending",
+    "remoteOracleCI": "Implementation run 45487308367: 54 deterministic tests plus real socket, typecheck, lint and full audit passed",
+    "remoteLiveInitial": "Gains 496 and Hyperliquid 927 discovered; GMX wrapper count 4 exposed catalog parsing defect. Not accepted as complete coverage; parser corrected and rerun required.",
+    "remoteValidatedPublicRun": {
+      "run": 45487308364,
+      "result": "SUCCESS",
+      "implementationCommit": "15c0b1c9b1944b7396bce2fa59b3c69f7a150b2a",
+      "gainsInventory": 496,
+      "hyperliquidInventory": 927,
+      "gmxInventory": 305,
+      "acceptedDeduplicatedEvents": 10117,
+      "elapsedMs": 67185,
+      "historicalBars": {
+        "gains": 10,
+        "hyperliquid": 11,
+        "gmx": 3
+      }
+    },
+    "finalNormalizationFollowUp": "Evidenced source-unit multipliers and raw/normalized price provenance; 55 local tests pass; final CI tracked in PR #223"
+  },
+  "productionIntegration": false,
+  "merged": false,
+  "deployed": false
+}

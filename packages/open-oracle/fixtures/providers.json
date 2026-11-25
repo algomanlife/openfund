@@ -1,0 +1,18 @@
+{
+  "provenance": "Deterministic synthetic contract fixtures based on documented shapes. Not captured live market data.",
+  "gains": {
+    "markets": {"data": [{"symbol": "BTC/USD", "base": "BTC", "quote": "USD", "category": "CRYPTO", "isOpen": true}, {"symbol": "EUR/USD", "base": "EUR", "quote": "USD", "category": "FOREX", "isOpen": false}]},
+    "prices": {"data": [{"market": "BTC/USD", "index": "100", "mark": "100.01", "updatedAt": 1795500000000}]}
+  },
+  "hyperliquid": {
+    "dexs": [null, {"name": "xyz"}],
+    "main": [{"universe": [{"name": "BTC", "szDecimals": 5}]}, [{"oraclePx": "100", "markPx": "100.02", "midPx": "100.01", "dayNtlVlm": "12345", "funding": "0.00001", "openInterest": "55"}]],
+    "builder": [{"universe": [{"name": "xyz:GOLD", "szDecimals": 3}]}, [{"oraclePx": "2500", "markPx": "2501"}]],
+    "spot": {"universe": [{"name": "@0", "tokens": [1, 0]}], "tokens": [{"index": 0, "name": "USDC"}, {"index": 1, "name": "TOKEN"}]}
+  },
+  "gmx": {
+    "tokens": [{"address": "0xtesteth", "symbol": "ETH", "decimals": 18}],
+    "markets": [{"marketToken": "0xtestmarket", "indexToken": "0xtesteth"}],
+    "prices": {"originTs": 1795500000000, "prices": {"0xtesteth": {"minPrice": "99000000000000000000000000000000", "maxPrice": "101000000000000000000000000000000"}}}
+  }
+}

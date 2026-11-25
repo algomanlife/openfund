@@ -24,6 +24,7 @@ The process for changing any of these is in [Dependency governance](../developme
 | Repository tooling (Playwright, markdownlint, mermaid, jsdom, js-yaml) | see package.json (playwright is range-pinned; CI caches browsers per lockfile) | MIT/Apache-2.0 family | no | package.json |
 | Open Trade desktop runtime and packager | Electron 45.3.2; electron-builder 26.18.0; WalletConnect ethereum-provider 2.26.0 | Electron MIT | yes | apps/open-trade/ |
 | Dastkhat font (Persian UI face) and Dastkhat Arabic | 1.210 | SIL OFL 1.1, no Reserved Font Name | yes | apps/web-react/public/assets/fonts/dastkhat |
+| Open Oracle research data providers and compiler | GAACP v1; TypeScript 6.0.3 | Provider data and redistribution rights unverified | no | packages/open-oracle/ |
 
 ## Details
 
@@ -214,3 +215,16 @@ The process for changing any of these is in [Dependency governance](../developme
 - **Tests:** npm run test:web (apps/web-react/test/typography.test.mjs); npm run test:browser:typography
 - **Update procedure:** Pick a reviewed upstream tag or commit, copy the WOFF2 and licence files unmodified, update SOURCE.json (commit, hashes), THIRD_PARTY_NOTICES.md and docs/legal/LICENSING.md, then run the typography unit and browser tests and refresh the typography screenshots.
 - **Risks:** Glyph metrics may change between versions and shift RTL layouts. The OFL forbids selling the fonts on their own and requires the licence text to ship with them.
+
+### Open Oracle research data providers and compiler
+
+- **Upstream:** https://docs.gains.trade/ ; https://hyperliquid.gitbook.io/hyperliquid-docs/ ; https://docs.gmx.io/ ; https://github.com/microsoft/TypeScript
+- **License:** Provider data and redistribution rights unverified; TypeScript Apache-2.0 (development only)
+- **Pinned version:** GAACP v1; TypeScript 6.0.3
+- **Where:** packages/open-oracle/
+- **Vendoring method:** No SDK or provider source vendored; public HTTP reads only. Package-local compiler development dependency.
+- **Local Openfund modifications:** Original isolated protocol implementation; no modifications to provider services or production integrations.
+- **Used by the running application:** no
+- **Tests:** npm --prefix packages/open-oracle test; npm --prefix packages/open-oracle run typecheck; npm --prefix packages/open-oracle run validate:live
+- **Update procedure:** Review official price semantics, timestamps, schemas and terms; rerun deterministic tests and public-data conformance before changing configuration versions.
+- **Risks:** Live provider access was unavailable during implementation. Unverified economic equivalences remain source-scoped. External redistribution is disabled until usage rights are verified.
