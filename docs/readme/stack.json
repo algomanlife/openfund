@@ -47,11 +47,11 @@
       { "name": "Dastkhat", "version": "Persian/Arabic", "logo": "googlefonts", "color": "82E7BD" }
     ] },
     {
-      "layer": "Standalone oracle research",
+      "layer": "Pricing (Open Oracle)",
       "items": [
         {
           "name": "Open Oracle",
-          "version": "GAACP v1",
+          "version": "GAACP v1 service",
           "logo": "typescript",
           "color": "82E7BD"
         },

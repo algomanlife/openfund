@@ -1,6 +1,6 @@
-/* Platform flow motion: three glass orbs (Gains, Hyperliquid, GMX) replace
-   the former static Gains mark at the end of the challenges-page platform
-   flow. Decorative presentation only — no data source or integration.
+/* Platform flow motion: three glass orbs (Gains, Hyperliquid, GMX), the
+   three Open Oracle price sources (ADR 0059), at the end of the
+   challenges-page platform flow. Each orb links to its provider.
    Motion uses transform/opacity only (compositor-friendly); the logos
    themselves never rotate or distort. Reduced motion shows the same
    composition, static. */
@@ -49,7 +49,7 @@
 .platform-flow .orb-gmx img { width: 56%; }
 /* the shared hover lift applies to the whole orb, not the logo alone */
 .platform-flow .platform-orb:hover img { transform: none; }
-.platform-flow .orb-gains:focus-visible { outline: 2px solid var(--mint, #82e7bd); outline-offset: 3px; }
+.platform-flow .platform-orb:focus-visible { outline: 2px solid var(--mint, #82e7bd); outline-offset: 3px; }
 
 /* gentle closed orbit: every keyframe returns to the origin for a seamless loop */
 @keyframes platform-orb-orbit {
