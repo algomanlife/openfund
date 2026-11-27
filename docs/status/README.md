@@ -2,14 +2,14 @@
 
 <!-- Generated from docs/status/status.json by `node scripts/docs/status.mjs`; edit the JSON, not this page. -->
 
-Canonical, per-environment status. Last updated **2026-11-23**. Source states come from Git; every
+Canonical, per-environment status. Last updated **2026-11-27**. Source states come from Git; every
 runtime state names the time it was verified and its evidence. Older snapshots elsewhere in the
 documentation are historical unless they match this page.
 
 ## Release
 
-- **Latest official release:** [v0.8.0](https://github.com/algomanlife/openfund/releases/tag/v0.8.0) — commit `0320cf70fa42f0309764f26fc86604f90f2c498e`, published 2026-11-20.
-- **Next release:** v0.9.0 — release candidate; candidate commit not yet tagged. v0.9.0 is prepared on agent/claude/dastkhat-readme-demess: Dastkhat as the only Persian face, retired Irancell/Vazirmatn files removed, README restructure and permanent structure/retired/font gates. Main also contains Gains read-only readiness (#169), Pine optimization (#170) and the Open Trade 0.0.3 candidate (#171). Not an official release until the owner publishes the tag. ([evidence](https://github.com/algomanlife/openfund/compare/v0.8.0...main))
+- **Latest official release:** [v0.9.0](https://github.com/algomanlife/openfund/releases/tag/v0.9.0) — commit `ae7c17dbf70c78747128ec4aeab04ae193165ff1`, published 2026-11-27.
+- **Next release:** version not yet allocated — planned; candidate commit not yet tagged. No next version is allocated yet. Open items after v0.9.0 are listed in the 2026-11-27 security assessment (wallet SDK upgrade to wagmi 3, payment review outcome for invalid passes, fee-refund payout verification). ([evidence](https://github.com/algomanlife/openfund/compare/v0.9.0...main))
 
 ## Services
 
