@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Backend lint.** `apps/backend` runs ESLint 10 on its production modules (`npm --prefix apps/backend run lint`, in the CI backend job). The first run removed four unused imports and constants and a `var` redeclaration in `portfolio.js`; behaviour is unchanged. The dependency candidate workflow now keeps its pushed branch when Actions may not open pull requests.
+
 - **Shared, persistent rate limits.** Every backend rate limiter (the per-route `limit(max)` and the 19 named express-rate-limit limiters) now counts in PostgreSQL (`rate_limit_hits`, `apps/backend/rate-limit-store.js`) instead of process memory: counters survive restarts and hold across instances, expired windows are swept every 10 minutes, and a database outage falls back to a per-process window instead of failing. Closes OF-2026-11-08. Also adds the `dependency-candidate` workflow, which opens draft pull requests for `npm audit fix`, in-range updates or new development dependencies in one first-party directory.
 
 - **Repository cleanup: `dist/` retired.** The owner retired the tracked `dist/` snapshot (17 MB, 62 files, never served by the backend; most files were byte-identical copies). `npm run build:charts` no longer writes it, the upstream guard and the community test no longer compare it, `seed_content.py` reads the landing dictionary from `apps/web-react/public/translations.json`, and `AGENTS.md` now forbids committing build output. Recorded as `dist-snapshot` in the retired registry.

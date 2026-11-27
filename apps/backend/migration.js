@@ -23,7 +23,6 @@ import { validateEvidenceFile, MAX_EVIDENCE_BYTES } from './migration-storage.js
 const fail = (status, error, details) => Object.assign(new Error(error), { status, ...(details ? { details } : {}) })
 const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const KINDS = ['identity', 'funded_account', 'payout_certificate', 'payout_tx', 'statement', 'recording']
 const FILE_KINDS = new Set(['identity', 'funded_account', 'statement', 'recording', 'payout_certificate'])
 const PAYOUT_KINDS = new Set(['payout_certificate', 'payout_tx', 'statement'])
 const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')) ? v : null)

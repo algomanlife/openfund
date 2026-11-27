@@ -205,6 +205,8 @@ jobs:
           cache-dependency-path: apps/backend/package-lock.json
       - name: Install (lockfile integrity)
         run: npm ci
+      - name: Lint (ESLint, production modules)
+        run: npm run lint
       - name: Migrations (idempotency check — run twice)
         run: |
           npm run migrate
