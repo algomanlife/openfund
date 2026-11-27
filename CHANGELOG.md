@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Terminal percentage sizing readiness.** Ignore percentage/MAX clicks while the scoped account adapter is unavailable or read-only, preventing an uncaught error during reconnect. The terminal completion browser suite covers the transition.
+
 - Rate-limit the public chain status, challenge-record and certificate-metadata reads to 60 requests per minute per client IP using the shared PostgreSQL limiter; rejected requests return `429 rate_limited` before record queries.
 
 - **Public on-chain certificates and trade records on Arbitrum Sepolia (ADR 0063).** New package `packages/openfund-chain-records`: `OpenfundCertificate`, a soulbound ERC-721 (ERC-5192) for challenge purchase, Free Trial start, phase 1 pass, final pass, Free Trial pass and payout certificates with an evaluation status; and `OpenfundTradeLedger`, which records every position open, stop-loss / take-profit change, partial close and close of a challenge or Free Trial account as a public event. Records are queued by database triggers in the same transaction as the trade or milestone (`chain_records`) and sent by a worker in the `engine` role with Openfund's recorder key; traders never sign or pay, and recording never blocks trading. Off until the owner deploys the contracts and sets `CHAIN_RECORDS_*` ([runbook](docs/operations/CHAIN_RECORDS.md)). Public read API `GET /chain/status`, `GET /chain/challenges/:id/records` and the certificate metadata; the dashboard lists the records with Arbiscan links and certificates link to their NFT. Foundry tests run in CI.
