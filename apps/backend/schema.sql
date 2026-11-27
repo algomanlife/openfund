@@ -3313,3 +3313,166 @@ CREATE TRIGGER funded_agreements_append_only BEFORE UPDATE OR DELETE ON funded_a
 -- grows additively; the named constraint is replaced idempotently.
 ALTER TABLE verified_expenses DROP CONSTRAINT IF EXISTS verified_expenses_category_check;
 ALTER TABLE verified_expenses ADD CONSTRAINT verified_expenses_category_check CHECK (category IN ('render_infrastructure','database','cms','market_data','operational_services','marketing','ambassador_commissions','salaries_administration','bug_bounty','other'));
+
+-- ==================================================================
+-- On-chain certificates and trade records (chain-records.js, ADR 0063).
+-- Additive and idempotent. Triggers queue one row per record in the SAME
+-- transaction as the change that causes it (transactional outbox), so a
+-- committed trade or milestone always has its record queued; the
+-- chain-records worker sends queued rows to Arbitrum Sepolia. record_key is
+-- the idempotency key: the worker derives the on-chain record id / token id
+-- from it, and both contracts treat a repeated id as a no-op.
+--   kinds: certificate (issue a soulbound certificate),
+--          certificate_status (outcome of the evaluation a certificate
+--          belongs to), trade (position open / modify / partial close / close)
+-- Controlled acceptance challenges (rules_snapshot ? 'controlledTest') and
+-- the retired free demo account are never recorded.
+-- ==================================================================
+CREATE TABLE IF NOT EXISTS chain_records (
+  id            bigserial PRIMARY KEY,
+  record_key    text NOT NULL UNIQUE,
+  kind          text NOT NULL CHECK (kind IN ('certificate','certificate_status','trade')),
+  challenge_id  uuid,
+  position_id   uuid,
+  payload       jsonb NOT NULL,
+  status        text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','sending','confirmed','failed')),
+  attempts      integer NOT NULL DEFAULT 0,
+  next_attempt_at timestamptz NOT NULL DEFAULT now(),
+  last_error    text,
+  tx_hash       text CHECK (tx_hash IS NULL OR tx_hash ~ '^0x[0-9a-f]{64}$'),
+  token_id      text,
+  block_number  bigint,
+  chain_id      integer,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  sent_at       timestamptz,
+  confirmed_at  timestamptz
+);
+CREATE INDEX IF NOT EXISTS idx_chain_records_queue ON chain_records (status, next_attempt_at, id) WHERE status IN ('pending','sending');
+CREATE INDEX IF NOT EXISTS idx_chain_records_challenge ON chain_records (challenge_id, id);
+CREATE INDEX IF NOT EXISTS idx_chain_records_position ON chain_records (position_id, id);
+
+/* the stage-1 (root) challenge of an evaluation chain */
+CREATE OR REPLACE FUNCTION openfund_chain_root(ch uuid) RETURNS uuid LANGUAGE plpgsql STABLE AS $$
+DECLARE cur uuid := ch; parent uuid; depth int := 0;
+BEGIN
+  LOOP
+    SELECT parent_challenge_id INTO parent FROM openfund_challenges WHERE id = cur;
+    EXIT WHEN parent IS NULL OR depth > 8;
+    cur := parent; depth := depth + 1;
+  END LOOP;
+  RETURN cur;
+END $$;
+
+CREATE OR REPLACE FUNCTION openfund_chain_certificate(p_key text, p_kind text, p_challenge uuid, p_user uuid, p_amount numeric, p_event_at timestamptz)
+RETURNS void LANGUAGE plpgsql AS $$
+DECLARE wallet text;
+BEGIN
+  SELECT wallet_address INTO wallet FROM openfund_users WHERE id = p_user;
+  IF wallet IS NULL THEN RETURN; END IF;
+  INSERT INTO chain_records (record_key, kind, challenge_id, payload)
+  VALUES (p_key, 'certificate', p_challenge, jsonb_build_object(
+    'certificateKind', p_kind, 'holder', lower(wallet), 'challengeId', p_challenge,
+    'amountUsd', p_amount::text, 'eventAt', p_event_at))
+  ON CONFLICT (record_key) DO NOTHING;
+END $$;
+
+/* purchase and Free Trial certificates when the stage-1 challenge row is created */
+CREATE OR REPLACE FUNCTION openfund_chain_challenge_created() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF NEW.parent_challenge_id IS NOT NULL OR coalesce(NEW.rules_snapshot ? 'controlledTest', false) THEN RETURN NEW; END IF;
+  IF coalesce((NEW.rules_snapshot->>'free')::boolean, false) THEN
+    PERFORM openfund_chain_certificate('cert:trial:' || NEW.id, 'trial', NEW.id, NEW.user_id, NEW.account_size_usd, now());
+  ELSIF NEW.purchase_order_id IS NOT NULL AND NEW.funded_from_challenge_id IS NULL THEN
+    /* keyed by the order, like the purchase row of the certificates table */
+    PERFORM openfund_chain_certificate('cert:purchase:' || NEW.purchase_order_id, 'purchase', NEW.id, NEW.user_id, NEW.account_size_usd, now());
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS trg_chain_challenge_created ON openfund_challenges;
+CREATE TRIGGER trg_chain_challenge_created AFTER INSERT ON openfund_challenges
+  FOR EACH ROW EXECUTE FUNCTION openfund_chain_challenge_created();
+
+/* phase pass, final pass and outcome of an evaluation */
+CREATE OR REPLACE FUNCTION openfund_chain_challenge_event() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE c record; root uuid; root_free boolean; root_key text; status text;
+BEGIN
+  IF NEW.kind NOT IN ('stage_passed','passed','violation','expired') THEN RETURN NEW; END IF;
+  SELECT * INTO c FROM openfund_challenges WHERE id = NEW.challenge_id;
+  IF c.id IS NULL OR coalesce(c.rules_snapshot ? 'controlledTest', false) OR c.funded_from_challenge_id IS NOT NULL OR c.stage = 0 THEN RETURN NEW; END IF;
+  root := openfund_chain_root(c.id);
+  SELECT coalesce((rules_snapshot->>'free')::boolean, false),
+         CASE WHEN coalesce((rules_snapshot->>'free')::boolean, false) THEN 'cert:trial:' || id ELSE 'cert:purchase:' || purchase_order_id END
+    INTO root_free, root_key FROM openfund_challenges WHERE id = root;
+  IF root_key IS NULL THEN root_key := ''; END IF;
+  IF NEW.kind = 'stage_passed' THEN
+    PERFORM openfund_chain_certificate('cert:stage_pass:' || c.id, 'stage_pass', c.id, c.user_id, c.account_size_usd, NEW.ts);
+    RETURN NEW;
+  END IF;
+  IF NEW.kind = 'passed' THEN
+    PERFORM openfund_chain_certificate(CASE WHEN root_free THEN 'cert:trial_pass:' ELSE 'cert:final_pass:' END || c.id,
+      CASE WHEN root_free THEN 'trial_pass' ELSE 'final_pass' END, c.id, c.user_id, c.account_size_usd, NEW.ts);
+  END IF;
+  status := CASE NEW.kind WHEN 'passed' THEN 'passed' WHEN 'violation' THEN 'failed' ELSE 'expired' END;
+  /* only when the root certificate exists (purchase or trial) */
+  IF EXISTS (SELECT 1 FROM chain_records WHERE record_key = root_key) THEN
+    INSERT INTO chain_records (record_key, kind, challenge_id, payload)
+    VALUES ('status:' || status || ':' || c.id, 'certificate_status', c.id,
+      jsonb_build_object('certificateKey', root_key, 'status', status, 'challengeId', c.id))
+    ON CONFLICT (record_key) DO NOTHING;
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS trg_chain_challenge_event ON challenge_events;
+CREATE TRIGGER trg_chain_challenge_event AFTER INSERT ON challenge_events
+  FOR EACH ROW EXECUTE FUNCTION openfund_chain_challenge_event();
+
+/* payout certificate once the payout is paid with final on-chain evidence */
+CREATE OR REPLACE FUNCTION openfund_chain_payout() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF NEW.status = 'paid' AND NEW.challenge_id IS NOT NULL
+     AND to_jsonb(NEW)->'payment_evidence'->>'finality' = 'finalized' THEN
+    PERFORM openfund_chain_certificate('cert:payout:' || NEW.id, 'payout', NEW.challenge_id, NEW.user_id, NEW.amount_usd,
+      coalesce((to_jsonb(NEW)->'payment_evidence'->>'transactionAt')::timestamptz, now()));
+  END IF;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS trg_chain_payout ON withdrawal_requests;
+CREATE TRIGGER trg_chain_payout AFTER INSERT OR UPDATE ON withdrawal_requests
+  FOR EACH ROW EXECUTE FUNCTION openfund_chain_payout();
+
+/* every position event of a challenge or Free Trial account */
+CREATE OR REPLACE FUNCTION openfund_chain_trade() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE ch record; action text; key text;
+BEGIN
+  SELECT c.id, c.rules_snapshot INTO ch FROM openfund_challenges c
+    JOIN demo_accounts a ON a.id = c.demo_account_id
+   WHERE c.demo_account_id = NEW.account_id AND a.account_type = 'challenge';
+  IF ch.id IS NULL OR coalesce(ch.rules_snapshot ? 'controlledTest', false) THEN RETURN NEW; END IF;
+  IF TG_OP = 'INSERT' THEN
+    /* a partial-close slice is recorded when it closes */
+    IF NEW.parent_position_id IS NOT NULL THEN RETURN NEW; END IF;
+    action := 'open'; key := 'trade:open:' || NEW.id;
+  ELSIF OLD.status = 'open' AND NEW.status <> 'open' THEN
+    action := CASE WHEN NEW.parent_position_id IS NOT NULL THEN 'partial_close' ELSE 'close' END;
+    key := 'trade:' || action || ':' || NEW.id;
+  ELSIF NEW.status = 'open' AND (OLD.sl_price IS DISTINCT FROM NEW.sl_price OR OLD.tp_price IS DISTINCT FROM NEW.tp_price) THEN
+    action := 'modify';
+    key := 'trade:modify:' || NEW.id || ':' || txid_current() || ':' || (extract(epoch FROM clock_timestamp()) * 1000000)::bigint;
+  ELSE
+    RETURN NEW;
+  END IF;
+  INSERT INTO chain_records (record_key, kind, challenge_id, position_id, payload)
+  VALUES (key, 'trade', ch.id, NEW.id, jsonb_build_object(
+    'action', action, 'challengeId', ch.id, 'positionId', NEW.id, 'parentPositionId', NEW.parent_position_id,
+    'market', NEW.market, 'side', NEW.side, 'leverage', NEW.leverage,
+    'quantity', NEW.quantity::text, 'entryPrice', NEW.entry_price::text, 'exitPrice', NEW.exit_price::text,
+    'stopLoss', NEW.sl_price::text, 'takeProfit', NEW.tp_price::text,
+    'realizedPnl', CASE WHEN NEW.status = 'open' THEN NULL ELSE NEW.realized_pnl::text END,
+    'exitReason', NEW.exit_reason,
+    'at', CASE WHEN action = 'open' THEN NEW.opened_at WHEN NEW.status = 'open' THEN clock_timestamp() ELSE coalesce(NEW.closed_at, clock_timestamp()) END))
+  ON CONFLICT (record_key) DO NOTHING;
+  RETURN NEW;
+END $$;
+DROP TRIGGER IF EXISTS trg_chain_trade ON trading_positions;
+CREATE TRIGGER trg_chain_trade AFTER INSERT OR UPDATE ON trading_positions
+  FOR EACH ROW EXECUTE FUNCTION openfund_chain_trade();

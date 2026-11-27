@@ -11,6 +11,7 @@ configured.
 | Liveness | `GET /health` | Render health check (`render.yaml`) |
 | Running build identity | `GET /version` | Backend and frontend version and commit must match (`status: matched`). This is the deployment authority ([Releases](../deployment/RELEASES.md#version-authority-hierarchy)) |
 | Payments readiness | `GET /purchases/plans` → `paymentsEnabled` | `false` until the payment configuration is complete |
+| On-chain records | `GET /chain/status` | Worker enabled, operator balance (`lowBalance`) and the queue (`pending`, `confirmed`, `failed`) — [runbook](CHAIN_RECORDS.md), [ADR 0063](../decisions/0063-on-chain-certificates-and-trade-ledger.md) |
 | Logs | Render service logs (`render logs`) | Errors are logged without secrets. Payment attempts and DePay deliveries are stored in the database, not only in logs |
 
 ## Payment operations

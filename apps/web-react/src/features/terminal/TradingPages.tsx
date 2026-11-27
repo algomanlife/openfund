@@ -373,9 +373,9 @@ export function SharedTradingTerminal() {
       ...normalizeDictionary(cms),
       "book.grouping": {fa:"گروه",en:"Group"},
       "book.tab": {fa:"دفتر مجازی",en:"Book"},
-      "book.simulated": {fa:"Gains VOB",en:"Gains VOB"},
-      "book.note": {fa:"نقدینگی شبیه سازی شده؛ این یک دفتر سفارش غیر متمرکز مجازی است\nداده های از بروکر های Gains و hyperliquid تجمیع میشود.",en:"Gains virtual execution liquidity; no resting orders."},
-      "trades.note": {fa:"معاملات اجراشدهٔ Gains · اندازه به USD",en:"Gains executed trades · size in USD"},
+      "book.simulated": {fa:"Open Oracle VOB",en:"Open Oracle VOB"},
+      "book.note": {fa:"دفتر سفارش مجازی Open Oracle؛ نقدینگی شبیه‌سازی‌شده بر پایهٔ مخزن و بدون سفارش ثابت.",en:"Open Oracle virtual order book; vault-based simulated liquidity, no resting orders."},
+      "trades.note": {fa:"معاملات اجراشده از Open Oracle · اندازه به USD",en:"Executed trades from Open Oracle · size in USD"},
       "ac.modeVal": {
         fa: product === "prop" ? "حساب تمرینی" : "نمای حساب Gains · فقط خواندنی",
         en: product === "prop" ? "Practice account" : "Gains account view · read-only",

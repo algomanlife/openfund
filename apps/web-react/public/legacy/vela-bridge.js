@@ -3,7 +3,7 @@
    Mounts the full LuxAlgo Vela workspace (topbar with symbol /
    timeframe / style / indicators, drawing toolbar, status line,
    bottom bar, symbol search, keyboard map) as the terminal chart,
-   powered by the Gains provider.
+   powered by the Open Oracle provider (catalog, candles and prices from /api/oracle).
 
    Bundle: apps/web-react/public/assets/vela-workspace.global.min.js
            (esbuild IIFE of the vendored @luxalgo/vela 0.10.19 workspace)
@@ -60,25 +60,61 @@ function mount(container, opts){
   if (!el) throw new Error('Vela mount: container not found');
   const engines = [];
 
-  /* Footprint (Hyperliquid order flow, chart-only): registered before the workspace
+  let footprintInstalled = false;
+  /* Footprint (order flow, chart-only): registered before the workspace
      mounts, and only when the server's FOOTPRINT_ENABLED flag is on. Off, nothing is
      registered, fetched or painted; a failure here never blocks the Gains chart. */
   try {
     const rc = global.__OPENFUND_RUNTIME_CONFIG__ || (global.parent !== global ? global.parent.__OPENFUND_RUNTIME_CONFIG__ : null);
-    if (rc && rc.footprint === true && typeof WLib.installFootprint === 'function') WLib.installFootprint({ apiBase: '' });
+    if (rc && rc.footprint === true && typeof WLib.installFootprint === 'function') { WLib.installFootprint({ apiBase: '' }); footprintInstalled = true; }
   } catch (e) { console.warn('[footprint] not installed', e); }
 
   /* Openfund hosts its own market selector — Vela's symbol chip is omitted.
      Timeframe / style / indicators / undo-redo stay (left side),
      alerts / panels / screenshot on the right. */
+  /* The chart legend names the data provider after the symbol ("· OPENORACLE ·").
+     Openfund shows the Open Oracle mark there instead: a green "O" badge. The
+     legend rewrites its text on every symbol/timeframe change, so an observer
+     re-applies the badge. */
+  const PROVIDER_TEXT = /^·\s*(?:OPENORACLE|GAINS)\s+/;
+  const brandLegend = () => {
+    for (const meta of el.querySelectorAll('.vela-sl-meta')) {
+      if (meta.querySelector('.of-oracle-badge') || !PROVIDER_TEXT.test(meta.textContent || '')) continue;
+      const rest = (meta.textContent || '').replace(PROVIDER_TEXT, '');
+      const badge = document.createElement('span');
+      badge.className = 'of-oracle-badge';
+      badge.textContent = 'O';
+      badge.title = 'Open Oracle';
+      badge.setAttribute('aria-label', 'Open Oracle');
+      meta.replaceChildren(badge, document.createTextNode(' ' + rest));
+    }
+  };
+  /* The Openfund chart mark (#chart-brand) lives inside the chart's own mount, which
+     publishes the price-pane insets (--vela-toolbar-gutter, --vela-price-pane-bottom):
+     it then sits at the plot's bottom-left corner at every size, mobile included. */
+  const placeBrand = () => {
+    /* kept across re-mounts: a destroyed workspace takes its mount (and the mark) away */
+    const brand = document.getElementById('chart-brand') || global.__ofChartBrand;
+    global.__ofChartBrand = brand;
+    const host = el.querySelector('.vela-watermark')?.parentElement;
+    if (!brand || !host || brand.parentElement === host) return;
+    brand.classList.add('in-plot');
+    if (footprintInstalled) brand.classList.add('above-footprint');
+    host.append(brand);
+  };
+  new MutationObserver(() => { brandLegend(); placeBrand(); }).observe(el, { subtree: true, childList: true, characterData: true });
+
   const ws = new WLib.VelaWorkspace(el, {
     /* Vela's own UI is English-only and LTR in every Openfund locale
        (docs/integrations/VELA.md): the host locale is never forwarded */
     locale: 'en',
+    /* Openfund names its own data service, never a venue, in the chart */
+    messages: { 'footprint.source': 'Footprint · Open Oracle' },
     layout: false,                    /* single-chart mode */
-    symbol: 'gains:' + (opts.symbol || 'BTC/USD'),
+    symbol: 'openoracle:' + String(opts.symbol || 'BTC/USD').replace(/^(?:gains|openoracle):/, ''),
     timeframe: canonicalTimeframe(opts.timeframe || '1'),
-    providers: { gains: () => G.createVelaProvider() },
+    /* the chart legend shows the provider id: Open Oracle serves catalog, candles and prices */
+    providers: { openoracle: () => G.createVelaProvider() },
     timeframes: TIMEFRAMES,
     live: true,
     theme: THEMES[document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'],
@@ -134,11 +170,11 @@ function mount(container, opts){
     /* debug/testing handle */
     __set: (k, v) => { try { return ws.chart.renderer.set(k, v); } catch(e){ return 'ERR:' + e.message; } },
     get chart(){ return ws.chart; },
-    setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'gains:' + symbol }); },
+    setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'openoracle:' + String(symbol).replace(/^(?:gains|openoracle):/, '') }); },
     setTimeframe(tf){ return ws.chart.setMarket({ timeframe: canonicalTimeframe(tf) }); },
     setMarket(next){
       return ws.chart.setMarket({ ...next,
-        ...(next.symbol ? { symbol: 'gains:' + next.symbol.replace(/^gains:/, '') } : {}),
+        ...(next.symbol ? { symbol: 'openoracle:' + next.symbol.replace(/^(?:gains|openoracle):/, '') } : {}),
         ...(next.timeframe ? { timeframe: canonicalTimeframe(next.timeframe) } : {})
       });
     },

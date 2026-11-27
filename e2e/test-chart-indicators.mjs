@@ -35,6 +35,8 @@ let page;
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   if (!live) {
+    /* these fixtures stand in for Open Oracle's market API too: the pages fall back to them when it is unavailable */
+    await context.route('**/api/oracle/markets**', route => route.fulfill({ status: 404, json: { error: 'not_found' } }))
     await context.route('https://api.gains.trade/v1/arbitrum/**', async route => {
       const url = route.request().url();
       const data = url.includes('/candles') ? fixture.bars : url.endsWith('/markets')
@@ -139,7 +141,7 @@ try {
     await frame.locator('#market-select-btn').click();
     await frame.locator('#market-search').fill('ETH/USD');
     await frame.locator('#market-dd-list li').filter({ hasText: 'ETH/USD' }).first().click();
-    await child.waitForFunction(() => window.__openfundChart.chart.market.symbol === 'gains:ETH/USD');
+    await child.waitForFunction(() => window.__openfundChart.chart.market.symbol === 'openoracle:ETH/USD');
     assert.equal(await frame.locator('#cur-pair').textContent(), 'ETH/USD');
     record(`${product}: symbol picker changes both chart and terminal state`);
 
@@ -148,7 +150,7 @@ try {
     child = getFrame();
     await waitIndicators(child);
     assert.equal(await child.evaluate(() => window.__openfundChart.chart.indicators().filter(h => h.source)[0].inputValues().sigsensiviti), 6);
-    assert.equal(await child.evaluate(() => window.__openfundChart.chart.market.symbol), 'gains:ETH/USD');
+    assert.equal(await child.evaluate(() => window.__openfundChart.chart.market.symbol), 'openoracle:ETH/USD');
     assert.equal(await frame.locator('#cur-pair').textContent(), 'ETH/USD');
     await checkBranding(frame);
     if (live) await page.screenshot({ path: path.join(output, `${product}-active.png`) });

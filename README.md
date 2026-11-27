@@ -41,8 +41,9 @@ can be checked. Start with the [documentation index](docs/README.md).
   positions, portfolio and a trade journal.
 - **Our own prices: Open Oracle.** Openfund aggregates Gains, Hyperliquid and
   GMX into one composite price per market and executes the demo only on
-  fresh prices whose sources agree; the website and terminal read it from
-  their own origin ([ADR 0059](docs/decisions/0059-open-oracle-pricing-service.md)).
+  fresh prices whose sources agree; the website and terminal read prices,
+  the market catalog, candles and the virtual order book from their own
+  origin ([ADR 0059](docs/decisions/0059-open-oracle-pricing-service.md)).
 - **Wallet identity.** One explicit wallet picker for browser wallets and,
   with WalletConnect, mobile wallets by QR code; sign-in is a single signed
   message, never a transaction.
@@ -317,7 +318,7 @@ for each part is in the [engineering reference](docs/development/ENGINEERING_REF
 | <img src="docs/assets/readme/icons/apps.svg" width="18" height="18" alt="apps icon" /> | `apps/terminal/` | Ownership boundary for the terminal (no separate service) |
 | <img src="docs/assets/readme/icons/apps.svg" width="18" height="18" alt="apps icon" /> | `apps/web/` | Ownership boundary for the public web (not deployed alone) |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-charts/` | Vela bridge and Pine indicator integration |
-| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-gains-adapter/` | Browser market provider: Gains catalog and candles, Open Oracle live prices |
+| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-gains-adapter/` | Browser market provider: catalog, candles and live prices from Open Oracle |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-footprint/` | Order-flow aggregation and chart plugin |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/cms-client/` | Typed contract between the app and Directus |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-ui/` | Planned shared component library |
@@ -325,6 +326,7 @@ for each part is in the [engineering reference](docs/development/ENGINEERING_REF
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/site-search/` | Search normalization, matching and query masking shared by the site and the backend |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-protocol/` | Dormant protocol source and provenance |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/open-oracle/` | Open Oracle: multi-source pricing service (Gains, Hyperliquid, GMX), research protocol and live acceptance |
+| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-chain-records/` | Soulbound certificate NFTs and the public trade ledger on Arbitrum Sepolia (Solidity, Foundry) |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `docs/` | Documentation, ADRs, status, README data and assets |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `brand/` | Brand book, logos, imagery and typography reference |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `indicators/` | Three Openfund Pine indicators and two libraries |

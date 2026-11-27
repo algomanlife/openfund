@@ -128,17 +128,37 @@ composites and per-source contributions, never provider payloads.
 
 Without a running service the routes answer `503 {"error":"oracle_unavailable"}`.
 
+Market data (catalog, candles and the virtual order book). Rate limited, short
+public caches, the upstream venue envelope `{data: …}` so the browser
+adapters read it unchanged:
+
+| Route | Response |
+| --- | --- |
+| `GET /api/oracle/markets` | The market catalog the service prices (symbol, group, leverage limits, fees, open state) |
+| `GET /api/oracle/markets/:market/candles?interval=1m\|5m\|15m\|30m\|1h\|4h\|1d&from=&to=` | OHLC history (`BTC-USD`); the open candle closes at the current composite. Ranges up to 400 days; cached 15 s |
+| `GET /api/oracle/markets/:market/book?levels=1..50` | The vault-based virtual order book; cached 1 s |
+| `GET /api/oracle/markets/:market/trades?limit=1..100` | Executed trades; cached 2 s |
+
+The server reads candles, book and trades from the venue feeds behind the
+service (`oracleMarketData` in `apps/backend/open-oracle.js`); only catalog
+symbols and the listed intervals are accepted, so a request cannot reach any
+other upstream path. A mirror region forwards these routes to
+`OPEN_ORACLE_UPSTREAM`. Browsers never call a venue directly.
+
 ### Browser consumers
 
 The shared adapter (`packages/openfund-gains-adapter`, mirrored to
-`public/legacy/gains-adapter.js`) and the website markets table
-(`public/legacy/market.js`) read `/api/oracle/prices` and follow
-`/api/oracle/stream`. They fall back to the Gains prices socket only when
-the origin serves no Open Oracle (404/503 or no priced composite) or the
-stream never delivers, and report which source is live (`priceSource()`;
-the Markets page shows it). Stale composites are shown flagged and never
-print a chart bar. The market catalog, specifications and chart history
-stay on Gains, so the chart keeps its Gains provider label.
+`public/legacy/gains-adapter.js`), the website markets table
+(`public/legacy/market.js`) and the terminal depth panel
+(`public/legacy/market-depth.js`) read everything from the same origin:
+prices from `/api/oracle/prices` and `/api/oracle/stream`, the catalog and
+candles from `/api/oracle/markets…`, and the book and trades by polling
+`/api/oracle/markets/:market/book|trades`. They read the venue API directly
+only where the origin serves no Open Oracle (404), and report which source
+is live (`priceSource()`; the Markets page shows it). Stale composites are
+shown flagged and never print a chart bar. The chart provider is
+`openoracle`; its legend, the depth panel and the terminal status bar show
+the Open Oracle mark (a green "O") instead of venue logos.
 
 Published Directus copy that still equals a retired default (the old
 "prices from Gains" texts) is shown as the current default

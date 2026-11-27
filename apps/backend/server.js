@@ -28,7 +28,7 @@ import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
 import { arbitrum } from 'viem/chains'
 import pg from 'pg'
 import { marketData } from './market-data.js'
-import { oracleConfig, createOpenOracle, OracleMirror, oracleRoutes } from './open-oracle.js'
+import { oracleConfig, createOpenOracle, OracleMirror, oracleRoutes, oracleMarketData } from './open-oracle.js'
 import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
@@ -54,6 +54,7 @@ import { recordFailure, recordSuccess } from './observability.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
 import { trialRoutes } from './trials.js'
+import { ChainRecorder, chainRecordRoutes } from './chain-records.js'
 import { createRadar, radarRoutes } from './radar.js'
 import { calendarAdminRoutes, ConductService } from './conduct.js'
 import { createTestClock } from './test-clock.js'
@@ -886,6 +887,9 @@ app.use(labRoutes({ pool, graceMinutes: () => purchaseConfig().lateGraceMinutes 
 app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
 app.use(certificateRoutes({ pool, requireAuth }))
 app.use(trialRoutes({ pool, requireAuth, audit }))
+/* ADR 0063: public on-chain certificates and trade records (Arbitrum Sepolia) */
+const chainRecorder = new ChainRecorder({ pool })
+app.use(chainRecordRoutes({ pool, recorder: chainRecorder }))
 /* Trade Radar + heatmap: read-only public Hyperliquid data, one shared cache and socket */
 const radar = createRadar()
 app.use(radarRoutes({ radar, gainsMarkets: () => marketData.markets }))
@@ -962,7 +966,11 @@ if (oracleSettings.source === 'open-oracle') {
   if (hasRole(region, 'market-data')) marketData.attachOracle(oracle = createOpenOracle())
   else if (oracleSettings.upstream) oracle = new OracleMirror({ upstream: oracleSettings.upstream })
 }
-const oracleApi = oracleRoutes({ Router: express.Router, oracle: () => oracle, limit })
+/* The market data routes are off on the simulation test server: its catalog is
+   whatever the suites inject, and the browser suites pin the venue fixtures
+   (the pages then use their fallback, as before). */
+const oracleApi = oracleRoutes({ Router: express.Router, oracle: () => oracle, limit,
+  marketApi: testMode ? null : oracleMarketData({ markets: () => marketData.markets, oracle: () => oracle, upstream: oracleSettings.upstream }) })
 app.use(oracleApi)
 /* site search: published-only index per region (IRAN builds its own) and anonymous counts */
 app.use(siteSearchRoutes({ pool, cms: cmsSnapshot, marketData, limit }))
@@ -1111,6 +1119,8 @@ if (hasRole(region, 'market-data')) marketData.bootstrap().catch(e => console.er
 if (oracle) { oracle.start(); console.log(`[open-oracle] ${oracle instanceof OracleMirror ? `mirroring ${oracleSettings.upstream}` : 'pricing service started'}`) }
 else console.log(`[open-oracle] not running (price source: ${oracleSettings.source}${hasRole(region, 'market-data') ? '' : ', no market-data role and no OPEN_ORACLE_UPSTREAM'})`)
 if (hasRole(region, 'engine')) engine.start(1000)
+/* the chain-records worker sends this region's queued records (one operator key per region) */
+if (hasRole(region, 'engine')) chainRecorder.start()
 /* challenge-event → notification relay: reads recorded events only */
 if (hasRole(region, 'engine')) startNotificationRelay(pool)
 if (hasRole(region, 'footprint')) footprint.start().catch(e => console.error('[footprint] start failed', e.message))

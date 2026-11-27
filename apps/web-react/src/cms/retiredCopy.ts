@@ -8,6 +8,22 @@
  * seed changes of the Open Oracle attribution update. */
 export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   [
+    "قیمت‌ها حاصل تجمیع Open Oracle از Gains، Hyperliquid و GMX است: بازارهای رمزارز تا سه منبع و سایر بازارها یک منبع دارند. مشخصات بازار از Gains Network می‌آید؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منابع نمایش داده می‌شود.",
+    "قیمت‌ها، کندل‌ها و مشخصات بازار از Open Oracle، سامانهٔ قیمت اختصاصی اوپن‌فاند، می‌آیند: بازارهای رمزارز تا سه منبع مستقل و سایر بازارها یک منبع دارند. اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهایی که این سامانه ارائه می‌دهد نمایش داده می‌شود."
+  ],
+  [
+    "Prices are Open Oracle composites of Gains, Hyperliquid and GMX: crypto markets combine up to three sources, other markets use one. Market specifications come from Gains Network; leverage and Openfund account terms are independent. Only fields provided by the sources are shown.",
+    "Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown."
+  ],
+  [
+    "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر.",
+    "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی اوپن‌فاند برای تجمیع و کشف قیمت. بازار را انتخاب کن و مستقیم به ترمینال ببر."
+  ],
+  [
+    "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal.",
+    "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal."
+  ],
+  [
     "14 calendar days per phase, free, with Standard challenge rules (8% and 5% targets, 5% daily and 10% total loss limits). You can hold only one active trial at a time, and an active paid account blocks starting one. Trial profits cannot be requested and the trial does not convert to a funded account — it exists to rehearse the real path.",
     "14 calendar days per phase, free, with the rules of the challenge you choose — Standard (8% and 5% targets, 5% daily and 10% total loss limits) or One-phase (12% target, 3% daily and 12% total loss limits). Request it from the Prop dashboard. Only one account can run at a time, and a new trial is available 72 hours after the previous one ends. Trial profits cannot be requested and the trial does not convert to a funded account — it exists to rehearse the real path."
   ],
@@ -97,7 +113,7 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "Every asset class the Openfund trading ecosystem tracks, with live mark prices straight from Gains Network. Pick a market and take it straight into the terminal.",
-    "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal."
+    "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal."
   ],
   [
     "Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live Gains Network prices.",
@@ -121,7 +137,7 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "Mark prices and market specs come from Gains Network (the data source); leverage and Openfund account terms are independent. Only fields provided by the source are shown.",
-    "Prices are Open Oracle composites of Gains, Hyperliquid and GMX: crypto markets combine up to three sources, other markets use one. Market specifications come from Gains Network; leverage and Openfund account terms are independent. Only fields provided by the sources are shown."
+    "Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown."
   ],
   [
     "Markets come from Gains Network metadata and are grouped into crypto, forex, stocks, indices and commodities — around 488 symbols. Prices are Gains Network mark prices, not an independent index feed. The available list and each market’s status can change, so check the terminal.",
@@ -281,7 +297,7 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "قیمت Mark و مشخصات بازار مربوط به منبع دادهٔ Gains Network است؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منبع نمایش داده می‌شود.",
-    "قیمت‌ها حاصل تجمیع Open Oracle از Gains، Hyperliquid و GMX است: بازارهای رمزارز تا سه منبع و سایر بازارها یک منبع دارند. مشخصات بازار از Gains Network می‌آید؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منابع نمایش داده می‌شود."
+    "قیمت‌ها، کندل‌ها و مشخصات بازار از Open Oracle، سامانهٔ قیمت اختصاصی اوپن‌فاند، می‌آیند: بازارهای رمزارز تا سه منبع مستقل و سایر بازارها یک منبع دارند. اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهایی که این سامانه ارائه می‌دهد نمایش داده می‌شود."
   ],
   [
     "قیمت‌ها از Gains Network می‌آیند: رمزارز، فارکس، سهام، شاخص و کالا.",
@@ -305,7 +321,7 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت Mark مستقیم از Gains Network. بازار را انتخاب کن و مستقیم به ترمینال ببر.",
-    "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر."
+    "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی اوپن‌فاند برای تجمیع و کشف قیمت. بازار را انتخاب کن و مستقیم به ترمینال ببر."
   ],
   [
     "وضعیت اوپن‌فاند: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه، قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. آنچه امروز کار می‌کند یک حسابِ شبیه‌سازی‌شدهٔ free_demo در سمت سرور است، به ازای هر کاربر یکی، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین شده و از مارک پرایسِ زندهٔ Gains Network قیمت‌گذاری می‌شود؛ بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. سودِ دمو پولی نیست که به معامله‌گر بدهکار باشند، و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. هر عددی در این مسیر، شرطِ منتشرشده و مرجع است.",
