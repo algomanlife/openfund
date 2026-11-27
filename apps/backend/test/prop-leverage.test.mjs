@@ -4,7 +4,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
-import { PROP_LEVERAGE_POLICY, propLeverageCategory, propLeverageCap, propMaxLeverage } from "../prop-leverage.js";
+import { PROP_LEVERAGE_POLICY, propLeverageCategory, propLeverageCap, propMaxLeverage, planLeverageCap } from "../prop-leverage.js";
 
 /* Shapes copied from the verified Gains /markets metadata (symbol, base,
    group, maxLeverage); only the fields the policy reads are kept. */
@@ -67,3 +67,19 @@ test("browser copy matches the server policy", () => {
     for (const plan of [null, 5, 18, 75])
       assert.equal(web.maxLeverage(meta, s, plan), propMaxLeverage(meta, s, plan), `${s} plan ${plan}`);
 });
+
+test("ADR 0061: the retired 5x cap of pre-v3 snapshots no longer applies", () => {
+  assert.equal(planLeverageCap({ rulesVersion: 2, referenceLeverageX: 5 }), null);
+  assert.equal(planLeverageCap({ referenceLeverageX: 5 }), null);
+  assert.equal(planLeverageCap(null), null);
+  assert.equal(max("BTC/USD", planLeverageCap({ rulesVersion: 1, referenceLeverageX: 5 })), 20);
+  assert.equal(max("EUR/USD", planLeverageCap({ rulesVersion: 2, referenceLeverageX: 5 })), 50);
+});
+
+test("ADR 0061: a v3 plan cap still only lowers the ceiling", () => {
+  assert.equal(planLeverageCap({ rulesVersion: 3, referenceLeverageX: null }), null);
+  assert.equal(planLeverageCap({ rulesVersion: 3, referenceLeverageX: 10 }), 10);
+  assert.equal(max("EUR/USD", planLeverageCap({ rulesVersion: 3, referenceLeverageX: 10 })), 10);
+  assert.equal(max("SOL/USD", planLeverageCap({ rulesVersion: 3, referenceLeverageX: 30 })), 15);
+});
+

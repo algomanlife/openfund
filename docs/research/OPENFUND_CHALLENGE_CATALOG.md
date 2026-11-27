@@ -23,7 +23,9 @@
 \* monthly cycle requires 7 profitable days + 35% consistency score.
 Common: no time limit (except the trial); daily loss measured on the higher of day-start
 balance/equity, reset 00:00 UTC+3; first payout 14 days after the first funded trade;
-minimum payout request 1% of account size; plan leverage up to 5×.
+minimum payout request 1% of account size; leverage follows the Openfund ceilings
+(BTC and ETH 20×, other crypto 15×, forex, stocks, indices and commodities 50×; a lower
+market limit always applies — ADR 0061).
 
 **Publication status:** these are the terms of record shown on the landing and Rulebook.
 Purchase activation, funded accounts, payout processing and trial provisioning are NOT

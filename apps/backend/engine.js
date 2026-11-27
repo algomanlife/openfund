@@ -22,7 +22,7 @@
 import crypto from 'node:crypto'
 import { AsyncLocalStorage } from 'node:async_hooks'
 import {instrumentSpec} from './instruments.js'
-import { propMaxLeverage } from './prop-leverage.js'
+import { propMaxLeverage, planLeverageCap } from './prop-leverage.js'
 import Decimal from 'decimal.js'
 
 import { D, SIM, feePct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
@@ -619,7 +619,7 @@ export class Engine {
       risk_policy: challenge
         ? { version: 2, position_maintenance_pct: SIM.MAINT_PCT, challenge_rules: true,
             challenge_id: challenge.id, challenge_status: challenge.status, stage: challenge.stage,
-            plan_leverage: (challenge.rules_snapshot ?? {}).referenceLeverageX ?? 100,
+            plan_leverage: planLeverageCap(challenge.rules_snapshot) ?? 100,
             day_boundary: 'UTC+3' }
         : { version: 1, position_maintenance_pct: SIM.MAINT_PCT, trial_stop_equity_usd: '0', challenge_rules: false },
       ...accountMetrics(account, openPositions, this.md),
@@ -832,7 +832,7 @@ export class Engine {
       order.leverage < 1 ||
       order.leverage > Number(t.meta.maxLeverage || 100) ||
       order.leverage > propMaxLeverage(t.meta, order.market) ||
-      (rules && rules.referenceLeverageX && order.leverage > Number(rules.referenceLeverageX))
+      (planLeverageCap(rules) != null && order.leverage > planLeverageCap(rules))
     )
       return reject("leverage_exceeded");
     if (order.order_type !== "market" && !order.target_price)

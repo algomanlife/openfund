@@ -87,7 +87,9 @@ never mixed within one Openfund plan.
 | Free Trial | Free access program | 14 days per phase, Standard rules | Detailed reference terms not re-verified. |
 
 Leverage in the reference (for example FX 1:100, or 1:50 on Zero) is not
-adopted; Openfund publishes its own reference leverage of 5x per plan.
+adopted; every Prop account uses the Openfund ceilings — BTC and ETH 20×, other
+crypto 15×, forex, stocks, indices and commodities 50× — and a lower market limit
+always applies (ADR 0061).
 
 ### Policy topics requiring legal review
 
