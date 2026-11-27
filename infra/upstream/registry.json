@@ -17,9 +17,9 @@
         "manifest": "vendor/vela/package.json"
       },
       "latest_observed": {
-        "version": "0.10.6",
-        "date": "2026-11-12",
-        "reviewed": true
+        "version": "0.10.19",
+        "date": "2026-11-28",
+        "reviewed": false
       },
       "integration_path": [
         "packages/openfund-charts",
@@ -38,9 +38,9 @@
       },
       "compatibility": {
         "status": "candidate-unreviewed",
-        "evidence": "update-vendor --apply ran; regression suite and review pending"
+        "evidence": "update-vendor --apply (0.10.15 -> 0.10.19, 2 patches clean); bundles rebuilt by the upstream-update-candidate workflow; browser regression and owner review pending in the pull request"
       },
-      "last_upgrade": "2026-11-27 (candidate 0.10.19; not yet reviewed)",
+      "last_upgrade": "2026-11-28 (0.10.19 via 0.10.15; OF-VELA-003 ported by hand)",
       "tests": [
         "npm run test:upstream",
         "npm run test:charts",
@@ -65,7 +65,7 @@
       "official_source": "https://www.npmjs.com/package/@luxalgo/vela-pinets",
       "license": "AGPL-3.0",
       "installed": {
-        "version": "0.3.4",
+        "version": "0.3.5",
         "lockfile": "apps/web-react/package-lock.json",
         "package": "@luxalgo/vela-pinets"
       },

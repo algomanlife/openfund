@@ -1,6 +1,6 @@
 # Vela upgrade protection
 
-Procedure for moving the vendored LuxAlgo Vela, its Pine addon and PineTS to a newer version **without** replacing Openfund's modified chart, branding, indicators or terminal behaviour. Vela is pinned to an exact reviewed version (currently 0.10.6).
+Procedure for moving the vendored LuxAlgo Vela, its Pine addon and PineTS to a newer version **without** replacing Openfund's modified chart, branding, indicators or terminal behaviour. Vela is pinned to an exact reviewed version (currently 0.10.19, candidate under review since 2026-11-28).
 
 Inventory of record: [Upstream dependency registry](UPSTREAM_REGISTRY.md). Patches and rollback limits: [Upstream isolation and patch registry](UPSTREAM_DEPENDENCIES.md). Integration description: [Vela chart integration](VELA.md).
 
@@ -61,3 +61,13 @@ Previous assessment (0.10.4, 2026-11-10) stopped on one conflict: OF-VELA-001 pa
 The upgrade needs human review before merge, as with every 0.x minor.
 
 [Upstream dependency registry](UPSTREAM_REGISTRY.md) · [Patch registry](UPSTREAM_DEPENDENCIES.md) · [Vela integration](VELA.md) · [ADR 0019](../decisions/0019-upstream-isolation.md)
+
+## Upgrade to Vela 0.10.19 (2026-11-28)
+
+1. `upstream-update-candidate` from main stopped on a conflict: OF-VELA-003 no longer applied to v0.10.15, where `ChartCell.addFromLibrary` returns whether the added study opened its input dialog and adds natives with `{ confirmInputs: true }`.
+2. OF-VELA-003 was ported by hand against v0.10.15 with the same intent: the manifest (Openfund studies) precedes the natives in `libraryRows`, `addFromLibrary` maps the index in that order, rejects negative and non-integer indices, keeps upstream's boolean result and `confirmInputs` for natives, and Openfund studies keep their title. The candidate was written the way `--apply` writes it (vendored tree, regenerated patches, registry and patch registry).
+3. `update-vendor --provider vela --to v0.10.19 --apply` then reported the vendored tree IDENTICAL to v0.10.15 plus both patches and re-applied both cleanly. No `LICENSE` or `NOTICE` change.
+4. npm pins: `@luxalgo/vela` 0.10.19 (with `@luxalgo/vela-ui` 0.4.5 and zag-js 1.49.0), `@luxalgo/vela-pinets` 0.3.5. `pinets` stays at 0.13.1: PineTS v0.14.0 is tagged on GitHub but not published to npm (an exact `pinets@0.14.0` install does not resolve); move it with `@luxalgo/vela-pinets` once it is published. The lockfile came from the `dependency-candidate` workflow; only this package family and its zag-js dependencies changed.
+5. The `upstream-update-candidate` workflow rebuilt the chart bundles from this branch: `build-charts.mjs` found the worker entry and indicator class of vela-pinets 0.3.5 exactly once, so OF-BUILD-001 is still anchored. `check:upstream` passes.
+6. Remaining before approval: the browser regression set and the light/dark, English/Persian, desktop/390 px captures from the pull request checklist.
+

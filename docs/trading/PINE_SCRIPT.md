@@ -2,7 +2,7 @@
 
 ## Components and versions
 
-The vendored **Vela 0.10.6** source remains the chart foundation. The application installs **@luxalgo/vela-pinets 0.3.4** and **pinets 0.13.1**, pinned in the web lockfile. The indicators are Pine Script **v5**; a v6 migration was not attempted because v6 support in this runtime has not been verified for every construct they use. Vela defines the public `ScriptingEngine` port; the official addon implements parsing/execution and conversion to Vela's scene model. Browser computation runs in the addon's hosted worker. No Pine runtime is imported into the Apache-licensed Vela core.
+The vendored **Vela 0.10.19** source remains the chart foundation. The application installs **@luxalgo/vela-pinets 0.3.5** and **pinets 0.13.1**, pinned in the web lockfile. The indicators are Pine Script **v5**; a v6 migration was not attempted because v6 support in this runtime has not been verified for every construct they use. Vela defines the public `ScriptingEngine` port; the official addon implements parsing/execution and conversion to Vela's scene model. Browser computation runs in the addon's hosted worker. No Pine runtime is imported into the Apache-licensed Vela core.
 
 ```mermaid
 flowchart LR

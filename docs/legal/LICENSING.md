@@ -89,8 +89,8 @@ manifest or embedded font metadata, not inferred from neighbours.
 | --- | --- | --- | --- | --- | --- |
 | Openfund application and packages (`apps/`, `packages/openfund-charts`, `-footprint`, `-gains-adapter`, `cms-client`, `scripts/`, `e2e/`, `infra/`) | First party | **None selected (all rights reserved)** | — | — | Owner decision pending ([decision](LICENSE_DECISION.md)) |
 | Docs and brand (`docs/`, `brand/` logos) | First party | None selected; logo is a trademark | — | — | Owner decision pending |
-| Vela 0.10.6 (`vendor/vela`) | LuxAlgo | Apache-2.0 + NOTICE | Patched (see [registry](../integrations/UPSTREAM_REGISTRY.md)) | LICENSE, NOTICE, modified-file notices, visible "Vela" attribution with link | Met |
-| PineTS 0.13.1, Vela-pinets 0.3.4 | LuxAlgo (npm) | AGPL-3.0-only | Worker patched by `build-charts.mjs` | Corresponding Source, section 13 offer | License texts shipped; offer form and combined-work scope **open** ([PineTS](PINETS.md)) |
+| Vela 0.10.19 (`vendor/vela`) | LuxAlgo | Apache-2.0 + NOTICE | Patched (see [registry](../integrations/UPSTREAM_REGISTRY.md)) | LICENSE, NOTICE, modified-file notices, visible "Vela" attribution with link | Met |
+| PineTS 0.13.1, Vela-pinets 0.3.5 | LuxAlgo (npm) | AGPL-3.0-only | Worker patched by `build-charts.mjs` | Corresponding Source, section 13 offer | License texts shipped; offer form and combined-work scope **open** ([PineTS](PINETS.md)) |
 | MetaMask SDK 0.33.1 | ConsenSys (npm, via wagmi) | ConsenSys proprietary | None | Prominent notice; non-commercial use (≤ 10,000 MAU) | Notice shipped; commercial-use limit **open** |
 | Gains SDK (`vendor/gains-sdk`) | Ingenium Labs | MIT | None; not imported | Keep notice | Met (dormant) |
 | Journal core (`third_party/luxalgo-trade-journal`) | LuxAlgo | MIT | Built `dist/` vendored | Keep notice | Met |

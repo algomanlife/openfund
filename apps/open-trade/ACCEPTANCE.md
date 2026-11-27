@@ -6,7 +6,7 @@ Branch: `feature/open-trade-desktop`. Version: 0.0.1, internal unsigned beta.
 ## Audit and reuse boundaries
 
 - Root npm scripts orchestrate independently locked applications.
-- Vela 0.10.6 and the patched Pine worker are built by the existing chart build.
+- Vela 0.10.19 and the patched Pine worker are built by the existing chart build.
   The shared bridge accepts an optional storage key for independent desktop panes;
   existing web defaults remain unchanged. Vela and Gains source are not replaced.
 - Gains adapter shares a price socket among chart subscribers and supplies candles;
