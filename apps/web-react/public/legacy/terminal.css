@@ -561,6 +561,14 @@ html[data-theme="light"] :is(.topnav,.dlg,.notif-panel,.market-dropdown){backgro
   font-family:var(--ds-font-latin);line-height:1;
   padding:6px 8px 6px 2px;margin:-6px 0 0 -2px;
 }
+/* inside the chart mount (vela-bridge.js): the plot's bottom-left corner at every size */
+.chart-brand.in-plot{
+  left:calc(var(--vela-toolbar-gutter,0px) + 10px);
+  bottom:calc(var(--vela-price-pane-bottom,0px) + 10px);
+  margin:0;padding:6px 8px 4px 0;z-index:6;
+}
+/* the footprint status line is drawn in the same corner */
+.chart-brand.in-plot.above-footprint{bottom:calc(var(--vela-price-pane-bottom,0px) + 34px)}
 .chart-brand .brand-o{font-size:24px;font-weight:700;color:#82E7BD;transition:text-shadow .3s;line-height:1}
 .chart-brand:hover .brand-o{text-shadow:0 0 12px #82e7bd88}
 .chart-brand .brand-rest{
@@ -653,8 +661,8 @@ html[data-theme="light"] .submit:hover{background:#096b44}
 
 /* Open Oracle mark: chart legend (vela-bridge.js), depth panel and status bar */
 .of-oracle-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 16px; height: 16px; margin-inline-end: 2px; border-radius: 50%;
-  background: #82e7bd; color: #060808; font: 700 11px/1 Ubuntu, system-ui, sans-serif;
-  vertical-align: -3px;
+  /* the Openfund "O" (as in .chart-brand .brand-o): green, bold, no frame */
+  display: inline-block; margin-inline-end: 3px;
+  color: #82E7BD; font: 700 15px/1 var(--ds-font-latin, Ubuntu), sans-serif;
+  vertical-align: -1px;
 }

@@ -31,8 +31,8 @@ const rows=document.querySelector('#live-rows'),status=document.querySelector('#
 const formatPrice=(n,p=4)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:Math.min(2,p),maximumFractionDigits:p});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function getFrom(base,path){const r=await fetch(base+path,{signal:AbortSignal.timeout(12000)});if(!r.ok)throw Object.assign(new Error('HTTP '+r.status),{status:r.status});const j=await r.json();if(!Array.isArray(j.data))throw new Error('Invalid data');return j.data}
-/* catalog and candles: Open Oracle on this origin; the venue API only where the origin has none (404) */
-let oracleMarkets=null;async function get(path){if(oracleMarkets!==false){try{const d=await getFrom(ORACLE,path);oracleMarkets=true;return d}catch(e){if(oracleMarkets===true||e.status!==404)throw e;oracleMarkets=false}}return getFrom(API,path)}
+/* catalog and candles: Open Oracle on this origin; the venue API only where its first read fails */
+let oracleMarkets=null;async function get(path){if(oracleMarkets!==false){try{const d=await getFrom(ORACLE,path);oracleMarkets=true;return d}catch(e){if(oracleMarkets===true)throw e;oracleMarkets=false}}return getFrom(API,path)}
 function visible(){let list=category==='featured'?featured.map(s=>markets.find(m=>m.symbol===s)).filter(Boolean):markets.filter(m=>m.group===category);if(search)list=list.filter(m=>(m.symbol+' '+m.base).toLowerCase().includes(search));return list.slice(0,category==='featured'?10:15)}
 function usablePrice(p){return p&&Number.isFinite(Number(p.mark))&&Number(p.mark)>0&&Number.isFinite(Number(p.updatedAt))}
 function updatePrices(items){let changed=false;for(const p of items){if(!p||typeof p.market!=='string'||!usablePrice(p))continue;const old=prices.get(p.market);if(old&&Number(old.updatedAt)>Number(p.updatedAt))continue;prices.set(p.market,{...p,direction:old?Math.sign(Number(p.mark)-Number(old.mark)):0,tickAt:old&&Number(p.mark)!==Number(old.mark)?Date.now():old?.tickAt||0});changed=true}if(changed){latestReceive=Date.now();lastError=false;scheduleRender()}}

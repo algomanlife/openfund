@@ -1,6 +1,6 @@
 /** Virtual order book (VOB) and executed trades through the same-origin Open Oracle market API
     (/api/oracle/markets/:market/book|trades, ADR 0059), polled; the venue socket only where the
-    origin has no Open Oracle market API. Never derive liquidity or prints from marks. */
+    origin's Open Oracle market API fails its first read. Never derive liquidity or prints from marks. */
 (() => {
   const $ = (id) => document.getElementById(id),
     L = (a, b) =>
@@ -366,7 +366,7 @@
     let reads = viaOracle === false ? null : await readAll(oracleApi);
     if (g !== generation || stopped) return;
     if (reads && viaOracle === null)
-      viaOracle = !reads.every((r) => r.status === "rejected" && r.reason?.status === 404);
+      viaOracle = !reads.every((r) => r.status === "rejected");
     if (!viaOracle) reads = await readAll(api);
     if (g !== generation || stopped) return;
     if (reads[0].status === "fulfilled") acceptBook(reads[0].value);

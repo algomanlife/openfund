@@ -60,12 +60,13 @@ function mount(container, opts){
   if (!el) throw new Error('Vela mount: container not found');
   const engines = [];
 
-  /* Footprint (Hyperliquid order flow, chart-only): registered before the workspace
+  let footprintInstalled = false;
+  /* Footprint (order flow, chart-only): registered before the workspace
      mounts, and only when the server's FOOTPRINT_ENABLED flag is on. Off, nothing is
      registered, fetched or painted; a failure here never blocks the Gains chart. */
   try {
     const rc = global.__OPENFUND_RUNTIME_CONFIG__ || (global.parent !== global ? global.parent.__OPENFUND_RUNTIME_CONFIG__ : null);
-    if (rc && rc.footprint === true && typeof WLib.installFootprint === 'function') WLib.installFootprint({ apiBase: '' });
+    if (rc && rc.footprint === true && typeof WLib.installFootprint === 'function') { WLib.installFootprint({ apiBase: '' }); footprintInstalled = true; }
   } catch (e) { console.warn('[footprint] not installed', e); }
 
   /* Openfund hosts its own market selector — Vela's symbol chip is omitted.
@@ -88,12 +89,27 @@ function mount(container, opts){
       meta.replaceChildren(badge, document.createTextNode(' ' + rest));
     }
   };
-  new MutationObserver(brandLegend).observe(el, { subtree: true, childList: true, characterData: true });
+  /* The Openfund chart mark (#chart-brand) lives inside the chart's own mount, which
+     publishes the price-pane insets (--vela-toolbar-gutter, --vela-price-pane-bottom):
+     it then sits at the plot's bottom-left corner at every size, mobile included. */
+  const placeBrand = () => {
+    /* kept across re-mounts: a destroyed workspace takes its mount (and the mark) away */
+    const brand = document.getElementById('chart-brand') || global.__ofChartBrand;
+    global.__ofChartBrand = brand;
+    const host = el.querySelector('.vela-watermark')?.parentElement;
+    if (!brand || !host || brand.parentElement === host) return;
+    brand.classList.add('in-plot');
+    if (footprintInstalled) brand.classList.add('above-footprint');
+    host.append(brand);
+  };
+  new MutationObserver(() => { brandLegend(); placeBrand(); }).observe(el, { subtree: true, childList: true, characterData: true });
 
   const ws = new WLib.VelaWorkspace(el, {
     /* Vela's own UI is English-only and LTR in every Openfund locale
        (docs/integrations/VELA.md): the host locale is never forwarded */
     locale: 'en',
+    /* Openfund names its own data service, never a venue, in the chart */
+    messages: { 'footprint.source': 'Footprint · Open Oracle' },
     layout: false,                    /* single-chart mode */
     symbol: 'openoracle:' + String(opts.symbol || 'BTC/USD').replace(/^(?:gains|openoracle):/, ''),
     timeframe: canonicalTimeframe(opts.timeframe || '1'),

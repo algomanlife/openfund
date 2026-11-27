@@ -4408,5 +4408,9 @@
   "Gains Network — Open Oracle price source and market data": "Gains Network — источник цен Open Oracle и рыночных данных",
   "Hyperliquid — Open Oracle price source": "Hyperliquid — источник цен Open Oracle",
   "GMX — Open Oracle price source": "GMX — источник цен Open Oracle",
-  "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.": "В этой версии цены, свечи и спецификации рынков поступают из Open Oracle — собственного ценового сервиса Openfund, того же источника, что использует торговый терминал Openfund."
+  "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.": "В этой версии цены, свечи и спецификации рынков поступают из Open Oracle — собственного ценового сервиса Openfund, того же источника, что использует торговый терминал Openfund.",
+  "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal.": "Все классы активов, которые отслеживает торговая экосистема Openfund, с живыми ценами Open Oracle — собственной системы Openfund для агрегации и определения цен. Выберите рынок и откройте его прямо в терминале.",
+  "Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown.": "Цены, свечи и спецификации рынков поступают из Open Oracle — собственного ценового сервиса Openfund: криптовалютные рынки объединяют до трёх независимых источников, остальные — один. Плечо и условия счетов Openfund независимы. Показываются только поля, которые предоставляет сервис.",
+  "backup feed": "резервный источник",
+  "prices and market specifications": "цены и спецификации рынков"
 }

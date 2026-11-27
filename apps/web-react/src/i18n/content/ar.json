@@ -4408,5 +4408,9 @@
   "Gains Network — Open Oracle price source and market data": "Gains Network — مصدر أسعار Open Oracle وبيانات السوق",
   "Hyperliquid — Open Oracle price source": "Hyperliquid — مصدر أسعار Open Oracle",
   "GMX — Open Oracle price source": "GMX — مصدر أسعار Open Oracle",
-  "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.": "في هذا الإصدار تأتي الأسعار والشموع ومواصفات الأسواق من Open Oracle، خدمة الأسعار الخاصة بـ Openfund — وهو المصدر نفسه الذي تستخدمه منصة التداول في Openfund."
+  "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.": "في هذا الإصدار تأتي الأسعار والشموع ومواصفات الأسواق من Open Oracle، خدمة الأسعار الخاصة بـ Openfund — وهو المصدر نفسه الذي تستخدمه منصة التداول في Openfund.",
+  "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal.": "كل فئات الأصول التي يتابعها نظام التداول في Openfund، بأسعار حية من Open Oracle — نظام Openfund الخاص لتجميع الأسعار واكتشافها. اختر سوقًا وانتقل به مباشرة إلى منصة التداول.",
+  "Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown.": "تأتي الأسعار والشموع ومواصفات الأسواق من Open Oracle، خدمة الأسعار الخاصة بـ Openfund: تجمع أسواق العملات المشفرة حتى ثلاثة مصادر مستقلة، والأسواق الأخرى مصدرًا واحدًا. الرافعة وشروط حسابات Openfund مستقلة. تُعرض فقط الحقول التي توفرها الخدمة.",
+  "backup feed": "مصدر احتياطي",
+  "prices and market specifications": "الأسعار ومواصفات الأسواق"
 }

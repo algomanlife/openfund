@@ -4408,5 +4408,9 @@
   "Gains Network — Open Oracle price source and market data": "Gains Network — Open Oracle 价格来源与市场数据",
   "Hyperliquid — Open Oracle price source": "Hyperliquid — Open Oracle 价格来源",
   "GMX — Open Oracle price source": "GMX — Open Oracle 价格来源",
-  "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.": "在此版本中，价格、K 线和市场规格均来自 Openfund 自有的价格服务 Open Oracle —— 与 Openfund 交易终端使用的来源相同。"
+  "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.": "在此版本中，价格、K 线和市场规格均来自 Openfund 自有的价格服务 Open Oracle —— 与 Openfund 交易终端使用的来源相同。",
+  "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal.": "Openfund 交易生态覆盖的所有资产类别，由 Open Oracle 提供实时价格 —— Openfund 自有的价格聚合与发现系统。选择一个市场，直接带入交易终端。",
+  "Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown.": "价格、K 线和市场规格均来自 Openfund 自有的价格服务 Open Oracle：加密货币市场最多合并三个独立来源，其他市场使用一个来源。杠杆与 Openfund 账户条款相互独立。仅显示该服务提供的字段。",
+  "backup feed": "备用数据源",
+  "prices and market specifications": "价格与市场规格"
 }

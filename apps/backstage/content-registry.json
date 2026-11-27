@@ -2,11 +2,11 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4925,
+    "uniqueRecords": 4926,
     "mappedCalls": 2336,
     "exceptions": 62,
     "validationFindings": 0,
-    "reviewedExclusions": 53
+    "reviewedExclusions": 52
   },
   "editorial": {
     "locales": [
@@ -35584,26 +35584,6 @@
       ]
     },
     {
-      "key": "react.526667f6813cab74",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "قیمت‌ها حاصل تجمیع Open Oracle از Gains، Hyperliquid و GMX است: بازارهای رمزارز تا سه منبع و سایر بازارها یک منبع دارند. مشخصات بازار از Gains Network می‌آید؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منابع نمایش داده می‌شود.",
-      "en": "Prices are Open Oracle composites of Gains, Hyperliquid and GMX: crypto markets combine up to three sources, other markets use one. Market specifications come from Gains Network; leverage and Openfund account terms are independent. Only fields provided by the sources are shown.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 162,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.526ab44d8b0507df",
       "namespace": "react",
       "area": "Global Content",
@@ -50032,6 +50012,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.7806d29db25fa2ef",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی اوپن‌فاند برای تجمیع و کشف قیمت. بازار را انتخاب کن و مستقیم به ترمینال ببر.",
+      "en": "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 77,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -67417,6 +67417,26 @@
       ]
     },
     {
+      "key": "react.a2e6c87646ef30d4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "منبع پشتیبان",
+      "en": "backup feed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 85,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a2eb84b0fb4f889a",
       "namespace": "react",
       "area": "Website",
@@ -79095,6 +79115,26 @@
       ]
     },
     {
+      "key": "react.bf7374d9d50c95f5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت و مشخصات بازار",
+      "en": "prices and market specifications",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 170,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.bf742112f17fb9ee",
       "namespace": "react",
       "area": "Website",
@@ -87882,26 +87922,6 @@
       ]
     },
     {
-      "key": "react.d57b9da0ef28214c",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "منبع قیمت",
-      "en": "price source",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 170,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.d5884e499e48c851",
       "namespace": "react",
       "area": "Global Content",
@@ -92123,26 +92143,6 @@
       ]
     },
     {
-      "key": "react.dfcfa70ba9f6d649",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "مشخصات بازار",
-      "en": "market specifications",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 172,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.dff13ea77dde50fd",
       "namespace": "react",
       "area": "Website",
@@ -96290,6 +96290,26 @@
           "line": 19,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e9d030caa2be4820",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت‌ها، کندل‌ها و مشخصات بازار از Open Oracle، سامانهٔ قیمت اختصاصی اوپن‌فاند، می‌آیند: بازارهای رمزارز تا سه منبع مستقل و سایر بازارها یک منبع دارند. اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهایی که این سامانه ارائه می‌دهد نمایش داده می‌شود.",
+      "en": "Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 162,
+          "page": "markets",
+          "route": "/:locale/markets",
           "method": "bilingual-record"
         }
       ]
@@ -101336,13 +101356,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 77,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -106083,14 +106096,6 @@
       "route": "/:locale/markets",
       "reason": "language-neutral-brand-or-identifier",
       "text": "Ag"
-    },
-    {
-      "component": "apps/web-react/src/features/markets/Markets.tsx",
-      "line": 171,
-      "page": "markets",
-      "route": "/:locale/markets",
-      "reason": "language-neutral-brand-or-identifier",
-      "text": "Gains Network"
     },
     {
       "component": "apps/web-react/src/features/partners/Ambassador.tsx",

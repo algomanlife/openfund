@@ -91,7 +91,7 @@ async function getFrom(base, path, timeoutMs){
 }
 /* Catalog and candles come from Open Oracle (/api/oracle/markets…) on this
    origin; the venue API is read directly only where the origin has no Open
-   Oracle market API (404), e.g. a static preview. */
+   Oracle market API (it fails on the first read), e.g. a static preview. */
 let oracleMarketApi = null;   /* null = unknown, true/false once decided */
 async function get(path, timeoutMs){
   if (oracleMarketApi !== false){
@@ -100,7 +100,7 @@ async function get(path, timeoutMs){
       oracleMarketApi = true;
       return data;
     } catch (e) {
-      if (oracleMarketApi === true || e.status !== 404) throw e;
+      if (oracleMarketApi === true) throw e;
       oracleMarketApi = false;
     }
   }

@@ -2,7 +2,7 @@ import { text, type Localized } from '../../features/information/content'
 
 /** Canonical Markets page editorial seed (hero + supporting copy).
  *  Seeded into the `pages` collection (slug: markets) by the backstage seeder.
- *  Market instruments and live prices ALWAYS come from Gains Network —
+ *  Market instruments and live prices ALWAYS come from Open Oracle —
  *  never from the CMS. NOT imported by the app at runtime. */
 export interface MarketsSeed {
   title: Localized
@@ -16,8 +16,8 @@ export const marketsSeed: MarketsSeed = {
   title: text('Markets', 'بازارها'),
   subtitle: text('Explore Openfund', 'بازارهای جهانی'),
   description: text(
-    'Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal.',
-    'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
+    'Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal.',
+    'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی اوپن‌فاند برای تجمیع و کشف قیمت. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
   ),
   seoTitle: text('Openfund Markets', 'بازارهای اوپن‌فاند'),
   seoDescription: text(
