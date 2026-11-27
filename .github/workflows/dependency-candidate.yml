@@ -100,4 +100,9 @@ jobs:
             echo
             echo "Required before merge: the normal pull request checks, a reviewed diff of the lockfile, and the PR template sections added by the reviewer."
           } > pr-body.md
-          gh pr create --draft --base main --head "$branch" --title "chore(deps): ${OPERATION} in ${DIR} (candidate)" --body-file pr-body.md
+          # The repository may not allow GitHub Actions to open pull requests;
+          # the pushed branch is then the result and a person opens the PR.
+          if ! gh pr create --draft --base main --head "$branch" --title "chore(deps): ${OPERATION} in ${DIR} (candidate)" --body-file pr-body.md; then
+            echo "::notice::Candidate branch ${branch} pushed; open its pull request from https://github.com/${GITHUB_REPOSITORY}/compare/main...${branch}"
+            cat pr-body.md >> "$GITHUB_STEP_SUMMARY"
+          fi

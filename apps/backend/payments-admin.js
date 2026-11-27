@@ -15,7 +15,7 @@
 import { Router } from 'express'
 import { adminAuth, adminActor } from './admin.js'
 import { financialAudit } from './financial-audit.js'
-import { verifyAndConfirm, chainConfig, defaultPaymentVerifier } from './purchases.js'
+import { verifyAndConfirm, chainConfig } from './purchases.js'
 import { orderLedger, paymentMethodSettings, setPaymentMethod, formatMicros, formatUnits, paymentEvent, unitsToMicros } from './payment-ledger.js'
 import { paymentMetrics } from './payment-watcher.js'
 import { normalizeTxId, SOLANA_CHAIN_ID } from './payment-verification.js'

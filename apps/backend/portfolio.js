@@ -15,7 +15,6 @@ import { accountMetrics } from './trading-math.js'
  * Every endpoint is ownership-scoped: the account is resolved from the
  * session user, never from a client-supplied id.
  */
-import pg from "pg";
 import * as journal from "../../third_party/luxalgo-trade-journal/dist/index.js";
 
 const {
@@ -276,11 +275,12 @@ export class Portfolio {
     accountId = null,
   ) {
     const params = [userId];
+    let where;
     if (accountId) {
       params.push(accountId);
-      var where = ["p.user_id = $1", "p.account_id = $2"];
+      where = ["p.user_id = $1", "p.account_id = $2"];
     } else {
-      var where = [
+      where = [
         "p.user_id = $1",
         "p.account_id IN (SELECT id FROM demo_accounts WHERE user_id=$1 AND account_type='free_demo')",
       ];

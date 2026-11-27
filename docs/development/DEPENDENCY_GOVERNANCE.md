@@ -51,7 +51,15 @@ that directory's `package.json` and `package-lock.json` may change, and the
 result is a **draft** pull request with `npm audit` before and after. It never
 merges or deploys; the normal checks and review apply. Pull requests opened with
 the workflow token do not start other workflows, so a maintainer pushes a
-commit (for example the review notes) to start the checks.
+commit (for example the review notes) to start the checks. Where the repository
+does not allow GitHub Actions to open pull requests, the run still pushes the
+`deps-candidate/<run>` branch and writes the comparison link and the audit
+summary to the run summary; a maintainer opens or reuses that branch.
+
+**Backend lint.** `apps/backend` runs ESLint 10 (`npm --prefix apps/backend run
+lint`, `eslint.config.mjs`) on its production modules in the CI backend job. The
+rules are listed in the config rather than imported from a preset, so ESLint is
+the only added development dependency. Test suites are not linted yet.
 
 ## Registry check
 

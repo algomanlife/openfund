@@ -12,6 +12,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "migrate": "node migrate.js",
+    "lint": "eslint .",
     "operator": "node admin-operator-cli.mjs",
     "seed-plans": "node seed-plans.js",
     "test": "node test/siwe.test.mjs",
@@ -64,5 +65,8 @@
     "pg": "^8.13.1",
     "viem": "^2.58.2",
     "ws": "^8.23.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.1.0"
   }
 }

@@ -25,7 +25,7 @@ import {instrumentSpec} from './instruments.js'
 import { propMaxLeverage } from './prop-leverage.js'
 import Decimal from 'decimal.js'
 
-import { D, SIM, feePct, spreadPct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
+import { D, SIM, feePct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
 import { ChallengeService, evaluateRules, normalizeRules, countTradingDays } from './evaluation.js'
 import { ConductService } from './conduct.js'
 import { assertAgreement } from './funded-agreement.js'
