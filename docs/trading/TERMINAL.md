@@ -27,7 +27,7 @@ Themes and RTL support are product features. Repository documentation and screen
 
 ## Charts and proprietary indicators
 
-The shared catalog starts with Open Algo V5, Price Action Concepts and Smart Money Concepts, followed by all 77 existing built-ins. Original Pine sources run in the official worker addon with two repository-local libraries; input defaults and visualization settings are preserved. Add/remove and input edits use the existing dialog/legend. Product-specific chart state persists across reloads; position overlays stay with the account bridge.
+The shared catalog starts with Open Algo V5, Price Action Concepts and Smart Money Concepts, followed by all 106 existing built-ins. Original Pine sources run in the official worker addon with two repository-local libraries; input defaults and visualization settings are preserved. Add/remove and input edits use the existing dialog/legend. Product-specific chart state persists across reloads; position overlays stay with the account bridge.
 
 Timeframe menus use canonical Pine minute/day IDs mapped to Gains intervals. A menu positioner stacking rule prevents canvas interception after hover. The terminal listens to committed market changes and updates its interval state; symbol selection commits its actual market ID before refreshing dependent chart display. No chart instance remount is required. Loading messages cannot intercept clicks and respect `hidden`.
 

@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Charts: Vela 0.10.19 and Vela Pine addon 0.3.5.** The vendored Vela source and the npm packages move from 0.10.6 / 0.3.4 to the latest releases (comparison symbols, percentage-scale toggle, indicator labels on the price scale, tick timeframes, full screen and other upstream fixes). Openfund's picker order patch (OF-VELA-003) was ported to the new upstream picker API; the no-badge patch, the Pine worker wrapper, Openfund's indicators, themes, locales and terminal integration are unchanged. PineTS stays at 0.13.1 because 0.14.0 is not yet published to npm.
+- **Charts: Vela 0.10.19 and Vela Pine addon 0.3.5.** The vendored Vela source and the npm packages move from 0.10.6 / 0.3.4 to the latest releases (29 more built-in indicators, now 106, including Ichimoku Cloud, MA/EMA crosses, Chop Zone and volatility studies; comparison symbols, percentage-scale toggle, indicator labels on the price scale, tick timeframes, full screen and other upstream fixes). Openfund's picker order patch (OF-VELA-003) was ported to the new upstream picker API; the no-badge patch, the Pine worker wrapper, Openfund's indicators, themes, locales and terminal integration are unchanged. PineTS stays at 0.13.1 because 0.14.0 is not yet published to npm.
 
 - **Terminal percentage sizing readiness.** Ignore percentage/MAX clicks while the scoped account adapter is unavailable or read-only, preventing an uncaught error during reconnect. The terminal completion browser suite covers the transition.
 

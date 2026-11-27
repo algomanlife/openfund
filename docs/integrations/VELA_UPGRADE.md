@@ -17,7 +17,7 @@ Each row is protected by a guard in [`infra/upstream/customizations.json`](../..
 | Chart tabs and Quick Trade | Terminal UI (`TradingPages.tsx`), account adapter; Vela only draws the chart | guard, `npm run test:web` (`chart-quick-trade.test.mjs`), `test:browser:completion` |
 | Symbol selection and categories | Openfund markets selector (`CATEGORY_ORDER`), `setSymbol` through the bridge | guard, `test:markets`, browser suite (symbol picker changes chart and terminal state) |
 | Account and order adapter | Outside Vela: position overlays never enter chart persistence | guard (`delete chart.drawings`), browser suite |
-| Custom indicators | `indicators/*.pine`, `pine-sources.mjs`, `workspace-entry.ts` catalog; picker order via OF-VELA-003 | `test:charts`, browser suite (exact catalog order, 77 built-ins, three originals calculate) |
+| Custom indicators | `indicators/*.pine`, `pine-sources.mjs`, `workspace-entry.ts` catalog; picker order via OF-VELA-003 | `test:charts`, browser suite (exact catalog order, 106 built-ins, three originals calculate) |
 | Localisation and RTL | `registerLocale` for fa (RTL), ar, ru, zh-Hans in `workspace-entry.ts` | guard, `test:browser:locale` |
 | Persistent settings | `localStorage` key `of-chart-v2-<product>` in `vela-bridge.js` | guard, browser suite (settings survive reload) |
 | Mobile | Responsive terminal layout and chart dialogs | `test:browser:layout`, browser suite (responsive dialogs) |
@@ -69,5 +69,6 @@ The upgrade needs human review before merge, as with every 0.x minor.
 3. `update-vendor --provider vela --to v0.10.19 --apply` then reported the vendored tree IDENTICAL to v0.10.15 plus both patches and re-applied both cleanly. No `LICENSE` or `NOTICE` change.
 4. npm pins: `@luxalgo/vela` 0.10.19 (with `@luxalgo/vela-ui` 0.4.5 and zag-js 1.49.0), `@luxalgo/vela-pinets` 0.3.5. `pinets` stays at 0.13.1: PineTS v0.14.0 is tagged on GitHub but not published to npm (an exact `pinets@0.14.0` install does not resolve); move it with `@luxalgo/vela-pinets` once it is published. The lockfile came from the `dependency-candidate` workflow; only this package family and its zag-js dependencies changed.
 5. The `upstream-update-candidate` workflow rebuilt the chart bundles from this branch: `build-charts.mjs` found the worker entry and indicator class of vela-pinets 0.3.5 exactly once, so OF-BUILD-001 is still anchored. `check:upstream` passes.
-6. Remaining before approval: the browser regression set and the light/dark, English/Persian, desktop/390 px captures from the pull request checklist.
+6. Vela 0.10.19 adds 29 built-in indicators to the picker (77 to 106: Accelerator Oscillator, Accumulative Swing Index, Advance/Decline, Average Price, Chop Zone, Correlation Coefficient, Correlation - Log, the MA/EMA cross and multiple-average family, Guppy, Ichimoku Cloud, Majority Rule, Median Price, Momentum, Moving Average Channel, Net Volume, Rank Correlation Index, Standard Error and its bands, Trend Strength Index, Typical Price and four volatility studies). None sorts before 52-Week High/Low, so the browser test's add-by-index check is unchanged; its catalog count moves to 109.
+7. Remaining before approval: the browser regression set and the light/dark, English/Persian, desktop/390 px captures from the pull request checklist.
 
