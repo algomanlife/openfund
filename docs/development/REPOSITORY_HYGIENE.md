@@ -85,3 +85,16 @@ diff-checked by `.github/workflows/upstream-guard.yml` and read by
 dedicated PR: removing those three references, removing `dist/` (or keeping
 only `dist/downloads/`), and changing the `AGENTS.md` rule. That is a policy
 change for the owner, not a cleanup an agent may make alone. The dependency registry (docs/integrations) lists the vendored trees.
+
+## dist retired (2026-11-27)
+
+The owner retired the tracked `dist/` snapshot (17 MB, 62 files, never served
+by the backend). `npm run build:charts` no longer writes it, the upstream
+guard and `apps/web-react/test/community.test.mjs` no longer compare it,
+`infra/upstream/customizations.json` lists only the `public/` copies, and
+`AGENTS.md` no longer protects it. It is recorded as `dist-snapshot` in the
+[retired registry](RETIRED.md). Git history keeps the old files.
+
+Remaining duplicates are deliberate: `apps/web-react/public/assets/` holds the
+served copies, `brand/` the brand sources, and `docs/assets/brand/` the copies
+that documentation links to.

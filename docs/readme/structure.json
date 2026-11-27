@@ -24,8 +24,7 @@
     { "title": "Content and assets", "icon": "book", "entries": [
       { "path": "docs/", "role": "Documentation, ADRs, status, README data and assets" },
       { "path": "brand/", "role": "Brand book, logos, imagery and typography reference" },
-      { "path": "indicators/", "role": "Three Openfund Pine indicators and two libraries" },
-      { "path": "dist/", "role": "Tracked source-critical compatibility assets" }
+      { "path": "indicators/", "role": "Three Openfund Pine indicators and two libraries" }
     ] },
     { "title": "Delivery and tooling", "icon": "gear", "entries": [
       { "path": ".github/", "role": "CI, release and security workflows, templates" },

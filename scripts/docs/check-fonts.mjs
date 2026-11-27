@@ -13,8 +13,7 @@
  *      `typeface`, Google Fonts `family=`, or a retired file name/route;
  *   3. an @font-face or FontFace declares a family other than Ubuntu… or Dastkhat…;
  *   4. a Persian/Arabic @font-face is declared outside the one shared file
- *      apps/web-react/public/assets/fonts/dastkhat/dastkhat.css (and its
- *      byte-identical dist/ copy).
+ *      apps/web-react/public/assets/fonts/dastkhat/dastkhat.css.
  * Prose may still *name* a retired face (for example "based on Vazirmatn" or
  * "Irancell was removed"); this gate only looks at font contexts. Historical
  * evidence under docs/reviews/ and the release notes are exempt from rule 2.
@@ -37,7 +36,7 @@ const CONTEXTS = [
   /[?&]family=([^&"'\s>]+)/g,                     // Google Fonts URLs
 ]
 const ALLOWED_FAMILY = /^(Ubuntu|Dastkhat)( |$)/
-const ONE_FILE = new Set(['apps/web-react/public/assets/fonts/dastkhat/dastkhat.css', 'dist/assets/fonts/dastkhat/dastkhat.css'])
+const ONE_FILE = new Set(['apps/web-react/public/assets/fonts/dastkhat/dastkhat.css'])
 /* rule-2 exemptions: dated evidence and records of the removal itself */
 const HISTORICAL = /^(docs\/reviews\/|docs\/releases\/|CHANGELOG\.md$|docs\/development\/RETIRED\.(json|md)$)/
 /* files that must mention the retired patterns to forbid them */

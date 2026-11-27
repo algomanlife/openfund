@@ -1,6 +1,6 @@
 # Openfund brand assets
 
-This directory groups existing brand artifacts **without changing the runtime asset paths in `dist/`**.
+This directory groups existing brand artifacts **without changing the runtime asset paths in `apps/web-react/public/assets/`**.
 
 - `logos/`: approved Openfund logo variants.
 - `logos/seasonal/`: owner-approved (2026-11-11) seasonal decoration layers for the header logo only (Yalda pomegranates, Christmas hat). They never replace the master mark; `apps/web-react/src/brand/seasonalLogo.ts` draws them over it by date.
