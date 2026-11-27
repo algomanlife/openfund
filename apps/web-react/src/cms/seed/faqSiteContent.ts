@@ -256,7 +256,7 @@ export const faqItems: FaqItemContent[] = [
     ] },
   { key: 'terminal-leverage', category: 'terminal', sort: 5,
     question: text('How is leverage applied per market?', 'اهرم چگونه برای هر بازار اعمال می‌شود؟'),
-    answer: text('Each market’s maximum leverage comes from the Gains Network market feed and is capped by Openfund’s ceilings: BTC and ETH 20×, other crypto 15×, forex, stocks, commodities and indices 50×. The lower of the two applies. Challenges sold before these terms keep the limit recorded in their rules.', 'حداکثر اهرمِ هر بازار از خوراکِ بازارِ Gains Network می‌آید و سقف‌های اوپن‌فاند بر آن اعمال می‌شود: بیت‌کوین و اتریوم ۲۰ برابر، سایر رمزارزها ۱۵ برابر، فارکس، سهام، کالاها و شاخص‌ها ۵۰ برابر. مقدار کمتر اعمال می‌شود. چلنج‌هایی که پیش از این شرایط فروخته شده‌اند، سقف ثبت‌شده در قوانین خود را نگه می‌دارند.'),
+    answer: text('Each market’s maximum leverage comes from the Gains Network market feed and is capped by Openfund’s ceilings: BTC and ETH 20×, other crypto 15×, forex, stocks, commodities and indices 50×. The lower of the two applies. These ceilings apply to every challenge account, including challenges sold before these terms.', 'حداکثر اهرمِ هر بازار از خوراکِ بازارِ Gains Network می‌آید و سقف‌های اوپن‌فاند بر آن اعمال می‌شود: بیت‌کوین و اتریوم ۲۰ برابر، سایر رمزارزها ۱۵ برابر، فارکس، سهام، کالاها و شاخص‌ها ۵۰ برابر. مقدار کمتر اعمال می‌شود. این سقف‌ها برای همهٔ حساب‌های چلنج اعمال می‌شود، از جمله چلنج‌هایی که پیش از این شرایط فروخته شده‌اند.'),
     links: [
       { target: { kind: 'tool', slug: 'leverage-margin' }, label: text('Leverage and margin', 'اهرم و وجه تضمین') },
       { target: { kind: 'glossary', slug: 'leverage' }, label: text('Leverage', 'اهرم') },

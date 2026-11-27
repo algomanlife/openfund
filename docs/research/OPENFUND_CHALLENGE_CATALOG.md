@@ -23,11 +23,13 @@
 \* monthly cycle requires 7 profitable days + 35% consistency score.
 Common: no time limit (except the trial); daily loss measured on the higher of day-start
 balance/equity, reset 00:00 UTC+3; first payout 14 days after the first funded trade;
-minimum payout request 1% of account size; plan leverage up to 5×.
+minimum payout request 1% of account size; leverage follows the Openfund ceilings
+(BTC and ETH 20×, other crypto 15×, forex, stocks, indices and commodities 50×; a lower
+market limit always applies — ADR 0061).
 
 **Publication status:** these are the terms of record shown on the landing and Rulebook.
-Purchase activation, funded accounts, payout processing and trial provisioning are NOT
-operational in the current release — stated plainly on the checkout dialog, the FAQ and
+Purchase activation, funded accounts and payout processing are NOT
+operational in the current release (trial provisioning is implemented — ADR 0062) — stated plainly on the checkout dialog, the FAQ and
 the Rulebook (never implied otherwise).
 
 ## 2. Not adopted — and why (no fabrication)
@@ -43,11 +45,13 @@ the Rulebook (never implied otherwise).
 
 ## 3. Free Trial — published specification
 
-Included in the catalog (see table). Conditions: 14 calendar days per phase, Standard
-challenge rules, one active trial at a time, blocked while holding an active paid
-challenge, no reward requests, no conversion to a paid evaluation or funded account.
-**Provisioning is not implemented** — it activates with the commercial launch; the public
-copy says exactly that.
+Included in the catalog (see table). Conditions (owner decision 2026-11-27, ADR 0062):
+requested from the Prop dashboard and activated at once; the rules of the chosen Standard
+(two-phase) or One-phase challenge at any published size (Instant has no trial); 14 calendar
+days per phase; one running account at a time (no trial while any challenge or trial is
+running); a new trial 72 hours after the previous one ends; no reward requests, no withdrawals,
+no conversion to a paid evaluation or funded account. Starting a trial, passing phase one and
+passing the trial each issue a certificate. Sign-in no longer creates a demo account.
 
 ## 4. Decisions still awaiting the owner (before commercial launch)
 

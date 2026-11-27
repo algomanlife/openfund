@@ -125,8 +125,8 @@ export const pathB: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge plans publish a reference leverage of 5x; the real per-market maximum comes from the market feed, so read it in the terminal rather than assuming a ceiling.',
-            'دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. پلن‌های چلنج اهرم مرجع ۵× را منتشر می‌کنند، اما سقف واقعیِ هر بازار از فید می‌آید؛ پس به‌جای فرض کردنِ سقفی، آن را در ترمینال بخوانید.'
+            'Openfund accounts are server-side simulated accounts priced from live Open Oracle prices: a Free Trial or challenge account starts at its chosen size, with no deposits, withdrawals, refills or resets — and a simulated profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal.',
+            'حساب‌های اوپن‌فاند حساب‌های شبیه‌سازی‌شدهٔ سمت سرورند که با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شوند: حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود، بدون واریز، برداشت، شارژ یا بازنشانی — و سود شبیه‌سازی‌شده طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید.'
           )
         },
         {

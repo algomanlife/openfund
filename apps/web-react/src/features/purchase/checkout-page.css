@@ -226,3 +226,7 @@ html[data-theme=light] .of-co-ticket { --ticket-notch: #fff }
 .of-co-more dd, .of-co-chip { color: var(--body, #e6ece8); opacity: 1 }
 html[data-theme=light] .of-co-more, html[data-theme=light] .of-co-more dd, html[data-theme=light] .of-co-chip { color: #1d2a24 }
 html[data-theme=light] .of-co-conditions dt small { color: #4f5f58; opacity: 1 }
+
+/* ADR 0062: the same checkout inside the Prop dashboard (no page shell) */
+.of-co--embedded { width: 100%; margin: 0; padding: 0 }
+.of-co--embedded .of-co-head h2 { font-size: clamp(20px, 3vw, 26px); margin: 0 0 14px }

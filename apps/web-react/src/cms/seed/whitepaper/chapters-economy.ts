@@ -67,7 +67,7 @@ export const economyChapters: WpChapter[] = [
         'چرخه‌های طرح فاندد جدید ۷، ۱۴ یا ۲۱ روزه یا ماهانه‌اند. سهم معامله‌گر به ترتیب ۷۵٪، ۸۵٪، ۹۰٪ و ۱۰۰٪ است. سهم باقی‌مانده به IB منتسبِ واجد شرایط می‌رسد و برای حساب‌های بدون IB واجد شرایط، سهم اوپن‌فاند است. حساب‌های فعلی شرایط زمان صدور را حفظ می‌کنند و فعال‌سازی برای خریدهای جدید نیاز به تأیید شرایط فروش دارد.') },
       { type: 'faq', items: [
         { q: t('Can the rules change after I buy a challenge?', 'آیا قوانین پس از خرید چلنج تغییر می‌کنند؟'), a: t('No. The rule set is snapshotted at purchase, and your account is evaluated against that snapshot for its whole life.', 'خیر. مجموعهٔ قوانین در لحظهٔ خرید ثبت می‌شود و حساب شما در تمام عمرش بر اساس همان نسخه ارزیابی می‌شود.') },
-        { q: t('Is the Free Trial ever rewarded?', 'آیا تست رایگان پاداش دارد؟'), a: t('No. The Free Trial rehearses the two-step rules for fourteen days per phase and carries no reward and no conversion.', 'خیر. تست رایگان قوانین دومرحله‌ای را چهارده روز در هر مرحله تمرین می‌کند و پاداش یا امکان تبدیل ندارد.') },
+        { q: t('Is the Free Trial ever rewarded?', 'آیا تست رایگان پاداش دارد؟'), a: t('No. The Free Trial applies the Standard or One-phase rules for fourteen days per phase and carries no reward and no conversion.', 'خیر. تست رایگان قوانین «استاندارد» یا «تک‌مرحله‌ای» را چهارده روز در هر مرحله اعمال می‌کند و پاداش یا امکان تبدیل ندارد.') },
         { q: t('Where can I read the engine?', 'موتور را کجا می‌توانم بخوانم؟'), a: t('The evaluation engine and its audit are in the public repository, linked in the references.', 'موتور ارزیابی و ممیزی آن در مخزن عمومی است و در منابع پیوند داده شده است.') },
       ] },
       { type: 'refs', keys: ['plan-catalog', 'prop-engine', 'adr-purchases'] },

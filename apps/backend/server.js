@@ -53,6 +53,7 @@ import { operationsAdminRoutes } from './admin-operations.js'
 import { recordFailure, recordSuccess } from './observability.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
+import { trialRoutes } from './trials.js'
 import { createRadar, radarRoutes } from './radar.js'
 import { calendarAdminRoutes, ConductService } from './conduct.js'
 import { createTestClock } from './test-clock.js'
@@ -531,13 +532,17 @@ app.post("/auth/verify", limit(60), async (req, res) => {
       return res.status(403).json({ error: "account_suspended" });
     }
 
-    /* every new user gets ONE free demo account with exactly 100,000 DAI —
-       atomic + idempotent (DB constraint prevents duplicate credits) */
-    const demo = await engine.ensureDemoAccount(user.id).catch((e) => {
-      console.error(e);
-      null;
-    });
-    if (!demo) return res.status(500).json({ error: "internal" });
+    /* ADR 0062: signing in no longer creates a trading account. A trader
+       requests a Free Trial (POST /trials) or buys a challenge. Only test mode
+       (SIM_TEST_MODE + test database) keeps provisioning the engine's internal
+       practice account, the fixture the backend and browser suites trade on. */
+    if (testMode) {
+      const demo = await engine.ensureDemoAccount(user.id).catch((e) => {
+        console.error(e);
+        return null;
+      });
+      if (!demo) return res.status(500).json({ error: "internal" });
+    }
 
     /* Growth Partner attribution: recorded once, server-side, from the of_ref
        cookie; self-referral and repeat attribution are impossible (see referrals.js) */
@@ -880,6 +885,7 @@ app.use(purchaseRoutes({ pool, requireAuth, audit, limit, conduct }))
 app.use(labRoutes({ pool, graceMinutes: () => purchaseConfig().lateGraceMinutes }))
 app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
 app.use(certificateRoutes({ pool, requireAuth }))
+app.use(trialRoutes({ pool, requireAuth, audit }))
 /* Trade Radar + heatmap: read-only public Hyperliquid data, one shared cache and socket */
 const radar = createRadar()
 app.use(radarRoutes({ radar, gainsMarkets: () => marketData.markets }))

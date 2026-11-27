@@ -1,0 +1,31 @@
+/* ADR 0062: dashboard activation (Free Trial request + embedded checkout) */
+.of-activation { display: grid; gap: 18px }
+.of-activation-hero { position: relative; overflow: hidden; display: grid; gap: 14px; padding: clamp(18px, 3vw, 32px);
+  background: radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--of-mint) 16%, transparent), transparent 60%), var(--of-panel) }
+.of-activation-hero h2 { font-size: clamp(22px, 3.4vw, 32px); margin: 0; max-width: 22ch }
+.of-activation-hero > p { margin: 0; color: var(--of-muted); line-height: 1.9; max-width: 68ch }
+.of-activation-orbit { position: absolute; inset-inline-end: -60px; top: -60px; width: 260px; height: 260px; pointer-events: none; opacity: .55 }
+.of-activation-orbit span { position: absolute; inset: 0; border: 1px solid color-mix(in srgb, var(--of-mint) 40%, transparent); border-radius: 50%; animation: of-activation-spin 18s linear infinite }
+.of-activation-orbit span:nth-child(2) { inset: 34px; animation-duration: 12s; animation-direction: reverse }
+.of-activation-orbit span:nth-child(3) { inset: 72px; background: radial-gradient(circle, color-mix(in srgb, var(--of-mint) 30%, transparent), transparent 70%); animation: none }
+.of-activation-orbit span::after { content: ""; position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; border-radius: 50%; background: var(--of-mint); box-shadow: 0 0 12px var(--of-mint) }
+.of-activation-orbit span:nth-child(3)::after { display: none }
+@keyframes of-activation-spin { to { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) { .of-activation-orbit span { animation: none } }
+.of-activation-models { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; position: relative }
+.of-activation-model { display: grid; gap: 6px; text-align: start; padding: 16px; border-radius: 14px; border: 1px solid var(--of-line);
+  background: color-mix(in srgb, var(--of-text) 3%, transparent); color: inherit; cursor: pointer; font: inherit }
+.of-activation-model b { font-size: 17px }
+.of-activation-model > span { color: var(--of-muted); font-size: 13px }
+.of-activation-model dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; margin: 8px 0 0 }
+.of-activation-model dt { color: var(--of-muted); font-size: 12px }
+.of-activation-model dd { margin: 2px 0 0; font-weight: 600 }
+.of-activation-model[data-selected="true"] { border-color: var(--of-mint); box-shadow: 0 0 0 1px var(--of-mint) inset, 0 10px 30px color-mix(in srgb, var(--of-mint) 14%, transparent) }
+.of-activation-sizes { display: flex; flex-wrap: wrap; gap: 8px }
+.of-activation-sizes button { padding: 9px 16px; border-radius: 999px; border: 1px solid var(--of-line); background: transparent; color: inherit; font: inherit; cursor: pointer }
+.of-activation-sizes button[data-selected="true"] { border-color: var(--of-mint); background: color-mix(in srgb, var(--of-mint) 16%, transparent); font-weight: 600 }
+.of-activation-model:focus-visible, .of-activation-sizes button:focus-visible, .of-activation-cta:focus-visible { outline: 2px solid var(--of-mint); outline-offset: 2px }
+.of-activation-cta { justify-self: start; padding: 13px 26px; border-radius: 12px; border: 0; background: var(--of-mint); color: #04120c; font: inherit; font-weight: 700; cursor: pointer }
+.of-activation-cta:disabled { opacity: .45; cursor: not-allowed }
+.of-activation-note { margin: 0; padding: 10px 14px; border-radius: 10px; background: color-mix(in srgb, var(--of-text) 5%, transparent); line-height: 1.8 }
+.of-activation-checkout { padding: clamp(12px, 2vw, 24px) }

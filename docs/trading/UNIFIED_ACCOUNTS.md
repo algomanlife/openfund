@@ -1,14 +1,25 @@
 # Unified accounts and Free Trial lifecycle
 
+> **Current (ADR 0062, 2026-11-27).** Signing in no longer creates an account.
+> A Free Trial is requested from the Prop dashboard (`GET/POST /trials`) and is
+> a challenge on the `free-trial` plan: Standard or One-phase rules, any
+> published size, 14 days per phase, no rewards or withdrawals, one running
+> account at a time and 72 hours between trials. Its evaluation, expiry and
+> certificates are those of a challenge. The sections below on the automatic
+> `free_demo` account and its zero-equity stop are **Historical**: that
+> account is retired and existing rows are deleted by
+> `npm --prefix apps/backend run retire-free-demo`; the engine keeps the type
+> only as a test-mode fixture. See [ADR 0062](../decisions/0062-request-based-free-trial.md).
+
 The Dashboard is one account directory, reachable through either product's existing dashboard route. Each owned Free Trial, Challenge record and Gains wallet context has an individual card. Cards expose identity, source, status, known financial fields and account links. Unsupported balances, phases and protocol metrics remain unknown. A Challenge catalog record is not an activated trading account.
 
-## Identity and persistence
+## Identity and persistence (Historical: automatic free demo)
 
 `GET /accounts` uses the authenticated SIWE wallet. PostgreSQL's unique normalized wallet identity and `UNIQUE(user_id,account_type)` on `demo_accounts` enforce one trial. Provisioning and the initial funding ledger row share a transaction. Reauthentication returns the existing row, including disabled rows. There is no reset, replenishment or replacement endpoint.
 
 New accounts receive **100,000 virtual USD**. Existing virtual-DAI accounts and their historical ledgers retain their original denomination; changing old balances or pretending historical conversion is deliberately avoided. Current UI uses the account's denomination. Both are simulations, never real funded accounts or token balances.
 
-## Risk specification v1
+## Risk specification v1 (Historical: automatic free demo)
 
 The user supplied the zero-equity policy on 2026-11-02:
 
@@ -33,7 +44,8 @@ The `account` query parameter persists in hash-route links and product API calls
 | --- | --- |
 | `GET /accounts` | Owned directory; explicit nulls and source/read-only fields |
 | `POST /trading/preview` | Validated simulation estimate: entry, quantity, notional, margin, fees, available margin, liquidation, SL/TP; execution may differ |
-| `GET /products/:product/context?account=…` | Owned product/account context; Challenge financial state unavailable |
+| `GET /products/:product/context?account=…` | Owned product/account context; Challenge financial state unavailable. A Prop trader without an account receives `accounts: []` and `state: null` (ADR 0062) |
+| `GET /trials`, `POST /trials` | Free Trial offer and eligibility; request a trial (ADR 0062) |
 | `GET/PUT /products/:product/preferences?account=…` | Per-account range, layout and hidden metric cards |
 | `GET /products/:product/journal?classification=…&account=…` | Existing notes with module classification, search and dates |
 
