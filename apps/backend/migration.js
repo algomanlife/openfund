@@ -206,7 +206,7 @@ export function migrationRoutes({ pool, requireAuth, limit, storage, verifyTx = 
     } else if (b.kind === 'payout_tx') {
       const hash = String(b.txHash || '').toLowerCase()
       if (!/^0x[0-9a-f]{64}$/.test(hash)) throw fail(400, 'invalid_tx_hash')
-      if (!Number.isInteger(Number(b.chainId))) throw fail(400, 'invalid_chain')
+      if (!Number.isInteger(Number(b.chainId)) || Number(b.chainId) < 1 || Number(b.chainId) > 2_147_483_647) throw fail(400, 'invalid_chain')
       if (!payoutDate) throw fail(400, 'invalid_date')
       const { rows: [dup] } = await pool.query('SELECT 1 FROM migration_evidence e JOIN migration_requests r ON r.id=e.request_id WHERE e.tx_hash=$1 AND r.status <> $2', [hash, 'withdrawn'])
       if (dup) throw fail(409, 'tx_already_used')

@@ -12,6 +12,8 @@ audited Openfund, and nothing here is a certification.
   rate limiter, the Open Oracle public API, payment verification after the
   2026-11-18 incident, licensing of integrated components, and the
   repository's dependency advisories.
+- A read-only agent review of the backend, payments, payouts and the new
+  operator model; its findings are in [Code review](#code-review).
 - Evidence: unit and integration tests named per finding, the CI run of the
   pull request that carries each fix, Dependabot and the GitHub check runs.
 - Not in scope: a deployed penetration test, Directus 12, the IRAN runtime
@@ -36,6 +38,29 @@ Open items from the earlier assessment that this one does not change:
 OF-2026-11-11 (Directus 11 advisories, blocked on licence), OF-2026-11-12
 (shared Directus/API database credential: fixed in code, deployment pending)
 and OF-2026-11-20 (IRAN edge base image).
+
+## Code review
+
+Verified by reading the code; fixed items carry tests where the behaviour is
+testable without a deployed stack.
+
+| # | Severity | Finding | Status |
+|---|---|---|---|
+| R1 | High | The `content` role could configure tournament prizes and issue them (funded accounts, coupons), a back door to owner-only entitlements | Fixed: tournaments are owner-only |
+| R2 | Medium | Role checks were case-sensitive while Express routes are not (`/ADMIN/OPERATORS` skipped the owner-only check for reads) | Fixed: paths are lower-cased before the role check |
+| R3 | Medium | A payment proven on chain whose migration pass, controlled order or entitlement became invalid before provisioning rolled back without opening a review | Open: needs a review outcome for these codes and a reservation of the migration pass; tracked for the next release |
+| R4 | Medium | `finance` could change payment settings and associate an unmatched deposit with any order | Fixed: both are owner-only |
+| R5 | Medium | Closing a live allocation checked for open trades outside a transaction, racing a new live order | Fixed: one transaction with the allocation locked |
+| R6 | Medium | Bootstrap mode (no operators yet) trusts the actor name | Accepted until the owner creates the first operator; an owner action in this report |
+| R7 | Low | Changing an operator named with other letter case returned a 500 | Fixed: case-insensitive match |
+| R8 | Low | Two owners could remove each other at the same moment, leaving no owner | Fixed: changes are serialized with an advisory lock |
+| R9 | Low | Fee-refund "paid" accepts any payout reference | Open: to use the payout verifier and claims like reward payouts |
+| R10 | Low | A payout RPC check runs while row locks are held | Open (performance; bounded by the RPC timeout) |
+| R11 | Low | Non-reward withdrawal decisions recorded no operator | Fixed: the verified operator is recorded and audited |
+| R12 | Low | A malformed user id, an out-of-range chain id and an unbounded discrepancy id reached database casts (500) | Fixed: validated as 400/404 |
+| R13 | Low | Attaching the same payout transaction to two migration requests at once could race | Open: an index would break the reuse that the product allows after a withdrawn request |
+| R14 | Info | `support` could issue migration passes (funded starts) | Fixed: migration decisions are owner-only |
+| R15 | Info | Large modules (`engine.js` 1,424 lines, `purchases.js` 1,414, `server.js` 1,194 with 30 inline routes), helpers duplicated across modules, and two payment ledgers side by side | Open: maintainability backlog; ESLint for the backend follows in its own pull request |
 
 ## Admin access model (v0.9.0)
 

@@ -120,7 +120,7 @@ export function certificateAdminRoutes({ pool }) {
   router.post('/identities/:userId/correct', wrap(async (req, res) => {
     const actor = adminActor(req), reason = req.body?.reason, name = certificateName(req.body?.displayName)
     if (typeof reason !== 'string' || reason.trim().length < 5 || reason.length > 500) throw fail(400, 'reason_required')
-    if (!/^[0-9a-f-]{36}$/.test(req.params.userId)) throw fail(400, 'invalid_user')
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(req.params.userId)) throw fail(400, 'invalid_user')
     const client = await pool.connect()
     try {
       await client.query('BEGIN')

@@ -18,10 +18,13 @@
  *   owner    everything, including operators, runtime/regional controls,
  *            the admin console (plans) and migrations of firms
  *   finance  payments, withdrawals, economy, live funding, coupons,
- *            certificates, partners, rewards
- *   support  support threads, user status, migration requests
- *   content  guides, campaigns, site search, calendar, tournaments
+ *            certificates, partners, rewards (not payment settings or
+ *            manual deposit association)
+ *   support  support threads, user status
+ *   content  guides, campaigns, site search, calendar
  *   viewer   read-only
+ * Tournaments (prizes issue funded accounts and coupons) and migration
+ * decisions (funded starts) are owner-only, like the admin console.
  */
 import { promisify } from 'node:util'
 import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
@@ -33,20 +36,24 @@ export const OPERATOR_NAME = /^[A-Za-z0-9._@-]{2,50}$/
 const WRITE_SCOPES = {
   finance: ['/admin/payments', '/admin/withdrawals', '/admin/economy', '/admin/live', '/admin/coupons',
     '/admin/certificates', '/admin/partners', '/admin/rewards'],
-  support: ['/admin/support', '/admin/users', '/admin/migration/requests'],
-  content: ['/admin/guides', '/admin/campaigns', '/admin/search', '/admin/calendar', '/admin/tournaments'],
+  support: ['/admin/support', '/admin/users'],
+  content: ['/admin/guides', '/admin/campaigns', '/admin/search', '/admin/calendar'],
   viewer: [],
 }
 /* owner-only even for reads */
 const OWNER_ONLY = ['/admin/operators', '/admin/runtime', '/admin/regional']
+/* owner-only changes inside a role's write scope */
+const OWNER_ONLY_WRITES = [/^\/admin\/payments\/settings(\/|$)/, /^\/admin\/payments\/transactions\/[^/]+\/associate$/]
 const READ = new Set(['GET', 'HEAD'])
 const under = (path, prefix) => path === prefix || path.startsWith(prefix + '/')
 
 export function roleAllows(role, method, path) {
   if (role === 'owner') return true
   if (!ROLES.includes(role)) return false
+  path = String(path).toLowerCase()
   if (OWNER_ONLY.some(p => under(path, p))) return false
   if (READ.has(method)) return true
+  if (OWNER_ONLY_WRITES.some(pattern => pattern.test(path))) return false
   return (WRITE_SCOPES[role] || []).some(p => under(path, p))
 }
 
@@ -112,27 +119,35 @@ export async function upsertOperator({ username, role, status = 'active', passwo
   if (!ROLES.includes(role)) throw Object.assign(new Error('invalid_role'), { status: 400 })
   if (!['active', 'disabled'].includes(status)) throw Object.assign(new Error('invalid_status'), { status: 400 })
   const verifier = password === undefined ? null : await createVerifier(password)
-  const { rows: [owners] } = await pool.query(
-    `SELECT count(*) FILTER (WHERE role = 'owner' AND status = 'active')::int AS owners,
-            count(*) FILTER (WHERE role = 'owner' AND status = 'active' AND lower(username) <> lower($1))::int AS others
-       FROM admin_operators`, [username])
-  /* there is always at least one active owner once operators exist */
-  if ((role !== 'owner' || status !== 'active') && owners.others === 0)
-    throw Object.assign(new Error(owners.owners === 0 ? 'first_operator_must_be_owner' : 'last_owner'), { status: 400 })
+  const client = await pool.connect()
   try {
-    const { rows: [row] } = await pool.query(
+    await client.query('BEGIN')
+    /* serialize changes so two owners cannot remove each other at once */
+    await client.query("SELECT pg_advisory_xact_lock(hashtext('admin_operators'))")
+    const { rows: [current] } = await client.query('SELECT username FROM admin_operators WHERE lower(username) = lower($1) FOR UPDATE', [username])
+    const name = current?.username ?? username
+    const { rows: [owners] } = await client.query(
+      `SELECT count(*) FILTER (WHERE role = 'owner' AND status = 'active')::int AS owners,
+              count(*) FILTER (WHERE role = 'owner' AND status = 'active' AND username <> $1)::int AS others
+         FROM admin_operators`, [name])
+    /* there is always at least one active owner once operators exist */
+    if ((role !== 'owner' || status !== 'active') && owners.others === 0)
+      throw Object.assign(new Error(owners.owners === 0 ? 'first_operator_must_be_owner' : 'last_owner'), { status: 400 })
+    const { rows: [row] } = await client.query(
       `INSERT INTO admin_operators (username, role, status, password_verifier, created_by)
          VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT (username) DO UPDATE SET role = EXCLUDED.role, status = EXCLUDED.status,
          password_verifier = COALESCE(EXCLUDED.password_verifier, admin_operators.password_verifier), updated_at = now()
        RETURNING username, role, status, created_at, updated_at, last_login_at`,
-      [username, role, status, verifier, actor])
+      [name, role, status, verifier, actor])
+    await client.query('COMMIT')
     bootstrapCache = { until: 0, value: true }
     return row
   } catch (error) {
+    await client.query('ROLLBACK').catch(() => {})
     if (error.code === '23514') throw Object.assign(new Error('password_required'), { status: 400 })
     throw error
-  }
+  } finally { client.release() }
 }
 
 export async function listOperators() {

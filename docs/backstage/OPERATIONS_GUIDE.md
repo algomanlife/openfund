@@ -39,11 +39,12 @@ credential for Backstage only; no person holds it. Each person signs in to
 Backstage with their own operator account, and the backend checks the
 operator's role on every admin request.
 
-Roles: `owner` (everything, including operators and runtime/regional
-controls), `finance` (payments, withdrawals, economy, live funding, coupons,
-certificates, partners, rewards), `support` (support, user status, migration
-requests), `content` (guides, campaigns, site search, calendar, tournaments
-and the Directus content workspace) and `viewer` (read only). Every role can
+Roles: `owner` (everything, including operators, runtime/regional controls,
+the admin console, tournaments, migration decisions, payment settings and
+manual deposit association), `finance` (payments, withdrawals, economy, live
+funding, coupons, certificates, partners, rewards), `support` (support and
+user status), `content` (guides, campaigns, site search, calendar and the
+Directus content workspace) and `viewer` (read only). Every role can
 read; changes still need password re-entry.
 
 From a shell with the backend's `DATABASE_URL` (the Render shell of the API

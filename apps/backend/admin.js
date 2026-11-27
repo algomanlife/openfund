@@ -57,7 +57,8 @@ export async function adminAuth(req, res, next) {
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b))
     return res.status(403).json({ error: 'admin_forbidden' })
   if (req.adminOperator) return next()
-  const path = (req.originalUrl || req.url).split('?')[0]
+  /* Express routes case-insensitively: check roles on the lower-cased path */
+  const path = (req.originalUrl || req.url).split('?')[0].toLowerCase()
   /* operator password check for Backstage sign-in: service token only */
   if (path === '/admin/operators/authenticate') return next()
   const name = String(req.headers['x-admin-actor'] || '').trim()
@@ -281,7 +282,8 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
         return res.json({ ok: true, duplicate: true, status: w.status })
       }
       if (w.status !== spec.from) throw fail(409, `withdrawal_${w.status}_not_reviewable`)
-      const actor = reward ? adminActor(req) : null
+      /* the verified operator is recorded for every decision (review 2026-11-27) */
+      const actor = reward || req.adminOperator ? adminActor(req) : null
       let evidence = null
       let reference = action === 'paid' ? payoutRef.trim() : null
       let recipient = w.recipient_wallet
@@ -309,7 +311,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
            payout_ref=coalesce($4, payout_ref), recipient_wallet=$5, approved_by=$6, payment_evidence=$7
           WHERE id=$1`,
         [w.id, spec.to, note ?? null, reference, recipient, reward && action === 'approve' ? actor : w.approved_by, evidence])
-      if (reward) {
+      if (actor) {
         await financialAudit(client, actor, `withdrawal_${spec.to}`, 'withdrawal', w.id, { status: w.status },
           { status: spec.to, amount: w.amount_usd, recipient, testMode: w.test_mode, reason: note ?? null, payment: evidence })
       }

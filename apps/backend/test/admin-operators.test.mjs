@@ -26,6 +26,13 @@ test('roles: owner everything, others read plus their own write scope', () => {
     assert.equal(roleAllows(role, 'GET', '/admin/regional/status'), false, role)
   }
   assert.equal(roleAllows('nobody', 'GET', '/admin/users'), false)
+  /* review 2026-11-27: case, financial prizes, funded starts, payment controls */
+  assert.equal(roleAllows('viewer', 'GET', '/ADMIN/Operators'), false)
+  assert.equal(roleAllows('content', 'POST', '/admin/tournaments/x/awards/issue'), false)
+  assert.equal(roleAllows('support', 'POST', '/admin/migration/requests/1/decide'), false)
+  assert.equal(roleAllows('finance', 'POST', '/admin/payments/settings'), false)
+  assert.equal(roleAllows('finance', 'POST', '/admin/payments/transactions/1/associate'), false)
+  assert.equal(roleAllows('finance', 'POST', '/admin/payments/transactions/1/reverify'), true)
 })
 
 const url = process.env.DATABASE_URL
@@ -68,6 +75,10 @@ test('operators: bootstrap, enforcement, roles and sign-in', { skip: !url && 'ne
     assert.equal((await call('/admin/users/1/status', { method: 'POST', actor: 'fin', body: {} })).data.error, 'operator_role_forbidden')
     assert.equal((await call('/admin/operators', { actor: 'fin' })).status, 403)
     assert.equal((await call('/admin/operators', { actor: 'Root' })).data.operators.length, 2)
+    assert.equal((await call('/ADMIN/OPERATORS', { actor: 'fin' })).status, 403)
+    /* a change named with other letter case updates the same operator */
+    assert.equal((await call('/admin/operators', { method: 'POST', actor: 'Root', body: { username: 'FIN', role: 'viewer' } })).data.operator.username, 'fin')
+    await upsertOperator({ username: 'fin', role: 'finance' }, 'test')
     /* sign-in check for Backstage; disabled operators lose access at once */
     assert.equal((await call('/admin/operators/authenticate', { method: 'POST', body: { username: 'fin', password: 'finance-password-long-enough' } })).data.role, 'finance')
     assert.equal((await call('/admin/operators/authenticate', { method: 'POST', body: { username: 'fin', password: 'wrong-password-long-enough' } })).status, 401)
