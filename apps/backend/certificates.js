@@ -47,6 +47,29 @@ export async function syncCertificates(pool, userId) {
         AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
         AND w.payment_evidence->>'finality'='finalized' AND w.payment_evidence->>'transactionAt' IS NOT NULL
       UNION ALL
+      /* ADR 0062: Free Trial activation (the stage-1 trial row), any phase-1
+         pass of a two-phase evaluation (trial or paid), and the final pass of
+         a Free Trial (no reviewer: a trial is never funded) */
+      SELECT 'trial', c.id, p.name, c.account_size_usd, c.started_at
+      FROM openfund_challenges c JOIN challenge_plans p ON p.id=c.challenge_plan_id
+      WHERE c.user_id=$1 AND c.parent_challenge_id IS NULL AND c.started_at IS NOT NULL AND c.account_size_usd > 0
+        AND coalesce((c.rules_snapshot->>'free')::boolean, false)
+        AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
+      UNION ALL
+      SELECT 'stage_pass', c.id, p.name, c.account_size_usd, c.completed_at
+      FROM openfund_challenges c JOIN challenge_plans p ON p.id=c.challenge_plan_id
+      WHERE c.user_id=$1 AND c.stage=1 AND c.status='passed' AND c.completed_at IS NOT NULL AND c.account_size_usd > 0
+        AND NOT coalesce(c.rules_snapshot ? 'controlledTest',false)
+        AND EXISTS (SELECT 1 FROM challenge_events e WHERE e.challenge_id=c.id AND e.kind='stage_passed')
+        AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
+      UNION ALL
+      SELECT 'trial_pass', c.id, p.name, c.account_size_usd, c.completed_at
+      FROM openfund_challenges c JOIN challenge_plans p ON p.id=c.challenge_plan_id
+      WHERE c.user_id=$1 AND c.status='passed' AND c.completed_at IS NOT NULL AND c.account_size_usd > 0
+        AND coalesce((c.rules_snapshot->>'free')::boolean, false)
+        AND EXISTS (SELECT 1 FROM challenge_events e WHERE e.challenge_id=c.id AND e.kind='passed')
+        AND (c.demo_account_id IS NULL OR openfund_account_writable(c.demo_account_id))
+      UNION ALL
       /* Premium League badges (rank 1–10 and Finisher): amount = frozen final equity */
       SELECT 'tournament', a.id, t.name_en || ' · ' || a.item, s.final_equity, s.frozen_at
       FROM tournament_awards a JOIN tournament_registrations r ON r.id=a.registration_id

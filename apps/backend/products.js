@@ -107,7 +107,17 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
         product === "prop"
           ? account?.id
           : `gains:arbitrum:${req.user.wallet_address}`;
-      if (!accountRef) throw fail(404, "account_not_found");
+      /* ADR 0062: a Prop trader may have no account yet (no Free Trial
+         requested, no challenge bought). /context then answers with no
+         account so the dashboard can offer activation; every other route
+         needs an account. */
+      if (!accountRef && !(product === "prop" && req.query.account)) {
+        if (product === "prop" && req.path === "/context") {
+          req.scope = { product, userId, accountRef: null, account: null, tradingAccountId: null };
+          return next();
+        }
+        throw fail(404, "account_not_found");
+      }
       if (req.query.account && req.query.account !== accountRef) {
         if (product !== 'prop' || !uuid.test(req.query.account)) throw fail(404,'account_not_found');
         const owned = (await pool.query('SELECT * FROM openfund_challenges WHERE id=$1 AND user_id=$2',[req.query.account,userId])).rows[0];
@@ -140,7 +150,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
         product: s.product,
         accountRef: s.accountRef,
         wallet: req.user.wallet_address,
-        accounts: [
+        accounts: s.accountRef == null ? [] : [
           {
             id: s.accountRef,
             type: s.product === "prop" ? s.account.account_type : "wallet",
@@ -162,7 +172,7 @@ export function productRoutes({ pool, portfolio, engine, auth }) {
             ? { readOnly: true, canTrade: false, network: { chainId: 42161, name: "Arbitrum One" } }
             : {}),
         },
-        state: s.product === "prop" && (s.account?.account_type !== "challenge" || s.tradingAccountId)
+        state: s.product === "prop" && s.account && (s.account.account_type !== "challenge" || s.tradingAccountId)
           ? await engine.state(s.userId, s.account?.account_type === 'challenge' ? s.tradingAccountId : null)
           : null,
       });

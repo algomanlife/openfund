@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4925,
-    "mappedCalls": 2336,
+    "uniqueRecords": 4957,
+    "mappedCalls": 2357,
     "exceptions": 62,
     "validationFindings": 0,
     "reviewedExclusions": 53
@@ -1127,7 +1127,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 60,
+          "line": 72,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -1321,7 +1321,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 29,
+          "line": 35,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -2024,6 +2024,26 @@
       ]
     },
     {
+      "key": "react.01ccb9da6281f6d2",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "تست رایگان ۱۴ روزه · رکورد چالش",
+      "en": "14-day Free Trial · challenge record",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/Accounts.tsx",
+          "line": 123,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.01cddbf08009f864",
       "namespace": "react",
       "area": "Website",
@@ -2698,6 +2718,26 @@
       ]
     },
     {
+      "key": "react.034a7a42607cb79e",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "در حال فعال‌سازی…",
+      "en": "Activating…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 85,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.0352bda4a0e672c4",
       "namespace": "react",
       "area": "Website",
@@ -2870,7 +2910,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 389,
+          "line": 391,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -3164,7 +3204,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 49,
+          "line": 63,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -3355,6 +3395,26 @@
           "page": "bounty",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.051b2f454b4c873d",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "یک‌مرحله‌ای",
+      "en": "One-phase",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 56,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -3905,7 +3965,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 82,
+          "line": 96,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -4521,14 +4581,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 45,
+          "line": 59,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 72,
+          "line": 86,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -5013,26 +5073,6 @@
           "line": 100,
           "page": "campaign",
           "route": "/:locale/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.08f4df8d7f43d917",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "دموی فعالِ امروز جداست: یک‌بار به هر کاربر ۱۰۰٬۰۰۰ دای مجازی اختصاص می‌دهد؛ بدون واریز، برداشت، شارژ مجدد و بازنشانی.",
-      "en": "The authenticated demo that runs today is separate: it allocates 100,000 virtual DAI once per user, with no deposits, withdrawals, refills or resets.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/rulebook/content.ts",
-          "line": 69,
-          "page": "rulebook",
-          "route": "/:locale/rulebook",
           "method": "pick-pipeline"
         }
       ]
@@ -6428,6 +6468,26 @@
       ]
     },
     {
+      "key": "react.0ce421f536d8b3dd",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی شروع تست رایگان",
+      "en": "Certificate of Free Trial",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 46,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0ced30f183d9e3f3",
       "namespace": "react",
       "area": "Global Content",
@@ -6957,14 +7017,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 44,
+          "line": 58,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 71,
+          "line": 85,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -8743,28 +8803,28 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 42,
+          "line": 56,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 44,
+          "line": 58,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 54,
+          "line": 68,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 71,
+          "line": 85,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -11033,6 +11093,26 @@
       ]
     },
     {
+      "key": "react.189403477b9c3c85",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تست رایگان ۱۴ روزهٔ اوپن‌فاند را آغاز کرده است؛ همان قوانین چالش واقعی، روی حساب شبیه‌سازی‌شده و بدون پاداش یا برداشت.",
+      "en": "has started a 14-day Openfund Free Trial — the same rules as a real challenge, on a simulated account, with no rewards or withdrawals.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 53,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.18990cda3ed77f3c",
       "namespace": "react",
       "area": "Website",
@@ -11820,7 +11900,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 64,
+          "line": 78,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -13250,7 +13330,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 388,
+          "line": 390,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -14078,7 +14158,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 391,
+          "line": 393,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -14345,7 +14425,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 56,
+          "line": 68,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -15360,26 +15440,6 @@
       ]
     },
     {
-      "key": "react.23414b5cea5b93f8",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "امروز می‌توانی کیف پول را وصل کنی و حساب تمرینی رایگان را در ترمینال معامله کنی، یا چلنج بخری و طبق کامل قواعد همین صفحه معامله‌اش کنی. ورود به حساب به‌تنهایی، خرید چلنج نیست و اثبات قبولی هم نیست.",
-      "en": "Today, connect a wallet and trade the free practice account in the terminal, or purchase a challenge and trade it under the full rules of this page. Signing in alone does not purchase a challenge and does not prove an evaluation has been passed.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/rulebook/content.ts",
-          "line": 53,
-          "page": "rulebook",
-          "route": "/:locale/rulebook",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.23467088be83305a",
       "namespace": "react",
       "area": "Website",
@@ -15432,7 +15492,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 52,
+          "line": 64,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -15800,6 +15860,26 @@
       ]
     },
     {
+      "key": "react.240a6f92235d0582",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "دریافت اطلاعات تست رایگان ناموفق بود.",
+      "en": "The Free Trial offer could not be loaded.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 63,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.240afe93886b5785",
       "namespace": "react",
       "area": "Website",
@@ -16032,7 +16112,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Accounts.tsx",
-          "line": 124,
+          "line": 126,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -16378,6 +16458,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.25b240712f09e1f1",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی قبولی مرحلهٔ اول",
+      "en": "Phase 1 Pass Certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 9,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -17101,7 +17201,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 390,
+          "line": 392,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -17449,6 +17549,26 @@
       ]
     },
     {
+      "key": "react.28605e35973eefdb",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "فعال‌سازی تریال انجام نشد. دوباره تلاش کنید.",
+      "en": "The Free Trial could not be activated. Please try again.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 43,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.2862b9134b2a3e4b",
       "namespace": "react",
       "area": "Website",
@@ -17708,7 +17828,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 35,
+          "line": 49,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -18122,7 +18242,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 8,
+          "line": 11,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -18146,6 +18266,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2a3bb63475baff74",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۱۴ روز تقویمی برای هر مرحله، بدون هزینه و با قواعد چلنجی که انتخاب می‌کنی — استاندارد (اهداف ۸٪ و ۵٪، سقف‌های ۵٪ روزانه و ۱۰٪ کل) یا تک‌مرحله‌ای (هدف ۱۲٪، سقف‌های ۳٪ روزانه و ۱۲٪ کل). آن را از داشبورد Prop درخواست کن. هم‌زمان فقط یک حساب می‌تواند فعال باشد و تست بعدی ۷۲ ساعت پس از پایان تست قبلی در دسترس است. سود تست قابل درخواست نیست و تست به حساب فاندشده تبدیل نمی‌شود — هدف آن، تمرین مسیر واقعی است.",
+      "en": "14 calendar days per phase, free, with the rules of the challenge you choose — Standard (8% and 5% targets, 5% daily and 10% total loss limits) or One-phase (12% target, 3% daily and 12% total loss limits). Request it from the Prop dashboard. Only one account can run at a time, and a new trial is available 72 hours after the previous one ends. Trial profits cannot be requested and the trial does not convert to a funded account — it exists to rehearse the real path.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqContent.ts",
+          "line": 15,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -18700,26 +18840,6 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.2b48fa8e602f9d80",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "۱۴ روز تقویمی برای هر مرحله، بدون هزینه و با قواعد چلنج استاندارد (اهداف ۸٪ و ۵٪، سقف‌های ۵٪ روزانه و ۱۰٪ کل). هم‌زمان فقط یک تست فعال می‌تواند داشته باشی و داشتن حساب خریدنی فعال، امکان شروع تست را می‌بندد. سود تست قابل درخواست نیست و تست به حساب فاندشده تبدیل نمی‌شود — هدف آن، تمرین مسیر واقعی است.",
-      "en": "14 calendar days per phase, free, with Standard challenge rules (8% and 5% targets, 5% daily and 10% total loss limits). You can hold only one active trial at a time, and an active paid account blocks starting one. Trial profits cannot be requested and the trial does not convert to a funded account — it exists to rehearse the real path.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqContent.ts",
-          "line": 15,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -19743,6 +19863,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2dd2dabb35b23fcb",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "روز (هر مرحله ۱۴ روز)",
+      "en": "days (14 days per phase)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 70,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -21181,7 +21321,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 12,
+          "line": 18,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -21876,6 +22016,13 @@
           "method": "pick-pipeline"
         },
         {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 70,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
+        {
           "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
           "line": 26,
           "page": "tournament",
@@ -22011,10 +22158,30 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 65,
+          "line": 77,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.3252792c27fa041c",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "خیر. تست رایگان قوانین «استاندارد» یا «تک‌مرحله‌ای» را چهارده روز در هر مرحله اعمال می‌کند و پاداش یا امکان تبدیل ندارد.",
+      "en": "No. The Free Trial applies the Standard or One-phase rules for fourteen days per phase and carries no reward and no conversion.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
+          "line": 70,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -22367,6 +22534,26 @@
       ]
     },
     {
+      "key": "react.32e70c338ac6fe73",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ورود به حساب، حساب معاملاتی نمی‌سازد: حساب تست رایگان فقط وقتی باز می‌شود که آن را از داشبورد Prop درخواست کنی و حساب چلنج فقط پس از خرید.",
+      "en": "Signing in creates no trading account: a Free Trial account is opened only when you request one from the Prop dashboard, and a challenge account only after a purchase.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/rulebook/content.ts",
+          "line": 69,
+          "page": "rulebook",
+          "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.32eaf0bb64963423",
       "namespace": "react",
       "area": "Website",
@@ -22419,30 +22606,10 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 61,
+          "line": 75,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.331acce62fe47b28",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "مدل مناسب را انتخاب کن و شرایطش را کامل بخوان. فعال‌سازی خرید در این نسخه فراهم نیست؛ تا آن زمان می‌توانی با اتصال کیف پول، حساب دموی ۱۰۰٬۰۰۰ دای را در ترمینال تجربه کنی یا با تست رایگان مسیر چلنج را تمرین کنی.",
-      "en": "Pick the model that fits and read its terms in full. Purchase activation is not available in this release; until then, connect a wallet and explore the 100,000 DAI demo account in the terminal, or rehearse the challenge path with the Free Trial.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqContent.ts",
-          "line": 16,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -22459,7 +22626,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 40,
+          "line": 49,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -24709,7 +24876,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 400,
+          "line": 402,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -25489,7 +25656,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 62,
+          "line": 74,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -25935,26 +26102,6 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.3b7e0ef79ce9d92d",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "تستِ رایگان بیرونِ این حساب‌وکتاب است. قواعدِ «استاندارد» را اعمال می‌کند — ۸٪ سپس ۵٪، سقفِ روزانه ۵٪ و سقفِ کل ۱۰٪ ثابت — برای ۱۴ روز در هر مرحله، هیچ هزینه‌ای ندارد، فقط یک تستِ فعال را می‌پذیرد، پاداشی نمی‌دهد و هرگز به حساب فاندشده تبدیل نمی‌شود. ارزشش کاملاً اطلاعاتی است: نشان می‌دهد وقتی سقف‌ها فعال‌اند چگونه رفتار می‌کنی.",
-      "en": "The Free Trial sits outside that arithmetic. It applies the Standard rules - 8% then 5%, a 5% daily limit and a 10% static total - for fourteen days per phase, costs nothing, allows only one active trial, pays no reward and never converts into a funded account. Its value is entirely informational: it shows you how you behave when limits are live.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 204,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -26644,6 +26791,26 @@
       ]
     },
     {
+      "key": "react.3d340daee6576f4a",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "مدل مناسب را انتخاب کن و شرایطش را کامل بخوان. فعال‌سازی خرید در این نسخه فراهم نیست؛ تا آن زمان می‌توانی کیف پول را وصل کنی و از داشبورد Prop تست رایگان ۱۴ روزه بگیری تا مسیر چلنج را با قواعد واقعی‌اش تمرین کنی.",
+      "en": "Pick the model that fits and read its terms in full. Purchase activation is not available in this release; until then, connect a wallet and request the 14-day Free Trial from the Prop dashboard to rehearse the challenge path under its real rules.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqContent.ts",
+          "line": 16,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3d5e4636bcc5a326",
       "namespace": "react",
       "area": "Website",
@@ -27224,7 +27391,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 68,
+          "line": 80,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -27605,7 +27772,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 82,
+          "line": 96,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -28793,7 +28960,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 42,
+          "line": 51,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -28954,7 +29121,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 48,
+          "line": 62,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29044,6 +29211,26 @@
           "line": 200,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.4335b0106b58ebee",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "خرید چالش",
+      "en": "Buy a challenge",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 90,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -29321,7 +29508,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 23,
+          "line": 29,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -30202,14 +30389,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 165,
+          "line": 167,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 172,
+          "line": 174,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -30229,7 +30416,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 53,
+          "line": 65,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -30464,6 +30651,26 @@
       ]
     },
     {
+      "key": "react.46c3806bd6732ae9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی قبولی مرحلهٔ اول",
+      "en": "Certificate of Phase Pass",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 47,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.46e82ee4d433ce12",
       "namespace": "react",
       "area": "Website",
@@ -30476,7 +30683,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 24,
+          "line": 30,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -30496,7 +30703,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 63,
+          "line": 75,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -33176,6 +33383,26 @@
       ]
     },
     {
+      "key": "react.4cdab9c2cb818e9c",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "حساب‌های اوپن‌فاند حساب‌های شبیه‌سازی‌شدهٔ سمت سرورند که با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شوند: حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود، بدون واریز، برداشت، شارژ یا بازنشانی — و سود شبیه‌سازی‌شده طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید.",
+      "en": "Openfund accounts are server-side simulated accounts priced from live Open Oracle prices: a Free Trial or challenge account starts at its chosen size, with no deposits, withdrawals, refills or resets — and a simulated profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
+          "line": 127,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.4ce38533da899375",
       "namespace": "react",
       "area": "Website",
@@ -33482,7 +33709,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 13,
+          "line": 19,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -33938,7 +34165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 82,
+          "line": 96,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -34767,7 +34994,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 53,
+          "line": 67,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -35062,6 +35289,26 @@
       ]
     },
     {
+      "key": "react.516fa4caa389ae24",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "با فعال‌سازی، گواهی شروع تست رایگان صادر می‌شود و همهٔ معاملات حساب با قوانین چالش ارزیابی می‌شوند. حساب‌ها شبیه‌سازی‌شده‌اند و پول واقعی در کار نیست.",
+      "en": "Activation issues a Free Trial start certificate, and every trade on the account is evaluated under the challenge rules. Accounts are simulated; no real money is involved.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 87,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5197fe2e10f69ad0",
       "namespace": "react",
       "area": "User Dashboard",
@@ -35323,6 +35570,26 @@
       ]
     },
     {
+      "key": "react.520808409c6a38b8",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "چالش واقعی را رایگان تجربه کنید",
+      "en": "Try a real challenge for free",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 61,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.520cdf0b45ed2c6d",
       "namespace": "react",
       "area": "Website",
@@ -35496,7 +35763,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 31,
+          "line": 37,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -36291,7 +36558,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 19,
+          "line": 25,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -36512,7 +36779,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 14,
+          "line": 20,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -38124,7 +38391,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Accounts.tsx",
-          "line": 168,
+          "line": 170,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -38240,6 +38507,13 @@
         {
           "component": "apps/web-react/src/features/terminal/ChallengePanel.tsx",
           "line": 78,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 72,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -38834,7 +39108,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 46,
+          "line": 58,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -39279,6 +39553,26 @@
           "line": 246,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.5b5ba9837074d23b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی قبولی تست رایگان",
+      "en": "Free Trial Pass Certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 10,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -40305,6 +40599,26 @@
       ]
     },
     {
+      "key": "react.5e31ce8153f1692b",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "ورود به حساب، حسابی نمی‌سازد؛ حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود.",
+      "en": "No account at sign-in; a Free Trial or challenge account starts at its chosen size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 124,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.5e34ed0ee462d604",
       "namespace": "react",
       "area": "Global Content",
@@ -40337,7 +40651,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 33,
+          "line": 47,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -41108,26 +41422,6 @@
       ]
     },
     {
-      "key": "react.5fbbbd0d4af806c3",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "هم‌زمان فقط یک تست فعال؛ داشتن چلنج خریدنیِ فعال، شروع تست را می‌بندد. سود تست قابل درخواست نیست و تست هرگز به ارزیابی خریدنی یا حساب فاندشده تبدیل نمی‌شود — قبولیِ تست همچنان خرید جداگانهٔ چلنج می‌خواهد. تأمین تست با عرضهٔ تجاری فعال می‌شود.",
-      "en": "One active trial at a time; holding an active paid challenge blocks starting one. Trial profits cannot be requested as rewards, and a trial never converts into a paid evaluation or a funded account — a pass still requires a separate challenge purchase. Trial provisioning activates with the commercial launch.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/rulebook/content.ts",
-          "line": 169,
-          "page": "rulebook",
-          "route": "/:locale/rulebook",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.5fc3cfd6baa3bb14",
       "namespace": "react",
       "area": "Global Content",
@@ -41191,6 +41485,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5feee96577084b01",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "قواعدِ «استاندارد» یا «تک‌مرحله‌ای»، ۱۴ روز در هر مرحله، بدون هزینه.",
+      "en": "Standard or One-phase rules, 14 days per phase, no fee.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 125,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -41527,7 +41841,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 64,
+          "line": 76,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -41587,7 +41901,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 11,
+          "line": 17,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -41774,7 +42088,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 20,
+          "line": 26,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -42129,6 +42443,26 @@
       ]
     },
     {
+      "key": "react.62813b97e1cba741",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ طرح‌ها به‌صورت نمونهٔ بی‌نام نمایش داده می‌شوند. گواهی فقط پس از صدور توسط سرور بر پایهٔ یک رویداد ثبت‌شده، با نام، مبلغ، شماره و کد QR شما شخصی می‌شود.",
+      "en": "Every design is shown as an anonymous preview. A certificate becomes personal — with your name, amount, serial and QR code — only after the server issues it from a recorded event.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 61,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.62826099e2f96213",
       "namespace": "react",
       "area": "Website",
@@ -42449,6 +42783,26 @@
       ]
     },
     {
+      "key": "react.638907e91613bc63",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "تست رایگان در حال حاضر در دسترس نیست.",
+      "en": "The Free Trial is not available right now.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 65,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.63946ef012ebbcdc",
       "namespace": "react",
       "area": "Website",
@@ -42608,7 +42962,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 45,
+          "line": 57,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -42755,7 +43109,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 69,
+          "line": 81,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -42779,6 +43133,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.64c4e602f686f1e2",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "تست رایگان بعدی ۷۲ ساعت پس از پایان تست قبلی در دسترس است:",
+      "en": "Your next Free Trial is available 72 hours after the previous one ended:",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 40,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -43225,7 +43599,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 10,
+          "line": 13,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -45128,7 +45502,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 70,
+          "line": 84,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -46024,7 +46398,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 73,
+          "line": 87,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -46129,26 +46503,6 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.6cc813bb7dd4a2d9",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دموی شبیه‌سازی‌شده",
-      "en": "Simulated demo",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 124,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -48284,7 +48638,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 28,
+          "line": 34,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -49112,7 +49466,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 446,
+          "line": 448,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -49279,7 +49633,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 27,
+          "line": 33,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -50328,7 +50682,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 86,
+          "line": 100,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -51353,6 +51707,13 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 75,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -51509,7 +51870,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 66,
+          "line": 80,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -51596,7 +51957,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 58,
+          "line": 70,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -53148,26 +53509,6 @@
       ]
     },
     {
-      "key": "react.7f9d58b74c654773",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی.",
-      "en": "One free_demo account per user, 100,000 virtual DAI.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 124,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.7faffdd343174a25",
       "namespace": "react",
       "area": "Global Content",
@@ -53978,6 +54319,26 @@
       ]
     },
     {
+      "key": "react.81d1b80962a6c29b",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "دومرحله‌ای",
+      "en": "Two-phase",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 56,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.81d47dfedd09fb6e",
       "namespace": "react",
       "area": "Website",
@@ -54338,14 +54699,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 40,
+          "line": 54,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 51,
+          "line": 65,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -55034,7 +55395,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 66,
+          "line": 78,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -55628,7 +55989,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 30,
+          "line": 36,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -57328,7 +57689,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 395,
+          "line": 397,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -57431,6 +57792,26 @@
           "line": 51,
           "page": "objectives",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8abf3314f4d76d12",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی قبولی تست رایگان",
+      "en": "Certificate of Free Trial Pass",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 48,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -57568,7 +57949,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 35,
+          "line": 41,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -57592,6 +57973,20 @@
           "line": 317,
           "page": "radar",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 64,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 91,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -60275,7 +60670,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 41,
+          "line": 50,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -62072,6 +62467,26 @@
       ]
     },
     {
+      "key": "react.95d517af641e9441",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "امروز می‌توانی کیف پول را وصل کنی و از داشبورد Prop تست رایگان ۱۴ روزه بگیری، یا چلنج بخری و طبق کامل قواعد همین صفحه معامله‌اش کنی. ورود به حساب به‌تنهایی حساب معاملاتی نمی‌سازد، خرید چلنج نیست و اثبات قبولی هم نیست.",
+      "en": "Today, connect a wallet and request a 14-day Free Trial from the Prop dashboard, or purchase a challenge and trade it under the full rules of this page. Signing in alone creates no trading account, does not purchase a challenge and does not prove an evaluation has been passed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/rulebook/content.ts",
+          "line": 53,
+          "page": "rulebook",
+          "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.95e583e1adae6721",
       "namespace": "react",
       "area": "Global Content",
@@ -62204,7 +62619,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 16,
+          "line": 22,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -62267,6 +62682,26 @@
           "line": 630,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.9645d8b8e5b26140",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هم‌زمان فقط یک حساب فعال: تا وقتی چلنج یا تستی در جریان است، تست جدید شروع نمی‌شود و تست بعدی ۷۲ ساعت پس از پایان تست قبلی در دسترس است. تست رایگان پاداش و برداشت ندارد و هرگز به ارزیابی خریدنی یا حساب فاندشده تبدیل نمی‌شود. شروع تست، قبولی در مرحلهٔ اول و قبولی در تست، هر کدام گواهی صادر می‌کنند.",
+      "en": "One running account at a time: a trial cannot start while any challenge or trial is running, and a new trial is available 72 hours after the previous one ends. A trial earns no rewards, has no withdrawals and never converts into a paid evaluation or a funded account. Starting a trial, passing phase one and passing the trial each issue a certificate.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/rulebook/content.ts",
+          "line": 169,
+          "page": "rulebook",
+          "route": "/:locale/rulebook",
           "method": "pick-pipeline"
         }
       ]
@@ -62609,6 +63044,26 @@
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.97712bea9767afde",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "با قبولی در مرحلهٔ نهایی تست رایگان صادر می‌شود.",
+      "en": "Issued when you pass the final phase of a Free Trial.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 16,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -65906,7 +66361,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 55,
+          "line": 67,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -66400,7 +66855,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 394,
+          "line": 396,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -66547,7 +67002,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 62,
+          "line": 76,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -67696,14 +68151,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 74,
+          "line": 88,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 86,
+          "line": 100,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -68430,7 +68885,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 67,
+          "line": 79,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -69316,6 +69771,26 @@
       ]
     },
     {
+      "key": "react.a7114da3f7ec9afd",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "حد ضرر کل",
+      "en": "Maximum loss",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 74,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.a714751115fae3db",
       "namespace": "react",
       "area": "Website",
@@ -69836,7 +70311,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 59,
+          "line": 71,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -70326,7 +70801,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 71,
+          "line": 83,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -71753,7 +72228,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 33,
+          "line": 39,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -71944,6 +72419,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ad932e86be237d60",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مرحلهٔ اول ارزیابی اوپن‌فاند را با موفقیت پشت سر گذاشته و وارد مرحلهٔ دوم شده است.",
+      "en": "has passed phase 1 of an Openfund evaluation and moved on to phase 2.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 54,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -72172,6 +72667,26 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ade2135b1f2f07b7",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "حساب‌های شبیه‌سازی‌شده",
+      "en": "Simulated accounts",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 124,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -73854,21 +74369,21 @@
       ]
     },
     {
-      "key": "react.b168a13308da4fb7",
+      "key": "react.b167f85e696acd34",
       "namespace": "react",
-      "area": "Global Content",
+      "area": "Trading Terminal",
       "owner": "Content editor",
-      "fa": "خیر. تست رایگان قوانین دومرحله‌ای را چهارده روز در هر مرحله تمرین می‌کند و پاداش یا امکان تبدیل ندارد.",
-      "en": "No. The Free Trial rehearses the two-step rules for fourteen days per phase and carries no reward and no conversion.",
+      "fa": "همان قوانین چالش واقعی، با حساب شبیه‌سازی‌شده و بدون پرداخت. هر مرحله ۱۴ روز فرصت دارد؛ اگر قبول شوید، گواهی قبولی تست رایگان می‌گیرید. تست رایگان پاداش و برداشت ندارد.",
+      "en": "The same rules as a real challenge, on a simulated account, with nothing to pay. Each phase has 14 days; pass it and you receive a Free Trial pass certificate. A Free Trial has no rewards and no withdrawals.",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
         {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
-          "line": 70,
-          "page": "global",
-          "route": "/:locale/*",
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 62,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -73886,7 +74401,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 65,
+          "line": 79,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -75188,7 +75703,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 22,
+          "line": 28,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -75302,7 +75817,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 18,
+          "line": 24,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -75966,26 +76481,6 @@
       ]
     },
     {
-      "key": "react.b774c0ef8a5569c9",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید.",
-      "en": "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
-          "line": 127,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.b775ed1e078af1bc",
       "namespace": "react",
       "area": "Global Content",
@@ -76232,7 +76727,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 38,
+          "line": 44,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -77824,7 +78319,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 9,
+          "line": 12,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -78553,10 +79048,17 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 36,
+          "line": 42,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 42,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -78691,6 +79193,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.be6298a9cefdc8e3",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "تست رایگان ۱۴ روزه",
+      "en": "14-day Free Trial",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 60,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -79829,6 +80351,26 @@
       ]
     },
     {
+      "key": "react.c10e83ba92652d0c",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "حد ضرر روزانه",
+      "en": "Daily loss",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 73,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.c10fc4e4d0f3dd94",
       "namespace": "react",
       "area": "Global Content",
@@ -80295,7 +80837,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 15,
+          "line": 21,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -81334,6 +81876,26 @@
       ]
     },
     {
+      "key": "react.c557b124fd292802",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "با قبولی در مرحلهٔ اول یک چالش یا تست رایگان دومرحله‌ای صادر می‌شود.",
+      "en": "Issued when you pass phase 1 of a two-phase challenge or Free Trial.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 15,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c5600ac35f4b1e59",
       "namespace": "react",
       "area": "Trading Terminal",
@@ -81506,7 +82068,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 70,
+          "line": 82,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -81523,6 +82085,13 @@
           "line": 168,
           "page": "loading",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 63,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -81718,6 +82287,26 @@
           "page": "navigation",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.c63de1a153099bdd",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "نوع ارزیابی",
+      "en": "Evaluation type",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 67,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -82918,6 +83507,26 @@
       ]
     },
     {
+      "key": "react.c9d4e87a08d0c402",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "شما یک حساب فعال دارید. تا وقتی حساب فعالی دارید، نمی‌توانید تریال بگیرید.",
+      "en": "You already have a running account. A Free Trial is available only when no account is running.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 41,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.c9e2af50bf43fa4e",
       "namespace": "react",
       "area": "Website",
@@ -83090,7 +83699,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 34,
+          "line": 40,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -83199,7 +83808,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 50,
+          "line": 62,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -83815,7 +84424,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 47,
+          "line": 59,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -84366,26 +84975,6 @@
       ]
     },
     {
-      "key": "react.cd9010b40ffc4552",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.",
-      "en": "The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 543,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.cda5b39c93836eb6",
       "namespace": "react",
       "area": "User Dashboard",
@@ -84398,7 +84987,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 63,
+          "line": 77,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -84458,7 +85047,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 73,
+          "line": 87,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -84619,7 +85208,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 37,
+          "line": 43,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -85019,7 +85608,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 48,
+          "line": 60,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -85266,7 +85855,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 39,
+          "line": 45,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -85681,7 +86270,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 32,
+          "line": 38,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -86298,6 +86887,26 @@
       ]
     },
     {
+      "key": "react.d181cdda1f382cfe",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "تستِ رایگان بیرونِ این حساب‌وکتاب است. قواعدِ چلنجی را که انتخاب می‌کنی اعمال می‌کند — «استاندارد» (۸٪ سپس ۵٪، سقفِ روزانه ۵٪ و سقفِ کل ۱۰٪ ثابت) یا «تک‌مرحله‌ای» — برای ۱۴ روز در هر مرحله، هیچ هزینه‌ای ندارد، فقط یک حسابِ فعال را می‌پذیرد، پاداشی نمی‌دهد و هرگز به حساب فاندشده تبدیل نمی‌شود. ارزشش کاملاً اطلاعاتی است: نشان می‌دهد وقتی سقف‌ها فعال‌اند چگونه رفتار می‌کنی.",
+      "en": "The Free Trial sits outside that arithmetic. It applies the rules of the challenge you choose - Standard (8% then 5%, a 5% daily limit and a 10% static total) or One-phase - for fourteen days per phase, costs nothing, allows only one running account, pays no reward and never converts into a funded account. Its value is entirely informational: it shows you how you behave when limits are live.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 204,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d18c62517c095731",
       "namespace": "react",
       "area": "Global Content",
@@ -86804,7 +87413,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 61,
+          "line": 73,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -87784,7 +88393,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 58,
+          "line": 72,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -87873,7 +88482,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 81,
+          "line": 95,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -88342,7 +88951,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 353,
+          "line": 355,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -88496,14 +89105,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 44,
+          "line": 58,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 71,
+          "line": 85,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -88752,6 +89361,26 @@
       ]
     },
     {
+      "key": "react.d733c16c94cb1f18",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تست رایگان اوپن‌فاند را با قوانین چالش واقعی و روی حساب شبیه‌سازی‌شده با موفقیت پشت سر گذاشته است.",
+      "en": "has passed the Openfund Free Trial under the rules of a real challenge, on a simulated account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 55,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d73b89b525f2484b",
       "namespace": "react",
       "area": "User Dashboard",
@@ -88771,14 +89400,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 41,
+          "line": 55,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 52,
+          "line": 66,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -89420,7 +90049,7 @@
         },
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 44,
+          "line": 56,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -89487,6 +90116,13 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 79,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/whitepaper/blocks.tsx",
@@ -90385,7 +91021,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 32,
+          "line": 46,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -90933,7 +91569,7 @@
         },
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 463,
+          "line": 467,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -90941,6 +91577,13 @@
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
           "line": 467,
+          "page": "purchase",
+          "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
+          "line": 783,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -91995,7 +92638,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 57,
+          "line": 69,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -92115,7 +92758,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 25,
+          "line": 31,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -94023,7 +94666,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Accounts.tsx",
-          "line": 178,
+          "line": 180,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -95532,6 +96175,26 @@
       ]
     },
     {
+      "key": "react.e7e6422a16ed4914",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی شروع تست رایگان",
+      "en": "Free Trial Start Certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 8,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e7e683a059e83efa",
       "namespace": "react",
       "area": "Global Content",
@@ -95691,7 +96354,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 43,
+          "line": 52,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -96193,14 +96856,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 45,
+          "line": 59,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 72,
+          "line": 86,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -96754,7 +97417,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 54,
+          "line": 66,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -97058,6 +97721,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ec3ad80cefaa2efa",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "تست رایگان محیطِ معاملاتیِ در دسترسِ همه در امروز است: از داشبورد Prop درخواست می‌شود، شبیه‌سازی‌شده است و با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ تست حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در تست واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.",
+      "en": "The Free Trial is the trading environment open to everyone today: requested from the Prop dashboard, simulated and priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Trial activity does not create a right to capital, a reward share or a withdrawal, and passing a trial does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 543,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -97777,26 +98460,6 @@
       ]
     },
     {
-      "key": "react.edafdbe716984f6f",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "هر سه طرح به‌صورت نمونهٔ بی‌نام نمایش داده می‌شوند. گواهی فقط پس از صدور توسط سرور بر پایهٔ یک رویداد ثبت‌شده، با نام، مبلغ، شماره و کد QR شما شخصی می‌شود.",
-      "en": "All three designs are shown as anonymous previews. A certificate becomes personal — with your name, amount, serial and QR code — only after the server issues it from a recorded event.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 49,
-          "page": "certificates",
-          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.edc24189d9f792a7",
       "namespace": "react",
       "area": "Global Content",
@@ -98207,7 +98870,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 60,
+          "line": 74,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -99135,7 +99798,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 26,
+          "line": 32,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -99432,6 +100095,26 @@
           "line": 495,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f13605cd0f3f11b9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "با فعال‌سازی تست رایگان ۱۴ روزه صادر می‌شود.",
+      "en": "Issued when you activate a 14-day Free Trial.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 14,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -100671,7 +101354,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 17,
+          "line": 23,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -100989,26 +101672,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.f55f909105aedd73",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "قواعدِ «استاندارد»، ۱۴ روز در هر مرحله، بدون هزینه.",
-      "en": "Standard rules, 14 days per phase, no fee.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 125,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -102146,7 +102809,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-          "line": 464,
+          "line": 784,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
@@ -102426,7 +103089,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 21,
+          "line": 27,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -102630,6 +103293,26 @@
           "line": 181,
           "page": "rulebook",
           "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.fa0c12542b607d3a",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "فعال‌سازی تست رایگان",
+      "en": "Activate Free Trial",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TrialActivation.tsx",
+          "line": 85,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -104822,6 +105505,26 @@
       ]
     },
     {
+      "key": "react.febd857ef0a6d9ae",
+      "namespace": "react",
+      "area": "User Dashboard",
+      "owner": "Content editor",
+      "fa": "یک حساب را از فهرست انتخاب کنید.",
+      "en": "Choose an account from the list.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
+          "line": 35,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.febf22321b5ea6da",
       "namespace": "react",
       "area": "Global Content",
@@ -105388,7 +106091,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 51,
+          "line": 63,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -105595,7 +106298,7 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 144,
+      "line": 146,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "dynamic-pair",
@@ -105751,11 +106454,11 @@
       "page": "rulebook",
       "route": "/:locale/rulebook",
       "reason": "dynamic-pair",
-      "expression": "t(`The Free Trial rehearses the Standard challenge with no fee: ${n(trial.trialDaysPerPhase!, 'en')} calendar days per phase, ${pct('en', trial.phase1TargetPct!)} and ${pct('en', trial.phase2TargetPct"
+      "expression": "t(`The Free Trial applies the rules of a real challenge with no fee. Request it from the Prop dashboard and choose the Standard (two-phase) or One-phase rules and any published account size; the targe"
     },
     {
       "component": "apps/web-react/src/features/terminal/Accounts.tsx",
-      "line": 137,
+      "line": 139,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -105763,7 +106466,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/Accounts.tsx",
-      "line": 201,
+      "line": 203,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -106102,7 +106805,7 @@
     },
     {
       "component": "apps/web-react/src/features/purchase/CheckoutPage.tsx",
-      "line": 143,
+      "line": 145,
       "page": "purchase",
       "route": "/:locale/checkout; /:locale/:product/purchases",
       "reason": "helper-wrapper-definition",
@@ -106174,7 +106877,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-      "line": 81,
+      "line": 95,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",

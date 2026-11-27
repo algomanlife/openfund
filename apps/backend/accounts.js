@@ -84,6 +84,9 @@ export async function accountDirectory(pool, engine, user) {
       status: c.status,
       stage: c.stage,
       phases: rules.phases ?? 0,
+      /* ADR 0062: a Free Trial is a challenge on the free-trial plan */
+      freeTrial: !!rules.free,
+      trialModel: rules.free ? (rules.trialModel ?? null) : null,
       currency,
       startingBalance: c.account_size_usd ? D(c.account_size_usd).toFixed(2) : null,
       balance,
