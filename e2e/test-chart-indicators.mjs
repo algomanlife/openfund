@@ -141,7 +141,7 @@ try {
     await frame.locator('#market-select-btn').click();
     await frame.locator('#market-search').fill('ETH/USD');
     await frame.locator('#market-dd-list li').filter({ hasText: 'ETH/USD' }).first().click();
-    await child.waitForFunction(() => window.__openfundChart.chart.market.symbol === 'gains:ETH/USD');
+    await child.waitForFunction(() => window.__openfundChart.chart.market.symbol === 'openoracle:ETH/USD');
     assert.equal(await frame.locator('#cur-pair').textContent(), 'ETH/USD');
     record(`${product}: symbol picker changes both chart and terminal state`);
 
@@ -150,7 +150,7 @@ try {
     child = getFrame();
     await waitIndicators(child);
     assert.equal(await child.evaluate(() => window.__openfundChart.chart.indicators().filter(h => h.source)[0].inputValues().sigsensiviti), 6);
-    assert.equal(await child.evaluate(() => window.__openfundChart.chart.market.symbol), 'gains:ETH/USD');
+    assert.equal(await child.evaluate(() => window.__openfundChart.chart.market.symbol), 'openoracle:ETH/USD');
     assert.equal(await frame.locator('#cur-pair').textContent(), 'ETH/USD');
     await checkBranding(frame);
     if (live) await page.screenshot({ path: path.join(output, `${product}-active.png`) });
