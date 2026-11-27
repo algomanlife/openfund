@@ -7,7 +7,7 @@ import type { LearningPathContent } from '../../contentTypes'
  *  and never recommends a strategy or promises profit. Openfund-specific claims
  *  stay inside the verified set - Prop Trading today runs one server-side
  *  simulated free_demo account per user, funded once with 100,000 virtual DAI and
- *  priced from live Gains Network mark prices, with no deposits, withdrawals,
+ *  priced from live Open Oracle prices, with no deposits, withdrawals,
  *  refills or resets; purchase activation, funded accounts and payouts are not
  *  enabled in this release, so every figure quoted below is a published term of
  *  record rather than something purchasable or enforced. NOT imported by the app
@@ -104,8 +104,8 @@ export const pathC: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'Openfund status: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. What runs today is a single server-side simulated free_demo account per user, funded once with 100,000 virtual DAI and priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets. Demo profit is not money owed to the trader, and trading the demo does not establish eligibility for a funded account. Every figure in this path is a published term of record.',
-            'وضعیت اوپن‌فاند: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه، قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. آنچه امروز کار می‌کند یک حسابِ شبیه‌سازی‌شدهٔ free_demo در سمت سرور است، به ازای هر کاربر یکی، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین شده و از مارک پرایسِ زندهٔ Gains Network قیمت‌گذاری می‌شود؛ بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. سودِ دمو پولی نیست که به معامله‌گر بدهکار باشند، و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. هر عددی در این مسیر، شرطِ منتشرشده و مرجع است.'
+            'Openfund status: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. What runs today is a single server-side simulated free_demo account per user, funded once with 100,000 virtual DAI and priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo profit is not money owed to the trader, and trading the demo does not establish eligibility for a funded account. Every figure in this path is a published term of record.',
+            'وضعیت اوپن‌فاند: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه، قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. آنچه امروز کار می‌کند یک حسابِ شبیه‌سازی‌شدهٔ free_demo در سمت سرور است، به ازای هر کاربر یکی، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین شده و از قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود؛ بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. سودِ دمو پولی نیست که به معامله‌گر بدهکار باشند، و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. هر عددی در این مسیر، شرطِ منتشرشده و مرجع است.'
           )
         },
         { type: 'h2', text: text('Read the stage as a list of conditions', 'مرحله را فهرستی از شرایط بخوان') },
@@ -541,8 +541,8 @@ export const pathC: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.',
-            'دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از مارک پرایسِ زندهٔ Gains Network، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.'
+            'The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.',
+            'دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.'
           )
         },
         { type: 'h2', text: text('A routine that survives contact with the limits', 'روتینی که در برخورد با سقف‌ها دوام می‌آورد') },

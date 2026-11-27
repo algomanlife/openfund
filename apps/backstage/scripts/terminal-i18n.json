@@ -100,8 +100,8 @@
   "en": "CLOSED"
  },
  "dd.foot": {
-  "fa": "بازارهای Gains Network — دادهٔ واقعی · بازارهای بسته فقط قابل مشاهده‌اند",
-  "en": "Gains Network markets — verified data · closed markets are view-only"
+  "fa": "بازارها از Gains Network و قیمت‌ها از Open Oracle · بازارهای بسته فقط قابل مشاهده‌اند",
+  "en": "Markets from Gains Network, prices from Open Oracle · closed markets are view-only"
  },
  "cat.crypto": {
   "fa": "رمزارز",
@@ -665,12 +665,12 @@
   "en": "<b>Liquidation:</b> simplified — entry × (1 ∓ (1/leverage − 0.5% maintenance)). Real venues use tiered maintenance margins."
  },
  "asm.exec": {
-  "fa": "<b>اجرا:</b> سفارش Market در قیمت Mark واقعی Gains و بدون Slippage انجام می‌شود. سفارش‌های Limit و Stop با عبور Mark از قیمت تریگر فعال می‌شوند.",
-  "en": "<b>Execution:</b> market orders fill at the real Gains mark price with zero slippage. Limit and stop orders trigger when the mark crosses the trigger price."
+  "fa": "<b>اجرا:</b> سفارش Market در قیمت Open Oracle و بدون Slippage انجام می‌شود؛ فقط وقتی منابع قیمت به‌روز و هم‌خوان‌اند. سفارش‌های Limit و Stop با عبور قیمت از قیمت تریگر فعال می‌شوند.",
+  "en": "<b>Execution:</b> market orders fill at the Open Oracle price with zero slippage, only while the price sources are fresh and agree. Limit and stop orders trigger when the price crosses the trigger price."
  },
  "asm.prices": {
-  "fa": "<b>قیمت‌ها:</b> دادهٔ واقعی Gains Network (REST + WebSocket). خودمان قیمت نمی‌سازیم.",
-  "en": "<b>Prices:</b> real Gains Network data (REST + WebSocket). We never fabricate prices."
+  "fa": "<b>قیمت‌ها:</b> Open Oracle، تجمیع قیمت اختصاصی اوپن‌فاند از Gains، Hyperliquid و GMX، از سرورهای ما. قیمت ساختگی نمی‌سازیم.",
+  "en": "<b>Prices:</b> Open Oracle, Openfund’s own aggregation of Gains, Hyperliquid and GMX, streamed from our servers. We never fabricate prices."
  },
  "asm.book": {
   "fa": "<b>Order Book:</b> Gains دفتر سفارش ارائه نمی‌دهد؛ کتاب نمایشی ما شبیه‌سازی است و نمایندهٔ نقدینگی واقعی نیست.",
@@ -749,12 +749,12 @@
   "en": "The Vela library failed to load."
  },
  "boot.loading": {
-  "fa": "در حال اتصال به Gains Network…",
-  "en": "Connecting to Gains Network…"
+  "fa": "در حال اتصال به دادهٔ بازار…",
+  "en": "Connecting to market data…"
  },
  "boot.failed": {
-  "fa": "اتصال به Gains Network برقرار نشد.",
-  "en": "Could not reach Gains Network."
+  "fa": "دریافت دادهٔ بازار ممکن نشد.",
+  "en": "Could not load market data."
  },
  "boot.retry": {
   "fa": "تلاش دوباره",

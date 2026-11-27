@@ -31,7 +31,7 @@ export const faqItems: FaqItemContent[] = [
   /* ------------------------------------------------------- Getting Started -- */
   { key: 'what-is-openfund', category: 'getting-started', sort: 1,
     question: text('What is Openfund?', 'اوپن‌فاند چیست؟'),
-    answer: text('Openfund is a trading platform with two products on one terminal: Prop Trading and Perpetual Trading. Today Prop Trading runs a simulated demo account — one per user, funded once with 100,000 virtual DAI and priced from live Gains Network mark prices — while Perpetual Trading shows read-only data from the public Gains Network deployment on Arbitrum One.', 'اوپن‌فاند یک پلتفرم معاملاتی است که دو محصول را روی یک ترمینال دارد: معاملهٔ چلنجی (Prop Trading) و معاملهٔ دائمی (Perpetual Trading). امروز محصول چلنجی یک حساب دموی شبیه‌سازی‌شده اجرا می‌کند — یک حساب برای هر کاربر، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی، قیمت‌گذاری‌شده از قیمت مرجع زندهٔ Gains Network — و محصول دائمی فقط دادهٔ خواندنی از استقرار عمومی Gains Network بر بستر Arbitrum One نشان می‌دهد.'),
+    answer: text('Openfund is a trading platform with two products on one terminal: Prop Trading and Perpetual Trading. Today Prop Trading runs a simulated demo account — one per user, funded once with 100,000 virtual DAI and priced from live Open Oracle prices — while Perpetual Trading shows read-only data from the public Gains Network deployment on Arbitrum One.', 'اوپن‌فاند یک پلتفرم معاملاتی است که دو محصول را روی یک ترمینال دارد: معاملهٔ چلنجی (Prop Trading) و معاملهٔ دائمی (Perpetual Trading). امروز محصول چلنجی یک حساب دموی شبیه‌سازی‌شده اجرا می‌کند — یک حساب برای هر کاربر، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی، قیمت‌گذاری‌شده از قیمت زندهٔ Open Oracle — و محصول دائمی فقط دادهٔ خواندنی از استقرار عمومی Gains Network بر بستر Arbitrum One نشان می‌دهد.'),
     links: [
       { target: { kind: 'terminal', product: 'prop' }, label: text('Prop terminal', 'ترمینال چلنجی') },
       { target: { kind: 'terminal', product: 'perpetual' }, label: text('Perpetual view', 'نمای معاملات دائمی') },
@@ -229,14 +229,14 @@ export const faqItems: FaqItemContent[] = [
   /* ------------------------------------------------------- Trading Terminal -- */
   { key: 'terminal-platform', category: 'terminal', sort: 1,
     question: text('Which platform or technology does Openfund use?', 'اوپن‌فاند از چه پلتفرم یا فناوری‌ای استفاده می‌کند؟'),
-    answer: text('The terminal pairs the Vela charting engine by LuxAlgo with market data from Gains Network. Both products — Prop Trading and Perpetual Trading — run on this one interface, so you chart and view the same markets in one place.', 'ترمینال، موتور نمودار Vela محصول LuxAlgo را با دادهٔ بازار Gains Network جفت کرده است. هر دو محصول — چلنجی و دائمی — روی همین یک رابط اجرا می‌شوند، پس نمودار و بازارها را در یک جا می‌بینی.'),
+    answer: text('The terminal pairs the Vela charting engine by LuxAlgo with live Open Oracle prices and Gains Network market data. Both products — Prop Trading and Perpetual Trading — run on this one interface, so you chart and view the same markets in one place.', 'ترمینال، موتور نمودار Vela محصول LuxAlgo را با قیمت زندهٔ Open Oracle و دادهٔ بازار Gains Network جفت کرده است. هر دو محصول — چلنجی و دائمی — روی همین یک رابط اجرا می‌شوند، پس نمودار و بازارها را در یک جا می‌بینی.'),
     links: [
       { target: { kind: 'terminal', product: 'prop' }, label: text('Open the terminal', 'باز کردن ترمینال') },
       { target: { kind: 'lesson', slug: 'order-types-and-order-books' }, label: text('Order types and order books', 'نوع سفارش و دفتر سفارش') },
     ] },
   { key: 'terminal-assets', category: 'terminal', sort: 2,
     question: text('What assets can I trade?', 'چه دارایی‌هایی می‌توانم معامله کنم؟'),
-    answer: text('Markets come from Gains Network metadata and are grouped into crypto, forex, stocks, indices and commodities — around 488 symbols. Prices are Gains Network mark prices, not an independent index feed. The available list and each market’s status can change, so check the terminal.', 'بازارها از مشخصات Gains Network می‌آیند و در دسته‌های رمزارز، فارکس، سهام، شاخص و کالا گروه‌بندی می‌شوند — حدود ۴۸۸ نماد. قیمت‌ها، قیمت مرجعِ Gains Network است نه یک خوراکِ مستقلِ شاخص. فهرستِ در دسترس و وضعیت هر بازار می‌تواند تغییر کند، پس در ترمینال بررسی کن.'),
+    answer: text('Markets come from Gains Network metadata and are grouped into crypto, forex, stocks, indices and commodities — around 488 symbols. Prices are Open Oracle composites: crypto markets combine Gains, Hyperliquid and GMX, other markets use Gains. The available list and each market’s status can change, so check the terminal.', 'بازارها از مشخصات Gains Network می‌آیند و در دسته‌های رمزارز، فارکس، سهام، شاخص و کالا گروه‌بندی می‌شوند — حدود ۴۸۸ نماد. قیمت‌ها، قیمت ترکیبی Open Oracle است: بازارهای رمزارز از Gains، Hyperliquid و GMX تجمیع می‌شوند و سایر بازارها از Gains. فهرستِ در دسترس و وضعیت هر بازار می‌تواند تغییر کند، پس در ترمینال بررسی کن.'),
     links: [
       { target: { kind: 'page', slug: 'markets' }, label: text('Markets directory', 'فهرست بازارها') },
       { target: { kind: 'lesson', slug: 'mark-price-vs-index-price' }, label: text('Mark price vs index price', 'قیمت مرجع در برابر قیمت شاخص') },
@@ -270,7 +270,7 @@ export const faqItems: FaqItemContent[] = [
     ] },
   { key: 'terminal-data-freshness', category: 'terminal', sort: 7,
     question: text('Is the terminal data live or delayed?', 'دادهٔ ترمینال زنده است یا با تأخیر؟'),
-    answer: text('Prices are live Gains Network mark prices. The data source does not provide order-book depth, open interest or a trade tape, and the terminal shows those as unavailable rather than inventing values for them.', 'قیمت‌ها، قیمت مرجعِ زندهٔ Gains Network است. منبع داده، عمق دفتر سفارش، بهرهٔ باز و نوار معاملات را فراهم نمی‌کند و ترمینال این‌ها را «در دسترس نیست» نشان می‌دهد و برایشان مقدارِ ساختگی نمی‌سازد.'),
+    answer: text('Prices are live Open Oracle composites of Gains, Hyperliquid and GMX. The price sources do not provide order-book depth, open interest or a trade tape, and the terminal shows those as unavailable rather than inventing values for them.', 'قیمت‌ها، قیمت ترکیبی زندهٔ Open Oracle از Gains، Hyperliquid و GMX است. منابع قیمت، عمق دفتر سفارش، بهرهٔ باز و نوار معاملات را فراهم نمی‌کند و ترمینال این‌ها را «در دسترس نیست» نشان می‌دهد و برایشان مقدارِ ساختگی نمی‌سازد.'),
     links: [
       { target: { kind: 'glossary', slug: 'open-interest' }, label: text('Open interest', 'بهرهٔ باز') },
       { target: { kind: 'lesson', slug: 'perps-how-they-work' }, label: text('How perpetuals work', 'معاملات دائمی چگونه کار می‌کنند') },
@@ -286,7 +286,7 @@ export const faqItems: FaqItemContent[] = [
     ] },
   { key: 'capital-handling', category: 'transparency', sort: 2,
     question: text('Does Openfund hold customer funds, and what is the simulated environment?', 'آیا اوپن‌فاند سرمایهٔ مشتری را نگه می‌دارد و محیط شبیه‌سازی‌شده چیست؟'),
-    answer: text('Today there is no customer capital to custody: the demo holds only virtual funds — one 100,000 DAI simulated account per user, priced from live Gains Network mark prices, with no deposits or withdrawals. Real funded capital is a planned stage that arrives with the commercial launch and the final agreement.', 'امروز سپردهٔ مشتری‌ای برای امانت گرفتن وجود ندارد: دمو تنها وجه مجازی نگه می‌دارد — یک حساب شبیه‌سازی‌شدهٔ ۱۰۰٬۰۰۰ دای برای هر کاربر، قیمت‌گذاری‌شده از قیمت مرجع زندهٔ Gains Network، بدون واریز یا برداشت. سرمایهٔ واقعیِ فاندشده مرحله‌ای برنامه‌ریزی‌شده است که با عرضهٔ تجاری و قرارداد نهایی می‌آید.'),
+    answer: text('Today there is no customer capital to custody: the demo holds only virtual funds — one 100,000 DAI simulated account per user, priced from live Open Oracle prices, with no deposits or withdrawals. Real funded capital is a planned stage that arrives with the commercial launch and the final agreement.', 'امروز سپردهٔ مشتری‌ای برای امانت گرفتن وجود ندارد: دمو تنها وجه مجازی نگه می‌دارد — یک حساب شبیه‌سازی‌شدهٔ ۱۰۰٬۰۰۰ دای برای هر کاربر، قیمت‌گذاری‌شده از قیمت زندهٔ Open Oracle، بدون واریز یا برداشت. سرمایهٔ واقعیِ فاندشده مرحله‌ای برنامه‌ریزی‌شده است که با عرضهٔ تجاری و قرارداد نهایی می‌آید.'),
     links: [
       { target: { kind: 'lesson', slug: 'funded-accounts-how-they-work' }, label: text('How funded accounts work', 'حساب فاندشده چگونه کار می‌کند') },
       { target: { kind: 'terminal', product: 'prop' }, label: text('See the demo', 'دیدن دمو') },
@@ -307,7 +307,7 @@ export const faqItems: FaqItemContent[] = [
     ] },
   { key: 'fair-execution', category: 'transparency', sort: 5,
     question: text('How do I know trades are executed fairly?', 'چطور بفهمم معاملات منصفانه اجرا می‌شوند؟'),
-    answer: text('Today the demo drives fills from fresh server-side Gains Network mark prices and records them on your account, so execution is simulated and not routed to any venue. Because it is a simulation, demo results do not prove live execution quality, and any fairness guarantees for live trading belong to the final agreement.', 'امروز دمو اجرا را از قیمت مرجع تازهٔ سروریِ Gains Network می‌سازد و در حساب تو ثبتش می‌کند؛ پس اجرا شبیه‌سازی‌شده است و به هیچ بازاری هدایت نمی‌شود. چون شبیه‌سازی است، نتیجهٔ دمو کیفیت اجرای زنده را اثبات نمی‌کند و هر تضمینِ انصاف برای معاملهٔ زنده، به قرارداد نهایی تعلق دارد.'),
+    answer: text('Today the demo drives fills from fresh server-side Open Oracle prices — only when the sources agree — and records them on your account, so execution is simulated and not routed to any venue. Because it is a simulation, demo results do not prove live execution quality, and any fairness guarantees for live trading belong to the final agreement.', 'امروز دمو اجرا را از قیمت تازهٔ سروریِ Open Oracle — فقط وقتی منابع هم‌خوان‌اند — می‌سازد و در حساب تو ثبتش می‌کند؛ پس اجرا شبیه‌سازی‌شده است و به هیچ بازاری هدایت نمی‌شود. چون شبیه‌سازی است، نتیجهٔ دمو کیفیت اجرای زنده را اثبات نمی‌کند و هر تضمینِ انصاف برای معاملهٔ زنده، به قرارداد نهایی تعلق دارد.'),
     links: [
       { target: { kind: 'glossary', slug: 'mark-price' }, label: text('Mark price', 'قیمت مرجع') },
       { target: { kind: 'lesson', slug: 'order-types-and-order-books' }, label: text('Order types and order books', 'نوع سفارش و دفتر سفارش') },

@@ -125,8 +125,8 @@ export const pathB: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge plans publish a reference leverage of 5x; the real per-market maximum comes from the market feed, so read it in the terminal rather than assuming a ceiling.',
-            'دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با مارک پرایس زندهٔ Gains Network، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. پلن‌های چلنج اهرم مرجع ۵× را منتشر می‌کنند، اما سقف واقعیِ هر بازار از فید می‌آید؛ پس به‌جای فرض کردنِ سقفی، آن را در ترمینال بخوانید.'
+            'The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge plans publish a reference leverage of 5x; the real per-market maximum comes from the market feed, so read it in the terminal rather than assuming a ceiling.',
+            'دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. پلن‌های چلنج اهرم مرجع ۵× را منتشر می‌کنند، اما سقف واقعیِ هر بازار از فید می‌آید؛ پس به‌جای فرض کردنِ سقفی، آن را در ترمینال بخوانید.'
           )
         },
         {
@@ -229,8 +229,8 @@ export const pathB: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'In Openfund, Prop Trading is a server-side simulated demo: margin and forced closes are handled inside that simulation, priced from live Gains Network mark prices, and no demo result creates a claim on capital. Perpetual Trading is read-only today — on-chain execution is not enabled — so it is a place to study prices, not to test margin modes.',
-            'در اوپن‌فاند، «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شدهٔ سمت سرور است: وجه تضمین و بسته‌شدن‌های اجباری درون همان شبیه‌سازی و با مارک پرایس زندهٔ Gains Network مدیریت می‌شوند، و هیچ نتیجهٔ دموی حقِ مالکیت سرمایه ایجاد نمی‌کند. بخش «معاملات آنی» امروز خواندنی است — اجرای آن‌چینی فعال نیست — پس جای بررسیِ قیمت است، نه آزمودنِ حالت‌های وجه تضمین.'
+            'In Openfund, Prop Trading is a server-side simulated demo: margin and forced closes are handled inside that simulation, priced from live Open Oracle prices, and no demo result creates a claim on capital. Perpetual Trading is read-only today — on-chain execution is not enabled — so it is a place to study prices, not to test margin modes.',
+            'در اوپن‌فاند، «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شدهٔ سمت سرور است: وجه تضمین و بسته‌شدن‌های اجباری درون همان شبیه‌سازی و با قیمت زندهٔ Open Oracle مدیریت می‌شوند، و هیچ نتیجهٔ دموی حقِ مالکیت سرمایه ایجاد نمی‌کند. بخش «معاملات آنی» امروز خواندنی است — اجرای آن‌چینی فعال نیست — پس جای بررسیِ قیمت است، نه آزمودنِ حالت‌های وجه تضمین.'
           )
         },
         {
@@ -557,8 +557,8 @@ export const pathB: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'Openfund context: the demo is a server-side simulated account — 100,000 virtual DAI once per user, no deposits, withdrawals, refills or resets, priced from live Gains Network mark prices. Demo profit is not money owed, and demo trading does not establish eligibility for a funded account. The loss limits quoted here are published terms of record, not enforced in this release.',
-            'بافتِ اوپن‌فاند: دمو یک حسابِ شبیه‌سازی‌شدهٔ سمت سرور است — ۱۰۰٬۰۰۰ دای مجازی یک‌بار برای هر کاربر، بدون واریز، برداشت، شارژ یا بازنشانی، با قیمت‌گذاری از مارک پرایس زندهٔ Gains Network. سودِ دمو طلبِ مالی نیست و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. سقف‌های ضرری که اینجا آمده، شرایط منتشرشده و مرجع است و در این نسخه اجرا نمی‌شود.'
+            'Openfund context: the demo is a server-side simulated account — 100,000 virtual DAI once per user, no deposits, withdrawals, refills or resets, priced from live Open Oracle prices. Demo profit is not money owed, and demo trading does not establish eligibility for a funded account. The loss limits quoted here are published terms of record, not enforced in this release.',
+            'بافتِ اوپن‌فاند: دمو یک حسابِ شبیه‌سازی‌شدهٔ سمت سرور است — ۱۰۰٬۰۰۰ دای مجازی یک‌بار برای هر کاربر، بدون واریز، برداشت، شارژ یا بازنشانی، با قیمت‌گذاری از قیمت زندهٔ Open Oracle. سودِ دمو طلبِ مالی نیست و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. سقف‌های ضرری که اینجا آمده، شرایط منتشرشده و مرجع است و در این نسخه اجرا نمی‌شود.'
           )
         },
         {

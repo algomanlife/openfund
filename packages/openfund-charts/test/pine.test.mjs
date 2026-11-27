@@ -134,11 +134,13 @@ test('live marks preserve the historical forming candle open and extremes', asyn
   }
   vm.runInNewContext(readFileSync(new URL('../../openfund-gains-adapter/src/gains-adapter.js', import.meta.url), 'utf8'), {
     window, Date: Clock, AbortSignal, setTimeout, clearTimeout, WebSocket: Socket,
-    fetch: async () => ({ ok: true, json: async () => ({ data: [tail] }) }),
+    /* this origin serves no Open Oracle, so live marks come from the Gains socket (fallback path) */
+    fetch: async url => String(url).startsWith('/api/oracle/') ? { ok: false, status: 404, json: async () => ({}) } : ({ ok: true, json: async () => ({ data: [tail] }) }),
   });
   const provider = window.OpenfundGains.createVelaProvider();
   await provider.getBars('BTC/USD', '1', { limit: 1 });
   const stop = provider.subscribe('BTC/USD', '1', bar => { received = bar; });
+  await new Promise(resolve => setTimeout(resolve, 0)); // the price source is decided asynchronously
   const price = (tail.high + tail.low) / 2;
   socket.onmessage({ data: JSON.stringify({ channel: 'prices', snapshot: true, seq: 1, data: [{ market: 'BTC/USD', mark: price }] }) });
   assert.equal(received.open, tail.open);

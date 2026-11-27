@@ -16,13 +16,13 @@ export const marketsSeed: MarketsSeed = {
   title: text('Markets', 'بازارها'),
   subtitle: text('Explore Openfund', 'بازارهای جهانی'),
   description: text(
-    'Every asset class the Openfund trading ecosystem tracks, with live mark prices straight from Gains Network. Pick a market and take it straight into the terminal.',
-    'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت Mark مستقیم از Gains Network. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
+    'Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal.',
+    'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
   ),
   seoTitle: text('Openfund Markets', 'بازارهای اوپن‌فاند'),
   seoDescription: text(
-    'Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live Gains Network prices.',
-    'همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Gains Network ببینید: رمزارز، فارکس، سهام، شاخص و کالا.'
+    'Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live prices from Open Oracle, Openfund’s own price aggregation.',
+    'همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Open Oracle، سامانهٔ تجمیع قیمت اختصاصی اوپن‌فاند، ببینید: رمزارز، فارکس، سهام، شاخص و کالا.'
   ),
 }
 

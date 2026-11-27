@@ -1,7 +1,19 @@
 /* ============================================================
    Openfund Gains Adapter
    Verified market-data integration with Gains Network
-   (api.gains.trade / wss:api.gains.trade, Arbitrum).
+   (api.gains.trade / wss:api.gains.trade, Arbitrum), with live prices
+   from Open Oracle (ADR 0059).
+
+   Prices: the same-origin Open Oracle API (`/api/oracle/prices` and the
+   `/api/oracle/stream` SSE feed) carries Openfund's composite of Gains,
+   Hyperliquid and GMX. When this origin has no Open Oracle (the route
+   answers 404/503, e.g. a static host or MARKET_PRICE_SOURCE=gains), the
+   adapter falls back to the Gains prices socket and reports `gains` as
+   its price source. `priceSource()` and the status info say which one is
+   live; a price is never relabelled.
+
+   The market catalog, specifications and candle history stay on Gains:
+   chart history is Gains provider reference data.
 
    Verified endpoints (2026-10-31):
      GET  /v1/arbitrum/markets                                → 488 symbols w/ metadata
@@ -25,6 +37,7 @@
 
 const API = 'https://api.gains.trade/v1/arbitrum';
 const WS = 'wss://api.gains.trade/v1/arbitrum/ws';
+const ORACLE = (global.__OPENFUND_ORACLE_BASE__ || '') + '/api/oracle';
 
 /* Vela timeframe → Gains candle interval (1w deliberately absent: unsupported) */
 const TF_MAP = {
@@ -94,7 +107,32 @@ async function marketList(force){
   return marketsCache;
 }
 
+/* ---------- Open Oracle availability (decided once per page) ---------- */
+let source = null;              /* 'open-oracle' | 'gains' once decided */
+let oracleProbe = null;
+function oracleRecord(r){
+  if (!r || typeof r.market !== 'string' || r.price == null) return null;
+  return { market: r.market, mark: r.price, index: null, updatedAt: r.at, mode: r.mode,
+           confidence: r.confidence, stale: !!r.stale, source: 'open-oracle' };
+}
+async function oracleSnapshot(){
+  const r = await fetch(ORACLE + '/prices', { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(8000) });
+  if (!r.ok) throw Object.assign(new Error('HTTP ' + r.status), { status: r.status });
+  const j = await r.json();
+  if (!j || !Array.isArray(j.data)) throw new Error('Invalid oracle envelope');
+  return j.data.map(oracleRecord).filter(Boolean);
+}
+/* Open Oracle is used when this origin serves it with at least one price. */
+function oracleAvailable(){
+  if (!oracleProbe) oracleProbe = oracleSnapshot().then(rows => rows.length > 0, () => false)
+    .then(ok => { source = ok ? 'open-oracle' : 'gains'; notifyStatus(); return ok; });
+  return oracleProbe;
+}
+
 async function priceSnapshot(){
+  if (await oracleAvailable()){
+    try { return await oracleSnapshot(); } catch(e){ /* stream below keeps reconnecting */ }
+  }
   return get('/prices', 8000); /* [{market, mark, index, updatedAt}] */
 }
 
@@ -149,8 +187,8 @@ const statusHandlers = new Set();
 
 function notifyStatus(){
   const stale = lastMsgAt && Date.now() - lastMsgAt > 45000;
-  const s = wsLive && !stale ? 'live' : (ws ? 'reconnecting' : 'connecting');
-  for (const h of statusHandlers) h(s, { lastMsgAt });
+  const s = wsLive && !stale ? 'live' : ((ws || es) ? 'reconnecting' : 'connecting');
+  for (const h of statusHandlers) h(s, { lastMsgAt, source });
 }
 function handlePriceData(items){
   lastMsgAt = Date.now();
@@ -159,10 +197,46 @@ function handlePriceData(items){
     const mark = Number(it.mark);
     if (!Number.isFinite(mark) || mark <= 0) continue;
     const payload = { market: it.market, mark, index: Number(it.index) || null,
-                      updatedAt: Number(it.updatedAt) || Date.now() };
+                      updatedAt: Number(it.updatedAt) || Date.now(),
+                      source: it.source || 'gains', mode: it.mode || null, stale: !!it.stale,
+                      confidence: Number.isFinite(it.confidence) ? it.confidence : null };
     for (const h of priceHandlers) h(payload);
   }
   notifyStatus();
+}
+
+/* ---------- live Open Oracle stream (SSE, same origin) ----------
+   One `snapshot` event, then `prices` events with the composites that
+   changed in each evaluation. EventSource reconnects by itself after a
+   dropped connection; a refused stream (closed state) is retried with
+   backoff, and the watchdog replaces a silent one. */
+let es = null, esRetry = 0, esTimer = null, esEverLive = false;
+function connectOracle(){
+  if (typeof EventSource !== 'function'){ source = 'gains'; connectWS(); return; }
+  if (es) { try { es.close(); } catch(e){} }
+  const mine = es = new EventSource(ORACLE + '/stream');
+  const onEvent = ev => {
+    if (mine !== es) return;
+    let body; try { body = JSON.parse(ev.data); } catch(e){ return; }
+    if (!body || !Array.isArray(body.data)) return;
+    wsLive = true; esRetry = 0; esEverLive = true;
+    handlePriceData(body.data.map(oracleRecord).filter(Boolean));
+  };
+  mine.addEventListener('snapshot', onEvent);
+  mine.addEventListener('prices', onEvent);
+  mine.onopen = () => { if (mine === es) { lastMsgAt = Date.now(); notifyStatus(); } };
+  mine.onerror = () => {
+    if (mine !== es) return;
+    wsLive = false; notifyStatus();
+    if (mine.readyState === 2){ es = null; scheduleOracleReconnect(); }
+  };
+}
+function scheduleOracleReconnect(){
+  if (esTimer) return;
+  esRetry++;
+  /* a stream that never delivered (e.g. a proxy that buffers SSE) falls back to the Gains socket, labelled as such */
+  if (!esEverLive && esRetry > 4){ source = 'gains'; notifyStatus(); connectWS(); return; }
+  esTimer = setTimeout(() => { esTimer = null; connectOracle(); }, Math.min(30000, 2000 * Math.pow(2, Math.min(esRetry, 4))));
 }
 function connectWS(){
   if (ws) { try { ws.close(); } catch(e){} }
@@ -222,7 +296,11 @@ let watchdog = null;
 function startWatchdog(){
   if (watchdog || typeof setInterval !== 'function') return;   /* sandboxed hosts have no timers */
   watchdog = setInterval(() => {
-    if (ws && lastMsgAt && Date.now() - lastMsgAt > WS_SILENCE_MS){
+    if (es && lastMsgAt && Date.now() - lastMsgAt > WS_SILENCE_MS){
+      const dead = es; es = null; wsLive = false;
+      try { dead.close(); } catch(e){}
+      notifyStatus(); esRetry = 0; scheduleOracleReconnect();
+    } else if (ws && lastMsgAt && Date.now() - lastMsgAt > WS_SILENCE_MS){
       const dead = ws; ws = null; wsLive = false; priceSeq = null; wsGen++;
       try { dead.close(); } catch(e){}
       notifyStatus();
@@ -233,6 +311,11 @@ function startWatchdog(){
 /* Reconnect immediately (not after the backoff) when the network returns
    or the tab becomes visible again with no open socket. */
 function reconnectNow(){
+  if (source === 'open-oracle'){
+    if (!priceHandlers.size || es) return;
+    if (esTimer){ clearTimeout(esTimer); esTimer = null; }
+    esRetry = 0; connectOracle(); return;
+  }
   if (!priceHandlers.size || (ws && ws.readyState <= 1)) return;
   if (retryTimer){ clearTimeout(retryTimer); retryTimer = null; }
   retry = 0; connectWS();
@@ -241,12 +324,17 @@ if (typeof addEventListener === 'function'){
   addEventListener('online', reconnectNow);
   if (typeof document !== 'undefined') document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reconnectNow(); });
 }
+let streamStarted = false;
 function subscribePrices(handler){
   priceHandlers.add(handler);
   startWatchdog();
-  if (!ws && !retryTimer) connectWS();
+  if (!streamStarted){
+    streamStarted = true;
+    oracleAvailable().then(ok => ok ? connectOracle() : connectWS());
+  } else if (source === 'gains' && !ws && !retryTimer) connectWS();
   return () => priceHandlers.delete(handler);
 }
+function priceSource(){ return source; }
 function subscribeStatus(handler){ statusHandlers.add(handler); notifyStatus(); return () => statusHandlers.delete(handler); }
 
 /* ---------- real open interest from /markets funding metadata ---------- */
@@ -312,12 +400,13 @@ function createVelaProvider(){
         fees: m.fees || null
       };
     },
-    /* optional — true live stream from the Gains prices channel */
+    /* optional — live forming bar from the price stream (Open Oracle composites,
+       or Gains marks on the fallback); stale composites never print a bar */
     subscribe(ticker, timeframe, onBar){
       const spec = resolution(timeframe);
       let bucketStart = 0, open = null, high = -Infinity, low = Infinity;
       const onPrice = p => {
-        if (p.market !== ticker) return;
+        if (p.market !== ticker || p.stale) return;
         const now = Date.now();
         const price = p.mark;
         const start = bucket(now, spec);
@@ -350,7 +439,7 @@ global.OpenfundGains = {
   API, WS, TF_MAP, TF_MS,
   rest: get, marketList, priceSnapshot,
   fetchCandles, stats24h,
-  subscribePrices, subscribeStatus,
+  subscribePrices, subscribeStatus, priceSource, ORACLE,
   createVelaProvider, openInterestUsd
 };
 })(window);

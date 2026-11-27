@@ -16,7 +16,7 @@
       'dd.searchPh': 'ابحث عن سوق…', 'dd.market': 'السوق', 'dd.price': 'السعر', 'dd.24h': '24 ساعة',
       'dd.noMatch': 'لا يوجد سوق مطابق لهذا البحث.', 'dd.funding': 'التمويل', 'dd.oil': 'OI شراء', 'dd.ois': 'OI بيع',
       'dd.hol': 'احتفاظ شراء', 'dd.hos': 'احتفاظ بيع', 'dd.closed': 'مغلق',
-      'dd.foot': 'أسواق Gains Network — بيانات موثّقة · الأسواق المغلقة للعرض فقط',
+      'dd.foot': 'الأسواق من Gains Network والأسعار من Open Oracle · الأسواق المغلقة للعرض فقط',
       'cat.crypto': 'العملات المشفرة', 'cat.forex': 'الفوركس', 'cat.stocks': 'الأسهم', 'cat.indices': 'المؤشرات', 'cat.commodity': 'السلع', 'cat.all': 'الكل',
       'book.tab': 'الدفتر', 'book.tradesTab': 'الصفقات', 'book.grouping': 'التجميع', 'book.compact': 'مضغوط', 'book.simulated': 'Gains VOB',
       'book.price': 'السعر', 'book.size': 'الحجم', 'book.total': 'الإجمالي', 'book.time': 'الوقت',
@@ -81,7 +81,7 @@
       'toast.position': 'تم فتح المركز.', 'toast.order': 'تم إرسال الأمر.', 'toast.noPrice': 'السعر المباشر غير متاح.',
       'chart.loading': 'جارٍ تحميل شموع Gains…', 'chart.error': 'تعذّر تحميل الشموع.', 'chart.retry': 'إعادة المحاولة',
       'chart.unavailable': 'الرسم البياني غير متاح', 'chart.msg': 'تعذّر تحميل مكتبة Vela.',
-      'boot.loading': 'جارٍ الاتصال بـ Gains Network…', 'boot.failed': 'تعذّر الوصول إلى Gains Network.', 'boot.retry': 'إعادة المحاولة'
+      'boot.loading': 'جارٍ الاتصال ببيانات السوق…', 'boot.failed': 'تعذّر تحميل بيانات السوق.', 'boot.retry': 'إعادة المحاولة'
     },
     ru: {
       'ctab.funding': 'Фандинг', 'ctab.details': 'Детали', 'fund.loading': 'Загрузка рыночных данных…', 'fund.unavailable': 'Рыночные данные недоступны.', 'fund.retry': 'Повторить', 'fund.long': 'Лонг', 'fund.short': 'Шорт', 'fund.borrowing': 'Заимствование', 'fund.perHour': 'в час', 'fund.perYear': 'в год', 'fund.oi': 'Открытый интерес', 'fund.skew': 'Перекос', 'fund.longs': 'Лонги', 'fund.shorts': 'Шорты', 'fund.range': 'Период', 'fund.interval': 'Интервал', 'fund.series': 'Сторона', 'fund.annualized': 'Годовая ставка', 'fund.r1d': '1Д', 'fund.r1w': '1Н', 'fund.r1m': '1М', 'fund.r3m': '3М', 'fund.availableFrom': 'Данные доступны с', 'fund.noSamples': 'Пока нет данных: история начнётся с первого почасового замера.', 'fund.source': 'Рыночные данные от Gains Network', 'fund.sampled': 'история записывается Openfund ежечасно', 'fund.chart': 'График ставки фандинга', 'det.spec': 'Спецификация рынка Gains', 'det.limits': 'Лимиты вашего счёта Openfund', 'det.market': 'Рынок', 'det.status': 'Статус', 'det.open': 'Открыт', 'det.closed': 'Закрыт', 'det.minLev': 'Минимальное плечо', 'det.maxLev': 'Максимальное плечо', 'det.minCollateral': 'Минимальный залог', 'det.minPosition': 'Минимальный размер позиции', 'det.openFee': 'Комиссия за открытие', 'det.closeFee': 'Комиссия за закрытие', 'det.spread': 'Спред', 'det.collaterals': 'Принимаемый залог', 'det.margin': 'Режим маржи', 'det.isolated': 'Изолированная', 'det.cross': 'Кросс', 'det.propMax': 'Лимит плеча политики Prop', 'det.effective': 'Максимально допустимое плечо', 'det.planNote': 'План челленджа может задать более низкий лимит; всегда действует самый строгий.', 'det.perpNote': 'Счета Perpetual следуют лимитам рынка Gains.',
@@ -91,7 +91,7 @@
       'dd.searchPh': 'Поиск рынка…', 'dd.market': 'Рынок', 'dd.price': 'Цена', 'dd.24h': '24ч',
       'dd.noMatch': 'Рынков по запросу не найдено.', 'dd.funding': 'Фандинг', 'dd.oil': 'OI (L)', 'dd.ois': 'OI (S)',
       'dd.hol': 'Удержание (L)', 'dd.hos': 'Удержание (S)', 'dd.closed': 'ЗАКРЫТ',
-      'dd.foot': 'Рынки Gains Network — проверенные данные · закрытые рынки только для просмотра',
+      'dd.foot': 'Рынки из Gains Network, цены из Open Oracle · закрытые рынки только для просмотра',
       'cat.crypto': 'Криптовалюты', 'cat.forex': 'Форекс', 'cat.stocks': 'Акции', 'cat.indices': 'Индексы', 'cat.commodity': 'Сырьё', 'cat.all': 'Все',
       'book.tab': 'Стакан', 'book.tradesTab': 'Сделки', 'book.grouping': 'Группа', 'book.compact': 'Компактно', 'book.simulated': 'Gains VOB',
       'book.price': 'Цена', 'book.size': 'Объём', 'book.total': 'Итого', 'book.time': 'Время',
@@ -156,7 +156,7 @@
       'toast.position': 'Позиция открыта.', 'toast.order': 'Ордер отправлен.', 'toast.noPrice': 'Цена в реальном времени недоступна.',
       'chart.loading': 'Загрузка свечей Gains…', 'chart.error': 'Не удалось загрузить свечи.', 'chart.retry': 'Повторить',
       'chart.unavailable': 'График недоступен', 'chart.msg': 'Не удалось загрузить библиотеку Vela.',
-      'boot.loading': 'Подключение к Gains Network…', 'boot.failed': 'Не удалось подключиться к Gains Network.', 'boot.retry': 'Повторить'
+      'boot.loading': 'Подключение к рыночным данным…', 'boot.failed': 'Не удалось загрузить рыночные данные.', 'boot.retry': 'Повторить'
     },
     'zh-CN': {
       'ctab.funding': '资金费率', 'ctab.details': '详情', 'fund.loading': '正在加载市场数据…', 'fund.unavailable': '市场数据不可用。', 'fund.retry': '重试', 'fund.long': '多头', 'fund.short': '空头', 'fund.borrowing': '借贷', 'fund.perHour': '每小时', 'fund.perYear': '每年', 'fund.oi': '未平仓量', 'fund.skew': '偏斜', 'fund.longs': '多头', 'fund.shorts': '空头', 'fund.range': '范围', 'fund.interval': '间隔', 'fund.series': '方向', 'fund.annualized': '年化', 'fund.r1d': '1天', 'fund.r1w': '1周', 'fund.r1m': '1月', 'fund.r3m': '3月', 'fund.availableFrom': '数据起始于', 'fund.noSamples': '暂无样本：历史将从第一个每小时样本开始。', 'fund.source': '市场数据来自 Gains Network', 'fund.sampled': '历史由 Openfund 每小时采样', 'fund.chart': '资金费率图表', 'det.spec': 'Gains 市场规格', 'det.limits': '您的 Openfund 账户限制', 'det.market': '市场', 'det.status': '状态', 'det.open': '开放', 'det.closed': '关闭', 'det.minLev': '最低杠杆', 'det.maxLev': '最高杠杆', 'det.minCollateral': '最低保证金', 'det.minPosition': '最小仓位', 'det.openFee': '开仓费', 'det.closeFee': '平仓费', 'det.spread': '点差', 'det.collaterals': '可用抵押品', 'det.margin': '保证金模式', 'det.isolated': '逐仓', 'det.cross': '全仓', 'det.propMax': 'Prop 政策杠杆上限', 'det.effective': '允许的最高杠杆', 'det.planNote': '您的挑战计划可能设定更低的限制；始终适用最严格的限制。', 'det.perpNote': '永续账户遵循 Gains 市场限制。',
@@ -166,7 +166,7 @@
       'dd.searchPh': '搜索市场…', 'dd.market': '市场', 'dd.price': '价格', 'dd.24h': '24小时',
       'dd.noMatch': '没有匹配的市场。', 'dd.funding': '资金费率', 'dd.oil': '多头 OI', 'dd.ois': '空头 OI',
       'dd.hol': '多头持仓费', 'dd.hos': '空头持仓费', 'dd.closed': '已休市',
-      'dd.foot': 'Gains Network 市场 — 已验证数据 · 休市市场仅供查看',
+      'dd.foot': '市场来自 Gains Network，价格来自 Open Oracle · 休市市场仅供查看',
       'cat.crypto': '加密货币', 'cat.forex': '外汇', 'cat.stocks': '股票', 'cat.indices': '指数', 'cat.commodity': '大宗商品', 'cat.all': '全部',
       'book.tab': '订单簿', 'book.tradesTab': '成交', 'book.grouping': '分组', 'book.compact': '紧凑', 'book.simulated': 'Gains VOB',
       'book.price': '价格', 'book.size': '数量', 'book.total': '累计', 'book.time': '时间',
@@ -231,7 +231,7 @@
       'toast.position': '已开仓。', 'toast.order': '订单已提交。', 'toast.noPrice': '实时价格不可用。',
       'chart.loading': '正在加载 Gains K 线…', 'chart.error': '无法加载 K 线。', 'chart.retry': '重试',
       'chart.unavailable': '图表不可用', 'chart.msg': 'Vela 图表库加载失败。',
-      'boot.loading': '正在连接 Gains Network…', 'boot.failed': '无法连接 Gains Network。', 'boot.retry': '重试'
+      'boot.loading': '正在连接市场数据…', 'boot.failed': '无法加载市场数据。', 'boot.retry': '重试'
     },
     /* English text of inline L(fa, en) messages → translation */
     L: {

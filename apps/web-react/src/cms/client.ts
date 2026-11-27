@@ -20,6 +20,7 @@
  *    Iran runtime reads it first; GLOBAL reads the CMS directly and uses
  *    `/cms` only when that fails. Snapshots are real published content.
  */
+import { supersedeRetired } from './retiredCopy'
 import type { ChallengePlan, LegacyPreset } from '../data/challengePlans'
 import { assertPlansValid, serializeForLegacy } from '../data/challengePlans'
 import { ADDED_LOCALES, attachCmsTranslation, localizeRecords } from '../i18n/localize'
@@ -85,6 +86,7 @@ async function fetchData<T>(base: string, path: string, timeout: number): Promis
 /* ---------------- tiny fetch + cache core ---------------- */
 const cache = new Map<string, { at: number; value: unknown }>()
 
+/* Every CMS response passes supersedeRetired (src/cms/retiredCopy.ts). */
 async function getJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null> {
   const cached = cache.get(path)
   if (cached && Date.now() - cached.at < CACHE_TTL) return cached.value as T
@@ -92,7 +94,7 @@ async function getJson<T>(path: string, timeout = TIMEOUT_MS): Promise<T | null>
   /* IRAN: same-origin first (it carries the snapshot); GLOBAL: CMS first, same-origin as fallback */
   const sources = (iranRegion() ? [local, direct] : [direct, local]).filter((v, i, a) => v && a.indexOf(v) === i)
   for (const base of sources) {
-    const data = await fetchData<T>(base, path, timeout)
+    const data = supersedeRetired(await fetchData<T>(base, path, timeout))
     if (data != null) { cache.set(path, { at: Date.now(), value: data }); return data }
   }
   return null /* no source answered — caller renders an explicit error state */

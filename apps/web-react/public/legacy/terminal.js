@@ -62,7 +62,7 @@ const I18N = {
     'dd.searchPh': 'جست‌وجوی بازار…', 'dd.market': 'بازار', 'dd.price': 'قیمت', 'dd.24h': '۲۴ساعته',
     'dd.noMatch': 'بازاری با این عبارت پیدا نشد.',
     'dd.funding': 'فاندینگ', 'dd.oil': 'OI لانگ', 'dd.ois': 'OI شورت', 'dd.hol': 'هولدینگ لانگ', 'dd.hos': 'هولدینگ شورت', 'dd.closed': 'بسته',
-    'dd.foot': 'بازارهای Gains Network — دادهٔ واقعی · بازارهای بسته فقط قابل مشاهده‌اند',
+    'dd.foot': 'بازارها از Gains Network و قیمت‌ها از Open Oracle · بازارهای بسته فقط قابل مشاهده‌اند',
     'cat.crypto': 'رمزارز', 'cat.forex': 'فارکس', 'cat.stocks': 'سهام', 'cat.indices': 'شاخص', 'cat.commodity': 'کالا',
     'book.tab': 'اوردربوک', 'book.tradesTab': 'تریدها',
     'book.grouping': 'گروینگ', 'book.compact': 'فشرده', 'book.simulated': 'شبیه‌سازی‌شده',
@@ -157,8 +157,8 @@ const I18N = {
     'asm.fees': '<b>کارمزد:</b> کارمزد taker ثابت ۰٫۰۵٪ از Notional در باز و بستن. کارمزد maker صفر.',
     'asm.margin': '<b>Margin:</b> مارجین اولیه = Notional ÷ اهرم. حالت Cross، بدون مارجین جزئی.',
     'asm.liq': '<b>Liquidation:</b> ساده‌شده — Entry × (۱ ∓ (۱/اهرم − ۰٫۵٪ نگهداشت)). صرافی‌های واقعی از نگهداشت پلکانی استفاده می‌کنند.',
-    'asm.exec': '<b>اجرا:</b> سفارش Market در قیمت Mark واقعی Gains و بدون Slippage انجام می‌شود. سفارش‌های Limit و Stop با عبور Mark از قیمت تریگر فعال می‌شوند.',
-    'asm.prices': '<b>قیمت‌ها:</b> دادهٔ واقعی Gains Network (REST + WebSocket). خودمان قیمت نمی‌سازیم.',
+    'asm.exec': '<b>اجرا:</b> سفارش Market در قیمت Open Oracle و بدون Slippage انجام می‌شود؛ فقط وقتی منابع قیمت به‌روز و هم‌خوان‌اند. سفارش‌های Limit و Stop با عبور قیمت از قیمت تریگر فعال می‌شوند.',
+    'asm.prices': '<b>قیمت‌ها:</b> Open Oracle، تجمیع قیمت اختصاصی اوپن‌فاند از Gains، Hyperliquid و GMX، از سرورهای ما. قیمت ساختگی نمی‌سازیم.',
     'asm.book': '<b>Order Book:</b> Gains دفتر سفارش ارائه نمی‌دهد؛ کتاب نمایشی ما شبیه‌سازی است و نمایندهٔ نقدینگی واقعی نیست.',
     'asm.funding': '<b>فاندینگ:</b> نرخ ساعتی واقعی از متادیتای Gains نمایش داده می‌شود؛ اعمال پرداخت‌ها فقط در سناریوی دمو.',
     'asm.note': 'این قواعد مدل اجرای dYdX، Gains Network یا هیچ سیستم عملیاتی را بازتولید نمی‌کنند.',
@@ -176,8 +176,8 @@ const I18N = {
     'chart.retry': 'تلاش دوباره',
     'chart.unavailable': 'چارت در دسترس نیست',
     'chart.msg': 'کتابخانهٔ Vela بارگذاری نشد.',
-    'boot.loading': 'در حال اتصال به Gains Network…',
-    'boot.failed': 'اتصال به Gains Network برقرار نشد.',
+    'boot.loading': 'در حال اتصال به دادهٔ بازار…',
+    'boot.failed': 'دریافت دادهٔ بازار ممکن نشد.',
     'boot.retry': 'تلاش دوباره'
   }
 };
@@ -190,7 +190,7 @@ const EN = {
   'dd.searchPh': 'Search market…', 'dd.market': 'Market', 'dd.price': 'Price', 'dd.24h': '24h',
   'dd.noMatch': 'No market matches this search.',
   'dd.funding': 'Funding', 'dd.oil': 'OI (L)', 'dd.ois': 'OI (S)', 'dd.hol': 'Holding (L)', 'dd.hos': 'Holding (S)', 'dd.closed': 'CLOSED',
-  'dd.foot': 'Gains Network markets — verified data · closed markets are view-only',
+  'dd.foot': 'Markets from Gains Network, prices from Open Oracle · closed markets are view-only',
   'cat.crypto': 'Crypto', 'cat.forex': 'Forex', 'cat.stocks': 'Stocks', 'cat.indices': 'Indices', 'cat.commodity': 'Commodities',
   'book.tab': 'Order Book', 'book.tradesTab': 'Trades',
   'book.grouping': 'Grouping', 'book.compact': 'Compact', 'book.simulated': 'simulated',
@@ -286,8 +286,8 @@ const EN = {
   'asm.fees': '<b>Fees:</b> flat 0.05% taker fee on notional at open and close. Maker fee 0%.',
   'asm.margin': '<b>Margin:</b> initial margin = notional / leverage. Cross mode, no partial margin.',
   'asm.liq': '<b>Liquidation:</b> simplified — entry × (1 ∓ (1/leverage − 0.5% maintenance)). Real venues use tiered maintenance margins.',
-  'asm.exec': '<b>Execution:</b> market orders fill at the real Gains mark price with zero slippage. Limit and stop orders trigger when the mark crosses the trigger price.',
-  'asm.prices': '<b>Prices:</b> real Gains Network data (REST + WebSocket). We never fabricate prices.',
+  'asm.exec': '<b>Execution:</b> market orders fill at the Open Oracle price with zero slippage, only while the price sources are fresh and agree. Limit and stop orders trigger when the price crosses the trigger price.',
+  'asm.prices': '<b>Prices:</b> Open Oracle, Openfund’s own aggregation of Gains, Hyperliquid and GMX, streamed from our servers. We never fabricate prices.',
   'asm.book': '<b>Order book:</b> Gains provides no order book; our presentation book is simulated and does not represent real liquidity.',
   'asm.funding': '<b>Funding:</b> real hourly rates shown from Gains metadata; payments only applied in the demo scenario.',
   'asm.note': 'These rules do not reproduce dYdX, Gains Network or any production execution model.',
@@ -302,8 +302,8 @@ const EN = {
   'chart.loading': 'Loading Gains candles…', 'chart.error': 'Could not load candles.',
   'chart.retry': 'Retry', 'chart.unavailable': 'Chart unavailable',
   'chart.msg': 'The Vela library failed to load.',
-  'boot.loading': 'Connecting to Gains Network…',
-  'boot.failed': 'Could not reach Gains Network.',
+  'boot.loading': 'Connecting to market data…',
+  'boot.failed': 'Could not load market data.',
   'boot.retry': 'Retry'
 };
 Object.assign(I18N.en, EN);

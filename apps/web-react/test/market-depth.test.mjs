@@ -52,7 +52,8 @@ function setupFeed({failFirstBoot=false}={}){
  const dom=new JSDOM('<!doctype html><body></body>',{url:'http://localhost/react/',runScripts:'outside-only'}),w=dom.window,sockets=[];let calls=0
  class Socket{constructor(){sockets.push(this);this.sent=[];this.readyState=0}send(s){this.sent.push(JSON.parse(s))}close(){this.readyState=3;this.onclose?.()}}
  w.WebSocket=Socket
- w.fetch=async url=>{calls++;if(failFirstBoot&&calls<=2)return{ok:false,status:503,json:async()=>({})};return{ok:true,json:async()=>({data:url.endsWith('/markets')?[{symbol:'BTC/USD',base:'BTC',pricePrecision:2}]:[{market:'BTC/USD',mark:'100',index:'100',updatedAt:1000}]})}}
+ /* this origin serves no Open Oracle: the adapter uses the Gains socket (fallback path) */
+ w.fetch=async url=>{if(url.includes('/api/oracle/'))return{ok:false,status:404,json:async()=>({error:'not_found'})};calls++;if(failFirstBoot&&calls<=2)return{ok:false,status:503,json:async()=>({})};return{ok:true,json:async()=>({data:url.endsWith('/markets')?[{symbol:'BTC/USD',base:'BTC',pricePrecision:2}]:[{market:'BTC/USD',mark:'100',index:'100',updatedAt:1000}]})}}
  w.eval(gainsAdapterSource);w.eval(terminalDataSource)
  return {w,sockets,close(){w.close()}}
 }
