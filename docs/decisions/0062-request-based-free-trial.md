@@ -73,6 +73,7 @@ refused it. The owner decided on 2026-11-27 that:
 - The engine's `free_demo` code path remains as a test fixture
   (`RETIRED.json`: legacy-only pending removal) until the suites move to trial
   or challenge fixtures.
-- The planned on-chain certificates and trade records (next owner decision in
-  this batch) build on these certificate events and the trial's trades.
+- The on-chain certificates and trade records of
+  [ADR 0063](0063-on-chain-certificates-and-trade-ledger.md) build on these
+  certificate events and the trial's trades.
 - Tests: `apps/backend/test/trials.test.mjs` (`test:trials`, in `test:all`).

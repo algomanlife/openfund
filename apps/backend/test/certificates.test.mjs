@@ -76,8 +76,24 @@ test('owner isolation, public whitelist and unknown identifiers', async () => {
   const c = (await call('/certificates')).data.certificates[0]
   const publicResult = await call('/certificates/verify', { method: 'POST', as: null, body: { serial: c.serial } })
   assert.equal(publicResult.status, 200); assert.equal(publicResult.data.status, 'valid')
-  assert.deepEqual(Object.keys(publicResult.data.certificate).sort(), ['serial','kind','status','holder','plan','amount','currency','eventAt','issuedAt','revokedAt'].sort())
+  assert.deepEqual(Object.keys(publicResult.data.certificate).sort(), ['serial','kind','status','holder','plan','amount','currency','eventAt','issuedAt','revokedAt','chain'].sort())
   assert.equal((await call('/certificates/verify', { method: 'POST', body: { serial: 'a'.repeat(32) } })).status, 404)
+})
+test('public chain metadata exposes only explorer links and recording status', async () => {
+  const c = (await call('/certificates')).data.certificates.find(c => c.kind === 'purchase')
+  const hash = '0x' + 'a'.repeat(64)
+  await pool.query(`INSERT INTO chain_records (record_key,kind,payload,status,tx_hash,token_id,last_error)
+    VALUES ($1,'certificate',$2,'confirmed',$3,'42','private worker detail')
+    ON CONFLICT (record_key) DO UPDATE SET status='confirmed',tx_hash=$3,token_id='42',last_error='private worker detail'`,
+    [`cert:purchase:${order}`, JSON.stringify({ privateField: 'not public' }), hash])
+  const result = await call('/certificates/verify', { method: 'POST', as: null, body: { serial: c.serial } })
+  assert.equal(result.status, 200)
+  assert.deepEqual(Object.keys(result.data.certificate.chain).sort(), ['network','status','txUrl','tokenUrl'].sort())
+  assert.equal(result.data.certificate.chain.network, 'Arbitrum Sepolia')
+  assert.equal(result.data.certificate.chain.status, 'confirmed')
+  assert.equal(result.data.certificate.chain.txUrl, `https://sepolia.arbiscan.io/tx/${hash}`)
+  assert.equal(JSON.stringify(result.data).includes('private worker detail'), false)
+  assert.equal(JSON.stringify(result.data).includes('privateField'), false)
 })
 test('revocation requires operator, persists history and removes public holder details', async () => {
   const c = (await call('/certificates')).data.certificates[0]

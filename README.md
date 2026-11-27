@@ -326,6 +326,7 @@ for each part is in the [engineering reference](docs/development/ENGINEERING_REF
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/site-search/` | Search normalization, matching and query masking shared by the site and the backend |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-protocol/` | Dormant protocol source and provenance |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/open-oracle/` | Open Oracle: multi-source pricing service (Gains, Hyperliquid, GMX), research protocol and live acceptance |
+| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-chain-records/` | Soulbound certificate NFTs and the public trade ledger on Arbitrum Sepolia (Solidity, Foundry) |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `docs/` | Documentation, ADRs, status, README data and assets |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `brand/` | Brand book, logos, imagery and typography reference |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `indicators/` | Three Openfund Pine indicators and two libraries |
