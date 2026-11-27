@@ -17,7 +17,7 @@
  * (CMS `challenge_plans`, with the bundled catalog as the offline fallback).
  */
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import { adminAuth, adminActor } from './admin.js'
 import { normalizeRules } from './evaluation.js'
 import { issueEntitlementTx } from './entitlements.js'
@@ -51,7 +51,7 @@ export function validatePlanDraft(body) {
 export function consoleAdminRoutes({ pool, engine, audit }) {
   const router = Router()
   router.use(adminAuth)
-  const limit = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const limit = limiter('admin-console', { windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
   router.use(limit)
   const record = (action, userId, req, details) => audit?.(action, userId, req, details)
 

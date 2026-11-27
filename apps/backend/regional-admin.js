@@ -87,7 +87,7 @@ export function regionalAdminRoutes({ Router, pool, runtime, adminAuth, adminAct
   }))
 
   router.post('/discrepancies/:did/acknowledge', wrap(async (req, res) => {
-    if (!/^\d+$/.test(req.params.did)) throw fail(404, 'not_found')
+    if (!/^\d{1,15}$/.test(req.params.did)) throw fail(404, 'not_found')
     const actor = adminActor(req); const reason = reasonOf(req.body); confirm(req.body, `ACKNOWLEDGE-${req.params.did}`)
     const r = await pool.query(`UPDATE region_discrepancies SET status='acknowledged', resolved_by=$2, resolved_at=now(), resolution=$3 WHERE id=$1 AND status='open' RETURNING *`,
       [req.params.did, actor, reason])

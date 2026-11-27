@@ -12,7 +12,7 @@
  * date and amount only.
  */
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import { adminAuth, adminActor } from './admin.js'
 import { financialAudit } from './financial-audit.js'
 import { reverseCommissionTx } from './partners.js'
@@ -225,7 +225,7 @@ export function economyAdminRoutes({ pool, treasury, onChange = () => {} }) {
   const date = (v, req = true) => { if (v == null || v === '') { if (req) throw fail(400, 'missing_date'); return null } if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) throw fail(400, 'invalid_date'); return v }
   const done = (res, body) => { onChange(); res.json(body) }
 
-  const allocationReadLimit = rateLimit({ windowMs: 60_000, limit: 30 })
+  const allocationReadLimit = limiter('economy.allocation-read', { windowMs: 60_000, limit: 30 })
   router.get('/treasury/allocations', allocationReadLimit, wrap(async (req, res) => {
     const policies = (await pool.query('SELECT * FROM revenue_allocation_policies ORDER BY effective_at DESC LIMIT 100')).rows
     const entries = (await pool.query('SELECT * FROM revenue_allocation_journal ORDER BY id DESC LIMIT 200')).rows

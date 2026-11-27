@@ -424,15 +424,27 @@ export function liveAdminRoutes({ pool, treasury, config = liveConfig() }) {
   const allocationTransition = (action, from, to) => router.post(`/allocations/:id/${action}`, wrap(async (req, res) => {
     const actor = adminActor(req)
     if (!uuid.test(req.params.id)) throw fail(404, 'allocation_not_found')
-    if (to === 'closed') {
-      const open = await pool.query(`SELECT 1 FROM live_trades WHERE allocation_id=$1 AND status IN ('submitted','open','closing','reconcile_required') LIMIT 1`, [req.params.id])
-      if (open.rowCount) throw fail(409, 'allocation_has_open_trades')
-    }
-    const { rows: [al] } = await pool.query(
-      `UPDATE capital_allocations SET status=$3, halt_reason=CASE WHEN $3='halted' THEN $4 WHEN $3='active' THEN NULL ELSE halt_reason END, closed_at=CASE WHEN $3='closed' THEN now() END
-        WHERE id=$1 AND status = ANY($2) RETURNING *`, [req.params.id, from, to, String(req.body?.reason || 'manual').slice(0, 200)])
-    if (!al) throw fail(409, `allocation_cannot_${action}`)
-    await financialAudit(pool, actor, `allocation_${action}`, 'capital_allocation', al.id, null, { status: to, reason: req.body?.reason })
+    /* one transaction with the allocation locked, so a live order cannot
+       commit between the open-trade check and the close (review 2026-11-27) */
+    const client = await pool.connect()
+    let al
+    try {
+      await client.query('BEGIN')
+      await client.query('SELECT 1 FROM capital_allocations WHERE id=$1 FOR UPDATE', [req.params.id])
+      if (to === 'closed') {
+        const open = await client.query(`SELECT 1 FROM live_trades WHERE allocation_id=$1 AND status IN ('submitted','open','closing','reconcile_required') LIMIT 1`, [req.params.id])
+        if (open.rowCount) throw fail(409, 'allocation_has_open_trades')
+      }
+      ;({ rows: [al] } = await client.query(
+        `UPDATE capital_allocations SET status=$3, halt_reason=CASE WHEN $3='halted' THEN $4 WHEN $3='active' THEN NULL ELSE halt_reason END, closed_at=CASE WHEN $3='closed' THEN now() END
+          WHERE id=$1 AND status = ANY($2) RETURNING *`, [req.params.id, from, to, String(req.body?.reason || 'manual').slice(0, 200)]))
+      if (!al) throw fail(409, `allocation_cannot_${action}`)
+      await financialAudit(client, actor, `allocation_${action}`, 'capital_allocation', al.id, null, { status: to, reason: req.body?.reason })
+      await client.query('COMMIT')
+    } catch (error) {
+      await client.query('ROLLBACK').catch(() => {})
+      throw error
+    } finally { client.release() }
     res.json({ allocation: al })
   }))
   allocationTransition('halt', ['active'], 'halted')

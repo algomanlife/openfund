@@ -1,4 +1,4 @@
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import { adminActor } from './admin.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -23,7 +23,7 @@ function readThread(w, isOperator, before) {
 const pendingAppeal = events => events.findLast(e => e.kind === 'appeal' || e.kind === 'appeal_resolved')?.kind === 'appeal'
 
 export function mountPayoutThreads(router, { pool, requireAuth, operator = false }) {
-  const throttle = rateLimit({ windowMs: 60_000, limit: 45 })
+  const throttle = limiter('payout-threads', { windowMs: 60_000, limit: 45 })
   const auth = requireAuth ? [requireAuth] : []
   const owned = (db, req, lock = false) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')

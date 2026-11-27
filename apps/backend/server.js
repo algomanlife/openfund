@@ -74,7 +74,8 @@ import { regionalAdminRoutes, remoteAccountRoutes } from './regional-admin.js'
 import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
 import { marketFundingRoutes, sampleFunding } from './market-funding.js'
 import { adminAuth, adminActor } from './admin.js'
-import { rateLimit } from 'express-rate-limit'
+import { limiter, routeLimit, configureRateLimitStore, sweepRateLimits } from './rate-limit-store.js'
+import { configureAdminOperators, operatorAdminRoutes } from './admin-operators.js'
 import { internalTokenGuard, sweepExpiredAuth } from './auth-hygiene.js'
 
 const cfg = {
@@ -273,21 +274,16 @@ app.use((req, res, next) => {
   next()
 })
 
-/* ---------- tiny in-memory rate limiter (per ip+route) ----------
-   Test mode (SIM_TEST_MODE + test database, never production) widens
-   the windows so sequential suite runs don't trip real-user limits. */
-const hits = new Map()
-setInterval(() => hits.clear(), 60_000).unref()
+/* ---------- rate limiting (per client IP and route) ----------
+   Counters are shared and persistent (rate-limit-store.js, PostgreSQL):
+   they survive restarts and hold across instances. Test mode
+   (SIM_TEST_MODE + test database, never production) widens this limiter
+   and starts each boot with empty counters. */
 const limitScale = testMode ? 50 : 1
-const limit =
-  (max, window = 60_000) =>
-  (req, res, next) => {
-    const key = `${req.ip}:${req.path}`;
-    const n = (hits.get(key) || 0) + 1;
-    hits.set(key, n);
-    if (n > max * limitScale) return res.status(429).json({ error: "rate_limited" });
-    next();
-  };
+await configureRateLimitStore(pool, { testMode })
+configureAdminOperators(pool)
+setInterval(() => sweepRateLimits(pool).catch(e => console.error('[rate-limit] sweep failed', e.message)), 10 * 60_000).unref()
+const limit = max => routeLimit(max)
 
 /* audit writes never fail the request, but a failed write is counted and
    logged (observability.js) instead of disappearing silently */
@@ -649,7 +645,7 @@ app.post('/auth/logout', asyncRoute(async (req, res) => {
 /* per-client ceiling for object-scoped trading/portfolio routes (each call
    reads or locks rows): generous for a human trader, bounded for scripts.
    express-rate-limit keyed by the same req.ip as limit(); widened in test mode */
-const objectRouteLimit = rateLimit({ windowMs: 60_000, limit: 240 * limitScale, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+const objectRouteLimit = limiter('object-route', { windowMs: 60_000, limit: 240 * limitScale, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
 const uuidParam = (req, res, next) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(req.params.id) ? next() : res.status(404).json({ error: 'not_found' })
 const tradingAuth = async (req, res, next) => {
   try {
@@ -941,6 +937,8 @@ if (region.region === 'GLOBAL') {
 }
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool, conduct }))
+app.use('/admin/operators', express.json({ limit: '4kb' }))
+app.use('/admin/operators', operatorAdminRoutes({ Router: express.Router, adminAuth, adminActor, audit, limiter }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
 app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, runtime, adminAuth, adminActor, syncWorker, audit, health: regionalHealth }))
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))

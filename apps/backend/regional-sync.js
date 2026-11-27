@@ -1,5 +1,5 @@
 import { claimPayoutTransaction } from './payout-claims.js'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 /**
  * Regional synchronization (ADR 0033).
  *
@@ -571,7 +571,7 @@ export function syncPeerRoutes({ Router, raw, pool, config, release = () => null
       quarantined: m.ownership.filter(o => o.state === 'quarantined').reduce((s, o) => s + o.n, 0),
     })
   }))
-  const payoutClaimLimit = rateLimit({ windowMs: 60_000, limit: 90 })
+  const payoutClaimLimit = limiter('regional-sync.payout-claim', { windowMs: 60_000, limit: 90 })
   router.post('/payout-claim', payoutClaimLimit, wrap(async (req, res) => {
     if (config.region !== 'GLOBAL' || config.peerRegion !== 'IRAN') throw fail(404, 'not_found')
     await verify(req)

@@ -49,6 +49,35 @@ CREATE TABLE IF NOT EXISTS auth_nonces (
 );
 CREATE INDEX IF NOT EXISTS idx_nonces_expires ON auth_nonces (expires_at);
 
+-- Shared rate-limit counters (rate-limit-store.js): one fixed window per
+-- limiter, client and route, shared by every instance of the region and
+-- surviving restarts. A key holds the limiter name, client IP and route
+-- path; a row lives at most one window and expired rows are swept every
+-- 10 minutes. Additive and idempotent.
+CREATE TABLE IF NOT EXISTS rate_limit_hits (
+  key       text PRIMARY KEY CHECK (length(key) <= 512),
+  hits      integer NOT NULL CHECK (hits >= 0),
+  reset_at  timestamptz NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_rate_limit_hits_reset ON rate_limit_hits (reset_at);
+
+-- named admin operators and access levels (admin-operators.js). The service
+-- token authenticates Backstage; the operator named in X-Admin-Actor must be
+-- active here once the first operator exists. Verifiers are scrypt (never a
+-- password); an active operator always has one.
+CREATE TABLE IF NOT EXISTS admin_operators (
+  username text PRIMARY KEY CHECK (username ~ '^[A-Za-z0-9._@-]{2,50}$'),
+  role text NOT NULL CHECK (role IN ('owner','finance','support','content','viewer')),
+  status text NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')),
+  password_verifier text CHECK (password_verifier ~ '^[a-f0-9]{32}:[a-f0-9]{64}$'),
+  created_by text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  last_login_at timestamptz,
+  CONSTRAINT admin_operators_active_has_password CHECK (status <> 'active' OR password_verifier IS NOT NULL)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_admin_operators_username_ci ON admin_operators (lower(username));
+
 -- server-side sessions (cookie holds only the opaque id; hash stored)
 CREATE TABLE IF NOT EXISTS auth_sessions (
   id_hash    text PRIMARY KEY,

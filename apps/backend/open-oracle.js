@@ -132,13 +132,14 @@ export class OracleMirror {
 export const compact = r => ({ market: r.market, price: r.price, mode: r.mode, confidence: r.confidence, stale: r.stale, at: r.at, eligible: r.eligibleSources, configured: r.configuredSources })
 const summary = status => status && ({ markets: status.markets, modes: status.modes, joinedMarkets: status.joinedMarkets, algorithmVersion: status.algorithmVersion, configurationVersion: status.configurationVersion, lastEvaluation: status.lastEvaluation })
 const MAX_STREAMS = 2000
+const MAX_STREAMS_PER_VISITOR = 6 /* a few tabs per visitor */
 
 /**
  * @param {{ Router: Function, oracle: () => (OpenOracleService|OracleMirror|null), limit: Function, now?: Function }} deps
  */
 export function oracleRoutes({ Router, oracle, limit, now = () => Date.now() }) {
   const router = Router()
-  const streams = new Set()
+  const streams = new Set(), perVisitor = new Map()
   const unavailable = res => res.status(503).set('Cache-Control', 'no-store').json({ error: 'oracle_unavailable' })
   router.get('/api/oracle/prices', limit(120), (req, res) => {
     const o = oracle(); if (!o) return unavailable(res)
@@ -159,6 +160,10 @@ export function oracleRoutes({ Router, oracle, limit, now = () => Date.now() }) 
   router.get('/api/oracle/stream', limit(30), (req, res) => {
     const o = oracle(); if (!o) return unavailable(res)
     if (streams.size >= MAX_STREAMS) return res.status(503).set('Cache-Control', 'no-store').json({ error: 'stream_capacity' })
+    /* one visitor cannot hold the shared capacity (security assessment 2026-11-27) */
+    const visitor = req.ip || 'unknown'
+    if ((perVisitor.get(visitor) || 0) >= MAX_STREAMS_PER_VISITOR) return res.status(429).set('Cache-Control', 'no-store').json({ error: 'too_many_streams' })
+    perVisitor.set(visitor, (perVisitor.get(visitor) || 0) + 1)
     res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive', 'X-Accel-Buffering': 'no' })
     res.write('retry: 3000\n\n')
     res.write(`event: snapshot\ndata: ${JSON.stringify({ at: now(), data: o.snapshot().map(compact) })}\n\n`)
@@ -168,7 +173,12 @@ export function oracleRoutes({ Router, oracle, limit, now = () => Date.now() }) 
     })
     const heartbeat = setInterval(() => { if (!res.write(': heartbeat\n\n')) res.destroy() }, 15000); heartbeat.unref?.()
     let closed = false
-    const cleanup = () => { if (closed) return; closed = true; clearInterval(heartbeat); unsubscribe(); streams.delete(cleanup) }
+    const cleanup = () => {
+      if (closed) return
+      closed = true; clearInterval(heartbeat); unsubscribe(); streams.delete(cleanup)
+      const left = (perVisitor.get(visitor) || 1) - 1
+      if (left > 0) perVisitor.set(visitor, left); else perVisitor.delete(visitor)
+    }
     streams.add(cleanup)
     req.on('close', cleanup); res.on('close', cleanup)
   })

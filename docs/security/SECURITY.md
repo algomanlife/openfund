@@ -4,7 +4,7 @@ The [root security policy](../../SECURITY.md) defines private vulnerability repo
 
 ## Assessments
 
-The [November 2026 self-assessment](SECURITY-AUDIT-2026-11.md) and its [penetration test](PENETRATION-TEST-2026-11.md) list what was reviewed and tested, the findings and their status. Open items are in the [remediation plan](SECURITY-REMEDIATION-PLAN.md), and the commands that were run are in the [test matrix](SECURITY-TEST-MATRIX.md).
+The [27 November 2026 assessment](SECURITY-ASSESSMENT-2026-11-27.md) is the latest, written for the v0.9.0 release. The [November 2026 self-assessment](SECURITY-AUDIT-2026-11.md) and its [penetration test](PENETRATION-TEST-2026-11.md) list what was reviewed and tested, the findings and their status. Open items are in the [remediation plan](SECURITY-REMEDIATION-PLAN.md), and the commands that were run are in the [test matrix](SECURITY-TEST-MATRIX.md).
 
 ## Current controls
 
@@ -12,9 +12,11 @@ SIWE validates message domain, URI, time, chain, nonce and signature; atomic non
 
 Prop simulated mutations use Decimal arithmetic, account locks, database transactions and owned idempotency. Missing execution marks fail closed. Journals validate scope and optimistic versions; metadata import cannot write financial records. CSV export escapes formula-like values. Directus public content permissions must not expose private user/session/trading tables.
 
+Admin API: `ADMIN_API_TOKEN` authenticates the Backstage service, not a person. People sign in to Backstage as named operators (`admin_operators`, scrypt verifiers) with a role (`owner`, `finance`, `support`, `content`, `viewer`); the backend resolves the operator named in `X-Admin-Actor`, refuses unknown or disabled names and checks the role against the path (`apps/backend/admin-operators.js`). Audit rows carry the verified operator name. Until the first operator exists the console keeps its single-owner behaviour.
+
 ## Operational limits
 
-The current in-process rate limiter and engine imply one API instance (`numInstances: 1` and no autoscaling, both enforced by the Blueprint validator). Behind Cloudflare, limits and audit rows key on `CF-Connecting-IP`, trusted only from Cloudflare's published ranges. Do not claim distributed abuse protection or horizontally coordinated execution. Privileged CMS credentials and database secrets stay server-side; all VITE build variables are public. Keep `SIM_TEST_MODE` disabled in production and avoid sensitive data in logs/exports.
+Rate-limit counters are shared and persistent in PostgreSQL (`rate_limit_hits`, `apps/backend/rate-limit-store.js`): they survive restarts and hold across instances, with a per-process fallback during a database outage. The in-process simulated engine still implies one API instance (`numInstances: 1` and no autoscaling, both enforced by the Blueprint validator). Behind Cloudflare, limits and audit rows key on `CF-Connecting-IP`, trusted only from Cloudflare's published ranges. Do not claim distributed abuse protection or horizontally coordinated execution. Privileged CMS credentials and database secrets stay server-side; all VITE build variables are public. Keep `SIM_TEST_MODE` disabled in production and avoid sensitive data in logs/exports.
 
 CI runs gitleaks and dependency advisory reports. Reported vulnerabilities require triage; report-only audit jobs do not establish a clean dependency set. Before a public release, complete deployed TLS/session/CMS access checks, backup/restore, retention/incident decisions, actual wallet/device acceptance and threat review. See [I2/I3 milestones](../roadmap/MILESTONES.md).
 

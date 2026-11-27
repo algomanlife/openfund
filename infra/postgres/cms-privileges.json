@@ -39,6 +39,11 @@
    "protected": true,
    "cms": "none"
   },
+  "admin_operators": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none"
+  },
   "ambassador_attributions": {
    "domain": "rewards",
    "protected": true,
@@ -612,6 +617,11 @@
     "select": "*"
    },
    "reason": "Shown read-only in Directus Data Studio (register_user_tables.py / register_commerce_tables.py / register_support_tables.py)."
+  },
+  "rate_limit_hits": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none"
   },
   "referral_attributions": {
    "domain": "rewards",
