@@ -11,8 +11,8 @@
       "official_source": "https://github.com/LuxAlgo/Vela",
       "license": "Apache-2.0 with NOTICE attribution requirement",
       "installed": {
-        "version": "0.10.6",
-        "ref": "f6769868c5c0e78ba7977a5c89640df896a8f2f3",
+        "version": "0.10.15",
+        "ref": "e610e7d9a839ee4b6a8ebf0a10425c794278270c",
         "path": "vendor/vela",
         "manifest": "vendor/vela/package.json"
       },
@@ -37,10 +37,10 @@
         "never_auto_merge": true
       },
       "compatibility": {
-        "status": "pinned-and-verified",
-        "evidence": "npm run test:charts (9 tests), patch guards, build reproducibility; browser charts 17/17, footprint 26/26, risk 51/51 and 53/53 with footprint (PR #92); merged at owner request 2026-11-12"
+        "status": "candidate-unreviewed",
+        "evidence": "OF-VELA-003 ported by hand to the boolean addFromLibrary of 0.10.15; regression suite pending"
       },
-      "last_upgrade": "2026-11-12 (vendored 0.10.6 at tag v0.10.6)",
+      "last_upgrade": "2026-11-28 (intermediate 0.10.15: OF-VELA-003 ported by hand)",
       "tests": [
         "npm run test:upstream",
         "npm run test:charts",

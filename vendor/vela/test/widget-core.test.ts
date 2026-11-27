@@ -79,6 +79,24 @@ describe('resolveIndicators', () => {
         expect(wrapped[0]).toMatchObject({ name: 'C', language: 'pine' });
     });
 
+    it('downloads every script at once and keeps the manifest order', async () => {
+        const pending = new Map<string, (r: Response) => void>();
+        const fetchImpl = vi.fn((url: RequestInfo | URL) => new Promise<Response>((done) => pending.set(String(url), done))) as unknown as typeof fetch;
+        const manifest = ['a', 'b', 'c'].map((n) => ({ name: n, url: `https://scripts.example/${n}.demo`, enabled: n === 'a' }));
+
+        const resolving = resolveIndicators(manifest, fetchImpl);
+        await Promise.resolve();
+        expect([...pending.keys()]).toEqual(manifest.map((m) => m.url)); // all asked before any answered
+        for (const n of ['c', 'b', 'a']) pending.get(`https://scripts.example/${n}.demo`)!(res(`${n} source`)); // answered out of order
+
+        const list = await resolving;
+        expect(list.map((i) => [i.name, i.script, i.enabled])).toEqual([
+            ['a', 'a source', true],
+            ['b', 'b source', false],
+            ['c', 'c source', false],
+        ]);
+    });
+
     it('fetches a manifest URL and per-entry script urls; broken entries are dropped, not fatal', async () => {
         const fetchImpl = vi.fn(async (url: RequestInfo | URL) => {
             const u = String(url);
@@ -544,6 +562,35 @@ describe('WidgetHistory late-resolves the current chart', () => {
         expect(a.drawings.undo).not.toHaveBeenCalled(); // never the destroyed instance
         h.redo();
         expect(b.drawings.redo).toHaveBeenCalledTimes(1);
+    });
+
+    it('a replaced drawings document takes its drawing steps out, and leaves the other steps in order', async () => {
+        const { WidgetHistory } = await import('../src/widget/history');
+        const chart = fakeChart();
+        const h = new WidgetHistory(() => chart as never);
+        h.onChart(chart as never);
+        const ran: string[] = [];
+        const changes: Array<{ undo: boolean; redo: boolean }> = [];
+        h.onChange(() => changes.push({ undo: h.canUndo, redo: h.canRedo }));
+        chart.emit('drawing:created');
+        h.push({ undo: () => ran.push('undo indicator'), redo: () => ran.push('redo indicator') });
+        chart.emit('drawing:edited');
+        h.undo(); // the edit goes to the redo side
+        expect(chart.drawings.undo).toHaveBeenCalledTimes(1);
+        // The chart's symbol changed, or a document was loaded: the core's drawing history is empty now.
+        chart.emit('drawing:replaced');
+        expect(changes[changes.length - 1]).toEqual({ undo: true, redo: false });
+        h.undo();
+        expect(ran).toEqual(['undo indicator']);
+        expect(chart.drawings.undo).toHaveBeenCalledTimes(1); // no dead step took the Ctrl+Z
+        expect(h.canUndo).toBe(false);
+        h.redo();
+        expect(ran).toEqual(['undo indicator', 'redo indicator']);
+        expect(chart.drawings.redo).not.toHaveBeenCalled();
+        // With no drawing step left, another replaced document announces nothing.
+        const before = changes.length;
+        chart.emit('drawing:replaced');
+        expect(changes).toHaveLength(before);
     });
 
     it('onChange reports canUndo / canRedo for the topbar tools', async () => {

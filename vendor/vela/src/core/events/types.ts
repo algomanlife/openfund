@@ -69,10 +69,8 @@ export interface VelaEventMap extends Record<string, unknown> {
   /**
    * The facts the chart applies about its symbol changed (`chart.symbolFacts()`): they
    * landed for the symbol on screen (`facts`), or a symbol switch reset them to unknown
-   * (`null`) until the new symbol's land. They decide which price styles can draw the
-   * symbol: by the time it fires the chart already draws its fallback for a style they
-   * rule out (`chart.renderer.get('shownPriceStyle')`), so a host's style picker re-reads
-   * here which styles to grey.
+   * (`null`) until the new symbol's land. The renderer has already received the new
+   * tick size and applied the fallback for any style these facts rule out.
    */
   "symbol:facts": { symbol: string; facts: SymbolFacts | null };
   /** An indicator was moved/merged to another pane (`chart.panes` / legend / object tree). */
@@ -143,6 +141,19 @@ export interface VelaEventMap extends Record<string, unknown> {
   "drawing:mode": { mode: DrawingMode };
   /** A user drawing was removed. */
   "drawing:removed": { id: string };
+  /** An undo or a redo put the drawings back to an earlier or a later state. It stands in
+   *  for the `drawing:created` / `edited` / `removed` events, which do not fire for the
+   *  drawings the step brought back, changed or took away: a host that mirrors or stores
+   *  the drawings reads them again (`drawings.all()`, `drawings.toJSON()`). */
+  "drawing:history": { action: "undo" | "redo" };
+  /** The drawings were replaced as a whole, and no `drawing:created` / `edited` /
+   *  `removed` follows: a document was put in place (`drawings.fromJSON`, a restored
+   *  state; `cause: "load"`), or the chart dropped them because its symbol changed
+   *  (`clearOnSymbolChange`; `cause: "symbol"`). Whatever lists, counts or mirrors the
+   *  drawings reads them again. A host that stores them keeps a loaded document as the
+   *  chart's own, and leaves the empty chart of a symbol change alone: the new symbol's
+   *  drawings are still to come. */
+  "drawing:replaced": { cause: "load" | "symbol" };
   /** The user requested a drawing's settings popup. */
   "drawing:settings": { id: string };
   /** A timeline-mark glyph was clicked — `ids` lists every mark under it (a cluster). Fires

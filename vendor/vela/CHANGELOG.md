@@ -2,6 +2,287 @@
 
 All notable changes to Vela, newest first.
 
+## [0.10.15]
+
+### Added
+
+- **Ichimoku Cloud, Correlation Coefficient, Correlation - Log, and Volatility Close-to-Close built-in indicators.**
+  Ichimoku Cloud plots Conversion Line, Base Line, backward-shifted Lagging Span, and the
+  forward-projected bullish/bearish cloud into the chart's right whitespace, with an optional
+  secondary symbol input. Correlation Coefficient and Correlation - Log compute rolling Pearson
+  correlation across instruments (prices or log returns) in their own pane and open their
+  settings dialog automatically when added from the indicator picker so you can pick the
+  symbol(s) immediately. Volatility Close-to-Close computes annualized sample standard deviation
+  of bar-to-bar close log returns.
+- **Built-in symbol picker inside indicator settings and multi-symbol support for native indicators.**
+  Symbol inputs in indicator settings now open the workspace's symbol search dialog by default
+  without dismissing the settings dialog behind it, and custom native indicators can request
+  and subscribe to secondary symbol series through `fetchSeries` and `subscribeSeries`.
+
+### Changed
+
+- **Indicators from a script list appear sooner.** When the `indicators` option lists
+  scripts by URL, the workspace now downloads them all at once instead of one after
+  another. The indicators that start switched on no longer wait for every other script
+  in the list: with 13 scripts, they appear in about half a second instead of nearly two.
+- **Hyperliquid charts start with far fewer requests.** The Hyperliquid provider builds
+  its symbol list from one request for every exchange's markets, instead of one request
+  per exchange after first asking which exchanges exist. A chart now opens with 4
+  requests instead of 14, and its first candles arrive sooner.
+- **Coinbase charts switch symbols faster.** The Coinbase provider reads a symbol's
+  details from the product list it already downloaded instead of asking Coinbase again.
+  Coinbase limits how fast requests can be sent, so the candles no longer wait behind
+  that extra request and a switch takes about half as long.
+- **Opening a Binance perpetual no longer downloads the futures list again.** The
+  provider reads each perpetual's details from the futures list it already has, instead
+  of downloading the whole list for every new perpetual you open.
+- **Binance charts start faster.** The Binance provider now asks only for actively traded
+  pairs when it builds its symbol list. The download is about six times smaller and holds
+  the same symbols, so a Binance chart shows its first candles sooner.
+- **Charts on the same market load their candles once.** When several charts in a
+  workspace open the same symbol and timeframe together, on first load or when synced
+  charts switch, they now share one download instead of each asking for the same
+  candles. The last chart fills in as fast as the first.
+
+### Fixed
+
+- **A closed symbol search no longer loads symbol icons.** With a custom symbol ranking
+  registered, closing the search before its results finished ranking still rebuilt the
+  hidden list and loaded about a hundred icons nobody could see. The list now rebuilds
+  the next time the search opens.
+- **Crossing band fills render cleanly under WebGL2.** Where two filled series cross between
+  adjacent bars (such as an Ichimoku Cloud twist), the fill now splits cleanly at the
+  intersection instead of drawing an overlapping bow-tie quad.
+
+## [0.10.14]
+
+### Added
+
+- **Full screen.** A new button at the end of the top bar, or Alt+Enter, leaves only the
+  charts on screen: the top bar, the drawing toolbar, the bottom bar and the sidebar
+  hide, and the open side panel closes. Esc or Alt+Enter brings everything back as it
+  was. Esc first closes an open menu or dialog, clears a selected drawing or puts an
+  armed drawing tool down, and leaves on the next press. In code,
+  `workspace.setFullscreen(true)` enters, `workspace.fullscreen` reads the state, and the
+  `fullscreen:changed` event lets a page hide its own interface around the charts at the
+  same moment. The button is the `'fullscreen'` entry of the `topbar` option: a page that
+  lists its own `topbar.right` adds it to get the button and the shortcut, and a page
+  that already uses Alt+Enter for something else leaves it out. A plugin reads, follows
+  and drives it through `ctx.fullscreen`, so a panel it docked under the charts can step
+  aside too. Desktop layout only.
+
+### Changed
+
+- **Sync drawings on all charts links the charts that show the same symbol.** A drawing
+  made on one chart used to be copied onto every linked chart, whatever each one
+  showed: a volume profile drawn on BTCUSDT appeared on an ETHUSDT chart beside it.
+  A drawing, the preview of one being placed, an edit and a deletion now reach only
+  the charts on the same symbol, written with or without its venue (`BTCUSDT` and
+  `binance:BTCUSDT` are one symbol). A copy an earlier version put on another symbol
+  stays there as a drawing of its own. Where drawings belong to the symbol
+  (`clearOnSymbolChange`), a chart that switches to a symbol also catches up with the
+  charts already on it: it shows their drawings, takes the edits made while it showed
+  something else, and loses the drawings deleted in the meantime.
+  _(Breaking: a drawing is no longer copied to linked charts on other symbols.)_
+
+### Fixed
+
+- **An indicator's fill keeps up when it runs again over more history.** When older bars
+  loaded behind the view and an indicator ran again over them (a script that runs on a
+  server, or any engine that hands back a new model), the chart updated its
+  lines but kept the fill colors, bgcolor spans, hlines and barcolors of the first run.
+  The fill then sat on the wrong candles, the newest candles had none, and it stopped
+  following the live bars until the indicator was hidden and shown. A run's update now
+  carries all of them.
+- **Maximizing one chart of a split layout no longer crashes the page on iPhone.** The
+  other charts used to stretch to full size, hidden under the maximized one, so a 2×2
+  layout drew four full-screen charts at once: four times the canvas memory, enough for
+  iOS Safari to close the tab when the phone bar's maximize button was tapped. The other
+  charts now leave the layout while one chart is maximized and keep the size they had,
+  so restoring the layout is still instant.
+- **The countdown to bar close no longer jumps up a minute on a slow device clock.**
+  The countdown and the bottom-bar clock read this device's clock, but candles open on
+  the exchange's. On a computer or phone running a few seconds slow, the next candle
+  landed while the countdown still showed a few seconds left, and a 1-minute countdown
+  jumped to `01:04`, then stayed those seconds high all minute. A candle can't arrive
+  before it opens, so one that arrives before the device clock reaches its open time
+  proves the clock is slow by at least the gap: the countdown and the clock now add it
+  (`clockCorrection`, exported for a host clock display). Only intraday candles teach
+  it, at most 2 minutes, and it resets when the device clock is set or the machine
+  sleeps. A fast clock reads as before, hiding the countdown a moment early until the
+  next candle arrives.
+- **Candle readouts and Fibonacci price labels show the symbol's price precision.**
+  On a pair such as EURUSD, the OHLC readout and price levels show all five decimals.
+- **The measure ruler stays on its candles while you place it.** After the first click
+  of a measurement, panning or zooming the chart left the ruler's start at the same
+  spot on screen, over another bar and price, and the label measured from there. The
+  start now stays on the time and price you clicked, through a pan, a zoom, a new bar
+  or a price-scale change.
+- **Crossing band fills render cleanly under WebGL2.** Where two filled series cross between
+  adjacent bars (such as an Ichimoku Cloud twist), the fill now splits cleanly at the
+  intersection instead of drawing an overlapping bow-tie quad.
+
+## [0.10.13]
+
+### Added
+
+- **Apps can add their own buttons to a selected drawing.** `registerDrawingAction` puts an
+  icon button on the toolbar that floats by a selected drawing, next to its settings wheel,
+  and a labelled button in the drawing's settings dialog. Each action decides which drawings
+  it applies to, so an app can offer an alert on lines and channels only, and it receives the
+  drawing as it is when the user clicks.
+
+## [0.10.12]
+
+### Fixed
+
+- **Open menus stay with the chart when the page scrolls.** On a page that scrolls around the
+  chart, an open timeframe, chart style or time zone menu stayed where it was on screen
+  while its button scrolled away, so it came loose from the toolbar. A right-click menu or
+  the alerts list jumped to the top of the window, where a page header could hide it. An
+  open menu now keeps its place in the chart and moves with it, as the layout menu already
+  did. A chart that fills its page was not affected.
+- **Candles with the wick turned off stay visible when you zoom out.** Once candles became
+  too narrow to show a body, a chart with **Wick** off in the candle settings drew nothing,
+  and zooming out further brought the candles back as thin lines that ignored the setting.
+  A candle too narrow for a body now draws as a thin line over its body, in the body's
+  color, or in the border's color when only the border is on. With the body, border and
+  wick all off, candles stay hidden at every zoom.
+
+## [0.10.11]
+
+### Fixed
+
+- **The indicators added in 0.10.9 read better in 17 languages.** A second, line-by-line
+  reading of the translations that shipped in 0.10.10 corrected 75 messages. Tooltips that
+  could be misread now say what the English says (Arabic, Spanish, Portuguese, Turkish).
+  Short titles no longer abbreviate volatility the way the same pack abbreviates volume
+  (Hindi, Portuguese, Spanish, Turkish). Names follow the market's own term where there is
+  one: Advance/Decline in Japanese, the Accumulative Swing Index in Chinese, Momentum in
+  Traditional Chinese, the Guppy averages in Korean. In Polish, the Double, Triple and
+  Multiple moving averages are named by their count, so they no longer read as double or
+  triple smoothing. A plot named after an indicator whose name stays in English keeps that
+  name too (German, Indonesian, Italian, Thai). Malay and Vietnamese needed no change.
+
+## [0.10.10]
+
+### Fixed
+
+- **The indicators added in 0.10.9 read in every shipped language.** The twenty-five
+  built-in indicators of 0.10.9 showed their names, settings, tooltips and plot names in
+  English whatever the chart's language. All 19 language packs now translate them, in each
+  pack's own vocabulary: a pack that keeps most indicator names in English keeps the new
+  ones too. The **Free pan** switch of the chart settings and the keyboard help line about
+  typing a timeframe are translated as well, so every pack again covers every message.
+
+## [0.10.9]
+
+### Added
+
+- **`symbolMenuFromKey` keeps typed letters from opening the symbol search.** Typing a
+  letter or `0` on a chart opens the symbol search, which takes those keys from a page that
+  uses bare letters for its own shortcuts, or that chooses the symbol outside the chart.
+  `symbolMenuFromKey: false` on a workspace or widget leaves them to the page. The option
+  is on by default, so nothing changes until you set it. The topbar's symbol button still
+  opens the search, typing a digit still opens the timeframe entry, and the shortcuts panel
+  lists only what the shell does.
+
+- **Twenty-five more built-in indicators.** The Indicators menu and `addNativeIndicator` gain
+  Median Price, Typical Price, Average Price, Momentum, Moving Average Channel, Standard
+  Error Bands, Volatility Index, Net Volume, Accelerator Oscillator, Accumulative Swing
+  Index, Rank Correlation Index, Majority Rule, Advance/Decline, Trend Strength Index, Chop
+  Zone, Standard Error, Volatility O-H-L-C and Volatility Zero Trend Close-to-Close, and
+  seven moving-average studies: MA Cross, EMA Cross, MA with EMA Cross, Moving Average
+  Double, Moving Average Triple, Moving Average Multiple and Guppy Multiple Moving Average.
+  Each has its own settings, legend row and saved state, like the other built-in studies.
+  Rank Correlation Index and Trend Strength Index read from −1 to 1. Volatility Index is
+  Wilder's volatility stop: a line that trails the most favorable close by a multiple of
+  the average true range and changes sides when a close crosses it. The two volatility
+  studies count each bar by the time since the bar before it, so a weekend or an overnight
+  gap weighs as the days it spans, on any timeframe. The Accumulative Swing Index line
+  takes the bullish color above its last confirmed swing high and the bearish color below
+  its last confirmed swing low. The three cross studies draw two averages and mark every
+  bar where they change sides, in the bullish or the bearish color by the way the first
+  crossed the second. Moving Average Double, Triple and Multiple draw two, three or six
+  averages of one source as Simple, Exponential or Weighted lines, and the Guppy study
+  draws its six short and six long exponential averages in two colors.
+
+- **Drawings can belong to the chart's symbol.** By default a chart keeps its drawings when
+  its symbol changes, so a line drawn on one instrument stays at the same prices on the
+  next. With `drawings: { clearOnSymbolChange: true }`, or
+  `chart.drawings.setClearOnSymbolChange(true)` on a live chart, switching to another symbol
+  removes every drawing as the switch starts. A timeframe or session change keeps them, and
+  a restored state keeps the drawings it carries. Vela stores nothing per symbol itself: the
+  drawing tools guide shows how an app keeps one document per symbol and puts it back.
+  Three additions serve that. `chart.drawings.clear()` removes every drawing as one undo
+  step. The new `drawing:history` event tells you when an undo or a redo changed the
+  drawings, which no other drawing event did. The new `drawing:replaced` event tells you
+  when the drawings changed as a whole, because a document was loaded or the symbol
+  changed; the object tree and the Undo button follow it, so neither is left showing
+  drawings or steps that are gone.
+
+### Changed
+
+- **Charts with many line plots pan and zoom about three times faster.** A chart that
+  stacks many indicator lines, or one zoomed far out, used to stutter while you dragged or
+  zoomed it. With the default WebGL drawing, each frame of such a chart now takes about a
+  third of the time it did, and the gain grows with the number of lines and bars on screen.
+  Lines, the dot markers of a circles plot and the line and area price styles all benefit.
+  The picture itself is unchanged, pixel for pixel.
+
+### Fixed
+
+- **Historical Volatility no longer draws its oldest bars as a black block.** The first
+  hundred bars of the chart's history showed a solid black line and fill. They now draw in
+  the neutral color until the indicator has a hundred bars of its own readings to grade the
+  color by.
+
+- **An undone drawing no longer comes back after a reload.** Undoing or redoing a drawing
+  change in a workspace was not reported as a change, so the saved state, and the app
+  listening to `state:changed`, kept the drawings as they were before the undo until
+  something else changed. The same held for a drawings document loaded with
+  `chart.drawings.fromJSON`. Both are saved now.
+
+## [0.10.8]
+
+### Changed
+
+- **Zooming out no longer stops when the bars fill the chart.** The zoom-out limit is now a
+  fixed minimum bar width of half a pixel, whatever the length of the series. A short series,
+  such as a few years of monthly bars, shrinks to a narrow band with empty space on both
+  sides. The time axis keeps its dates and gridlines from the first bar onward, into the
+  future, and shows none before the first bar. Zooming out loads no extra history. The
+  zoom-in limit, the rule that two bars stay on screen while panning, the eased zoom and the
+  zoom anchor are unchanged. The **ALL** range, **Reset chart view** and a double-click on
+  the time axis still fit the data to the chart. When the view spans decades or centuries,
+  the time axis and its gridlines step by 2, 5, 10, 20, 50 or more years instead of one line
+  per year.
+
+## [0.10.7]
+
+### Added
+
+- **Check several choices in one indicator setting.** A scripting engine can mark a text setting
+  that has choices as `multiple`, on the Inputs tab or the Properties tab. The settings dialog
+  then shows its choices as checkboxes in one dropdown, which stays open while you check and
+  clear them with the pointer or the keyboard, and the closed field lists the checked choices.
+  The setting is still saved as one text value, the checked choices joined by the setting's
+  separator in their listed order, so layouts, `setInputs`, `setProps` and saved charts handle
+  it as before. Choices marked `locked` stay checked and cannot be cleared.
+- **Help marks on settings sections.** An input's `groupHelp` puts a small question mark beside
+  its section heading in the indicator settings dialog, on any tab. Pointing at it shows the
+  help text, and clicking it opens the help page in a new tab when one is given. Only `http`
+  and `https` addresses open; any other address leaves the mark a tooltip only.
+
+### Changed
+
+- **Dropdowns in indicator settings show their full choice.** A dropdown in an indicator's
+  settings dialog is now as wide as its longest choice instead of a fixed narrow box, so a
+  choice such as "On bar close" no longer reads "On bar …". It is never narrower than before,
+  and it stops at the edge of the dialog, where a longer choice is shortened as before.
+- **Vela requires `@luxalgo/vela-ui` 0.4.2.** The kit adds the help icon and the help mark
+  beside a section heading that the indicator settings dialog uses.
+
 ## [0.10.6]
 
 ### Added

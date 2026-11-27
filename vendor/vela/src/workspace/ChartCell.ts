@@ -26,10 +26,11 @@ import { ChartContextMenu } from '../widget/context-menu';
 import { WidgetHistory } from '../widget/history';
 import type { RangePreset } from '../widget/bottombar';
 import { indicatorLedger, ledgerEntryName, ledgerNativeType, type LedgerManifestEntry, type LedgerNativeEntry, type ResolvedIndicator } from '../widget/indicators';
-import { inputDeltas, type InputValue } from '../core/model/inputs';
+import { inputDeltas, type InputValue, type SymbolPickerFn } from '../core/model/inputs';
 import {
     legendActionsProviderFor,
     legendCalloutsProviderFor,
+    drawingActionsProviderFor,
     resolveEngines,
     statePersistenceHandlers,
     type CellStateContext,
@@ -181,6 +182,9 @@ export interface CellDeps {
     /** Where the renderer mounts its MODAL dialogs (chart/indicator settings) — the
      *  workspace root, so dialogs center over the whole grid instead of one cell. */
     dialogHost: HTMLElement;
+    /** Default symbol picker wired onto every cell's renderer for `input.symbol` controls
+     *  (a host attachment can still override it via `chart.renderer.setSymbolPicker`). */
+    symbolPicker?: SymbolPickerFn;
     /** The workspace-global display-timezone CHOICE — an IANA zone, or the exchange
      *  rule, which each cell resolves to its own market's zone ({@link ChartCell.applyTimezone}). */
     timezone(): string;
@@ -419,10 +423,12 @@ export class ChartCell {
         // Modal dialogs (chart settings, indicator settings) escape the cell's
         // overflow clip and center over the whole grid.
         this.inner.renderer.set('dialogHost', deps.dialogHost);
+        if (deps.symbolPicker) this.inner.renderer.setSymbolPicker(deps.symbolPicker);
         // Contributed legend-row actions — the row resolves on THIS cell's chart; the
         // context follows the workspace rule (built fresh per click, active-cell bound).
         this.inner.renderer.setLegendActions(legendActionsProviderFor(this.inner, () => deps.context()));
         this.inner.renderer.setLegendCallouts(legendCalloutsProviderFor(this.inner, () => deps.context()));
+        this.inner.renderer.setDrawingActions(drawingActionsProviderFor(this.inner, () => deps.context()));
         // The cell owns ONE unified undo timeline (drawings + indicator ops), driven by
         // the workspace keymap. The drawings layer must not self-serve Ctrl+Z/Y or the
         // two histories desync (its preempt would pop the core drawing stack while the
@@ -1381,15 +1387,18 @@ export class ChartCell {
         ];
     }
 
-    /** Add by picker LIBRARY index (manifest precedes natives — mirrors libraryRows). */
-    addFromLibrary(index: number): void {
+    /** Add by picker LIBRARY index (manifest precedes natives — mirrors libraryRows).
+     *  Returns `true` when the added study needs user input configuration (and opened its
+     *  settings dialog), so the caller can close the library picker cleanly. */
+    addFromLibrary(index: number): boolean {
         const natives = this.supportedNatives();
-        if (index < 0 || !Number.isInteger(index)) return;
-        if (index < this.manifest.length) this.addManifestInstance(this.manifest[index]!);
-        else {
-            const native = natives[index - this.manifest.length];
-            if (native) this.addNative(native.type);
+        if (index < 0 || !Number.isInteger(index)) return false;
+        if (index < this.manifest.length) {
+            this.addManifestInstance(this.manifest[index]!);
+            return false;
         }
+        const native = natives[index - this.manifest.length];
+        return native ? this.addNative(native.type, { confirmInputs: true }) : false;
     }
 
     /** Remove by picker ON-CHART index (native instances precede script instances — mirrors onChartRows). */
@@ -1504,14 +1513,14 @@ export class ChartCell {
         if (handle.visible !== visible) handle.setVisible(visible);
     }
 
-    addNative(type: string): void {
+    addNative(type: string, opts?: { confirmInputs?: boolean }): boolean {
         const chart = this.inner;
-        if (!chart) return;
+        if (!chart) return false;
         const before = new Set(chart.indicators().map((h) => h.id));
         let added: IndicatorHandle | null = chart.addNativeIndicator(type);
         this.syncPresentNatives();
         this.refreshNativeCatalog();
-        if (before.has(added.id)) return;
+        if (before.has(added.id)) return false;
         this.history.push({
             undo: () => {
                 added?.remove();
@@ -1523,6 +1532,19 @@ export class ChartCell {
                 this.refreshNativeCatalog();
             },
         });
+        if (opts?.confirmInputs) {
+            const values = added.inputValues();
+            const needsConfig = added.inputs.some((inp) => inp.confirm && String(values[inp.key] ?? inp.defval ?? '') === '');
+            if (needsConfig) {
+                const targetId = added.id;
+                const off = added.on('ready', () => {
+                    off();
+                    if (!this.destroyed && this.inner === chart) chart.renderer.openIndicatorSettings(targetId);
+                });
+                return true;
+            }
+        }
+        return false;
     }
 
     private removeNative(handle: IndicatorHandle): void {
@@ -1643,9 +1665,8 @@ export class ChartCell {
         for (const [part, visible] of statuslinePartEntries(cs.statuslineParts)) {
             if (this.statusline && this.statusline.partVisible(part) !== visible) this.setStatuslinePart(part, visible);
         }
-        // Cosmetics + drawings round-trip (both validate untrusted input).
+        // Cosmetics round-trip (validates untrusted input); the drawings follow the market below.
         if (cs.rendererConfig != null) this.inner.renderer.applyConfig(cs.rendererConfig);
-        if (cs.drawings != null) this.inner.drawings.fromJSON(cs.drawings);
         if (cs.indicators) this.applyIndicatorLedger(cs.indicators as { manifest: LedgerManifestEntry[]; natives: LedgerNativeEntry[] });
         // Third-party state converges to the document too: the restored bag REPLACES
         // the baseline (absent in the document = the document carries none), then the
@@ -1678,6 +1699,10 @@ export class ChartCell {
             next.bars = Math.max(bars, this.rangeBars);
         }
         if (Object.keys(next).length > 0) void this.inner.setMarket(next);
+        // The drawings round-trip (untrusted input too) once the switch has STARTED: a chart
+        // whose drawings belong to its symbol drops them as a symbol switch starts, and the
+        // document's drawings are the ones of the market it names.
+        if (cs.drawings != null) this.inner.drawings.fromJSON(cs.drawings);
     }
 
     /** Snapshot everything the pool needs to restore this slot later. The market fields

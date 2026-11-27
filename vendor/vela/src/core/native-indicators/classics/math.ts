@@ -339,6 +339,33 @@ export function linreg(v: readonly number[], len: number, offset = 0): number[] 
 }
 
 /**
+ * Standard error of the least-squares line through the trailing `len` values: the root of
+ * the squared residuals over `len − 2` degrees of freedom. Needs three values or more.
+ */
+export function stdError(v: readonly number[], len: number): number[] {
+    if (len < 3) return fill(v.length, Number.NaN);
+    const sx = ((len - 1) * len) / 2;
+    const sxx = ((len - 1) * len * (2 * len - 1)) / 6;
+    const denom = len * sxx - sx * sx;
+    return windowed(v, len, (w, from, to) => {
+        let sy = 0;
+        let sxy = 0;
+        for (let k = from; k <= to; k++) {
+            sy += w[k]!;
+            sxy += (k - from) * w[k]!;
+        }
+        const slope = (len * sxy - sx * sy) / denom;
+        const intercept = (sy - slope * sx) / len;
+        let sse = 0;
+        for (let k = from; k <= to; k++) {
+            const e = w[k]! - (intercept + slope * (k - from));
+            sse += e * e;
+        }
+        return Math.sqrt(sse / (len - 2));
+    });
+}
+
+/**
  * Hull moving average: WMA of `2·WMA(len/2) − WMA(len)` over √len bars. The half
  * length TRUNCATES — rounding it up leaves a residual lag the construction is meant
  * to cancel exactly.
@@ -499,6 +526,50 @@ export function barIndex(length: number): number[] {
     return out;
 }
 
+/**
+ * Spearman rank correlation between time and value over the trailing `len` bars, in −1..1:
+ * 1 when every bar is higher than the one before, −1 when every bar is lower. Equal values
+ * share the average of the ranks they span.
+ */
+export function rankCorrelation(v: readonly number[], len: number): number[] {
+    if (len < 2) return fill(v.length, Number.NaN);
+    const order = new Array<number>(len);
+    const rank = new Array<number>(len);
+    const scale = 6 / (len * (len * len - 1));
+    return windowed(v, len, (w, from) => {
+        for (let k = 0; k < len; k++) order[k] = k;
+        order.sort((a, b) => w[from + b]! - w[from + a]!); // the highest value takes rank 1
+        for (let k = 0; k < len; ) {
+            let end = k;
+            while (end + 1 < len && w[from + order[end + 1]!] === w[from + order[k]!]) end++;
+            const shared = (k + end) / 2 + 1;
+            for (let j = k; j <= end; j++) rank[order[j]!] = shared;
+            k = end + 1;
+        }
+        let squares = 0;
+        for (let k = 0; k < len; k++) {
+            const d = len - k - rank[k]!; // the newest bar takes time rank 1
+            squares += d * d;
+        }
+        return 1 - scale * squares;
+    });
+}
+
+const DAY_MS = 86_400_000;
+
+/**
+ * Days elapsed since the previous bar opened — a fraction on intraday bars, more than one
+ * across a weekend or a holiday. NaN on the first bar and wherever time does not advance.
+ */
+export function elapsedDays(bars: readonly OHLCV[]): number[] {
+    const out = new Array<number>(bars.length).fill(Number.NaN);
+    for (let i = 1; i < bars.length; i++) {
+        const days = (bars[i]!.time - bars[i - 1]!.time) / DAY_MS;
+        if (days > 0) out[i] = days;
+    }
+    return out;
+}
+
 /** Symmetrically weighted moving average over 4 bars (weights 1,2,2,1 / 6). */
 export function swma(v: readonly number[]): number[] {
     const out = new Array<number>(v.length).fill(Number.NaN);
@@ -555,4 +626,51 @@ export function cumSum(v: readonly number[]): number[] {
 /** Fixed-value array aligned to a length. */
 export function fill(len: number, value: number): number[] {
     return new Array<number>(len).fill(value);
+}
+
+/** Natural log return `ln(v[i] / v[i-1])`, NaN on bar 0 or when either price is non-positive / NaN. */
+export function logReturns(v: readonly number[]): number[] {
+    const out = new Array<number>(v.length).fill(Number.NaN);
+    for (let i = 1; i < v.length; i++) {
+        const cur = v[i]!;
+        const prev = v[i - 1]!;
+        if (Number.isFinite(cur) && Number.isFinite(prev) && cur > 0 && prev > 0) {
+            out[i] = Math.log(cur / prev);
+        }
+    }
+    return out;
+}
+
+/** Sample variance over a trailing window of `len` bars (`n − 1` divisor; NaN when `len < 2` or any entry is non-finite). */
+export function sampleVariance(v: readonly number[], len: number): number[] {
+    if (len < 2) return fill(v.length, Number.NaN);
+    return windowed(v, len, (w, from, to) => {
+        let s = 0;
+        for (let k = from; k <= to; k++) s += w[k]!;
+        const mean = s / len;
+        let sq = 0;
+        for (let k = from; k <= to; k++) {
+            const d = w[k]! - mean;
+            sq += d * d;
+        }
+        return sq / (len - 1);
+    });
+}
+
+/**
+ * Align a secondary symbol's bars onto the chart's timeline: each chart bar receives the
+ * latest external bar whose open-time is at or before the chart bar's open-time (`null`
+ * before the external series starts or when it is empty). Both inputs are sorted ascending.
+ */
+export function alignBars(chartBars: readonly OHLCV[], extBars: readonly OHLCV[]): Array<OHLCV | null> {
+    const n = chartBars.length;
+    const out = new Array<OHLCV | null>(n).fill(null);
+    if (extBars.length === 0) return out;
+    let j = -1;
+    for (let i = 0; i < n; i++) {
+        const t = chartBars[i]!.time;
+        while (j + 1 < extBars.length && extBars[j + 1]!.time <= t) j++;
+        if (j >= 0) out[i] = extBars[j]!;
+    }
+    return out;
 }

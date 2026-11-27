@@ -6,8 +6,10 @@ import { isLineLikeSeries } from '../src/core/model/series';
 import type { NativeIndicatorContext, NativeIndicatorOutput } from '../src/core/native-indicators/NativeIndicator';
 import { getNativeIndicator, nativeIndicatorTypes, unregisterNativeIndicator } from '../src/core/native-indicators/NativeIndicator';
 import { classicSpecs, registerClassicIndicators, classicDescriptor } from '../src/core/native-indicators/classics';
-import { sma, ema, rma, wma, stdev, rsi, linreg, highest, lowest, percentRank, swma, cumSum, change } from '../src/core/native-indicators/classics/math';
-import type { ClassicIndicatorSpec } from '../src/core/native-indicators/classics';
+import { sma, ema, rma, wma, stdev, stdError, rsi, linreg, highest, lowest, percentRank, rankCorrelation, elapsedDays, swma, cumSum, change } from '../src/core/native-indicators/classics/math';
+import { gradient } from '../src/core/native-indicators/classics/shared';
+import type { ClassicIndicatorSpec, ClassicPlot } from '../src/core/native-indicators/classics';
+import { BULLISH, BEARISH, INFO, NEUTRAL, WARNING } from '../src/core/palette';
 import { createTranslator, type MessageLike } from '../src/plugin';
 
 /** The catalog's text as an English chart shows it. */
@@ -97,6 +99,33 @@ describe('classic math primitives', () => {
         expect(out[1]).toBeNaN();
         expect(out[2]).toBeNaN();
     });
+
+    it('stdError is the residual error of the fitted line over n − 2 degrees of freedom', () => {
+        // Fit of 1, 2, 4 on x = 0, 1, 2: slope 1.5, intercept 5/6; residuals 1/6, −1/3, 1/6.
+        const out = stdError([1, 2, 4], 3);
+        expect(out[1]).toBeNaN();
+        expect(out[2]).toBeCloseTo(Math.sqrt(1 / 6), 12);
+        expect(stdError([3, 5, 7, 9], 4)[3]).toBeCloseTo(0, 12); // a perfect line leaves no error
+        expect(stdError([1, 2, 4], 2)[2]).toBeNaN(); // two points always fit: nothing to measure
+    });
+
+    it('rankCorrelation runs from −1 to 1 and shares ranks between equal values', () => {
+        expect(rankCorrelation([1, 2, 3, 4], 4)[3]).toBe(1);
+        expect(rankCorrelation([4, 3, 2, 1], 4)[3]).toBe(-1);
+        // 1, 2, 2: the two 2s share rank 1.5, so the squared rank gaps sum to 0.5 → 1 − 6·0.5/24.
+        expect(rankCorrelation([1, 2, 2], 3)[2]).toBeCloseTo(0.875, 12);
+        expect(rankCorrelation([5, 1, 2, 2], 3)[3]).toBeCloseTo(0.875, 12); // each bar ranks its own window
+        expect(rankCorrelation([1, 2, 3], 4)[2]).toBeNaN();
+    });
+
+    it('elapsedDays measures the time since the previous bar, in days', () => {
+        const day = 86_400_000;
+        const at = (time: number): OHLCV => ({ time, open: 1, high: 1, low: 1, close: 1 });
+        const out = elapsedDays([at(0), at(day), at(4 * day), at(4 * day + day / 24), at(4 * day + day / 24)]);
+        expect(out[0]).toBeNaN();
+        expect(out.slice(1, 4)).toEqual([1, 3, 1 / 24]);
+        expect(out[4]).toBeNaN(); // time did not advance
+    });
 });
 
 describe('classic catalog registration', () => {
@@ -119,7 +148,9 @@ describe('classic catalog registration', () => {
         const libraryShort: Record<string, string> = {
             'percent-b': '%B',
             '52-week-high-low': '52W H/L',
+            'accelerator-oscillator': 'AC',
             'accumulation-distribution': 'A/D',
+            'accumulative-swing-index': 'Accumulative Swing Index',
             aroon: 'Aroon',
             'average-directional-index': 'ADX',
             'average-true-range': 'ATR',
@@ -137,6 +168,8 @@ describe('classic catalog registration', () => {
             'commodity-channel-index': 'CCI',
             'connors-rsi': 'CRSI',
             'coppock-curve': 'Coppock',
+            'correlation-coefficient': 'CC',
+            'correlation-log': 'Correlation - Log',
             'detrended-price-oscillator': 'DPO',
             'donchian-channels': 'DC',
             ema: 'EMA',
@@ -146,6 +179,7 @@ describe('classic catalog registration', () => {
             'force-index': 'FI',
             'gator-oscillator': 'Gator Oscillator',
             'historical-volatility': 'HV',
+            'ichimoku-cloud': 'Ichimoku',
             'intraday-intensity': 'Intraday Intensity',
             'keltner-channels': 'KC',
             'klinger-oscillator': 'KVO',
@@ -174,6 +208,7 @@ describe('classic catalog registration', () => {
             sma: 'SMA',
             'smi-ergodic': 'SMIE',
             'standard-deviation': 'StdDev',
+            'standard-error-bands': 'SEB',
             stochastic: 'Stoch',
             'stochastic-rsi': 'Stoch RSI',
             supertrend: 'SuperTrend',
@@ -193,11 +228,42 @@ describe('classic catalog registration', () => {
             zigzag: 'ZigZag',
             zlema: 'ZLEMA',
         };
+        // Studies the library does not publish take the catalog's own short names.
+        const catalogShort: Record<string, string> = {
+            'advance-decline': 'Advance/Decline',
+            'average-price': 'Average Price',
+            'chop-zone': 'Chop Zone',
+            'ema-cross': 'EMA Cross',
+            'guppy-multiple-moving-average': 'GMMA',
+            'ma-cross': 'MA Cross',
+            'ma-with-ema-cross': 'MA/EMA Cross',
+            'majority-rule': 'Majority Rule',
+            'median-price': 'Median Price',
+            momentum: 'Mom',
+            'moving-average-channel': 'MAC',
+            'moving-average-double': 'MA Double',
+            'moving-average-multiple': 'MA Multiple',
+            'moving-average-triple': 'MA Triple',
+            'net-volume': 'Net Volume',
+            'rank-correlation-index': 'RCI',
+            'standard-error': 'StdErr',
+            'trend-strength-index': 'Trend Strength Index',
+            'typical-price': 'Typical Price',
+            'volatility-close-to-close': 'Vol Close-to-Close',
+            'volatility-index': 'Vol Index',
+            'volatility-ohlc': 'Vol OHLC',
+            'volatility-zero-trend': 'Vol Zero Trend',
+        };
         for (const spec of classicSpecs) {
-            const expected = libraryShort[spec.type];
+            const expected = libraryShort[spec.type] ?? catalogShort[spec.type];
             expect(expected, spec.type).toBeDefined();
             expect(en(spec.shortTitle ?? spec.title), spec.type).toBe(expected);
         }
+    });
+
+    it('no two studies read the same in the legend', () => {
+        const names = classicSpecs.map((s) => en(s.shortTitle ?? s.title));
+        expect(names.filter((name, i) => names.indexOf(name) !== i)).toEqual([]);
     });
 
     it('every spec declares defaults for each of its inputs', () => {
@@ -534,5 +600,550 @@ describe('classic descriptor adapter', () => {
         expect(kind.tooltip).toContain('Fibonacci projects 38.2/61.8/100% of the prior range');
         expect(english.t(kind.display!.tooltip!)).toBe(kind.tooltip);
         expect(createTranslator({ locale: 'de' }).t(kind.display!.tooltip!)).toContain('38,2/61,8/100%');
+    });
+});
+
+// Each expectation below is worked out from the study's definition, by hand or with plain
+// loops written here — never read back from the catalog's own output.
+describe('classic studies checked against their definitions', () => {
+    const DAY = 86_400_000;
+    const at = (i: number, open: number, high: number, low: number, close: number, extra: Partial<OHLCV> = {}): OHLCV => ({ time: i * DAY, open, high, low, close, ...extra });
+    /** Bars whose closes (and opens, when given) are the listed values, with room above and below. */
+    const closing = (closes: number[], opens?: number[]): OHLCV[] => closes.map((c, i) => at(i, opens?.[i] ?? c, Math.max(c, opens?.[i] ?? c) + 1, Math.min(c, opens?.[i] ?? c) - 1, c));
+    const specOf = (type: string): ClassicIndicatorSpec => classicSpecs.find((s) => s.type === type)!;
+    const outputOf = (type: string, bars: OHLCV[], inputs: Record<string, InputValue> = {}): ReturnType<ClassicIndicatorSpec['compute']> => {
+        const spec = specOf(type);
+        return spec.compute(bars, { ...classicDescriptor(spec).defaultInputs(), ...inputs });
+    };
+    const plotOf = (type: string, bars: OHLCV[], inputs: Record<string, InputValue> = {}, key?: string): ClassicPlot => {
+        const plots = outputOf(type, bars, inputs).plots;
+        return key ? plots.find((p) => p.key === key)! : plots[0]!;
+    };
+    /** Average of `v[i − len + 1 … i]`. */
+    const mean = (v: readonly number[], i: number, len: number): number => {
+        let s = 0;
+        for (let k = i - len + 1; k <= i; k++) s += v[k]!;
+        return s / len;
+    };
+    const wave = (n: number): OHLCV[] =>
+        Array.from({ length: n }, (_, i) => {
+            const close = 100 + 12 * Math.sin(i / 9) + 5 * Math.sin(i / 2.3) + i * 0.05;
+            const open = close - 1.5 * Math.cos(i / 3);
+            return at(i, open, Math.max(open, close) + 0.6 + (i % 4) * 0.2, Math.min(open, close) - 0.4 - (i % 3) * 0.3, close, { volume: 1000 + (i % 7) * 100 });
+        });
+
+    it('Median, Typical and Average Price draw the bar summaries they are named after', () => {
+        const bars = [at(0, 10, 14, 8, 12), at(1, 12, 13, 11, 11.5)];
+        expect(plotOf('median-price', bars).values).toEqual([11, 12]);
+        expect(plotOf('typical-price', bars).values[0]).toBeCloseTo(34 / 3, 12);
+        expect(plotOf('typical-price', bars).values[1]).toBeCloseTo(35.5 / 3, 12);
+        expect(plotOf('average-price', bars).values).toEqual([11, 11.875]);
+        for (const type of ['median-price', 'typical-price', 'average-price']) expect(specOf(type).overlay, type).toBe(true);
+    });
+
+    it('Momentum is the source less its value `length` bars back', () => {
+        const bars = closing([1, 2, 4, 7, 11], [0, 1, 1, 2, 5]);
+        expect(plotOf('momentum', bars, { length: 2 }).values).toEqual([Number.NaN, Number.NaN, 3, 5, 7]);
+        expect(plotOf('momentum', bars, { length: 2, source: 'Open' }).values).toEqual([Number.NaN, Number.NaN, 1, 1, 4]);
+        expect(classicDescriptor(specOf('momentum')).defaultInputs()).toMatchObject({ length: 10, source: 'Close' });
+        expect(outputOf('momentum', bars).levels?.map((l) => l.price)).toEqual([0]);
+    });
+
+    it('Moving Average Channel averages the highs and the lows, each with its own length and offset', () => {
+        const bars = [at(0, 9, 10, 8, 9), at(1, 10, 12, 9, 11), at(2, 12, 14, 10, 13), at(3, 13, 16, 11, 15)];
+        const inputs = { upperLength: 2, lowerLength: 2 };
+        expect(plotOf('moving-average-channel', bars, inputs, 'upper').values).toEqual([Number.NaN, 11, 13, 15]);
+        expect(plotOf('moving-average-channel', bars, inputs, 'lower').values).toEqual([Number.NaN, 8.5, 9.5, 10.5]);
+        // A positive offset moves a line to later bars, a negative one to earlier bars.
+        const moved = { ...inputs, upperOffset: 1, lowerOffset: -1 };
+        expect(plotOf('moving-average-channel', bars, moved, 'upper').values).toEqual([Number.NaN, Number.NaN, 11, 13]);
+        expect(plotOf('moving-average-channel', bars, moved, 'lower').values).toEqual([8.5, 9.5, 10.5, Number.NaN]);
+        expect(classicDescriptor(specOf('moving-average-channel')).defaultInputs()).toMatchObject({ upperLength: 20, lowerLength: 20, upperOffset: 0, lowerOffset: 0 });
+        expect(outputOf('moving-average-channel', bars).bands).toHaveLength(1);
+    });
+
+    it('Net Volume signs each bar’s volume by its close against the previous close', () => {
+        const bars = closing([10, 11, 11, 9, 9.5]).map((b, i) => ({ ...b, ...([100, 200, 300, 400][i] != null ? { volume: [100, 200, 300, 400][i]! } : {}) }));
+        const net = plotOf('net-volume', bars);
+        expect(net.values).toEqual([Number.NaN, 200, 0, -400, Number.NaN]); // unchanged close → 0; no volume → a gap
+        expect(net.kind).toBe('columns');
+        expect(net.colors).toEqual([null, BULLISH, BULLISH, BEARISH, null]);
+    });
+
+    it('Accelerator Oscillator is the Awesome Oscillator less its own 5-bar average', () => {
+        const bars = wave(60);
+        const mid = bars.map((b) => (b.high + b.low) / 2);
+        const ao = mid.map((_, i) => (i < 33 ? Number.NaN : mean(mid, i, 5) - mean(mid, i, 34)));
+        const ac = ao.map((x, i) => (i < 37 ? Number.NaN : x - mean(ao, i, 5)));
+        const plot = plotOf('accelerator-oscillator', bars);
+        expect(plot.values[36]).toBeNaN();
+        for (const i of [37, 44, 59]) expect(plot.values[i], `bar ${i}`).toBeCloseTo(ac[i]!, 10);
+        expect(plot.kind).toBe('columns');
+        for (let i = 38; i < 60; i++) expect(plot.colors![i], `bar ${i}`).toBe(ac[i]! > ac[i - 1]! ? BULLISH : BEARISH);
+    });
+
+    it('Accumulative Swing Index sums Wilder’s swing index, whichever distance sets R', () => {
+        const bars = [
+            at(0, 10, 12, 9, 11),
+            at(1, 11, 13, 10, 12), // the bar's own range (3) is the largest distance
+            at(2, 14.5, 15, 14, 14.8), // the high's distance from the prior close (3) is
+            at(3, 12, 12.5, 11, 11.5), // the low's distance from the prior close (3.8) is
+            at(4, 11.5, 11.5, 11.5, 11.5), // nothing moved
+        ];
+        const swing = [
+            (50 * (1 + 0.5 * 1 + 0.25 * 1) * (2 / 10)) / (3 + 0.25 * 1),
+            (50 * (2.8 + 0.5 * 0.3 + 0.25 * 1) * (3 / 10)) / (3 - 0.5 * 2 + 0.25 * 1),
+            (50 * (-3.3 + 0.5 * -0.5 + 0.25 * 0.3) * (3.8 / 10)) / (3.8 - 0.5 * 2.3 + 0.25 * 0.3),
+        ];
+        const asi = plotOf('accumulative-swing-index', bars).values;
+        expect(asi[0]).toBeNaN();
+        expect(asi[1]).toBeCloseTo(swing[0]!, 10);
+        expect(asi[2]).toBeCloseTo(swing[0]! + swing[1]!, 10);
+        expect(asi[3]).toBeCloseTo(swing[0]! + swing[1]! + swing[2]!, 10);
+        expect(asi[4]).toBeCloseTo(asi[3]!, 10); // no range, no swing
+        // The limit move divides every swing.
+        expect(plotOf('accumulative-swing-index', bars, { limitMove: 100 }).values[3]).toBeCloseTo(asi[3]! / 10, 10);
+    });
+
+    it('Accumulative Swing Index is inked against its own last confirmed swing points', () => {
+        // Bars with no wicks that open where the last one closed: each bar adds 7 to the line in
+        // its direction, or 5 on the first bar after a turn (7.5 on the very first).
+        const closes = [10, 11, 12, 13, 12, 11, 12, 13, 14, 15, 14, 13, 12, 11, 10];
+        const bars = closes.map((c, i) => {
+            const open = i === 0 ? c : closes[i - 1]!;
+            return at(i, open, Math.max(open, c), Math.min(open, c), c);
+        });
+        const plot = plotOf('accumulative-swing-index', bars, { swingLength: 2 });
+        const line = [7.5, 14.5, 21.5, 16.5, 9.5, 14.5, 21.5, 28.5, 35.5, 30.5, 23.5, 16.5, 9.5, 2.5];
+        line.forEach((x, k) => expect(plot.values[k + 1], `bar ${k + 1}`).toBeCloseTo(x, 10));
+        // The high of 21.5 at bar 3 is confirmed at bar 5, the low of 9.5 at bar 5 at bar 7, the high of
+        // 35.5 at bar 9 at bar 11. Matching a swing point is not a breakout; passing it is.
+        const N = NEUTRAL;
+        expect(plot.colors).toEqual([null, N, N, N, N, N, N, N, BULLISH, BULLISH, BULLISH, N, N, N, BEARISH]);
+        expect(plot.color).toBe(NEUTRAL);
+        // A longer swing needs more bars on each side: none of these is confirmed.
+        expect(plotOf('accumulative-swing-index', bars, { swingLength: 6 }).colors!.slice(1)).toEqual(new Array(14).fill(N));
+        expect(plotOf('accumulative-swing-index', bars, { swingLength: 2, bullColor: '#111111', bearColor: '#222222', color: '#333333' }).colors!.slice(7, 9)).toEqual(['#333333', '#111111']);
+        expect(classicDescriptor(specOf('accumulative-swing-index')).defaultInputs()).toMatchObject({ limitMove: 10, swingLength: 10 });
+    });
+
+    it('Rank Correlation Index reads +1 on a straight climb and −1 on a straight fall, in a −1..1 pane', () => {
+        const up = outputOf('rank-correlation-index', closing([1, 2, 3, 4, 5, 6]), { length: 4 });
+        expect(up.plots[0]!.values.slice(3)).toEqual([1, 1, 1]);
+        expect(plotOf('rank-correlation-index', closing([6, 5, 4, 3, 2, 1]), { length: 4 }).values[5]).toBe(-1);
+        expect(plotOf('rank-correlation-index', closing([5, 1, 2, 2]), { length: 3 }).values[3]).toBeCloseTo(0.875, 12);
+        expect(up.levels?.map((l) => l.price)).toEqual([0.8, 0, -0.8]);
+        expect(classicDescriptor(specOf('rank-correlation-index')).defaultInputs()).toMatchObject({ length: 12, source: 'Close' });
+    });
+
+    it('Standard Error and its bands come from the regression line through the window', () => {
+        // Windows of 3 over 1, 2, 4, 4, 7: endpoints 23/6, 13/3, 6.5; standard errors √(1/6), √(2/3), √1.5.
+        const bars = closing([1, 2, 4, 4, 7]);
+        const end = [23 / 6, 13 / 3, 6.5];
+        const se = [Math.sqrt(1 / 6), Math.sqrt(2 / 3), Math.sqrt(1.5)];
+        const error = plotOf('standard-error', bars, { length: 3 }).values;
+        expect(error[1]).toBeNaN();
+        se.forEach((x, k) => expect(error[k + 2], `bar ${k + 2}`).toBeCloseTo(x, 12));
+        expect(classicDescriptor(specOf('standard-error')).inputsSchema().find((i) => i.key === 'length')).toMatchObject({ defval: 14, min: 3 });
+
+        const band = (inputs: Record<string, InputValue>, key: string): readonly number[] => plotOf('standard-error-bands', bars, { length: 3, ...inputs }, key).values;
+        // Unsmoothed: the line is the regression endpoint, the bands sit `mult` errors away.
+        end.forEach((x, k) => expect(band({ smoothing: 1 }, 'basis')[k + 2]).toBeCloseTo(x, 12));
+        expect(band({ smoothing: 1, mult: 1 }, 'upper')[3]).toBeCloseTo(end[1]! + se[1]!, 12);
+        expect(band({ smoothing: 1, mult: 3 }, 'lower')[4]).toBeCloseTo(end[2]! - 3 * se[2]!, 12);
+        // Smoothed: the same average runs over the line and over the error.
+        expect(band({ smoothing: 2 }, 'basis')[3]).toBeCloseTo((end[0]! + end[1]!) / 2, 12);
+        expect(band({ smoothing: 2, mult: 2 }, 'upper')[3]).toBeCloseTo((end[0]! + end[1]!) / 2 + 2 * ((se[0]! + se[1]!) / 2), 12);
+        expect(band({ smoothing: 2, smoothingType: 'WMA' }, 'basis')[3]).toBeCloseTo((end[0]! + 2 * end[1]!) / 3, 12);
+        const emaSeed = (end[0]! + end[1]!) / 2;
+        expect(band({ smoothing: 2, smoothingType: 'EMA' }, 'basis')[4]).toBeCloseTo(emaSeed + (2 / 3) * (end[2]! - emaSeed), 12);
+        expect(classicDescriptor(specOf('standard-error-bands')).defaultInputs()).toMatchObject({ length: 21, mult: 2, smoothing: 3, smoothingType: 'SMA', source: 'Close' });
+    });
+
+    it('Standard Error Bands draw a neutral regression line between a bearish upper and a bullish lower band, each washed toward the line', () => {
+        const out = outputOf('standard-error-bands', wave(60));
+        expect(out.plots.map((p) => [p.key, p.color])).toEqual([['basis', NEUTRAL], ['upper', BEARISH], ['lower', BULLISH]]);
+        expect(out.plots.every((p) => p.colors === undefined)).toBe(true);
+        expect(out.bands).toEqual([
+            { key: 'sebUpper', from: 'upper', to: 'basis', color: `${BEARISH}1a` },
+            { key: 'sebLower', from: 'basis', to: 'lower', color: `${BULLISH}1a` },
+        ]);
+        const custom = outputOf('standard-error-bands', wave(60), { upperColor: '#112233', lowerColor: '#445566', basisColor: '#778899' });
+        expect(custom.plots.map((p) => p.color)).toEqual(['#778899', '#112233', '#445566']);
+        expect(custom.bands!.map((b) => b.color)).toEqual(['#1122331a', '#4455661a']);
+    });
+
+    it('Advance/Decline divides the bars that closed above their open by those that closed below', () => {
+        // up, up, down, flat, up
+        const bars = [at(0, 10, 12, 9, 11), at(1, 11, 13, 10, 12), at(2, 12, 13, 10, 11), at(3, 11, 12, 10, 11), at(4, 11, 13, 10, 12)];
+        expect(plotOf('advance-decline', bars, { length: 4 }).values).toEqual([Number.NaN, Number.NaN, Number.NaN, 2, 2]);
+        expect(plotOf('advance-decline', bars, { length: 3 }).values[3]).toBe(1); // up, down, flat
+        // No down bar in the window: the count of up bars, not a division by zero.
+        expect(plotOf('advance-decline', bars, { length: 2 }).values[1]).toBe(2);
+        expect(outputOf('advance-decline', bars).levels?.map((l) => l.price)).toEqual([1]);
+    });
+
+    it('Majority Rule is the percentage of bars that closed above the bar before', () => {
+        const values = plotOf('majority-rule', closing([1, 2, 3, 2, 4, 4]), { length: 4 }).values;
+        expect(values.slice(0, 4).every((v) => Number.isNaN(v))).toBe(true);
+        expect(values.slice(4)).toEqual([75, 50]); // + + − +, then + − + unchanged
+        expect(classicDescriptor(specOf('majority-rule')).defaultInputs()).toMatchObject({ length: 14 });
+        expect(outputOf('majority-rule', closing([1, 2, 3])).levels?.map((l) => l.price)).toEqual([50]);
+    });
+
+    it('Trend Strength Index is how closely price has moved in step with time', () => {
+        expect(plotOf('trend-strength-index', closing([1, 2, 3, 4, 5]), { length: 5 }).values[4]).toBeCloseTo(1, 12);
+        expect(plotOf('trend-strength-index', closing([5, 4, 3, 2, 1]), { length: 5 }).values[4]).toBeCloseTo(-1, 12);
+        expect(plotOf('trend-strength-index', closing([1, 2, 3, 2, 1]), { length: 5 }).values[4]).toBeCloseTo(0, 12);
+        expect(plotOf('trend-strength-index', closing([1, 2, 3, 2, 1]), { length: 3 }).values[2]).toBeCloseTo(1, 12);
+    });
+
+    it('Chop Zone colors each bar by the angle of its 34-bar trend line', () => {
+        const bars = wave(220);
+        const plot = plotOf('chop-zone', bars);
+        // The trend line: an EMA seeded with the average of its first 34 closes.
+        const trend = new Array<number>(bars.length).fill(Number.NaN);
+        trend[33] = mean(bars.map((b) => b.close), 33, 34);
+        for (let i = 34; i < bars.length; i++) trend[i] = trend[i - 1]! + (2 / 35) * (bars[i]!.close - trend[i - 1]!);
+        const zones = new Set<number>();
+        for (let i = 34; i < bars.length; i++) {
+            const highs = bars.slice(i - 29, i + 1).map((b) => b.high);
+            const low = Math.min(...highs);
+            const typical = (bars[i]!.high + bars[i]!.low + bars[i]!.close) / 3;
+            const rise = ((trend[i]! - trend[i - 1]!) / typical) * ((25 / (Math.max(...highs) - low)) * low);
+            const degrees = Math.round((Math.atan(Math.abs(rise)) * 180) / Math.PI);
+            const zone = degrees >= 5 ? 4 : degrees >= 3.57 ? 3 : degrees >= 2.14 ? 2 : degrees >= 0.71 ? 1 : 0;
+            zones.add(rise < 0 ? -zone : zone);
+            const ink = zone === 0 ? WARNING : gradient(zone, 0, 4, WARNING, rise < 0 ? BEARISH : BULLISH);
+            expect(plot.colors![i], `bar ${i}`).toBe(ink);
+            expect(plot.values[i]).toBe(1);
+        }
+        expect(plot.values[33]).toBeNaN();
+        expect(zones.size).toBeGreaterThanOrEqual(7); // the series visits most zones, both sides of flat
+        expect(plot.kind).toBe('columns');
+        // A market that did not move is flat, whatever the trend line says.
+        const still = plotOf('chop-zone', Array.from({ length: 50 }, (_, i) => at(i, 5, 5, 5, 5)));
+        expect(still.colors![49]).toBe(WARNING);
+    });
+
+    it('Historical Volatility is the annualized sample deviation of close-to-close log returns', () => {
+        const closes = [100, 102, 99, 101];
+        const r = [Math.log(102 / 100), Math.log(99 / 102), Math.log(101 / 99)];
+        const avg = (r[0]! + r[1]! + r[2]!) / 3;
+        const variance = ((r[0]! - avg) ** 2 + (r[1]! - avg) ** 2 + (r[2]! - avg) ** 2) / 2;
+        expect(plotOf('historical-volatility', closing(closes), { length: 3 }).values[3]).toBeCloseTo(100 * Math.sqrt(252 * variance), 10);
+    });
+
+    it('Historical Volatility inks its first bars, before its range window has filled', () => {
+        const plot = plotOf('historical-volatility', wave(160));
+        const valued = plot.values.map((v, i) => (Number.isFinite(v) ? i : -1)).filter((i) => i >= 0);
+        expect(valued.length).toBeGreaterThan(100);
+        for (const i of valued) expect(plot.colors![i], `bar ${i}`).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(plot.colors![valued[0]!]).toBe(NEUTRAL);
+    });
+
+    it('Volatility Zero Trend averages squared returns per day elapsed, taking no mean out', () => {
+        // A day, then a weekend: the second return is spread over 3 days.
+        const bars = [at(0, 100, 101, 99, 100), at(1, 100, 103, 99, 102), at(4, 102, 103, 98, 99)];
+        const r1 = Math.log(102 / 100);
+        const r2 = Math.log(99 / 102);
+        expect(plotOf('volatility-zero-trend', bars, { length: 2 }).values).toEqual([Number.NaN, Number.NaN, expect.closeTo(100 * Math.sqrt((252 * (r1 * r1 + (r2 * r2) / 3)) / 2), 10)]);
+        // Hourly bars: each return covers 1/24 of a day.
+        const hourly = [100, 100.5, 100.2].map((c, i) => ({ ...at(0, c, c + 1, c - 1, c), time: i * (DAY / 24) }));
+        const h1 = Math.log(100.5 / 100);
+        const h2 = Math.log(100.2 / 100.5);
+        expect(plotOf('volatility-zero-trend', hourly, { length: 2, daysPerYear: 365 }).values[2]).toBeCloseTo(100 * Math.sqrt((365 * (h1 * h1 * 24 + h2 * h2 * 24)) / 2), 9);
+    });
+
+    it('Volatility O-H-L-C reads each bar’s range, and weighs the overnight gap in once the market closes', () => {
+        const bars = [at(0, 100, 103, 99, 101), at(1, 102, 104, 100, 103), at(4, 104, 107, 103, 105)];
+        const k = 2 * Math.log(2) - 1;
+        const session = (b: OHLCV): number => 0.5 * Math.log(b.high / b.low) ** 2 - k * Math.log(b.close / b.open) ** 2;
+        const annual = (perDay: number): number => 100 * Math.sqrt(252 * perDay);
+        const open = plotOf('volatility-ohlc', bars, { length: 1 }).values;
+        expect(open[0]).toBeNaN();
+        expect(open[1]).toBeCloseTo(annual(session(bars[1]!)), 10);
+        expect(open[2]).toBeCloseTo(annual(session(bars[2]!) / 3), 10); // three days since the bar before
+        const gap = Math.log(104 / 103) ** 2;
+        expect(plotOf('volatility-ohlc', bars, { length: 1, marketClosed: 0.25 }).values[2]).toBeCloseTo(annual(((0.12 * gap) / 0.25 + (0.88 * session(bars[2]!)) / 0.75) / 3), 10);
+        expect(plotOf('volatility-ohlc', bars, { length: 2 }).values[2]).toBeCloseTo(annual((session(bars[1]!) + session(bars[2]!) / 3) / 2), 10);
+        expect(classicDescriptor(specOf('volatility-ohlc')).defaultInputs()).toMatchObject({ length: 10, marketClosed: 0, daysPerYear: 252 });
+    });
+
+    it('Volatility Index trails the best close by a multiple of the average range, and flips when a close crosses it', () => {
+        // high, low, close — true ranges 2, 2, 2, 3, (skipped), 2, …
+        const bars = [
+            at(0, 10, 11, 9, 10),
+            at(1, 10, 12, 10, 11), // the 2-bar average range is ready after this bar: 2
+            at(2, 11, 13, 11, 12), // long: best close 11 − 1 × 2
+            at(3, 12, 12.5, 9.5, 9.5), // long: 12 − 2; closes below it → short from the next bar
+            at(4, 9.5, 10, 9, 9.5), // unchanged close: everything holds
+            at(5, 9.5, 10, 8, 8.5), // short: 9.5 + average range 2.5
+            at(6, 8.5, 9, 8, 8.8), // short: best close 8.5 + (2.5 + (2 − 2.5) / 2)
+        ];
+        const inputs = { length: 2, mult: 1 };
+        expect(plotOf('volatility-index', bars, inputs, 'long').values).toEqual([Number.NaN, Number.NaN, 9, 10, 10, Number.NaN, Number.NaN]);
+        expect(plotOf('volatility-index', bars, inputs, 'short').values).toEqual([Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, 12, 10.75]);
+        // EMA smoothing weighs the newest range 2/3 instead of 1/2.
+        const fast = plotOf('volatility-index', bars, { ...inputs, smoothing: 'EMA' }, 'short').values;
+        const afterDrop = 2 + (2 / 3) * (3 - 2);
+        expect(fast[5]).toBeCloseTo(9.5 + afterDrop, 12);
+        expect(fast[6]).toBeCloseTo(8.5 + afterDrop + (2 / 3) * (2 - afterDrop), 12);
+        expect(plotOf('volatility-index', bars, { ...inputs, mult: 2 }, 'long').values[2]).toBe(7);
+        expect(classicDescriptor(specOf('volatility-index')).defaultInputs()).toMatchObject({ length: 10, mult: 3, smoothing: 'RMA' });
+        expect(specOf('volatility-index').overlay).toBe(true);
+    });
+
+    it('MA Cross marks the short line on every bar where it changes sides of the long one', () => {
+        const bars = closing([10, 12, 11, 9, 13, 13]);
+        const inputs = { shortLength: 1, longLength: 2 };
+        // short − long: none, +1, −0.5, −1, +2, 0. A touch is not a cross.
+        expect(plotOf('ma-cross', bars, inputs, 'short').values).toEqual([10, 12, 11, 9, 13, 13]);
+        expect(plotOf('ma-cross', bars, inputs, 'long').values).toEqual([Number.NaN, 11, 11.5, 10, 11, 13]);
+        const crosses = plotOf('ma-cross', bars, inputs, 'crosses');
+        expect(crosses.values).toEqual([Number.NaN, Number.NaN, 11, Number.NaN, 13, Number.NaN]);
+        // A filled dot wider than the lines it sits on, so it shows where they meet, inked by the way the short line crossed.
+        expect(crosses.kind).toBe('circles');
+        expect(crosses.width).toBeGreaterThan(plotOf('ma-cross', bars, inputs, 'short').width!);
+        expect(crosses.colors).toEqual([null, null, BEARISH, null, BULLISH, null]);
+        expect(plotOf('ma-cross', bars, { ...inputs, bullColor: '#111111', bearColor: '#222222' }, 'crosses').colors).toEqual([null, null, '#222222', null, '#111111', null]);
+        // The two lines wear the generic average's inks.
+        expect([plotOf('ma-cross', bars, inputs, 'short').color, plotOf('ma-cross', bars, inputs, 'long').color]).toEqual([INFO, WARNING]);
+        expect(plotOf('ma-cross', closing([10, 12, 11, 9, 13, 13], [9, 9, 9, 9, 9, 9]), { ...inputs, source: 'Open' }, 'crosses').values.every(Number.isNaN)).toBe(true);
+        expect(classicDescriptor(specOf('ma-cross')).defaultInputs()).toMatchObject({ shortLength: 9, longLength: 26, source: 'Close' });
+        expect(specOf('ma-cross').overlay).toBe(true);
+    });
+
+    it('EMA Cross and MA with EMA Cross run the same marker over their own pair of averages', () => {
+        const bars = wave(120);
+        const closes = bars.map((b) => b.close);
+        const sideChanges = (a: number[], b: number[]): number[] => a.map((x, i) => (i > 0 && (x - b[i]!) * (a[i - 1]! - b[i - 1]!) < 0 ? x : Number.NaN));
+
+        const short = ema(closes, 9);
+        const long = ema(closes, 26);
+        expect(plotOf('ema-cross', bars, {}, 'short').values).toEqual(short);
+        expect(plotOf('ema-cross', bars, {}, 'long').values).toEqual(long);
+        expect(plotOf('ema-cross', bars, {}, 'crosses').values).toEqual(sideChanges(short, long));
+        expect(sideChanges(short, long).filter(Number.isFinite).length).toBeGreaterThan(2);
+
+        const simple = sma(closes, 10);
+        const exponential = ema(closes, 20);
+        const mixed = { emaLength: 20 };
+        expect(plotOf('ma-with-ema-cross', bars, mixed, 'ma').values).toEqual(simple);
+        expect(plotOf('ma-with-ema-cross', bars, mixed, 'ema').values).toEqual(exponential);
+        expect(plotOf('ma-with-ema-cross', bars, mixed, 'crosses').values).toEqual(sideChanges(simple, exponential));
+        expect(classicDescriptor(specOf('ema-cross')).defaultInputs()).toMatchObject({ shortLength: 9, longLength: 26 });
+        expect(classicDescriptor(specOf('ma-with-ema-cross')).defaultInputs()).toMatchObject({ maLength: 10, emaLength: 10 });
+    });
+
+    it('Moving Average Double, Triple and Multiple draw one line per length under one smoothing', () => {
+        const bars = wave(260);
+        const closes = bars.map((b) => b.close);
+        const lengths: Record<string, number[]> = {
+            'moving-average-double': [14, 21],
+            'moving-average-triple': [14, 21, 35],
+            'moving-average-multiple': [14, 21, 35, 50, 100, 200],
+        };
+        for (const [type, lens] of Object.entries(lengths)) {
+            const simple = outputOf(type, bars).plots;
+            expect(simple.map((p) => p.values), type).toEqual(lens.map((len) => sma(closes, len)));
+            expect(simple.map((p) => p.title), type).toEqual(lens.map((len) => `SMA ${len}`));
+            expect(outputOf(type, bars, { maType: 'EMA' }).plots.map((p) => p.values), type).toEqual(lens.map((len) => ema(closes, len)));
+            expect(outputOf(type, bars, { maType: 'WMA' }).plots.map((p) => p.values), type).toEqual(lens.map((len) => wma(closes, len)));
+            // The fastest line wears the generic average's first ink, the slowest its second, the rest blend between.
+            const inks = simple.map((p) => p.color);
+            expect(new Set(inks).size, type).toBe(lens.length);
+            expect([inks[0], inks[inks.length - 1]], type).toEqual([INFO, WARNING]);
+            inks.forEach((ink, i) => expect(ink, `${type} line ${i + 1}`).toBe(gradient(i, 0, lens.length - 1, INFO, WARNING)));
+            expect(specOf(type).overlay, type).toBe(true);
+        }
+        expect(outputOf('moving-average-triple', bars).plots[1]!.color).toBe('#ad9a7b');
+        // Each line follows its own length and the shared source.
+        const opens = bars.map((b) => b.open);
+        const edited = outputOf('moving-average-triple', bars, { length2: 5, source: 'Open' }).plots;
+        expect(edited.map((p) => p.values)).toEqual([sma(opens, 14), sma(opens, 5), sma(opens, 35)]);
+        expect(edited[1]!.title).toBe('SMA 5');
+    });
+
+    it('Guppy Multiple Moving Average draws six short and six long exponential averages in two inks', () => {
+        const bars = wave(200);
+        const closes = bars.map((b) => b.close);
+        const plots = outputOf('guppy-multiple-moving-average', bars).plots;
+        const lens = [3, 5, 8, 10, 12, 15, 30, 35, 40, 45, 50, 60];
+        expect(plots.map((p) => p.values)).toEqual(lens.map((len) => ema(closes, len)));
+        expect(plots.map((p) => p.title)).toEqual(lens.map((len) => `EMA ${len}`));
+        const inks = plots.map((p) => p.color);
+        expect(new Set(inks.slice(0, 6)).size).toBe(1);
+        expect(new Set(inks.slice(6)).size).toBe(1);
+        expect(inks[0]).not.toBe(inks[6]);
+        const edited = outputOf('guppy-multiple-moving-average', bars, { investor6: 90, traderColor: '#123456' }).plots;
+        expect(edited[11]!.values).toEqual(ema(closes, 90));
+        expect(edited.slice(0, 6).every((p) => p.color === '#123456')).toBe(true);
+    });
+
+    it('Volatility Close-to-Close computes annualized sample standard deviation of bar-to-bar log returns', () => {
+        // Explicit prices: close = [100, 110, 99, 108.9, 119.79] → log returns [ln(1.1), ln(0.9), ln(1.1), ln(1.1)]
+        const prices = [100, 110, 99, 108.9, 119.79];
+        const bars = prices.map((c, i) => bar(c, i));
+        const out = outputOf('volatility-close-to-close', bars, { length: 3, daysPerYear: 252 });
+        const vals = out.plots[0]!.values;
+        // Bar 0 has no return; bars 1..2 have fewer than 3 returns → NaN.
+        expect(vals[0]).toBeNaN();
+        expect(vals[1]).toBeNaN();
+        expect(vals[2]).toBeNaN();
+        // Window at bar 3: returns [ln(1.1), ln(0.9), ln(1.1)]
+        const r = [Math.log(1.1), Math.log(0.9), Math.log(1.1)];
+        const mean = (r[0]! + r[1]! + r[2]!) / 3;
+        const sampleVar = r.reduce((acc, x) => acc + (x - mean) ** 2, 0) / 2;
+        expect(vals[3]).toBeCloseTo(100 * Math.sqrt(sampleVar * 252), 10);
+        // Window at bar 4: returns [ln(0.9), ln(1.1), ln(1.1)] — identical spread, identical volatility
+        expect(vals[4]).toBeCloseTo(vals[3]!, 10);
+        // Does NOT divide by elapsed days (unlike Volatility Zero Trend): widening bar spacing leaves value unchanged.
+        const dailyBars = prices.map((c, i) => ({ ...bar(c, i), time: i * 86_400_000 }));
+        const spacedOut = outputOf('volatility-close-to-close', dailyBars, { length: 3, daysPerYear: 252 });
+        expect(spacedOut.plots[0]!.values[3]).toBeCloseTo(vals[3]!, 10);
+    });
+
+    it('Ichimoku Cloud computes all five lines, shifts Lagging back and projects the cloud forward past the last bar', () => {
+        const bars = wave(120);
+        const spec = specOf('ichimoku-cloud');
+        const desc = classicDescriptor(spec);
+        const defaults = desc.defaultInputs();
+        expect(spec.overlay).toBe(true);
+        expect(defaults).toMatchObject({ symbol: '', conversionLength: 9, baseLength: 26, spanBLength: 52, laggingLength: 26, displacement: 26 });
+
+        const out = spec.compute(bars, defaults);
+        const byKey = new Map(out.plots.map((p) => [p.key, p] as const));
+        const h = bars.map((b) => b.high);
+        const l = bars.map((b) => b.low);
+        const donchian = (len: number, i: number) => (highest(h, len)[i]! + lowest(l, len)[i]!) / 2;
+
+        expect(byKey.get('conversion')!.values[60]).toBeCloseTo(donchian(9, 60), 10);
+        expect(byKey.get('base')!.values[60]).toBeCloseTo(donchian(26, 60), 10);
+        expect(byKey.get('spanA')!.values[60]).toBeCloseTo((donchian(9, 60) + donchian(26, 60)) / 2, 10);
+        expect(byKey.get('spanB')!.values[60]).toBeCloseTo(donchian(52, 60), 10);
+        expect(byKey.get('lagging')!.offset).toBe(-25);
+        expect(byKey.get('spanA')!.offset).toBe(25);
+        expect(byKey.get('spanB')!.offset).toBe(25);
+
+        // Verify ClassicIndicator emits projected future timestamps for Span A/B, shifted cloud fill colors, and shifted Lagging Span.
+        let emitted: NativeIndicatorOutput | null = null;
+        const inst = desc.create();
+        const ctx: NativeIndicatorContext = {
+            id: 'ichi',
+            symbol: 'BTCUSDT',
+            timeframe: '1',
+            live: false,
+            bars: () => bars,
+            data: {} as NativeIndicatorContext['data'],
+            emit: (o) => { emitted = o; },
+            pushData: () => {},
+            setStatus: () => {},
+        };
+        inst.start(ctx, defaults);
+        expect(emitted).not.toBeNull();
+        const series = emitted!.series!;
+        const laggingSeries = series.find((s) => s.title === 'Lagging Span')!;
+        const spanASeries = series.find((s) => s.title === 'Leading Span A')!;
+        const spanBSeries = series.find((s) => s.title === 'Leading Span B')!;
+        expect(isLineLikeSeries(laggingSeries) && laggingSeries.points.length).toBe(bars.length);
+        if (isLineLikeSeries(laggingSeries)) {
+            // Lagging Span pulls bar 95's close back onto bar 70, and leaves the last 25 bars null.
+            expect(laggingSeries.points[70]!.value).toBeCloseTo(bars[95]!.close, 10);
+            expect(laggingSeries.points[bars.length - 1]!.value).toBeNull();
+        }
+        if (isLineLikeSeries(spanASeries) && isLineLikeSeries(spanBSeries)) {
+            expect(spanASeries.points.length).toBe(bars.length + 25);
+            expect(spanBSeries.points.length).toBe(bars.length + 25);
+            // Leading Span A on the final projected slot equals unshifted spanA at the last chart bar.
+            const stepMs = bars[1]!.time - bars[0]!.time;
+            expect(spanASeries.points[bars.length + 24]!.value).toBeCloseTo(byKey.get('spanA')!.values[bars.length - 1]!, 10);
+            expect(spanASeries.points[bars.length + 24]!.time).toBe(bars[bars.length - 1]!.time + 25 * stepMs);
+            // Cloud fill colors shift by +25 to match Leading Span A/B points 1:1.
+            const cloudFill = emitted!.fills![0]!;
+            expect(cloudFill.colors!.length).toBe(bars.length + 25);
+            expect(cloudFill.colors![0]).toBeNull();
+            expect(cloudFill.colors![bars.length + 24]).not.toBeNull();
+        }
+        inst.stop();
+    });
+
+    it('Correlation Coefficient and Correlation - Log compute exact Pearson correlations over aligned external series', async () => {
+        const bars = Array.from({ length: 40 }, (_, i) => bar(100 + i * 2 + Math.sin(i) * 3, i));
+        // Perfectly inversely correlated price series (for CC) and identical-return series (for Correlation - Log)
+        const invBars = bars.map((b) => ({ ...b, open: 500 - b.close, high: 501 - b.close, low: 499 - b.close, close: 500 - b.close }));
+        const scaledBars = bars.map((b) => ({ ...b, open: b.close * 2, high: b.close * 2 + 1, low: b.close * 2 - 1, close: b.close * 2 }));
+
+        // Empty symbol default produces all-NaN while keeping a visible plot in its own pane.
+        const ccSpec = specOf('correlation-coefficient');
+        const ccEmpty = ccSpec.compute(bars, classicDescriptor(ccSpec).defaultInputs());
+        expect(ccEmpty.plots[0]!.values.every(Number.isNaN)).toBe(true);
+        expect(classicDescriptor(ccSpec).inputsSchema().find((i) => i.key === 'symbol')?.confirm).toBe(true);
+
+        const ccOut = ccSpec.compute(bars, { ...classicDescriptor(ccSpec).defaultInputs(), symbol: 'ETHUSDT', length: 10 }, new Map([['ETHUSDT', invBars]]));
+        expect(ccOut.plots[0]!.values[39]).toBeCloseTo(-1, 10);
+
+        const clogSpec = specOf('correlation-log');
+        const clogEmpty = clogSpec.compute(bars, classicDescriptor(clogSpec).defaultInputs());
+        expect(clogEmpty.plots[0]!.values.every(Number.isNaN)).toBe(true);
+        expect(classicDescriptor(clogSpec).inputsSchema().find((i) => i.key === 'instrument')?.confirm).toBe(true);
+        expect(classicDescriptor(clogSpec).inputsSchema().find((i) => i.key === 'instrument2')?.confirm).toBe(true);
+
+        // Two scaled copies have identical log returns → correlation of log returns = +1.
+        const clogOut = clogSpec.compute(
+            bars,
+            { ...classicDescriptor(clogSpec).defaultInputs(), instrument: 'BTCUSDT', instrument2: 'ETHUSDT', length: 10 },
+            new Map([
+                ['BTCUSDT', bars],
+                ['ETHUSDT', scaledBars],
+            ]),
+        );
+        expect(clogOut.plots[0]!.values[39]).toBeCloseTo(1, 10);
+
+        // ClassicIndicator async lifecycle: fetches secondary symbol, subscribes live ticks, and cleans up on stop.
+        const fetched: string[] = [];
+        let liveTick: ((b: OHLCV) => void) | null = null;
+        let unsubscribed = false;
+        const emissions: NativeIndicatorOutput[] = [];
+        const statuses: string[] = [];
+        const inst = classicDescriptor(ccSpec).create();
+        const ctx: NativeIndicatorContext = {
+            id: 'cc1',
+            symbol: 'BTCUSDT',
+            timeframe: '1',
+            live: true,
+            bars: () => bars,
+            data: { canonicalSymbol: (s: string) => s } as NativeIndicatorContext['data'],
+            fetchSeries: async (sym) => {
+                fetched.push(sym);
+                return scaledBars;
+            },
+            subscribeSeries: (_sym, _tf, onBar) => {
+                liveTick = onBar;
+                return () => { unsubscribed = true; };
+            },
+            emit: (o) => emissions.push(o),
+            pushData: () => {},
+            setStatus: (s) => statuses.push(s),
+        };
+        inst.start(ctx, { ...classicDescriptor(ccSpec).defaultInputs(), symbol: 'ETHUSDT', length: 10 });
+        expect(statuses[0]).toBe('loading');
+        await new Promise((r) => setTimeout(r, 0));
+        expect(fetched).toEqual(['ETHUSDT']);
+        expect(statuses[statuses.length - 1]).toBe('idle');
+        const lastEmission = emissions[emissions.length - 1]!;
+        const lastSeries = lastEmission.series![0]!;
+        expect(isLineLikeSeries(lastSeries) && lastSeries.points[39]!.value).toBeCloseTo(1, 10);
+        // Correlation Coefficient renders a uniform semi-transparent area fill against zero.
+        const areaFill = lastEmission.fills![0]!;
+        expect(areaFill.gradient).toBeUndefined();
+        expect(areaFill.colors?.[39]).toMatch(/^#[0-9a-f]{6}33$/i);
+
+        // Pushing a live tick on the external symbol recomputes immediately.
+        const prevCount = emissions.length;
+        liveTick!({ ...scaledBars[39]!, close: scaledBars[39]!.close * 0.5 });
+        expect(emissions.length).toBe(prevCount + 1);
+        inst.stop();
+        expect(unsubscribed).toBe(true);
     });
 });

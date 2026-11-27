@@ -5,12 +5,12 @@
     {
       "id": "OF-VELA-002",
       "provider": "vela",
-      "affected_version": "0.10.6",
+      "affected_version": "0.10.15",
       "kind": "source",
       "files": [
         "vendor/vela/src/widget/indicator-picker.ts"
       ],
-      "patch_file": "infra/upstream/patches/vela-0.10.6/0002-indicator-picker-no-vela-badge.patch",
+      "patch_file": "infra/upstream/patches/vela-0.10.15/0002-indicator-picker-no-vela-badge.patch",
       "reason": "Openfund branding: native indicators must not be badged VELA in the picker. The required attribution is carried by the linked notice in the terminal status bar, not by this badge.",
       "guard": {
         "file": "vendor/vela/src/widget/indicator-picker.ts",
@@ -25,12 +25,12 @@
     {
       "id": "OF-VELA-003",
       "provider": "vela",
-      "affected_version": "0.10.6",
+      "affected_version": "0.10.15",
       "kind": "source",
       "files": [
         "vendor/vela/src/workspace/ChartCell.ts"
       ],
-      "patch_file": "infra/upstream/patches/vela-0.10.6/0003-library-rows-proprietary-first.patch",
+      "patch_file": "infra/upstream/patches/vela-0.10.15/0003-library-rows-proprietary-first.patch",
       "reason": "Openfund places its proprietary source studies (Open Algo V5, Price Action Concepts, Smart Money Concepts) before the built-in indicators in the picker and keeps the add-by-index mapping consistent.",
       "guard": {
         "file": "vendor/vela/src/workspace/ChartCell.ts",

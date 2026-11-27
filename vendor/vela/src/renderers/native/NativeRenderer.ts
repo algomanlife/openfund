@@ -10,6 +10,7 @@ import type {
     VisibleRange,
     VisibleRangeOptions,
     IndicatorStatus,
+    DrawingActionView,
     LegendActionView,
     LegendCalloutView,
     PaneAction,
@@ -49,7 +50,7 @@ import {
     INTRO_DURATION_DEFAULT_MS,
 } from '../../core/options';
 import type { Unsubscribe } from '../../core/util/types';
-import { SecondClock, type WallClock } from '../../core/util/wall-clock';
+import { SecondClock, clockCorrection, type WallClock } from '../../core/util/wall-clock';
 import { isLineLikeSeries, seriesShownOn, type SeriesSpec, type SeriesSurface } from '../../core/model/series';
 import { InputsUI, type LegendPlotValue } from '../shared/InputsUI';
 import { PaneControls } from './chrome/PaneControls';
@@ -77,7 +78,8 @@ import { IndicatorDrawingSlices, mergeSlices } from './drawings/IndicatorDrawing
 import { createProjector } from './drawings/Projector';
 import type { Projector, SnapMode } from '../../core/drawings';
 import type { IDrawingsRendererPort } from '../../core/drawings';
-import { formatPriceLabel, tickDecimals } from './chrome/ticks';
+import { formatPriceLabel } from './chrome/ticks';
+import { tickDecimals } from '../../core/format/numbers';
 import { displayZone, zonedDate } from './chrome/tz';
 import { computePaneScale, expandScaleByPixels, overlaySeriesRange } from './core/autoscale';
 import { mergeTradeMarkersState, tradesPriceHints, type TradeMarkerHints } from '../shared/trade-markers';
@@ -139,7 +141,6 @@ const SCROLL_BTN_RIGHT = RIGHT_AXIS_W + SCROLL_BTN_RIGHT_INSET; // initial offse
 const SCROLL_BTN_BOTTOM = TIME_AXIS_H + 14; // px from the plot's bottom edge — the corner slot also used by the opt-in `settings` gear (off by default)
 const SCROLL_BTN_PROXIMITY_PX = 120; // the button reveals only while the cursor is within this radius of its center
 const MIN_VISIBLE_BARS = 2; // never zoom/pan so far that fewer than this many candles stay on screen (the only pan limit)
-const ZOOM_OUT_MARGIN_BARS = 6; // breathing room at max zoom-out: all bars + this margin fill the width (no thin strip)
 // (The animation time-constants — zoom, fling, scroll, autoscale, live-bar glides — are
 // host-configurable through `VelaOptions.animations`; their defaults live in core/options.)
 // After the candle reveal the indicator models fade in over this long (capped at the reveal's own duration).
@@ -286,6 +287,7 @@ export class NativeRenderer implements IChartRenderer {
     private indicatorValuesOn = true;
     /** Host-contributed legend actions — held here so a rebuild of the legend re-wires them. */
     private legendActionsProvider: ((indicatorId: string) => LegendActionView[]) | null = null;
+    private drawingActionsProvider: ((drawingId: string) => DrawingActionView[]) | null = null;
     /** Host-contributed legend callouts — held here so a rebuild of the legend re-wires them. */
     private legendCalloutsProvider: ((indicatorId: string) => LegendCalloutView[]) | null = null;
     /** Host override of the legend's fold toggle — held here so a remount re-applies it. */
@@ -1746,6 +1748,7 @@ export class NativeRenderer implements IChartRenderer {
             setToolbarGutter: (px) => this.setToolbarGutter(px),
         });
         this.userDrawings.historyChords = this.historyChordsEnabled; // may be set before init()
+        this.userDrawings.setDrawingActions(this.drawingActionsProvider); // may be set before init()
         // Honor a layout mode pushed before mount (the shell may set it ahead of the chart build).
         if (this.layoutMode === 'mobile') {
             this.mountContainer?.setAttribute('data-vela-layout', this.layoutMode);
@@ -2130,6 +2133,9 @@ export class NativeRenderer implements IChartRenderer {
         this.bars = normalizeBars(bars);
         this.scene.bars = this.bars;
         this.coords.setBars(this.bars.map((b) => b.time));
+        // The newest candle may already prove this device's clock slow (see ClockCorrection).
+        const newest = this.bars[this.bars.length - 1];
+        if (newest) clockCorrection.observeCandle(newest.time, this.coords.barInterval);
         // The bar array's head may have moved (a history-backfill prepend) — re-derive
         // every mounted model's anchor offset against the new indices.
         for (const model of this.scene.indicators.values()) this.refreshAnchorOffset(model);
@@ -2206,6 +2212,9 @@ export class NativeRenderer implements IChartRenderer {
             if (this.coords.barInterval > 0) this.coords.appendBar(bar.time);
             else this.coords.setBars(this.bars.map((b) => b.time));
             if (holdView) this.coords.setViewport({ ...vp, rightOffset: vp.rightOffset - 1 });
+            // A candle landing before the device clock reaches its open proves the clock
+            // slow — learned before this frame paints, so the countdown never reads `01:04`.
+            clockCorrection.observeCandle(bar.time, this.coords.barInterval);
         } else {
             return;
         }
@@ -2482,6 +2491,11 @@ export class NativeRenderer implements IChartRenderer {
     setLegendActions(provider: ((indicatorId: string) => LegendActionView[]) | null): void {
         this.legendActionsProvider = provider;
         this.inputsUI?.setLegendActions(provider);
+    }
+
+    setDrawingActions(provider: ((drawingId: string) => DrawingActionView[]) | null): void {
+        this.drawingActionsProvider = provider;
+        this.userDrawings?.setDrawingActions(provider);
     }
 
     setLegendCallouts(provider: ((indicatorId: string) => LegendCalloutView[]) | null): void {
@@ -2766,8 +2780,8 @@ export class NativeRenderer implements IChartRenderer {
 
     /**
      * Bound the viewport so the user can't zoom/pan into a useless state:
-     *  - zoom OUT no further than "all bars + a small margin fill the width" (no thin strip
-     *    of compressed candles floating in whitespace);
+     *  - zoom OUT no further than {@link MIN_BAR_SPACING}, whatever the series length: a
+     *    short series shrinks to a narrow band with the empty past and future around it;
      *  - zoom IN no further than keeping ≥ {@link MIN_VISIBLE_BARS} candles on screen;
      *  - pan no further than a bounded right whitespace / the same minimum visible.
      * Applied at every viewport write (drag, wheel, fling, time-axis drag, keyboard).
@@ -2778,16 +2792,12 @@ export class NativeRenderer implements IChartRenderer {
         if (n <= 1 || W <= 0) return { barSpacing: clampBarSpacing(barSpacing), rightOffset };
         const minVisible = Math.min(MIN_VISIBLE_BARS, n);
         // Bars-on-screen depends on the EFFECTIVE pitch (barSpacing × spacing multiplier), so fold
-        // the multiplier into these bar-count limits — else a >1 multiplier would let the user zoom
-        // in past minVisible, or zoom out to a thin strip that no longer fills the width.
+        // the multiplier into the bar-count limit — else a >1 multiplier would let the user zoom
+        // in past minVisible.
         const scale = this.coords.spacingScale;
-        // bar spacing: max keeps ≥ minVisible bars on screen; min keeps all bars + a margin within the width.
+        // bar spacing: max keeps ≥ minVisible bars on screen; min is the fixed floor.
         const maxBs = Math.min(MAX_BAR_SPACING, W / (minVisible * scale));
-        // The breathing room is at least the configured right margin, so every bar AND that
-        // margin fit at full zoom-out (a framed 'ALL' preset keeps its oldest bars on screen).
-        const room = Math.max(ZOOM_OUT_MARGIN_BARS, this.scene.style.margins.right);
-        const minBs = Math.max(MIN_BAR_SPACING, Math.min(maxBs, W / ((n + room) * scale)));
-        const bs = Math.max(minBs, Math.min(maxBs, barSpacing));
+        const bs = Math.max(MIN_BAR_SPACING, Math.min(maxBs, barSpacing));
         // right offset: the ONLY pan limit is keeping ≥ minVisible candles on screen. Panning left
         // can push the data far left (lots of right whitespace) until just minVisible remain; panning
         // right can scroll into the oldest bars until just minVisible remain at the right edge.
@@ -3730,6 +3740,7 @@ export class NativeRenderer implements IChartRenderer {
             this.userDrawings?.seriesGateway
                 ? (tf, from, to) => this.userDrawings!.seriesGateway!.seriesInRange(tf, from, to)
                 : undefined,
+            (paneId) => paneId === PRICE_PANE_ID && this.scene.priceMintick ? tickDecimals(this.scene.priceMintick) || 2 : undefined,
         );
     }
 
@@ -4023,9 +4034,9 @@ export class NativeRenderer implements IChartRenderer {
 
     /** Re-frame after a series replacement (a symbol/timeframe switch): keep the user's
      *  zoom (bar spacing), re-anchor the newest bars at the configured right margin.
-     *  `clampViewport`'s fit-all-bars floor deliberately does NOT apply — a progressive
-     *  head may still be backfilling toward the previous depth, and raising the spacing
-     *  to its temporary bar count would lose the zoom this exists to keep. */
+     *  The spacing is kept as it is, never re-derived from the new series' bar count — a
+     *  progressive head may still be backfilling toward the previous depth, and fitting
+     *  its temporary bar count would lose the zoom this exists to keep. */
     private reframeKeepZoom(): void {
         this.animator?.stop(); // a hard re-frame cancels any in-flight gesture
         this.panVelocity = 0;
@@ -4688,6 +4699,10 @@ function applyPatch(model: IndicatorModel, patch: ScenePatch): void {
         if (patch.linefills) model.linefills = patch.linefills;
         if (patch.tables) model.tables = patch.tables;
         if (patch.trades) model.trades = patch.trades;
+        if (patch.fills) model.fills = patch.fills;
+        if (patch.backgrounds) model.backgrounds = patch.backgrounds;
+        if (patch.priceLines) model.priceLines = patch.priceLines;
+        if (patch.barColors) model.barColors = patch.barColors;
         return;
     }
     for (const id of patch.removed) {

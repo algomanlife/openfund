@@ -7,7 +7,7 @@ import type { IndicatorModel } from '../model/indicator';
 import type { ValuePatch, SeriesValueDelta } from '../model/patch';
 import { isLineLikeSeries } from '../model/series';
 import type { InputSchema, InputValue } from '../model/inputs';
-import type { VelaTheme, MarketConfig, MarketSwitch, MarketSnapshot, AddIndicatorOptions, PriceStyle, MoveTarget, PaneInfo } from '../options';
+import { normalizeSession, type VelaTheme, type MarketConfig, type MarketSwitch, type MarketSnapshot, type AddIndicatorOptions, type PriceStyle, type MoveTarget, type PaneInfo } from '../options';
 import type { PaneController } from '../PanesControl';
 import type { PaneAction } from '../ports/IChartRenderer';
 import type { CodeUpdateResult, IndicatorHandle } from '../IndicatorHandle';
@@ -386,7 +386,8 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
      */
     private async fetchSeries(symbol: string, timeframe: string, range: BarRange): Promise<OHLCV[]> {
         const parsed = parseExtendedTicker(symbol);
-        const cfg: MarketConfig = { symbol: parsed.symbol, timeframe };
+        const session = normalizeSession(range.session);
+        const cfg: MarketConfig = { symbol: parsed.symbol, timeframe, ...(session ? { session } : {}) };
         const bars = await (this.feed.loadRange ? this.feed.loadRange(cfg, range) : this.feed.load({ ...cfg, bars: range.limit }));
         return parsed.transform ? parsed.transform.full(bars) : bars;
     }
@@ -630,13 +631,8 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
             if (typeof initialRange === 'string') this.setVisibleRangePreset(initialRange);
             else this.renderer.setVisibleRange(initialRange);
         }
-        // Price-axis precision: try the (already cached) tick size now, then resolve async so the
-        // axis switches from the zoom formula to the symbol's true precision as soon as it lands.
-        this.refreshPriceFormat();
-        void this.ensurePriceFormat();
-        // Backstop for facts the early probe could not reach (the symbol was not resolvable
-        // before the provider indexes settled; a custom feed filling its cache with the bars).
-        if (this.facts === null) this.syncSymbolFacts();
+        // The bar load may have resolved a provider or started refreshing expired metadata.
+        this.syncSymbolFacts({ refresh: true });
     }
 
     /** Start the live tick subscription + the tab-restore catch-up listener — never for a
@@ -700,7 +696,8 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
      * Switch the chart's market IN PLACE — no destroy/recreate. The renderer stays
      * mounted (canvases, viewport policy, cosmetic config), panes and indicator records
      * survive, and user drawings are untouched (per-symbol drawing documents are a HOST
-     * policy via `chart.drawings.toJSON()/fromJSON()`, keyed off `market:changed`). The
+     * policy via `chart.drawings.toJSON()/fromJSON()`, keyed off `market:changed`) unless
+     * the chart was told its drawings belong to the symbol (`clearOnSymbolChange`). The
      * bars reload through the shared {@link loadMarket} pipeline, then every consumer
      * restarts over the new market: Pine sessions re-execute, native indicators restart
      * with a fresh context, the active chart-type data engine is rebuilt, and the live
@@ -787,6 +784,10 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
             return;
         }
         const prev = { symbol: m.symbol ?? 'TEST', timeframe: m.timeframe ?? '60' };
+        // Drawings that belong to the symbol go as the switch STARTS, not once the new bars
+        // are in: until then they would sit on another instrument's prices. Synchronous, so
+        // a caller that loads the new symbol's document right after this call keeps it.
+        if (next.symbol !== undefined && next.symbol !== m.symbol) this.drawings.onSymbolChange();
         // A SESSION-ONLY flip (RTH↔ETH) changes WHICH bars exist but not the time axis:
         // the user's zoom/position carries over to the reload — captured here, before the
         // quiesce below discards it — unless the caller framed a window of its own. Any
@@ -1533,26 +1534,6 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
         return market.symbol;
     }
 
-    /** Push the active symbol's tick size to the renderer's price axis. No-op when unknown (formula stays). */
-    private refreshPriceFormat(): void {
-        if (!this.renderer.setPricePrecision) return;
-        const raw = this.feed.symbolInfo?.(this.config.market)?.mintick;
-        this.renderer.setPricePrecision(typeof raw === 'number' && raw > 0 ? raw : undefined);
-    }
-
-    /** Resolve the symbol's tick size asynchronously (warming the sync cache) and push it once it lands. */
-    private async ensurePriceFormat(): Promise<void> {
-        if (!this.renderer.setPricePrecision) return;
-        const symbol = this.qualifiedSymbol();
-        if (!symbol) return;
-        try {
-            await this.dataControl.symbolInfo(symbol); // warms the sync metadata cache
-            this.refreshPriceFormat();
-        } catch {
-            // metadata unavailable — the renderer keeps its zoom-derived decimals
-        }
-    }
-
     /** The user removed the volume indicator — the auto-add must never override that. */
     private volumeOptedOut = false;
     /** The volume auto-add waiting for its symbol's facts (they landed after the first candles). */
@@ -1607,18 +1588,16 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
     }
 
     /**
-     * Hand the renderer the facts about the market's symbol that decide which price styles
-     * can draw it, and announce a change (`symbol:facts`). The feed's metadata cache answers
-     * first, so a symbol seen before switches in one step; otherwise the facts read unknown
-     * (every style applies) until the async answer lands — dropped if the chart has moved
-     * to another symbol or a newer probe has started meanwhile.
+     * Apply cached display facts immediately. After the bar load, also await the provider's
+     * refresh so a cached tick size can change once new metadata lands. Ignore an answer
+     * superseded by a symbol switch or a newer probe.
      */
-    private syncSymbolFacts(): void {
+    private syncSymbolFacts({ refresh = false } = {}): void {
         const probe = ++this.factsProbe;
         const known = this.feed.symbolInfo?.(this.config.market);
         this.applySymbolFacts(symbolFactsOf(known));
         const symbol = this.qualifiedSymbol();
-        if (known !== undefined || !symbol || this.config.market.data?.length) return;
+        if (!symbol || this.config.market.data?.length || (known !== undefined && !refresh)) return;
         void this.dataControl
             .symbolInfo(symbol)
             .catch(() => undefined)
@@ -1630,8 +1609,10 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
 
     private applySymbolFacts(facts: SymbolFacts | null): void {
         const prev = this.facts;
-        if (prev === facts || (prev && facts && prev.ohlc === facts.ohlc && prev.volume === facts.volume)) return;
+        const mintickChanged = prev?.mintick !== facts?.mintick;
+        if (prev === facts || (prev && facts && prev.ohlc === facts.ohlc && prev.volume === facts.volume && !mintickChanged)) return;
         this.facts = facts;
+        if (mintickChanged) this.renderer.setPricePrecision?.(facts?.mintick);
         this.renderer.setSymbolFacts?.(facts);
         this.events.emit('symbol:facts', { symbol: this.config.market.symbol ?? 'TEST', facts: this.symbolFacts() });
     }
@@ -2576,8 +2557,10 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
             // One context per start: once the instance is stopped, nothing it left in flight
             // may reach the scene (a stopped market's payload, or a removed indicator's).
             let alive = true;
+            const secondaryUnsubs: Unsubscribe[] = [];
             native.revokeContext = () => {
                 alive = false;
+                for (const off of secondaryUnsubs.splice(0)) off();
             };
             const ctx: NativeIndicatorContext = {
                 id,
@@ -2587,6 +2570,27 @@ export class EngineOrchestrator implements IndicatorController, PaneController, 
                 session: this.config.market.session,
                 bars: () => this.bars,
                 data: this.dataControl,
+                fetchSeries: (symbol, timeframe, range) =>
+                    this.fetchSeries(symbol, timeframe, { ...(this.config.market.session ? { session: this.config.market.session } : {}), ...range }),
+                subscribeSeries: (symbol, timeframe, onBar) => {
+                    if (!alive || !this.config.live || this.replayQueue !== null) return () => {};
+                    const parsed = parseExtendedTicker(symbol);
+                    const cfg: MarketConfig = {
+                        symbol: parsed.symbol,
+                        timeframe,
+                        ...(this.config.market.session ? { session: this.config.market.session } : {}),
+                    };
+                    const rawOff = this.feed.subscribe(cfg, (bar) => {
+                        if (alive) onBar(bar);
+                    });
+                    const off: Unsubscribe = () => {
+                        const idx = secondaryUnsubs.indexOf(off);
+                        if (idx >= 0) secondaryUnsubs.splice(idx, 1);
+                        rawOff();
+                    };
+                    secondaryUnsubs.push(off);
+                    return off;
+                },
                 emit: (out) => {
                     if (alive) this.applyModel(id, this.buildNativeModel(record, out, this.bars[0]?.time));
                 },
@@ -3386,14 +3390,22 @@ function modelToValuePatch(model: IndicatorModel): ValuePatch {
         linefills: model.linefills ?? [],
         tables: model.tables ?? [],
         trades: model.trades ?? [],
+        // ALWAYS stated, like the drawings: a re-run arrives as a NEW model object, and the
+        // renderer keeps what a patch omits, so leaving these out froze a Toolkit's fill and
+        // candle colors at its first run once older bars loaded and it ran again.
+        fills: model.fills,
+        backgrounds: model.backgrounds,
+        priceLines: model.priceLines,
+        barColors: model.barColors ?? [],
     };
 }
 
-/** The style-deciding facts in a symbol's info: null while there is no info (unknown), `{}`
- *  for info that states none (every style applies). */
+/** Display facts in a symbol's info: null while unknown, or `{}` for info with no display facts. */
 function symbolFactsOf(info: SymbolInfo | undefined): SymbolFacts | null {
     if (!info) return null;
     const facts: SymbolFacts = {};
+    const { mintick } = info;
+    if (typeof mintick === 'number' && Number.isFinite(mintick) && mintick > 0) facts.mintick = mintick;
     if (typeof info.ohlc === 'boolean') facts.ohlc = info.ohlc;
     if (typeof info.volume === 'boolean') facts.volume = info.volume;
     return facts;

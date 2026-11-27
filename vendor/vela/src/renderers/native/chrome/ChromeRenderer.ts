@@ -19,6 +19,7 @@ import { axisColumnX, PANE_SEPARATOR_PX } from './axisLayout';
 import { DARK_THEME } from '../../../core/theme';
 import { displayZone, tzOffsetMs } from './tz';
 import { countdownText } from './countdown';
+import { clockCorrection } from '../../../core/util/wall-clock';
 import { tagTextColor } from './contrast';
 import { markGroupVisible } from '../../shared/marks-state';
 import { clusterTooltip, layoutMarkLane, markGlyphAt, markStackAt, type MarkLaneLayout, type PlacedGlyph } from './marks/layout';
@@ -387,7 +388,9 @@ export class ChromeRenderer {
         }
 
         // ── axis chips: last-price label and/or countdown ──
-        const cdText = scene.showCountdown ? countdownText(last.time, coords.barInterval, Date.now(), scene.format) : null;
+        // The corrected clock, not the device's: on a slow device the next candle lands
+        // while the device clock still reads before its open, and the chip read `01:04`.
+        const cdText = scene.showCountdown ? countdownText(last.time, coords.barInterval, clockCorrection.now(), scene.format) : null;
         const showCountdown = cdText !== null;
         const showLabel = scene.showPriceLabel;
         if (!showLabel && !showCountdown) return;
@@ -446,7 +449,7 @@ export class ChromeRenderer {
         // step whose few ticks can all miss the frame); the collision pass below is
         // what actually prevents overlap.
         const target = Math.max(3, Math.min(8, Math.floor(dataW / 64)));
-        const ticks = timeTicks(tr.from, tr.to, target, offset, scene.format)
+        const ticks = timeTicks(tr.from, tr.to, target, offset, scene.format, coords.logicalToTime(0))
             .map((tick) => ({ ...tick, x: coords.timeToX(tick.time), half: ctx.measureText(tick.label).width / 2 }))
             .filter((tick) => tick.x >= 20 && tick.x <= dataW - 20);
         // Measured collision pass on top: label pitch in PIXELS isn't uniform (bar-index
