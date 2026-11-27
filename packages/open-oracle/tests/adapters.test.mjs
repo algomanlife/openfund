@@ -10,6 +10,9 @@ test('Gains inventory includes closed non-crypto markets; index is distinct from
   const adapter = new GainsAdapter({ now: () => TIME, transport: mock(url => url.endsWith('/markets') ? f.gains.markets : url.endsWith('/prices') ? f.gains.prices : { data: [{ time: TIME, close: '100' }] }) });
   const markets = await adapter.discover(); assert.equal(markets.length, 2); assert.equal(markets[1].session, 'CLOSED');
   const [price] = await adapter.snapshot(); assert.equal(price.price, '100'); assert.equal(price.microstructure.markPrice, '100.01'); assert.equal(price.timestampKind, 'PROVIDER');
+  const markAdapter = new GainsAdapter({ now: () => TIME, priceField: 'mark', transport: mock(() => f.gains.prices) });
+  const [mark] = await markAdapter.snapshot(); assert.equal(mark.price, '100.01'); assert.equal(mark.microstructure.indexPrice, '100');
+  assert.throws(() => new GainsAdapter({ priceField: 'last' }), /invalid_price_field/);
   const history = await adapter.historical('BTC/USD', { from: TIME - 1000, to: TIME }); assert.equal(history[0].dataKind, 'PROVIDER_REFERENCE');
   await assert.rejects(adapter.historical('BTC/USD', { from: TIME, to: TIME, interval: '1w' }));
 });

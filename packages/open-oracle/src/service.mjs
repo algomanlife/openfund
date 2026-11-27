@@ -21,10 +21,15 @@ import { setTimeout as delay } from 'node:timers/promises';
  */
 export const SERVICE_CONFIG = Object.freeze({
   ...DEFAULT_CONFIG, version: 'openfund-service-1',
-  halfLifeMs: 4000, maxAgeMs: 15000, maxAlignmentMs: 6000,
+  halfLifeMs: 4000, maxAgeMs: 15000, maxAlignmentMs: 12000,
   dualTolerance: '0.02', hardDeviation: '0.05', allowReceiptTimestamps: false,
-  // Hyperliquid's public context snapshot has no event time; receipt time is accepted only for it, with a short age bound.
-  sourcePolicies: Object.freeze({ hyperliquid: Object.freeze({ halfLifeMs: 3000, maxAgeMs: 9000, allowReceiptTimestamps: true }) }),
+  sourcePolicies: Object.freeze({
+    // Hyperliquid's public context snapshot has no event time; receipt time is accepted only for it, with a short age bound.
+    hyperliquid: Object.freeze({ halfLifeMs: 3000, maxAgeMs: 9000, allowReceiptTimestamps: true }),
+    // Gains `updatedAt` is the time of the last change, so an unchanged quote ages while still current (live p90 ≈ 14 s):
+    // a longer bound, with weight halving every 8 s so fresher sources dominate.
+    gains: Object.freeze({ halfLifeMs: 8000, maxAgeMs: 30000 }),
+  }),
 });
 export const USABLE_MODES = Object.freeze(new Set(['TRIPLE_SOURCE', 'DUAL_SOURCE', 'SINGLE_SOURCE']));
 /** Execution gate: a fresh, non-stale composite in a usable mode. */
@@ -66,8 +71,8 @@ export class OpenOracleService {
     if (changed) this.rebuildPending = true;
     else if (this.registry) for (const m of next.values()) this.registry.register('gains', m); // session updates in place
   }
-  /** One Gains price. `field` records whether the Gains index or mark was used. */
-  ingestGains(symbol, { price, updatedAt, receivedAt = this.now(), field = 'index' }) {
+  /** One Gains price (the service uses the Gains `mark`; `field` records it). */
+  ingestGains(symbol, { price, updatedAt, receivedAt = this.now(), field = 'mark' }) {
     const p = positiveString(price);
     if (!p || !Number.isSafeInteger(updatedAt) || updatedAt <= 0) return false;
     const o = { source: 'gains', sourceMarketId: symbol, price: p, timestamp: Math.min(updatedAt, receivedAt), receivedAt,
@@ -114,7 +119,7 @@ export class OpenOracleService {
   /** One provider snapshot (also used by hosts and tests that poll on their own). */
   accept(source, observations) {
     if (source === 'gains') {
-      for (const o of observations) this.ingestGains(o.sourceMarketId, { price: o.price, updatedAt: o.timestamp, receivedAt: o.receivedAt, field: 'index' });
+      for (const o of observations) this.ingestGains(o.sourceMarketId, { price: o.price, updatedAt: o.timestamp, receivedAt: o.receivedAt, field: o.microstructure?.priceField ?? 'mark' });
       return;
     }
     const state = this.external[source], first = state.latest.size === 0;

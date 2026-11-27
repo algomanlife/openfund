@@ -33,7 +33,13 @@ class Adapter {
   }
 }
 export class GainsAdapter extends Adapter {
-  constructor(options = {}) { super('gains', options); this.url = options.url ?? 'https://api.gains.trade/v1/arbitrum'; }
+  constructor(options = {}) {
+    super('gains', options); this.url = options.url ?? 'https://api.gains.trade/v1/arbitrum';
+    // Research default: the `index` field. The pricing service uses `mark`: live evidence shows Gains `index` 2-7% away
+    // from Hyperliquid and GMX on joined crypto markets while `mark` agrees with them (docs/research/OPEN_ORACLE_VALIDATION.md).
+    if (!['index', 'mark'].includes(options.priceField ?? 'index')) throw new Error('invalid_price_field');
+    this.priceField = options.priceField ?? 'index';
+  }
   async discover(signal) {
     const response = await this.transport.request(`${this.url}/markets`, undefined, signal);
     this.inventory = rows(response).map((m, i) => ({ sourceMarketId: String(m?.symbol ?? `unresolved:${i}`), symbol: m?.symbol,
@@ -48,8 +54,8 @@ export class GainsAdapter extends Adapter {
   async snapshot(signal) {
     const data = rows(await this.transport.request(`${this.url}/prices`, undefined, signal)), out = [];
     for (const p of data) try {
-      // Reference index only: a missing index never silently substitutes a mark.
-      out.push(this.observation(String(p.market), p.index, p.updatedAt, p, { microstructure: { markPrice: p.mark ?? null } }));
+      // One configured field only: a missing value never silently substitutes the other field.
+      out.push(this.observation(String(p.market), p[this.priceField], p.updatedAt, p, { microstructure: { priceField: this.priceField, markPrice: p.mark ?? null, indexPrice: p.index ?? null } }));
     } catch (error) { this.error(error, p?.market); }
     return out;
   }

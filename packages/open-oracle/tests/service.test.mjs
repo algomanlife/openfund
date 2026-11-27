@@ -97,7 +97,7 @@ test('stale inputs degrade instead of publishing an old price as fresh', () => {
   const now = { t: TIME };
   const s = service(now); now.t += 1000; s.tick();
   assert.equal(s.get('EUR/USD').mode, 'SINGLE_SOURCE');
-  now.t += SERVICE_CONFIG.maxAgeMs + 1000; s.tick();
+  now.t += SERVICE_CONFIG.sourcePolicies.gains.maxAgeMs + 1000; s.tick();
   const eur = s.get('EUR/USD');
   assert.equal(eur.mode, 'STALE'); assert.equal(eur.stale, true); assert.equal(isUsable(eur, now.t), false);
 });
@@ -109,6 +109,6 @@ test('a rebuild keeps the stale fallback and the catalog session updates in plac
   s.setGainsCatalog([gainsRow('BTC/USD', 'BTC'), gainsRow('EUR/USD', 'EUR', 'forex', false), gainsRow('AAPL/USD', 'AAPL', 'stocks', false)]);
   now.t += 1000; s.tick();
   assert.equal(s.get('EUR/USD').mode, 'MARKET_CLOSED'); assert.equal(s.get('EUR/USD').price, eur);
-  s.rebuildPending = true; now.t += SERVICE_CONFIG.maxAgeMs + 1000; s.tick();
+  s.rebuildPending = true; now.t += SERVICE_CONFIG.sourcePolicies.gains.maxAgeMs + 1000; s.tick();
   assert.equal(s.get('EUR/USD').price, eur, 'the previous composite survives a registry rebuild');
 });
