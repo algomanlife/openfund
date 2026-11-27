@@ -20,6 +20,8 @@
       "items": ["Learning paths and lessons", "Searchable glossary", "FAQ hub, rulebook and whitepaper", "Tools link to the matching lessons"] },
     { "id": "wallet", "title": "Wallet identity", "icon": "wallet", "href": "docs/wallet/IDENTITY.md",
       "items": ["Sign-In with Ethereum on Arbitrum One", "Explicit wallet picker over every page, keyboard and phone friendly", "Mobile wallets by QR code through WalletConnect (Reown)", "Server-side HttpOnly sessions, every record scoped to its owner"] },
+    { "id": "on-chain-records", "title": "On-chain records", "icon": "link", "href": "docs/decisions/0063-on-chain-certificates-and-trade-ledger.md",
+      "items": ["Soulbound certificate NFTs: purchase, Free Trial start, phase pass, final pass, payout", "Every position open, SL/TP change, partial close and close recorded publicly", "Arbitrum Sepolia; Openfund pays, traders never sign", "Transactional outbox with idempotent, retried sends"] },
     { "id": "payments", "title": "Payments", "icon": "bolt", "href": "docs/payments/ORDER_LIFECYCLE.md",
       "items": ["Pay with Wallet and manual transfer", "On-chain verification of token, amount and finality", "Ledger with partial payments and refunds", "Exactly-once challenge activation"] },
     { "id": "site-search", "title": "Site search", "icon": "compass", "href": "docs/decisions/0052-site-search.md",
