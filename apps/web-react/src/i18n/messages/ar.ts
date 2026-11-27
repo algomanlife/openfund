@@ -57,6 +57,7 @@ export const ar: Record<string, string> = {
   'International Cloud Infrastructure': 'بنية تحتية سحابية دولية',
   'Iranian Cloud Infrastructure': 'بنية تحتية سحابية إيرانية',
   'Iranian market data & market depth': 'بيانات السوق الإيرانية وعمق السوق',
+  'Blockchain and distributed ledger of records': 'البلوكشين والسجل الموزع لتسجيل البيانات',
   'Inactive / In Development': 'غير نشط / قيد التطوير',
   'Checking your wallet connection…': 'جارٍ التحقق من اتصال المحفظة…',
   'Wallet connected': 'المحفظة متصلة',

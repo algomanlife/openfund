@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Footer: Arbitrum Sepolia.** The public footer credits gain a ninth card, Arbitrum Sepolia, "Blockchain and distributed ledger of records", with the official Arbitrum logomark from the brand kit (unchanged file, provenance in `assets/notices/Public-brand-assets.txt`), linked to the network explorer. The credit grid shows nine columns on desktop and three below 1200 px, so no card is left alone on a row.
+
 - Rate-limit the public chain status, challenge-record and certificate-metadata reads to 60 requests per minute per client IP using the shared PostgreSQL limiter; rejected requests return `429 rate_limited` before record queries.
 
 - **README technology table tidied; on-chain records added.** The technology stack separates Charts (Vela, Pine addon, PineTS) from Market data and pricing (Open Oracle, Gains, Hyperliquid, GMX, Bitpin) and gains an On-chain records layer (Arbitrum Sepolia certificates and trade ledger, ERC-721 / ERC-5192 soulbound NFTs, Solidity 0.8.28, Foundry). The README features gain an On-chain records group (ADR 0063).

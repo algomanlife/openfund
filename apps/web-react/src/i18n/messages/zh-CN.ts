@@ -57,6 +57,7 @@ export const zhCN: Record<string, string> = {
   'International Cloud Infrastructure': '国际云基础设施',
   'Iranian Cloud Infrastructure': '伊朗云基础设施',
   'Iranian market data & market depth': '伊朗市场数据与市场深度',
+  'Blockchain and distributed ledger of records': '区块链与分布式记录账本',
   'Inactive / In Development': '未启用 / 开发中',
   'Checking your wallet connection…': '正在检查钱包连接…',
   'Wallet connected': '钱包已连接',

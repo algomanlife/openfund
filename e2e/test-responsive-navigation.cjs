@@ -188,9 +188,9 @@ async function challengesPage(browser) {
     check(`${tag}: Telegram destination`, (await telegram.evaluateAll(links => links.map(a => a.getAttribute('href')))).every(href => href === TELEGRAM));
     check(`${tag}: safe external link`, (await telegram.evaluateAll(links => links.every(a => a.target === '_blank' && a.rel === 'noopener noreferrer'))));
     check(`${tag}: official Telegram icon`, await page.locator('.telegram-community img[src$="telegram-logo.svg"]').count() === 2);
-    // Task 02: eight providers, balanced rows
+    // Task 02: nine providers (ADR 0063 adds Arbitrum Sepolia), balanced rows
     const credits = await page.locator('.credits-row > a').evaluateAll(cards => cards.map(card => ({ name: card.querySelector('b')?.textContent, href: card.getAttribute('href'), top: Math.round(card.getBoundingClientRect().top), desc: card.querySelector('.service-description')?.textContent })));
-    check(`${tag}: eight service providers`, credits.length === 8, credits.map(c => c.name).join(','));
+    check(`${tag}: nine service providers`, credits.length === 9, credits.map(c => c.name).join(','));
     const hl = credits.find(c => c.name === 'Hyperliquid');
     check(`${tag}: Hyperliquid card links to hyperliquid.xyz`, hl?.href === 'https://hyperliquid.xyz');
     const expected = { fa: 'داده‌های بازار و عمق نقدینگی', en: 'Market data & liquidity depth', ar: 'بيانات السوق وعمق السيولة' }[locale];

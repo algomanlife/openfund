@@ -305,7 +305,7 @@ address.offices p{font-size:12px;color:#a3bbab;line-height:2.1;direction:rtl}
 .footer-credits > div:first-child { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; }
 /* Service credits: one row of eight on desktop, four per row on tablets and
    small desktops (4 + 4), two per row on phones (4 × 2) — no orphaned logo. */
-.footer-credits .credits-row { --credit-cols: 8; display: grid; grid-template-columns: repeat(var(--credit-cols), minmax(0, 1fr)); gap: 24px 16px; align-items: start; }
+.footer-credits .credits-row { --credit-cols: 9; display: grid; grid-template-columns: repeat(var(--credit-cols), minmax(0, 1fr)); gap: 24px 16px; align-items: start; }
 /* an odd last item on a two-column phone row is centred across both tracks */
 .footer-credits .credits-row > .render-credit:last-child:nth-child(odd) { grid-column: var(--credit-last-span, auto); }
 .footer-credits .render-credit { display: grid; grid-template-rows: auto auto; align-content: start; gap: 10px; text-align: center; min-width: 0; color: var(--body); }
@@ -313,6 +313,8 @@ address.offices p{font-size:12px;color:#a3bbab;line-height:2.1;direction:rtl}
 /* Every official mark uses the same neutral canvas; no recoloring or per-logo offsets. */
 .footer-credits .service-logo-slot { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 80px; width: 80px; height: 40px; padding: 8px 0; box-sizing: border-box; background: #fff; border-radius: 6px; }
 .footer-credits .service-logo-slot img { display: block; height: 24px; width: auto; max-width: 100%; object-fit: contain; flex-shrink: 0; filter: none; }
+/* the official Arbitrum logomark ships with its clear space inside the file */
+.footer-credits .service-logo-slot img.service-logo-clearspace { height: 38px; margin-block: -7px; }
 .footer-credits .service-heading b { font-size: 12px; font-weight: 600; line-height: 20px; white-space: nowrap; color: var(--white); }
 .footer-credits .service-description { font-size: 11px; line-height: 1.8; color: var(--muted); }
 footer .footer-top p, footer .footer-bottom p, footer .footer-bottom > span { color: var(--muted); }
@@ -322,9 +324,9 @@ footer .document-links h3 { color: var(--white); }
 .desktop-btns .desktop-btn { color: var(--white); min-height: 64px; }
 .desktop-btns .dl small { color: var(--mint); letter-spacing: normal; }
 @media(max-width:1050px) { .desktop-btns { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-@media(max-width:1199px) { .footer-credits .credits-row { --credit-cols: 4; } }
-@media(max-width:700px) { .desktop-btns { grid-template-columns: repeat(2,minmax(0,1fr)); } .desktop-btns .desktop-btn:last-child { grid-column: 1/-1; } .footer-credits .credits-row { width: 100%; --credit-cols: 4; } }
-@media(max-width:520px) { .footer-credits .credits-row { --credit-cols: 2; --credit-last-span: 1 / -1; } }
+@media(max-width:1199px) { .footer-credits .credits-row { --credit-cols: 3; } }
+@media(max-width:700px) { .desktop-btns { grid-template-columns: repeat(2,minmax(0,1fr)); } .desktop-btns .desktop-btn:last-child { grid-column: 1/-1; } .footer-credits .credits-row { width: 100%; --credit-cols: 3; } }
+@media(max-width:520px) { .footer-credits .credits-row { --credit-cols: 3; } }
 
 /* OpenFi wordmark (src/brand/wordmark.ts): never case-transformed; tracking in
    em so it scales with every breakpoint's font size; the caption is justified
