@@ -136,3 +136,10 @@ Testnets are sometimes shut down (Arbitrum Goerli was). Every record stays in
 contracts on another network and resetting the queue
 (`UPDATE chain_records SET status='pending', attempts=0, tx_hash=NULL, next_attempt_at=now()`)
 re-records the full history there.
+
+## Database access and public metadata
+
+`chain_records` is a protected trading table in the PostgreSQL privilege
+policy. Directus receives no access; the backend worker owns record updates.
+Public certificate verification exposes only the network, recording status
+and explorer links, never the outbox payload or worker error details.
