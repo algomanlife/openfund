@@ -2,6 +2,7 @@
 import { Router } from 'express'
 import { limiter } from './rate-limit-store.js'
 import { adminAuth, adminActor } from './admin.js'
+import { chainRecordsConfig, CERTIFICATE_CHAIN_KEY, txUrl, tokenUrl } from './chain-records.js'
 const fail = (status, code) => Object.assign(new Error(code), { status })
 const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const serialPattern = /^[0-9a-f]{32}$/
@@ -14,7 +15,21 @@ export function certificateName(value) {
 }
 const view = r => ({ serial: r.serial, kind: r.kind, status: r.status, holder: r.holder,
   plan: r.plan, amount: r.amount, currency: r.currency, eventAt: r.event_at, issuedAt: r.issued_at,
-  revokedAt: r.revoked_at })
+  revokedAt: r.revoked_at, chain: r.chain ?? null })
+
+/** ADR 0063: the matching on-chain certificate (soulbound NFT), when recorded. */
+const chainCfg = chainRecordsConfig()
+async function withChain(pool, rows) {
+  const keys = rows.map(r => CERTIFICATE_CHAIN_KEY[r.kind] && r.source_id ? `cert:${CERTIFICATE_CHAIN_KEY[r.kind]}:${r.source_id}` : null)
+  const wanted = keys.filter(Boolean)
+  if (!wanted.length) return rows
+  const found = new Map((await pool.query(`SELECT record_key, status, tx_hash, token_id FROM chain_records WHERE record_key = ANY($1)`, [wanted])
+    .catch(() => ({ rows: [] }))).rows.map(c => [c.record_key, c]))
+  return rows.map((r, i) => {
+    const c = keys[i] && found.get(keys[i])
+    return c ? { ...r, chain: { network: chainCfg.network, status: c.status, txUrl: txUrl(chainCfg, c.tx_hash), tokenUrl: tokenUrl(chainCfg, c.token_id) } } : r
+  })
+}
 
 /** Reconcile from server-owned evidence, serialized per user and idempotent per event. */
 export async function syncCertificates(pool, userId) {
@@ -100,13 +115,13 @@ export function certificateRoutes({ pool, requireAuth }) {
       ?? (await pool.query(`SELECT data FROM region_remote_rows WHERE entity='certificate' AND entity_id=$1`, [serial]).catch(() => ({ rows: [] }))).rows[0]?.data
     if (!row) return res.status(404).json({ status: 'not_found' })
     // A revoked record discloses only its identifier and revocation date.
-    res.json(row.status === 'revoked' ? { status: 'revoked', serial, revokedAt: row.revoked_at } : { status: 'valid', certificate: view(row) })
+    res.json(row.status === 'revoked' ? { status: 'revoked', serial, revokedAt: row.revoked_at } : { status: 'valid', certificate: view((await withChain(pool, [row]))[0]) })
   }))
   router.get('/certificates', requireAuth, wrap(async (req, res) => {
     await syncCertificates(pool, req.user.user_id)
     const identity = (await pool.query('SELECT display_name, confirmed_at FROM certificate_identities WHERE user_id=$1', [req.user.user_id])).rows[0]
     const rows = (await pool.query('SELECT * FROM certificates WHERE user_id=$1 ORDER BY issued_at DESC', [req.user.user_id])).rows
-    res.set('Cache-Control', 'no-store').json({ identity: identity || null, certificates: rows.map(view) })
+    res.set('Cache-Control', 'no-store').json({ identity: identity || null, certificates: (await withChain(pool, rows)).map(view) })
   }))
   router.post('/certificates/identity', requireAuth, publicLimit, wrap(async (req, res) => {
     if (req.body?.confirmed !== true) throw fail(400, 'certificate_confirmation_required')

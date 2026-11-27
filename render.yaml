@@ -138,6 +138,20 @@ services:
         value: "168"
       - key: MARKET_PRICE_SOURCE
         value: open-oracle      # Open Oracle composite prices (ADR 0059); "gains" = emergency Gains-only marks
+      # On-chain certificates and trade records on Arbitrum Sepolia (ADR 0063).
+      # Off until the owner deploys the contracts and sets the operator key.
+      - key: CHAIN_RECORDS_ENABLED
+        value: "0"
+      - key: CHAIN_RECORDS_CHAIN_ID
+        value: "421614"         # Arbitrum Sepolia
+      - key: CHAIN_RECORDS_RPC_URL
+        sync: false             # optional; unset = the public Arbitrum Sepolia RPC
+      - key: CHAIN_RECORDS_PRIVATE_KEY
+        sync: false             # SECRET: this region's recorder key (testnet ETH only, no other funds)
+      - key: CHAIN_RECORDS_CERTIFICATE_ADDRESS
+        sync: false             # public: deployed OpenfundCertificate
+      - key: CHAIN_RECORDS_LEDGER_ADDRESS
+        sync: false             # public: deployed OpenfundTradeLedger
       - key: FOOTPRINT_ENABLED
         value: "1"              # Footprint chart (Hyperliquid order-flow analytics), enabled on owner
                                 # request 2026-11-12. "0" turns it off (chart falls back to candles).

@@ -998,6 +998,35 @@ jobs:
           node-version: 26
       - run: node --test apps/open-trade/tests/policy.test.mjs
 
+  chain-records-contracts:
+    # ADR 0063: soulbound certificates and the trade ledger (Arbitrum Sepolia).
+    # Self-contained Solidity (no libraries); Foundry from its official
+    # installer, the `stable` release channel.
+    name: Chain records contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Install Foundry
+        # FOUNDRY_DIR pins the install location (the installer otherwise
+        # follows XDG_CONFIG_HOME, which differs between runner images).
+        run: |
+          export FOUNDRY_DIR="$RUNNER_TEMP/foundry"
+          curl -fsSL https://foundry.paradigm.xyz -o "$RUNNER_TEMP/foundry-install.sh"
+          bash "$RUNNER_TEMP/foundry-install.sh"
+          "$FOUNDRY_DIR/bin/foundryup" --install stable
+          echo "$FOUNDRY_DIR/bin" >> "$GITHUB_PATH"
+      - name: Build and test
+        working-directory: packages/openfund-chain-records
+        run: |
+          forge --version
+          forge build --sizes
+          forge test -vvv
+
   open-oracle:
     name: Open Oracle (isolated protocol)
     runs-on: ubuntu-latest

@@ -32,6 +32,9 @@ export default function CertificatePreview({ certificate, locale }: { certificat
       <button className="button" disabled={!ready} onClick={() => void action(() => downloadPdf(canvas.current!, certificate.serial))}>{t('pdf')}</button>
       <button className="button" onClick={() => void action(async () => { await navigator.clipboard.writeText(url); setMessage(t('copied')) })}>{t('share')}</button>
       <a href={url}>{t('open')}</a>
+      {certificate.chain?.tokenUrl || certificate.chain?.txUrl
+        ? <a href={certificate.chain.tokenUrl || certificate.chain.txUrl!} target="_blank" rel="noopener noreferrer">{t('onChain')}</a>
+        : certificate.chain ? <span className="of-cert-muted">{t('onChainPending')}</span> : null}
     </div>
     <p role="status" className="of-cert-muted">{message || (!ready ? t('loading') : '')}</p>
   </article>

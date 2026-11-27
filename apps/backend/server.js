@@ -54,6 +54,7 @@ import { recordFailure, recordSuccess } from './observability.js'
 import { rewardRoutes, rewardAdminRoutes } from './rewards.js'
 import { certificateRoutes, certificateAdminRoutes } from './certificates.js'
 import { trialRoutes } from './trials.js'
+import { ChainRecorder, chainRecordRoutes } from './chain-records.js'
 import { createRadar, radarRoutes } from './radar.js'
 import { calendarAdminRoutes, ConductService } from './conduct.js'
 import { createTestClock } from './test-clock.js'
@@ -886,6 +887,9 @@ app.use(labRoutes({ pool, graceMinutes: () => purchaseConfig().lateGraceMinutes 
 app.use(rewardRoutes({ pool, requireAuth, audit, limit, md: marketData }))
 app.use(certificateRoutes({ pool, requireAuth }))
 app.use(trialRoutes({ pool, requireAuth, audit }))
+/* ADR 0063: public on-chain certificates and trade records (Arbitrum Sepolia) */
+const chainRecorder = new ChainRecorder({ pool })
+app.use(chainRecordRoutes({ pool, recorder: chainRecorder }))
 /* Trade Radar + heatmap: read-only public Hyperliquid data, one shared cache and socket */
 const radar = createRadar()
 app.use(radarRoutes({ radar, gainsMarkets: () => marketData.markets }))
@@ -1111,6 +1115,8 @@ if (hasRole(region, 'market-data')) marketData.bootstrap().catch(e => console.er
 if (oracle) { oracle.start(); console.log(`[open-oracle] ${oracle instanceof OracleMirror ? `mirroring ${oracleSettings.upstream}` : 'pricing service started'}`) }
 else console.log(`[open-oracle] not running (price source: ${oracleSettings.source}${hasRole(region, 'market-data') ? '' : ', no market-data role and no OPEN_ORACLE_UPSTREAM'})`)
 if (hasRole(region, 'engine')) engine.start(1000)
+/* the chain-records worker sends this region's queued records (one operator key per region) */
+if (hasRole(region, 'engine')) chainRecorder.start()
 /* challenge-event → notification relay: reads recorded events only */
 if (hasRole(region, 'engine')) startNotificationRelay(pool)
 if (hasRole(region, 'footprint')) footprint.start().catch(e => console.error('[footprint] start failed', e.message))

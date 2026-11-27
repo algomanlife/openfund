@@ -19,7 +19,8 @@
       { "path": "packages/plan-validation/", "role": "Challenge plan rules shared by the site and the backend" },
       { "path": "packages/site-search/", "role": "Search normalization, matching and query masking shared by the site and the backend" },
       { "path": "packages/openfund-protocol/", "role": "Dormant protocol source and provenance" },
-      { "path": "packages/open-oracle/", "role": "Open Oracle: multi-source pricing service (Gains, Hyperliquid, GMX), research protocol and live acceptance" }
+      { "path": "packages/open-oracle/", "role": "Open Oracle: multi-source pricing service (Gains, Hyperliquid, GMX), research protocol and live acceptance" },
+      { "path": "packages/openfund-chain-records/", "role": "Soulbound certificate NFTs and the public trade ledger on Arbitrum Sepolia (Solidity, Foundry)" }
     ] },
     { "title": "Content and assets", "icon": "book", "entries": [
       { "path": "docs/", "role": "Documentation, ADRs, status, README data and assets" },

@@ -35,6 +35,8 @@ export const certificateCopy = {
   share: { en: 'Copy verification link', fa: 'کپی پیوند راستی‌آزمایی' },
   copied: { en: 'Verification link copied', fa: 'پیوند راستی‌آزمایی کپی شد' },
   open: { en: 'Open verification link', fa: 'باز کردن پیوند راستی‌آزمایی' },
+  onChain: { en: 'View the NFT on Arbitrum Sepolia', fa: 'مشاهدهٔ NFT روی Arbitrum Sepolia' },
+  onChainPending: { en: 'Queued for the blockchain record', fa: 'در صف ثبت روی بلاکچین' },
   empty: { en: 'No certificates have been issued yet.', fa: 'هنوز گواهی صادر نشده است.' },
   signIn: { en: 'Connect and sign in with your wallet to view your certificates.', fa: 'برای دیدن گواهی‌ها، کیف پول را متصل کنید و وارد شوید.' },
   connect: { en: 'Connect wallet', fa: 'اتصال کیف پول' },
@@ -83,4 +85,6 @@ export const certificateCopy = {
   evidence: { en: 'Verify the current status using the QR code. A downloaded copy may have been revoked after issue.', fa: 'وضعیت فعلی را با کد QR بررسی کنید. ممکن است نسخهٔ دریافت‌شده پس از صدور باطل شده باشد.' },
 }
 export type CertificateKind = 'purchase' | 'completion' | 'payout' | 'trial' | 'stage_pass' | 'trial_pass'
-export interface Certificate { serial: string; kind: CertificateKind; status: 'valid' | 'revoked'; holder: string; plan: string; amount: string; currency: string; eventAt: string; issuedAt: string; revokedAt: string | null }
+export interface Certificate { serial: string; kind: CertificateKind; status: 'valid' | 'revoked'; holder: string; plan: string; amount: string; currency: string; eventAt: string; issuedAt: string; revokedAt: string | null
+  /* ADR 0063: the matching soulbound NFT, when recorded */
+  chain?: { network: string; status: string; txUrl: string | null; tokenUrl: string | null } | null }
