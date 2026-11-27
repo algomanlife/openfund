@@ -8,6 +8,11 @@ export class MarketRegistry {
     this.equivalences = equivalences;
     for (const rule of equivalences) {
       if (!rule.canonicalId || !rule.evidence || !rule.unit || !rule.quoteAsset || !Array.isArray(rule.members)) throw new Error('invalid_equivalence');
+      // Unit multipliers are validated once, at configuration time, so one bad rule cannot fail a whole inventory registration.
+      for (const member of rule.members) {
+        let valid = false; try { valid = decimal(member.priceMultiplier ?? '1') > 0n; } catch { valid = false; }
+        if (!valid) throw new Error('invalid_unit_multiplier');
+      }
     }
   }
   register(source, metadata) {
@@ -16,7 +21,6 @@ export class MarketRegistry {
     const rule = this.equivalences.find(r => r.members.some(m => m.source === source && m.sourceMarketId === sourceId));
     const member = rule?.members.find(m => m.source === source && m.sourceMarketId === sourceId);
     const multiplier = member?.priceMultiplier ?? '1';
-    if (decimal(multiplier) <= 0n) throw new Error('invalid_unit_multiplier');
     const compatible = rule && rule.quoteAsset === metadata.quoteAsset && (member?.sourceUnit ?? rule.unit) === metadata.unit && metadata.semantics === 'UNDERLYING_REFERENCE';
     const id = compatible ? rule.canonicalId : `${source}:${hash(sourceId)}`;
     if (!this.entries.has(id) && this.entries.size >= this.maxMarkets) throw new Error('registry_capacity');
