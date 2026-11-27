@@ -1,4 +1,5 @@
-/* Retired editorial defaults (ADR 0059: prices come from Open Oracle).
+/* Retired editorial defaults (ADR 0059: prices come from Open Oracle;
+ * ADR 0060: Apache-2.0 license).
  *
  * Directus rows seeded from an earlier default keep that text until an
  * editor changes it, and seeds never overwrite editor values. A published
@@ -47,6 +48,10 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
     "Markets come from Gains Network metadata and are grouped into crypto, forex, stocks, indices and commodities — around 488 symbols. Prices are Open Oracle composites: crypto markets combine Gains, Hyperliquid and GMX, other markets use Gains. The available list and each market’s status can change, so check the terminal."
   ],
   [
+    "No root licence (all rights reserved by default)",
+    "Apache-2.0 with NOTICE (credit Openfund)"
+  ],
+  [
     "Openfund context: the demo is a server-side simulated account — 100,000 virtual DAI once per user, no deposits, withdrawals, refills or resets, priced from live Gains Network mark prices. Demo profit is not money owed, and demo trading does not establish eligibility for a funded account. The loss limits quoted here are published terms of record, not enforced in this release.",
     "Openfund context: the demo is a server-side simulated account — 100,000 virtual DAI once per user, no deposits, withdrawals, refills or resets, priced from live Open Oracle prices. Demo profit is not money owed, and demo trading does not establish eligibility for a funded account. The loss limits quoted here are published terms of record, not enforced in this release."
   ],
@@ -79,6 +84,10 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
     "Scope matters. This release is read-only on perpetual markets and cannot execute on-chain, so an automated system here means analysis, monitoring and backtesting over the records, not live orders. The Prop Trading environment is a single server-side simulated demo funded once with 100,000 virtual DAI at live Open Oracle prices, with purchase activation, funded accounts and payouts not enabled. Treat each backtest as a rehearsal, and the CSV journal analyzer and portfolio dashboard - fed by the account records - as tools for measuring a process, not evidence about results."
   ],
   [
+    "Source-available, not a blanket licence",
+    "Open source under Apache-2.0"
+  ],
+  [
     "The Gains Network feed that Openfund reads today supplies no open interest, no order-book depth and no trade tape, so Openfund shows those as unavailable instead of estimating or fabricating them. To measure slippage or read depth, use the venue you trade on directly. Openfund’s Perpetual Trading view is read-only and Prop Trading runs a simulated demo priced on live Gains mark prices.",
     "The price feeds Openfund reads today supply no open interest, no order-book depth and no trade tape, so Openfund shows those as unavailable instead of estimating or fabricating them. To measure slippage or read depth, use the venue you trade on directly. Openfund’s Perpetual Trading view is read-only and Prop Trading runs a simulated demo priced on live Open Oracle prices."
   ],
@@ -89,6 +98,10 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   [
     "The application loads market metadata and marks from Gains Network. Instruments are grouped into crypto, forex, stocks, indices and commodities — browse the full directory on the Markets page. The available list and each market’s status can change.",
     "The application loads market metadata from Gains Network and reference prices from Open Oracle, Openfund’s aggregation of Gains, Hyperliquid and GMX. Instruments are grouped into crypto, forex, stocks, indices and commodities — browse the full directory on the Markets page. The available list and each market’s status can change."
+  ],
+  [
+    "The repository has no root licence. Public source availability is not a grant to copy, redistribute or reuse Openfund’s own code commercially; that requires agreement with the maintainers. Third-party components keep their own licences, listed below.",
+    "Openfund’s own code is licensed under Apache-2.0: anyone may use, modify and redistribute it, including commercially, provided the NOTICE that credits Openfund is kept. The Openfund name and logos are not licensed. Third-party components keep their own licences, listed below."
   ],
   [
     "The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.",
@@ -147,6 +160,10 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
     "بافتِ اوپن‌فاند: دمو یک حسابِ شبیه‌سازی‌شدهٔ سمت سرور است — ۱۰۰٬۰۰۰ دای مجازی یک‌بار برای هر کاربر، بدون واریز، برداشت، شارژ یا بازنشانی، با قیمت‌گذاری از قیمت زندهٔ Open Oracle. سودِ دمو طلبِ مالی نیست و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. سقف‌های ضرری که اینجا آمده، شرایط منتشرشده و مرجع است و در این نسخه اجرا نمی‌شود."
   ],
   [
+    "بدون مجوز ریشه (به‌طور پیش‌فرض همهٔ حقوق محفوظ)",
+    "Apache-2.0 همراه NOTICE (ذکر نام اوپن‌فاند)"
+  ],
+  [
     "برنامه مشخصات بازار و قیمت مرجع را از Gains Network می‌خواند. ابزارها به رمزارز، فارکس، سهام، شاخص و کالا دسته‌بندی می‌شوند — فهرست کامل را در صفحهٔ «بازارها» ببین. فهرست در دسترس و وضعیت هر بازار می‌تواند تغییر کند.",
     "برنامه مشخصات بازار را از Gains Network و قیمت مرجع را از Open Oracle، سامانهٔ تجمیع قیمت اوپن‌فاند از Gains، Hyperliquid و GMX، می‌خواند. ابزارها به رمزارز، فارکس، سهام، شاخص و کالا دسته‌بندی می‌شوند — فهرست کامل را در صفحهٔ «بازارها» ببین. فهرست در دسترس و وضعیت هر بازار می‌تواند تغییر کند."
   ],
@@ -199,6 +216,10 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
     "کندل‌ها و مشخصات بازار از Gains Network، یک پروتکل غیرمتمرکز معاملات اهرمی، می‌آیند که یکی از سه منبع قیمت Open Oracle هم هست. اوپن‌فاند این داده را می‌خواند؛ روی Gains معامله اجرا نمی‌کند."
   ],
   [
+    "مخزن مجوز ریشه ندارد. در دسترس بودن عمومی کد به معنای اجازهٔ کپی، توزیع مجدد یا استفادهٔ تجاری از کد خود اوپن‌فاند نیست و این کار نیازمند توافق با نگهدارندگان است. اجزای ثالث مجوزهای خود را حفظ می‌کنند که در ادامه آمده‌اند.",
+    "کد خود اوپن‌فاند با مجوز Apache-2.0 منتشر می‌شود: هر کسی می‌تواند آن را، حتی به‌صورت تجاری، استفاده، تغییر و بازتوزیع کند، به شرط آنکه فایل NOTICE با نام اوپن‌فاند حفظ شود. نام و لوگوهای اوپن‌فاند مشمول این مجوز نیستند. اجزای ثالث مجوزهای خود را حفظ می‌کنند که در ادامه آمده‌اند."
+  ],
+  [
     "همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Gains Network ببینید: رمزارز، فارکس، سهام، شاخص و کالا.",
     "همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Open Oracle، سامانهٔ تجمیع قیمت اختصاصی اوپن‌فاند، ببینید: رمزارز، فارکس، سهام، شاخص و کالا."
   ],
@@ -213,6 +234,10 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   [
     "پلتفرم معاملاتی اختصاصی با دادهٔ زندهٔ بازار از Gains Network؛ رمزارز، فارکس، سهام، شاخص و کالا.",
     "پلتفرم معاملاتی اختصاصی با قیمت زندهٔ Open Oracle؛ رمزارز، فارکس، سهام، شاخص و کالا."
+  ],
+  [
+    "کد در دسترس، نه مجوز فراگیر",
+    "متن‌باز با مجوز Apache-2.0"
   ]
 ])
 

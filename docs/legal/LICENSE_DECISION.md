@@ -1,15 +1,22 @@
 # First-party license decision (owner approval required)
 
-## Current decision state — 2026-11-21
+## Decision recorded — 2026-11-27
 
-No first-party license has been selected in this update. The option comparison
+**Decided:** Apache-2.0 with a root `NOTICE` that credits Openfund
+([ADR 0060](../decisions/0060-open-source-license.md), option D below). The
+exclusions and the AGPL source offer are recorded there and in `NOTICE`. The
+rest of this page is the historical decision record.
+
+## Decision state — 2026-11-21 (historical)
+
+No first-party license had been selected at that point. The option comparison
 below was prepared on 2026-11-12; it does not grant a license.
 
 The UI-font replacement is complete and **blocker 1 (Irancell fonts) is
 RESOLVED by removal (2026-11-21)**: Dastkhat v1.210 (OFL 1.1) is the only
 Persian/Arabic face, and every Irancell, renamed-Irancell and standalone
 Vazirmatn file was deleted from the tree; see the
-[current inventory](LICENSING.md#current-source-clarification--2026-11-21) and
+[current inventory](LICENSING.md#source-clarification--2026-11-21-historical) and
 the [retired registry](../development/RETIRED.md). Text below that describes
 Irancell as active or unresolved is historical.
 

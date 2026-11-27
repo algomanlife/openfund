@@ -1,0 +1,27 @@
+Openfund
+Copyright 2026 Openfund (https://github.com/algomanlife/openfund)
+
+This product includes software developed by Openfund and its contributors,
+licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Attribution: redistributions and derivative works must retain this NOTICE
+file, including the name "Openfund" and the link above, as required by
+section 4(d) of the Apache License, Version 2.0. The Apache License grants
+no right to use the Openfund name, logos or other trademarks except as
+needed to state this origin (section 6).
+
+Not covered by the Apache License, Version 2.0 (each keeps its own terms):
+  - third-party and vendored components, listed with their license texts in
+    THIRD_PARTY_NOTICES.md (including PineTS and the Vela Pine addon under
+    AGPL-3.0-only, Vela under Apache-2.0 with its own NOTICE, and the MetaMask
+    SDK under the ConsenSys license);
+  - packages/openfund-protocol/ (imported GPL-2.0 code);
+  - indicators/ (each file keeps its own license notice);
+  - brand/ and the Openfund name and logos (trademarks);
+  - docs/business/Openfund-Prop-Investor-Pack/ (all rights reserved);
+  - fonts, which keep their own licenses (SIL OFL 1.1, Ubuntu Font Licence).
+
+The web application bundles AGPL-3.0-only components (PineTS and the Vela
+Pine addon). Their complete corresponding source, and the source of every
+Openfund component combined with them, is this public repository at the
+commit identified by /version on the running service.
