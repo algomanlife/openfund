@@ -81,15 +81,15 @@ jobs:
         run: |
           set -euo pipefail
           if git diff --quiet; then echo "No dependency change for $DIR ($OPERATION)."; exit 0; fi
-          changed=$(git diff --name-only)
-          for f in $changed; do
+          mapfile -t changed < <(git diff --name-only)
+          for f in "${changed[@]}"; do
             case "$f" in "${DIR#./}/package.json"|"${DIR#./}/package-lock.json"|package.json|package-lock.json) ;; *) echo "unexpected change: $f"; exit 1 ;; esac
           done
           branch="deps-candidate/${GITHUB_RUN_ID}"
           git config user.name "openfund-dependency-candidate"
           git config user.email "dependency-candidate@users.noreply.github.com"
           git checkout -b "$branch"
-          git add -- $changed
+          git add -- "${changed[@]}"
           git commit -m "chore(deps): ${OPERATION} in ${DIR} (candidate)"
           git push origin "$branch"
           {
