@@ -36,19 +36,21 @@ test('CMS-published Persian text is normalised to the approved term', () => {
 test('the terminal workspace normalises CMS translations and uses the exact order-book copy', () => {
   const pages = readFileSync('src/features/terminal/TradingPages.tsx', 'utf8')
   assert.match(pages, /\.\.\.normalizeDictionary\(cms\)/)
-  assert.ok(pages.includes('نقدینگی شبیه سازی شده؛ این یک دفتر سفارش غیر متمرکز مجازی است\\nداده های از بروکر های Gains و hyperliquid تجمیع میشود.'))
+  assert.ok(pages.includes('دفتر سفارش مجازی Open Oracle؛ نقدینگی شبیه‌سازی‌شده بر پایهٔ مخزن و بدون سفارش ثابت.'))
+  assert.ok(!/Gains|hyperliquid/i.test(pages.slice(pages.indexOf('"book.simulated"'), pages.indexOf('"trades.note"') + 200)))
   assert.ok(!pages.includes('نقدینگی مجازی Gains؛ دفتر سفارش متمرکز نیست.'))
   const depth = readFileSync('public/legacy/market-depth.js', 'utf8')
   assert.ok(depth.includes('"نقدینگی مجازی مبتنی بر مخزن"'))
   assert.ok(!depth.includes('Gains VOB · نقدینگی'))
-  assert.match(depth, /gains-logo\.svg/); assert.match(depth, /hyperliquid-mark\.svg/)
+  /* the source mark is the Open Oracle badge, never a venue logo */
+  assert.match(depth, /of-oracle-badge/); assert.doesNotMatch(depth, /gains-logo\.svg|hyperliquid-mark\.svg/)
 })
 
-test('terminal footer shows live status with two source marks and a localized support link', () => {
+test('terminal footer shows live status with the Open Oracle mark and a localized support link', () => {
   const body = readFileSync('src/pages/terminal-body.html', 'utf8')
   const footer = body.slice(body.indexOf('<footer class="status-bar">'), body.indexOf('</footer>'))
   assert.ok(!footer.includes('api.gains.trade'))
-  assert.match(footer, /assets\/gains-logo\.svg/); assert.match(footer, /assets\/hyperliquid-mark\.svg/)
+  assert.match(footer, /of-oracle-badge/); assert.doesNotMatch(footer, /gains-logo\.svg|hyperliquid-mark\.svg/)
   const terminal = readFileSync('public/legacy/terminal.js', 'utf8')
   assert.match(terminal, /support\.href = '\/' \+ encodeURIComponent\(window\.ofLang\) \+ '\/contact'; support\.target = '_top'/)
 })

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Open Oracle serves all market data; venue names removed from the data UI.** New public routes `GET /api/oracle/markets`, `/api/oracle/markets/:market/candles`, `/book` and `/trades` serve the market catalog, candle history (the open candle closes at the Open Oracle composite), the virtual order book and executed trades from the server, so browsers no longer call the venue API. This fixes the home page market table, which stayed on "loading markets" where the browser could not reach the venue API. The terminal chart legend, depth panel and status bar show the Open Oracle mark (a green "O") instead of "GAINS" and the Gains/Hyperliquid logos, and the order-book, trades, funding, details, status-bar, assumptions and chart-loading copy and the home market footer name Open Oracle in five locales. The README product card shows Open Oracle as running. The Markets page names only Open Oracle as the source of prices, candles and specifications (Directus rows still holding the earlier default are superseded). The Openfund chart mark now sits inside the chart mount at the plot's bottom-left corner at every screen size, and the footprint status line reads "Footprint · Open Oracle".
+
 - **Terminal percentage sizing readiness.** Ignore percentage/MAX clicks while the scoped account adapter is unavailable or read-only, preventing an uncaught error during reconnect. The terminal completion browser suite covers the transition.
 
 - Rate-limit the public chain status, challenge-record and certificate-metadata reads to 60 requests per minute per client IP using the shared PostgreSQL limiter; rejected requests return `429 rate_limited` before record queries.

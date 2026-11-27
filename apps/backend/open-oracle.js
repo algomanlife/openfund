@@ -134,11 +134,102 @@ const summary = status => status && ({ markets: status.markets, modes: status.mo
 const MAX_STREAMS = 2000
 const MAX_STREAMS_PER_VISITOR = 6 /* a few tabs per visitor */
 
+const GAINS_API = 'https://api.gains.trade/v1/arbitrum'
+const CANDLE_INTERVALS = new Set(['1m', '5m', '15m', '30m', '1h', '4h', '1d'])
+const MARKET_PATH = /^[A-Za-z0-9._]{1,24}[/-][A-Za-z0-9._]{1,12}$/
+
 /**
- * @param {{ Router: Function, oracle: () => (OpenOracleService|OracleMirror|null), limit: Function, now?: Function }} deps
+ * Open Oracle market data API (ADR 0059): the one source the website and the
+ * terminal read for the market catalog, candles and the virtual order book.
+ * Catalog: the market-data role's catalog. Candles, book and trades: read
+ * server-side from the upstream venue feeds, cached briefly, with the newest
+ * candle closed at the Open Oracle composite. A process without the market
+ * data (a mirror region) forwards to OPEN_ORACLE_UPSTREAM. Browsers never
+ * call a venue directly.
  */
-export function oracleRoutes({ Router, oracle, limit, now = () => Date.now() }) {
+export function oracleMarketData({ markets, oracle, upstream = null, fetchImpl = (...a) => fetch(...a), now = () => Date.now(), api = GAINS_API }) {
+  const cache = new Map()
+  const cached = async (key, ttlMs, load) => {
+    const hit = cache.get(key)
+    if (hit && hit.until > now()) return hit.value
+    const value = await load()
+    if (cache.size >= 2000) cache.delete(cache.keys().next().value)
+    cache.set(key, { until: now() + ttlMs, value })
+    return value
+  }
+  const read = async url => {
+    const r = await fetchImpl(url, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(10_000), redirect: 'error' })
+    if (!r.ok) { await r.body?.cancel?.(); throw Object.assign(new Error('upstream_' + r.status), { status: r.status === 404 ? 404 : 502 }) }
+    return r.json()
+  }
+  const local = () => markets().size > 0
+  /* 'BTC-USD' or 'BTC/USD' → the catalog symbol, or null */
+  const symbolOf = raw => {
+    const text = String(raw || '')
+    if (!MARKET_PATH.test(text)) return null
+    const symbol = text.replace('-', '/').toUpperCase()
+    return !local() || markets().has(symbol) ? symbol : null
+  }
+  const remote = path => read(upstream + '/api/oracle' + path)
+  return {
+    async catalog() {
+      /* venue catalog rows only (a pair index); placeholder rows a test server
+         injects with a price are not a catalog */
+      const data = [...markets().values()].filter(m => Number.isInteger(m?.pairIndex))
+      if (data.length) return { data }
+      if (upstream) return cached('catalog', 60_000, () => remote('/markets'))
+      throw Object.assign(new Error('catalog_unavailable'), { status: 503 })
+    },
+    async candles(raw, interval, from, to) {
+      const symbol = symbolOf(raw)
+      if (!symbol || !CANDLE_INTERVALS.has(interval)) throw Object.assign(new Error('invalid_request'), { status: 400 })
+      const f = Math.floor(Number(from)), t = to == null || to === '' ? now() : Math.floor(Number(to))
+      if (!Number.isFinite(f) || !Number.isFinite(t) || f < 0 || t < f || t - f > 400 * 86_400_000) throw Object.assign(new Error('invalid_range'), { status: 400 })
+      /* round the end to the candle cadence so concurrent viewers share a cache entry */
+      const bucket = Math.floor(t / 15_000) * 15_000
+      const query = `/markets/${symbol.replace('/', '-')}/candles?interval=${interval}&from=${f}&to=${bucket}`
+      const body = await cached('c' + query, 15_000, () => !local() && upstream ? remote(query) : read(api + query))
+      const data = Array.isArray(body?.data) ? body.data.map(c => ({ ...c })) : []
+      /* the open candle follows the Open Oracle composite */
+      const record = oracle()?.get?.(symbol), last = data[data.length - 1], price = Number(record?.price)
+      if (last && Number.isFinite(price) && price > 0 && !record.stale && t >= now() - 60_000) {
+        last.close = price
+        last.high = Math.max(Number(last.high) || price, price)
+        last.low = Math.min(Number(last.low) || price, price)
+      }
+      return { source: 'open-oracle', data }
+    },
+    async book(raw, levels) {
+      const symbol = symbolOf(raw)
+      const n = Math.min(50, Math.max(1, Math.floor(Number(levels) || 15)))
+      if (!symbol) throw Object.assign(new Error('invalid_request'), { status: 400 })
+      const query = `/markets/${encodeURIComponent(symbol)}/book?levels=${n}`
+      return cached('b' + query, 1_000, () => !local() && upstream ? remote(query) : read(api + query))
+    },
+    async trades(raw, limitRows) {
+      const symbol = symbolOf(raw)
+      const n = Math.min(100, Math.max(1, Math.floor(Number(limitRows) || 50)))
+      if (!symbol) throw Object.assign(new Error('invalid_request'), { status: 400 })
+      const query = `/markets/${encodeURIComponent(symbol)}/trades?limit=${n}`
+      return cached('t' + query, 2_000, () => !local() && upstream ? remote(query) : read(api + query))
+    },
+  }
+}
+
+/**
+ * @param {{ Router: Function, oracle: () => (OpenOracleService|OracleMirror|null), limit: Function, now?: Function, marketApi?: ReturnType<typeof oracleMarketData> }} deps
+ */
+export function oracleRoutes({ Router, oracle, limit, now = () => Date.now(), marketApi = null }) {
   const router = Router()
+  if (marketApi) {
+    const send = (res, maxAge, work) => work.then(body => res.set('Cache-Control', `public, max-age=${maxAge}`).json(body),
+      error => res.status(error.status && error.status < 500 ? error.status : (error.status || 502)).set('Cache-Control', 'no-store').json({ error: error.status === 400 ? error.message : 'market_data_unavailable' }))
+    router.get('/api/oracle/markets', limit(60), (req, res) => send(res, 60, marketApi.catalog()))
+    router.get('/api/oracle/markets/:market/candles', limit(240), (req, res) =>
+      send(res, 10, marketApi.candles(req.params.market, String(req.query.interval || ''), req.query.from, req.query.to)))
+    router.get('/api/oracle/markets/:market/book', limit(240), (req, res) => send(res, 1, marketApi.book(req.params.market, req.query.levels)))
+    router.get('/api/oracle/markets/:market/trades', limit(120), (req, res) => send(res, 2, marketApi.trades(req.params.market, req.query.limit)))
+  }
   const streams = new Set(), perVisitor = new Map()
   const unavailable = res => res.status(503).set('Cache-Control', 'no-store').json({ error: 'oracle_unavailable' })
   router.get('/api/oracle/prices', limit(120), (req, res) => {

@@ -4,7 +4,7 @@
  * the open-interest bar and skew from the backend (documented Gains
  * endpoints), a history chart or an honest "no samples yet / data
  * available from" state with unavailable ranges disabled, the annualized
- * toggle and the "Market data from Gains Network" label; Details shows the
+ * toggle and the "Market data from Open Oracle" label; Details shows the
  * Gains specification and the account limits as two cards; the phone
  * workspace has Funding and Details views; no horizontal overflow; both
  * themes. Screenshots at 390, 768 and 1440 px. */
@@ -49,7 +49,7 @@ const open = async (page, locale) => {
         disabled: [...document.querySelectorAll('[data-fund-range][disabled]')].map(b => b.dataset.fundRange),
         chart: document.querySelector('#fund-chart')?.textContent.trim() || '', svg: !!document.querySelector('#fund-chart svg'),
         panelRole: document.querySelector('#funding-panel')?.getAttribute('role'), overflow: document.documentElement.scrollWidth - innerWidth }))
-      ok(`${locale}: funding cards show real values, OI bar and source label`, f.cards === 3 && f.values.slice(0, 2).every(v => /%$/.test(v)) && f.bar && /Gains Network/.test(f.source) && f.panelRole === 'tabpanel', JSON.stringify(f))
+      ok(`${locale}: funding cards show real values, OI bar and source label`, f.cards === 3 && f.values.slice(0, 2).every(v => /%$/.test(v)) && f.bar && /Open Oracle/.test(f.source) && f.panelRole === 'tabpanel', JSON.stringify(f))
       ok(`${locale}: history is a chart or an honest empty state; unavailable ranges are disabled`, f.svg || (f.chart.length > 0 && f.disabled.length >= 1), JSON.stringify(f))
       const hourly = await frame.locator('.fund-v').first().textContent()
       await frame.locator('[data-fund-annual]').check()

@@ -72,6 +72,17 @@ async function installMarketFixtures(context, { allow = [] } = {}) {
       : [];
     return route.fulfill({ json: { data }, headers: { 'access-control-allow-origin': '*' } });
   });
+  /* the same fixtures through this origin's Open Oracle market API (catalog,
+     candles, book, trades), which the pages read first */
+  await context.route(url => /^\/api\/oracle\/markets(\/|$)/.test(url.pathname), route => {
+    const url = new URL(route.request().url());
+    const candles = url.pathname.match(/\/markets\/([^/]+)\/candles$/);
+    if (/\/(book|trades)$/.test(url.pathname)) return route.fulfill({ status: 503, json: { error: 'market_data_unavailable' } });
+    const data = candles
+      ? fixtureCandles(decodeURIComponent(candles[1]).replace('-', '/'), url.searchParams.get('interval'), Number(url.searchParams.get('from')), Number(url.searchParams.get('to')))
+      : FIXTURE_MARKETS;
+    return route.fulfill({ json: { data } });
+  });
   /* a mocked socket that never reaches the server and sends nothing */
   await context.routeWebSocket('wss://api.gains.trade/**', () => {});
   return { blocked };
