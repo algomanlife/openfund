@@ -7,13 +7,15 @@
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import pg from 'pg'
+import express from 'express'
+import { configureRateLimitStore } from '../rate-limit-store.js'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { keccak256, stringToBytes } from 'viem'
 import {
   fixedPoint, uuidBytes16, recordId, tokenIdOf, certificateArgs, statusArgs, tradeArgs,
-  chainRecordsConfig, ChainRecorder, CERTIFICATE_KINDS, TRADE_ACTIONS,
+  chainRecordsConfig, ChainRecorder, chainRecordRoutes, CERTIFICATE_KINDS, TRADE_ACTIONS,
 } from '../chain-records.js'
 
 /* ---------------------------------------------------------------- pure */
@@ -198,4 +200,36 @@ test('R8 a stale sending row is re-sent (idempotent on chain) and a hopeless one
   await pool.query(`UPDATE chain_records SET payload = payload || '{"certificateKind":"unknown"}', attempts=$2 WHERE challenge_id=$1`, [g.challenge, cfg.maxAttempts])
   assert.equal(await recorder.tick(), 0)
   assert.equal((await records(g.challenge))[0].status, 'failed')
+})
+
+test('R9 public chain reads share a rate limit before database work', async () => {
+  let hits = 0, reads = 0
+  const ratePool = { query: async () => ({ rows: [{ hits: ++hits, reset_at: new Date(Date.now() + 60_000) }] }) }
+  await configureRateLimitStore(ratePool)
+  const app = express()
+  app.use(chainRecordRoutes({
+    pool: { query: async () => { reads++; return { rows: [] } } },
+    recorder: { cfg: chainRecordsConfig({}), status: async () => { reads++; return { enabled: false } } },
+  }))
+  const server = app.listen(0, '127.0.0.1')
+  try {
+    await new Promise((resolve, reject) => { server.once('listening', resolve); server.once('error', reject) })
+    const base = `http://127.0.0.1:${server.address().port}`
+    for (let i = 0; i < 60; i++) {
+      const response = await fetch(base + '/chain/status')
+      assert.equal(response.status, 200)
+      await response.json()
+    }
+    assert.equal(reads, 60)
+    for (const path of ['/chain/status', '/chain/challenges/44444444-4444-4444-4444-444444444444/records', '/chain/certificates/0x' + '1'.repeat(64)]) {
+      const response = await fetch(base + path)
+      assert.equal(response.status, 429)
+      assert.deepEqual(await response.json(), { error: 'rate_limited' })
+    }
+    assert.equal(reads, 60, 'blocked requests never reach the record queries')
+  } finally {
+    server.closeAllConnections()
+    await new Promise(resolve => server.close(resolve))
+    await configureRateLimitStore(null)
+  }
 })

@@ -20,6 +20,7 @@
 import { createPublicClient, createWalletClient, defineChain, http, keccak256, stringToBytes, parseAbi, formatEther, parseEther } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { Router } from 'express'
+import { limiter } from './rate-limit-store.js'
 
 export const CERTIFICATE_KINDS = Object.freeze({ purchase: 1, trial: 2, stage_pass: 3, final_pass: 4, trial_pass: 5, payout: 6 })
 export const CERTIFICATE_STATUS = Object.freeze({ active: 0, passed: 1, failed: 2, expired: 3, revoked: 4 })
@@ -284,10 +285,14 @@ const recordView = (cfg, r) => ({
 export function chainRecordRoutes({ pool, recorder }) {
   const router = Router()
   const cfg = recorder.cfg
-  router.get('/chain/status', async (req, res, next) => {
+  const readLimit = limiter('chain.records.read', {
+    windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,
+    message: { error: 'rate_limited' },
+  })
+  router.get('/chain/status', readLimit, async (req, res, next) => {
     try { res.set('Cache-Control', 'no-store').json(await recorder.status()) } catch (e) { next(e) }
   })
-  router.get('/chain/challenges/:id/records', async (req, res, next) => {
+  router.get('/chain/challenges/:id/records', readLimit, async (req, res, next) => {
     try {
       if (!UUID.test(req.params.id)) return res.status(404).json({ error: 'not_found' })
       /* the whole evaluation chain: the stage-1 root and every later stage */
@@ -302,7 +307,7 @@ export function chainRecordRoutes({ pool, recorder }) {
     } catch (e) { next(e) }
   })
   /* tokenURI metadata: OpenfundCertificate.baseURI + 0x<64 hex token id> */
-  router.get('/chain/certificates/:tokenId', async (req, res, next) => {
+  router.get('/chain/certificates/:tokenId', readLimit, async (req, res, next) => {
     try {
       if (!/^0x[0-9a-f]{64}$/.test(req.params.tokenId)) return res.status(404).json({ error: 'not_found' })
       const id = BigInt(req.params.tokenId).toString()
