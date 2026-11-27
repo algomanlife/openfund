@@ -285,9 +285,11 @@ export interface IChartRenderer {
      * Replace all price bars. By default re-frames the view (a fresh series). Pass
      * `{ preserveView: true }` to keep the current viewport — used when extending the
      * same series in place (e.g. swapping a quick preview for the full history) so
-     * candles don't jump.
+     * candles don't jump. Pass `{ variableDuration: true }` for series whose bars have
+     * no fixed wall-clock period (tick bars, etc.): duplicate-millisecond bars are
+     * preserved, time-based bar countdowns stay hidden, and sub-minute stamps show seconds.
      */
-    setBars(bars: OHLCV[], opts?: { preserveView?: boolean }): void;
+    setBars(bars: OHLCV[], opts?: { preserveView?: boolean; variableDuration?: boolean }): void;
     /** Append a new bar or replace the forming (last) bar, decided by time. */
     updateBar(bar: OHLCV): void;
 
@@ -307,6 +309,12 @@ export interface IChartRenderer {
      * renderer without it draws whatever style is set.
      */
     setSymbolFacts?(facts: SymbolFacts | null): void;
+
+    /**
+     * Set the active symbol's short display name (bare ticker, e.g. `'AAPL'`), used when
+     * the price axis labels multiple instruments side by side. Optional.
+     */
+    setSymbolName?(name: string | undefined): void;
 
     /**
      * Push a bespoke NATIVE-LAYER render payload, keyed by layer `type`. Visuals that aren't

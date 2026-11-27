@@ -1,8 +1,8 @@
 diff --git a/src/workspace/ChartCell.ts b/src/workspace/ChartCell.ts
-index 7f99f3c..40a5ba7 100644
+index 7e3cc40..12b6832 100644
 --- a/src/workspace/ChartCell.ts
 +++ b/src/workspace/ChartCell.ts
-@@ -1363,10 +1363,11 @@ export class ChartCell {
+@@ -1453,10 +1453,11 @@ export class ChartCell {
          return this.nativeCatalog.filter((n) => n.supported).sort((a, b) => collator.compare(a.title, b.title));
      }
  
@@ -16,7 +16,7 @@ index 7f99f3c..40a5ba7 100644
              ...this.supportedNatives().map((n) => ({
                  name: n.title,
                  ...nativeAliases(n.type, this.inner?.i18n),
-@@ -1375,7 +1376,6 @@ export class ChartCell {
+@@ -1465,7 +1466,6 @@ export class ChartCell {
                  nativeType: n.type,
                  beta: n.beta,
              })),
@@ -24,7 +24,7 @@ index 7f99f3c..40a5ba7 100644
          ];
      }
  
-@@ -1387,15 +1387,18 @@ export class ChartCell {
+@@ -1477,15 +1477,18 @@ export class ChartCell {
          ];
      }
  
@@ -48,7 +48,7 @@ index 7f99f3c..40a5ba7 100644
      }
  
      /** Remove by picker ON-CHART index (native instances precede script instances — mirrors onChartRows). */
-@@ -1578,6 +1581,7 @@ export class ChartCell {
+@@ -1749,6 +1752,7 @@ export class ChartCell {
          try {
              return (
                  this.inner?.addIndicator(entry.script, {
