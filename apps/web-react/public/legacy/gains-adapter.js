@@ -403,7 +403,7 @@ function createVelaProvider(){
         basecurrency: m.base,
         currency: m.quote || 'USD',
         timezone: 'UTC',
-        prefix: 'gains',
+        prefix: 'openoracle',
         mintick: 10 ** -m.pricePrecision,
         minmove: 1,
         pricescale: 10 ** m.pricePrecision,
