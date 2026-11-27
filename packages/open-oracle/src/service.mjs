@@ -50,6 +50,7 @@ export class OpenOracleService {
     this.external = { hyperliquid: { inventory: [], discoveredAt: 0, latest: new Map(), observations: [], polls: 0, failures: 0, lastPollAt: 0, lastError: null },
       gmx: { inventory: [], discoveredAt: 0, latest: new Map(), observations: [], polls: 0, failures: 0, lastPollAt: 0, lastError: null } };
     this.records = new Map(); this.listeners = new Set(); this.rules = []; this.rejected = [];
+    this.awaitingPrice = new Set(); // markets the last rebuild could not confirm for lack of an input price
     this.engine = null; this.registry = null; this.idToSymbol = new Map();
     this.rebuildPending = true; this.rebuilds = 0; this.lastRebuildAt = 0; this.lastEvaluation = 0; this.startedAt = 0;
     this.gainsReceived = 0; this.stopped = true; this.timer = null; this.controller = null;
@@ -78,6 +79,7 @@ export class OpenOracleService {
     const o = { source: 'gains', sourceMarketId: symbol, price: p, timestamp: Math.min(updatedAt, receivedAt), receivedAt,
       timestampKind: 'PROVIDER', semantics: 'UNDERLYING_REFERENCE', microstructure: { field } };
     this.gainsLatest.set(symbol, o); this.gainsReceived++;
+    if (this.awaitingPrice.has(symbol)) { this.awaitingPrice.delete(symbol); this.rebuildPending = true; }
     try { this.engine?.ingest(o); } catch (error) { this.logger.warn?.('[open-oracle] gains ingest', error.message); }
     return true;
   }
@@ -126,6 +128,7 @@ export class OpenOracleService {
     state.latest = new Map(observations.map(o => [o.sourceMarketId, o.price]));
     state.observations = observations; state.polls++; state.lastPollAt = this.now(); state.lastError = null;
     if (first && observations.length) this.rebuildPending = true; // price confirmation needs a first snapshot
+    else if (this.awaitingPrice.size && this.rejected.some(r => r.reason === 'no_candidate_price' && r.source === source && state.latest.has(r.sourceMarketId))) this.rebuildPending = true;
     if (!this.engine) return;
     for (const o of observations) { if (this.registry.resolve(source, o.sourceMarketId)) try { this.engine.ingest(o); } catch { /* diagnostic only */ } }
     const now = this.now();
@@ -156,14 +159,18 @@ export class OpenOracleService {
     }
     for (const o of this.gainsLatest.values()) try { engine.ingest(o); } catch { /* skip */ }
     for (const source of ['hyperliquid', 'gmx']) for (const o of this.external[source].observations) if (registry.resolve(source, o.sourceMarketId)) try { engine.ingest(o); } catch { /* skip */ }
-    Object.assign(this, { registry, engine, idToSymbol, rules, rejected, rebuildPending: false, lastRebuildAt: at });
+    // A market rejected only for a missing price is retried as soon as that price arrives (startup ordering).
+    const awaitingPrice = new Set(rejected.filter(r => r.reason === 'no_reference_price' || r.reason === 'no_candidate_price').map(r => r.market));
+    Object.assign(this, { registry, engine, idToSymbol, rules, rejected, awaitingPrice, rebuildPending: false, lastRebuildAt: at });
     this.rebuilds++;
     return { rules: rules.length, rejected: rejected.length };
   }
   /* ---------------- evaluation ---------------- */
   tick() {
     if (!this.catalog.size) return [];
-    if (this.rebuildPending || (this.lastRebuildAt && this.now() - this.lastRebuildAt > this.rediscoverMs)) this.rebuild();
+    const sinceRebuild = this.now() - this.lastRebuildAt;
+    // Rebuilds are cheap but replay inputs, so pending ones are throttled to one per 5 s after the first.
+    if (!this.engine || (this.rebuildPending && sinceRebuild >= 5000) || sinceRebuild > this.rediscoverMs) this.rebuild();
     const time = Math.max(this.now(), this.engine.lastEvaluation + 1);
     const outputs = this.engine.evaluate(time), changed = [];
     for (const output of outputs) {

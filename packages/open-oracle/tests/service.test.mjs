@@ -112,3 +112,17 @@ test('a rebuild keeps the stale fallback and the catalog session updates in plac
   s.rebuildPending = true; now.t += SERVICE_CONFIG.sourcePolicies.gains.maxAgeMs + 1000; s.tick();
   assert.equal(s.get('EUR/USD').price, eur, 'the previous composite survives a registry rebuild');
 });
+
+test('markets whose prices arrive after the first rebuild are joined on the next one', () => {
+  const now = { t: TIME };
+  const s = new OpenOracleService({ now: () => now.t, logger: {} });
+  s.setGainsCatalog([gainsRow('BTC/USD', 'BTC')]);
+  s.external.hyperliquid.inventory = [hlMarket('BTC')];
+  feed(s, 'hyperliquid', '100000', now.t, 'RECEIPT');
+  now.t += 1000; s.tick();
+  assert.equal(s.status().joinedMarkets, 0); assert.ok(s.awaitingPrice.has('BTC/USD'));
+  s.ingestGains('BTC/USD', { price: '100100', updatedAt: now.t, receivedAt: now.t });
+  now.t += 1000; s.tick(); assert.equal(s.status().joinedMarkets, 0, 'rebuilds are throttled');
+  now.t += 5000; feed(s, 'hyperliquid', '100050', now.t, 'RECEIPT'); s.tick();
+  assert.equal(s.status().joinedMarkets, 1); assert.equal(s.get('BTC/USD').mode, 'DUAL_SOURCE');
+});
