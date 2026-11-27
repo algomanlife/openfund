@@ -27,24 +27,24 @@
           "role": "Web/API",
           "provider": "render",
           "resource": "srv-dbnfjajrjlhs738m4020",
-          "version": "0.8.0",
-          "commit": "9f8b171f8073b25753f8b03bcb1f97cc07b7bdbd",
-          "official": false,
-          "verifiedAt": "2026-11-23T05:50:00Z",
-          "evidence": "https://openfi.cloud/version",
-          "note": "GET /version reports version 0.8.0 at main commit 9f8b171 (Merge pull request #191), which contains the v0.8.0 tag plus #169–#191; it is not an official release build."
+          "version": "0.9.0",
+          "commit": "ae7c17dbf70c78747128ec4aeab04ae193165ff1",
+          "official": true,
+          "verifiedAt": "2026-11-27T14:25:00Z",
+          "evidence": "https://github.com/algomanlife/openfund/actions/runs/46005804268",
+          "note": "The release workflow's chained deploy built the exact v0.9.0 commit on Render and its identity report read version 0.9.0 at ae7c17d from GLOBAL /version; the live SIWE gate passed."
         },
         {
           "id": "openfund-backstage",
           "role": "Backstage",
           "provider": "render",
           "resource": "srv-dbsum1u7bikc73chqlfg",
-          "version": null,
-          "commit": "cd057fa4a1d3077e70db0eeab01957ead7a6aeaf",
-          "official": false,
-          "note": "Unreleased commit from a dashboard auto-deploy; its /health predates commit identity, so the commit comes from Render's deploy record.",
-          "verifiedAt": "2026-11-18T07:40:00Z",
-          "evidence": "https://dashboard.render.com/web/srv-dbsum1u7bikc73chqlfg"
+          "version": "0.9.0",
+          "commit": "ae7c17dbf70c78747128ec4aeab04ae193165ff1",
+          "official": true,
+          "note": "The release identity report read commit ae7c17d from Backstage /health after the v0.9.0 deploy.",
+          "verifiedAt": "2026-11-27T14:25:00Z",
+          "evidence": "https://github.com/algomanlife/openfund/actions/runs/46005804268"
         },
         {
           "id": "openfund-cms",
