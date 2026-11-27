@@ -1,5 +1,5 @@
 /* Retired editorial defaults (ADR 0059: prices come from Open Oracle;
- * ADR 0060: Apache-2.0 license; ADR 0061: final leverage ceilings).
+ * ADR 0060: Apache-2.0 license; ADR 0061: final leverage ceilings; ADR 0062: request-based Free Trial).
  *
  * Directus rows seeded from an earlier default keep that text until an
  * editor changes it, and seeds never overwrite editor values. A published
@@ -8,12 +8,76 @@
  * seed changes of the Open Oracle attribution update. */
 export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   [
+    "14 calendar days per phase, free, with Standard challenge rules (8% and 5% targets, 5% daily and 10% total loss limits). You can hold only one active trial at a time, and an active paid account blocks starting one. Trial profits cannot be requested and the trial does not convert to a funded account — it exists to rehearse the real path.",
+    "14 calendar days per phase, free, with the rules of the challenge you choose — Standard (8% and 5% targets, 5% daily and 10% total loss limits) or One-phase (12% target, 3% daily and 12% total loss limits). Request it from the Prop dashboard. Only one account can run at a time, and a new trial is available 72 hours after the previous one ends. Trial profits cannot be requested and the trial does not convert to a funded account — it exists to rehearse the real path."
+  ],
+  [
+    "۱۴ روز تقویمی برای هر مرحله، بدون هزینه و با قواعد چلنج استاندارد (اهداف ۸٪ و ۵٪، سقف‌های ۵٪ روزانه و ۱۰٪ کل). هم‌زمان فقط یک تست فعال می‌تواند داشته باشی و داشتن حساب خریدنی فعال، امکان شروع تست را می‌بندد. سود تست قابل درخواست نیست و تست به حساب فاندشده تبدیل نمی‌شود — هدف آن، تمرین مسیر واقعی است.",
+    "۱۴ روز تقویمی برای هر مرحله، بدون هزینه و با قواعد چلنجی که انتخاب می‌کنی — استاندارد (اهداف ۸٪ و ۵٪، سقف‌های ۵٪ روزانه و ۱۰٪ کل) یا تک‌مرحله‌ای (هدف ۱۲٪، سقف‌های ۳٪ روزانه و ۱۲٪ کل). آن را از داشبورد Prop درخواست کن. هم‌زمان فقط یک حساب می‌تواند فعال باشد و تست بعدی ۷۲ ساعت پس از پایان تست قبلی در دسترس است. سود تست قابل درخواست نیست و تست به حساب فاندشده تبدیل نمی‌شود — هدف آن، تمرین مسیر واقعی است."
+  ],
+  [
+    "Pick the model that fits and read its terms in full. Purchase activation is not available in this release; until then, connect a wallet and explore the 100,000 DAI demo account in the terminal, or rehearse the challenge path with the Free Trial.",
+    "Pick the model that fits and read its terms in full. Purchase activation is not available in this release; until then, connect a wallet and request the 14-day Free Trial from the Prop dashboard to rehearse the challenge path under its real rules."
+  ],
+  [
+    "مدل مناسب را انتخاب کن و شرایطش را کامل بخوان. فعال‌سازی خرید در این نسخه فراهم نیست؛ تا آن زمان می‌توانی با اتصال کیف پول، حساب دموی ۱۰۰٬۰۰۰ دای را در ترمینال تجربه کنی یا با تست رایگان مسیر چلنج را تمرین کنی.",
+    "مدل مناسب را انتخاب کن و شرایطش را کامل بخوان. فعال‌سازی خرید در این نسخه فراهم نیست؛ تا آن زمان می‌توانی کیف پول را وصل کنی و از داشبورد Prop تست رایگان ۱۴ روزه بگیری تا مسیر چلنج را با قواعد واقعی‌اش تمرین کنی."
+  ],
+  [
+    "No. The Free Trial rehearses the two-step rules for fourteen days per phase and carries no reward and no conversion.",
+    "No. The Free Trial applies the Standard or One-phase rules for fourteen days per phase and carries no reward and no conversion."
+  ],
+  [
+    "خیر. تست رایگان قوانین دومرحله‌ای را چهارده روز در هر مرحله تمرین می‌کند و پاداش یا امکان تبدیل ندارد.",
+    "خیر. تست رایگان قوانین «استاندارد» یا «تک‌مرحله‌ای» را چهارده روز در هر مرحله اعمال می‌کند و پاداش یا امکان تبدیل ندارد."
+  ],
+  [
+    "One free_demo account per user, 100,000 virtual DAI.",
+    "No account at sign-in; a Free Trial or challenge account starts at its chosen size."
+  ],
+  [
+    "یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی.",
+    "ورود به حساب، حسابی نمی‌سازد؛ حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود."
+  ],
+  [
+    "Standard rules, 14 days per phase, no fee.",
+    "Standard or One-phase rules, 14 days per phase, no fee."
+  ],
+  [
+    "قواعدِ «استاندارد»، ۱۴ روز در هر مرحله، بدون هزینه.",
+    "قواعدِ «استاندارد» یا «تک‌مرحله‌ای»، ۱۴ روز در هر مرحله، بدون هزینه."
+  ],
+  [
+    "The Free Trial sits outside that arithmetic. It applies the Standard rules - 8% then 5%, a 5% daily limit and a 10% static total - for fourteen days per phase, costs nothing, allows only one active trial, pays no reward and never converts into a funded account. Its value is entirely informational: it shows you how you behave when limits are live.",
+    "The Free Trial sits outside that arithmetic. It applies the rules of the challenge you choose - Standard (8% then 5%, a 5% daily limit and a 10% static total) or One-phase - for fourteen days per phase, costs nothing, allows only one running account, pays no reward and never converts into a funded account. Its value is entirely informational: it shows you how you behave when limits are live."
+  ],
+  [
+    "تستِ رایگان بیرونِ این حساب‌وکتاب است. قواعدِ «استاندارد» را اعمال می‌کند — ۸٪ سپس ۵٪، سقفِ روزانه ۵٪ و سقفِ کل ۱۰٪ ثابت — برای ۱۴ روز در هر مرحله، هیچ هزینه‌ای ندارد، فقط یک تستِ فعال را می‌پذیرد، پاداشی نمی‌دهد و هرگز به حساب فاندشده تبدیل نمی‌شود. ارزشش کاملاً اطلاعاتی است: نشان می‌دهد وقتی سقف‌ها فعال‌اند چگونه رفتار می‌کنی.",
+    "تستِ رایگان بیرونِ این حساب‌وکتاب است. قواعدِ چلنجی را که انتخاب می‌کنی اعمال می‌کند — «استاندارد» (۸٪ سپس ۵٪، سقفِ روزانه ۵٪ و سقفِ کل ۱۰٪ ثابت) یا «تک‌مرحله‌ای» — برای ۱۴ روز در هر مرحله، هیچ هزینه‌ای ندارد، فقط یک حسابِ فعال را می‌پذیرد، پاداشی نمی‌دهد و هرگز به حساب فاندشده تبدیل نمی‌شود. ارزشش کاملاً اطلاعاتی است: نشان می‌دهد وقتی سقف‌ها فعال‌اند چگونه رفتار می‌کنی."
+  ],
+  [
+    "The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.",
+    "The Free Trial is the trading environment open to everyone today: requested from the Prop dashboard, simulated and priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Trial activity does not create a right to capital, a reward share or a withdrawal, and passing a trial does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch."
+  ],
+  [
+    "دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.",
+    "تست رایگان محیطِ معاملاتیِ در دسترسِ همه در امروز است: از داشبورد Prop درخواست می‌شود، شبیه‌سازی‌شده است و با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ تست حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در تست واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود."
+  ],
+  [
+    "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal.",
+    "Openfund accounts are server-side simulated accounts priced from live Open Oracle prices: a Free Trial or challenge account starts at its chosen size, with no deposits, withdrawals, refills or resets — and a simulated profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal."
+  ],
+  [
+    "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید.",
+    "حساب‌های اوپن‌فاند حساب‌های شبیه‌سازی‌شدهٔ سمت سرورند که با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شوند: حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود، بدون واریز، برداشت، شارژ یا بازنشانی — و سود شبیه‌سازی‌شده طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید."
+  ],
+  [
     "Each market’s maximum leverage comes from the Gains Network market feed and is capped by Openfund’s ceilings: BTC and ETH 20×, other crypto 15×, forex, stocks, commodities and indices 50×. The lower of the two applies. Challenges sold before these terms keep the limit recorded in their rules.",
     "Each market’s maximum leverage comes from the Gains Network market feed and is capped by Openfund’s ceilings: BTC and ETH 20×, other crypto 15×, forex, stocks, commodities and indices 50×. The lower of the two applies. These ceilings apply to every challenge account, including challenges sold before these terms."
   ],
   [
     "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge plans publish a reference leverage of 5x; the real per-market maximum comes from the market feed, so read it in the terminal rather than assuming a ceiling.",
-    "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal."
+    "Openfund accounts are server-side simulated accounts priced from live Open Oracle prices: a Free Trial or challenge account starts at its chosen size, with no deposits, withdrawals, refills or resets — and a simulated profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal."
   ],
   [
     "حداکثر اهرمِ هر بازار از خوراکِ بازارِ Gains Network می‌آید و سقف‌های اوپن‌فاند بر آن اعمال می‌شود: بیت‌کوین و اتریوم ۲۰ برابر، سایر رمزارزها ۱۵ برابر، فارکس، سهام، کالاها و شاخص‌ها ۵۰ برابر. مقدار کمتر اعمال می‌شود. چلنج‌هایی که پیش از این شرایط فروخته شده‌اند، سقف ثبت‌شده در قوانین خود را نگه می‌دارند.",
@@ -21,7 +85,7 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. پلن‌های چلنج اهرم مرجع ۵× را منتشر می‌کنند، اما سقف واقعیِ هر بازار از فید می‌آید؛ پس به‌جای فرض کردنِ سقفی، آن را در ترمینال بخوانید.",
-    "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید."
+    "حساب‌های اوپن‌فاند حساب‌های شبیه‌سازی‌شدهٔ سمت سرورند که با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شوند: حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود، بدون واریز، برداشت، شارژ یا بازنشانی — و سود شبیه‌سازی‌شده طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید."
   ],
   [
     "A dedicated trading terminal on live Gains Network market data: crypto, forex, stocks, indices and commodities.",
@@ -109,7 +173,7 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge plans publish a reference leverage of 5x; the real per-market maximum comes from the market feed, so read it in the terminal rather than assuming a ceiling.",
-    "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal."
+    "Openfund accounts are server-side simulated accounts priced from live Open Oracle prices: a Free Trial or challenge account starts at its chosen size, with no deposits, withdrawals, refills or resets — and a simulated profit is not money owed to anyone. Challenge accounts use the Openfund leverage ceilings — BTC and ETH 20x, other crypto 15x, forex, stocks, indices and commodities 50x — and a lower limit of the market itself always applies, so read each market’s maximum in the terminal."
   ],
   [
     "The application loads market metadata and marks from Gains Network. Instruments are grouped into crypto, forex, stocks, indices and commodities — browse the full directory on the Markets page. The available list and each market’s status can change.",
@@ -121,7 +185,7 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.",
-    "The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch."
+    "The Free Trial is the trading environment open to everyone today: requested from the Prop dashboard, simulated and priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Trial activity does not create a right to capital, a reward share or a withdrawal, and passing a trial does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch."
   ],
   [
     "The simulated demo lowers the stakes but not the pattern: it runs on 100,000 virtual DAI at live Gains Network mark prices, so a losing streak costs you nothing withdrawable, yet still shows how you behave under the feeling - the only thing this lesson is about. Nothing here is investment advice, and staying calm or journalling a loss is no route to profit or to a funded account.",
@@ -201,11 +265,11 @@ export const RETIRED_COPY: ReadonlyMap<string, string> = new Map([
   ],
   [
     "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با مارک پرایس زندهٔ Gains Network، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. پلن‌های چلنج اهرم مرجع ۵× را منتشر می‌کنند، اما سقف واقعیِ هر بازار از فید می‌آید؛ پس به‌جای فرض کردنِ سقفی، آن را در ترمینال بخوانید.",
-    "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید."
+    "حساب‌های اوپن‌فاند حساب‌های شبیه‌سازی‌شدهٔ سمت سرورند که با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شوند: حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود، بدون واریز، برداشت، شارژ یا بازنشانی — و سود شبیه‌سازی‌شده طلبِ مالی هیچ‌کس نیست. حساب‌های چلنج از سقف‌های اهرم اوپن‌فاند پیروی می‌کنند — بیت‌کوین و اتریوم ۲۰×، سایر رمزارزها ۱۵×، فارکس، سهام، شاخص‌ها و کالاها ۵۰× — و سقفِ کمترِ خودِ بازار همیشه اعمال می‌شود؛ پس سقف هر بازار را در ترمینال بخوانید."
   ],
   [
     "دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از مارک پرایسِ زندهٔ Gains Network، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.",
-    "دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود."
+    "تست رایگان محیطِ معاملاتیِ در دسترسِ همه در امروز است: از داشبورد Prop درخواست می‌شود، شبیه‌سازی‌شده است و با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ تست حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در تست واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود."
   ],
   [
     "دموی شبیه‌سازی‌شده شرط را پایین می‌آورد ولی الگو را نه: روی ۱۰۰٬۰۰۰ دای مجازی با مارک پرایسِ زندهٔ Gains Network اجرا می‌شود، پس رگبارِ ضرر چیزی قابلِ برداشت از تو نمی‌گیرد، اما همچنان نشان می‌دهد زیرِ آن حس چگونه رفتار می‌کنی — و تنها موضوعِ همین درس است. هیچ‌چیز اینجا توصیهٔ سرمایه‌گذاری نیست، و آرام ماندن یا ژورنال کردنِ یک ضرر نه راهِ سود است و نه راهِ حساب فاندشده.",

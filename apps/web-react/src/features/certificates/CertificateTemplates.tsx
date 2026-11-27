@@ -3,7 +3,7 @@ import { pickRecord, type AppLocale } from '../../i18n/locales'
 import { certificateCopy as copy, type Certificate, type CertificateKind } from './content'
 import { certificateTemplate } from './export'
 
-const KINDS: CertificateKind[] = ['purchase', 'completion', 'payout']
+const KINDS: CertificateKind[] = ['purchase', 'trial', 'stage_pass', 'trial_pass', 'completion', 'payout']
 
 /** Anonymous template image: painted once per kind and locale, never carries data. */
 function TemplateImage({ kind, locale }: { kind: CertificateKind; locale: AppLocale }) {
@@ -20,7 +20,7 @@ function TemplateImage({ kind, locale }: { kind: CertificateKind; locale: AppLoc
 }
 
 /**
- * The three certificate designs, visible to everyone. `issued` is the
+ * Every certificate design, visible to everyone. `issued` is the
  * signed-in user's own server-issued list (or null when signed out); it only
  * drives the status chip — the artwork is always the anonymous template.
  */

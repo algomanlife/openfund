@@ -6,7 +6,7 @@ import type { LearningPathContent } from '../../contentTypes'
  *  it explains how prop evaluation models and funded-account terms are written
  *  and never recommends a strategy or promises profit. Openfund-specific claims
  *  stay inside the verified set - Prop Trading today runs one server-side
- *  simulated free_demo account per user, funded once with 100,000 virtual DAI and
+ *  simulated account (since ADR 0062 a requested Free Trial or a purchased challenge, not an automatic demo) and
  *  priced from live Open Oracle prices, with no deposits, withdrawals,
  *  refills or resets; purchase activation, funded accounts and payouts are not
  *  enabled in this release, so every figure quoted below is a published term of
@@ -121,8 +121,8 @@ export const pathC: LearningPathContent = {
           caption: text('Four stages, and what each one is', 'چهار مرحله و تعریفِ هرکدام'),
           head: [text('Stage', 'مرحله'), text('What exists', 'چه چیزی وجود دارد'), text('What it does not mean', 'چه معنایی ندارد')],
           rows: [
-            [text('Simulated demo', 'دموی شبیه‌سازی‌شده'), text('One free_demo account per user, 100,000 virtual DAI.', 'یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی.'), text('No deposits, no withdrawals, no payout right.', 'بدون واریز، بدون برداشت، بدون حقِ برداشت.')],
-            [text('Free Trial', 'تست رایگان'), text('Standard rules, 14 days per phase, no fee.', 'قواعدِ «استاندارد»، ۱۴ روز در هر مرحله، بدون هزینه.'), text('No reward, no conversion into a funded account.', 'بدون پاداش، بدون تبدیل به حساب فاندشده.')],
+            [text('Simulated accounts', 'حساب‌های شبیه‌سازی‌شده'), text('No account at sign-in; a Free Trial or challenge account starts at its chosen size.', 'ورود به حساب، حسابی نمی‌سازد؛ حساب تست رایگان یا چلنج با اندازهٔ انتخاب‌شده شروع می‌شود.'), text('No deposits, no withdrawals, no payout right.', 'بدون واریز، بدون برداشت، بدون حقِ برداشت.')],
+            [text('Free Trial', 'تست رایگان'), text('Standard or One-phase rules, 14 days per phase, no fee.', 'قواعدِ «استاندارد» یا «تک‌مرحله‌ای»، ۱۴ روز در هر مرحله، بدون هزینه.'), text('No reward, no conversion into a funded account.', 'بدون پاداش، بدون تبدیل به حساب فاندشده.')],
             [text('Evaluation phase', 'مرحلهٔ ارزیابی'), text('Target, loss limits, minimum activity: 8% then 5%.', 'هدف، سقف‌های ضرر، حداقلِ فعالیت: ۸٪ سپس ۵٪.'), text('A pass is a condition, not a claim on capital.', 'قبولی شرط است، نه ادعا بر سرمایه.')],
             [text('Funded account', 'حساب فاندشده'), text('Payout stage: loss limits, no target, published share.', 'مرحلهٔ برداشت: سقف‌های ضرر، بدون هدف، سهمِ منتشرشده.'), text('Not a deposit account; not enabled in this release.', 'حسابِ سپرده نیست؛ در این نسخه فعال نیست.')],
           ]
@@ -202,8 +202,8 @@ export const pathC: LearningPathContent = {
         {
           type: 'p',
           text: text(
-            'The Free Trial sits outside that arithmetic. It applies the Standard rules - 8% then 5%, a 5% daily limit and a 10% static total - for fourteen days per phase, costs nothing, allows only one active trial, pays no reward and never converts into a funded account. Its value is entirely informational: it shows you how you behave when limits are live.',
-            'تستِ رایگان بیرونِ این حساب‌وکتاب است. قواعدِ «استاندارد» را اعمال می‌کند — ۸٪ سپس ۵٪، سقفِ روزانه ۵٪ و سقفِ کل ۱۰٪ ثابت — برای ۱۴ روز در هر مرحله، هیچ هزینه‌ای ندارد، فقط یک تستِ فعال را می‌پذیرد، پاداشی نمی‌دهد و هرگز به حساب فاندشده تبدیل نمی‌شود. ارزشش کاملاً اطلاعاتی است: نشان می‌دهد وقتی سقف‌ها فعال‌اند چگونه رفتار می‌کنی.'
+            'The Free Trial sits outside that arithmetic. It applies the rules of the challenge you choose - Standard (8% then 5%, a 5% daily limit and a 10% static total) or One-phase - for fourteen days per phase, costs nothing, allows only one running account, pays no reward and never converts into a funded account. Its value is entirely informational: it shows you how you behave when limits are live.',
+            'تستِ رایگان بیرونِ این حساب‌وکتاب است. قواعدِ چلنجی را که انتخاب می‌کنی اعمال می‌کند — «استاندارد» (۸٪ سپس ۵٪، سقفِ روزانه ۵٪ و سقفِ کل ۱۰٪ ثابت) یا «تک‌مرحله‌ای» — برای ۱۴ روز در هر مرحله، هیچ هزینه‌ای ندارد، فقط یک حسابِ فعال را می‌پذیرد، پاداشی نمی‌دهد و هرگز به حساب فاندشده تبدیل نمی‌شود. ارزشش کاملاً اطلاعاتی است: نشان می‌دهد وقتی سقف‌ها فعال‌اند چگونه رفتار می‌کنی.'
           )
         },
         {
@@ -541,8 +541,8 @@ export const pathC: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.',
-            'دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.'
+            'The Free Trial is the trading environment open to everyone today: requested from the Prop dashboard, simulated and priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Trial activity does not create a right to capital, a reward share or a withdrawal, and passing a trial does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.',
+            'تست رایگان محیطِ معاملاتیِ در دسترسِ همه در امروز است: از داشبورد Prop درخواست می‌شود، شبیه‌سازی‌شده است و با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ تست حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در تست واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.'
           )
         },
         { type: 'h2', text: text('A routine that survives contact with the limits', 'روتینی که در برخورد با سقف‌ها دوام می‌آورد') },

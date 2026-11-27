@@ -147,6 +147,20 @@
         "text": [],
         "scope": "active"
       }
+    },
+    {
+      "id": "free-demo-account",
+      "item": "Automatic free demo account (`demo_accounts.account_type = 'free_demo'`, 100,000 virtual USD created at sign-in)",
+      "kind": "code",
+      "status": "legacy-only pending removal",
+      "retiredSince": "2026-11-27",
+      "replacement": "Request-based 14-day Free Trial on the `free-trial` plan ([ADR 0062](../decisions/0062-request-based-free-trial.md)); existing rows are deleted by `npm --prefix apps/backend run retire-free-demo`",
+      "note": "Sign-in no longer creates the account outside test mode. The engine keeps the account type as the fixture the backend and browser suites trade on (`SIM_TEST_MODE`); no product surface offers it.",
+      "gate": {
+        "files": [],
+        "text": ["free_demo"],
+        "scope": "active"
+      }
     }
   ]
 }

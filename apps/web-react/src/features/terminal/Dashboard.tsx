@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { JournalAnalytics } from "./JournalAnalytics";
 import { AccountCards, AccountLinks, useAccounts } from "./Accounts";
 import { ChallengePanel } from "./ChallengePanel";
+import { TrialActivation } from "./TrialActivation";
 import { useSession } from "../../session/useOpenfundSession";
 import { AccessGate } from "./TerminalShell";
 import { useTerminal } from "./TerminalContext";
@@ -20,8 +21,21 @@ export function ProductDashboard() {
   const { product, locale, context, t, message } = useTerminal(), session = useSession();
   const [params] = useSearchParams(), directory = useAccounts();
   const selected = directory.accounts.find(account => account.id === (params.get("account") || context?.accountRef));
-  const overview = useResource(product, session.status === "authenticated" && product === "prop" && selected?.type !== "challenge" ? "/overview" : null, 0, true);
+  const overview = useResource(product, session.status === "authenticated" && product === "prop" && selected?.type === "free_trial" ? "/overview" : null, 0, true);
   if (session.status !== "authenticated") return <AccessGate />;
+  /* ADR 0062: no account is created at sign-in. A Prop trader without a
+     running account (no Free Trial, no challenge in progress) is offered the
+     Free Trial and the challenge checkout here. */
+  const propAccounts = directory.accounts.filter(account => account.product === "prop");
+  const running = propAccounts.some(account => !account.readOnly);
+  if (product === "prop" && directory.loaded && !directory.error && !selected) {
+    return <div className="of-dashboard-workspace">
+      {propAccounts.length > 0 && <aside className="of-dashboard-accounts"><AccountCards compact /></aside>}
+      <div className="of-dashboard-content">{running
+        ? <p role="status" className="of-panel">{t("یک حساب را از فهرست انتخاب کنید.", "Choose an account from the list.")}</p>
+        : <TrialActivation />}</div>
+    </div>;
+  }
   const unit = context?.state?.account?.currency || selected?.currency || "USD";
   const a = overview.data?.account;
   const positions = context?.state?.positions || [];

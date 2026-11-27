@@ -49,7 +49,7 @@ export function useAccounts() {
   }, [key]);
   const visible = state.key === key ? state : { accounts: [], error: "" };
   const english = /^\/en(?:\/|$)/.test(location.pathname);
-  return { ...visible, accounts: visible.accounts.filter(account => !english || account.product === "prop") };
+  return { ...visible, loaded: state.key === key, accounts: visible.accounts.filter(account => !english || account.product === "prop") };
 }
 export function AccountPicker() {
   const { locale, product, context, t } = useTerminal(),
@@ -119,6 +119,8 @@ export function AccountCards({ compact = false, selectedId }: { compact?: boolea
                     "۱۰۰٬۰۰۰ دلار مجازی · حساب شبیه‌سازی‌شده",
                     "100,000 virtual USD · simulated account",
                   )
+                : a.freeTrial
+                  ? t("تست رایگان ۱۴ روزه · رکورد چالش", "14-day Free Trial · challenge record")
                 : a.type === "perpetual"
                   ? "Gains Network · Arbitrum"
                   : t("رکورد چالش", "Challenge record")}

@@ -15,11 +15,15 @@ const loadFont = () => certificateFont ??= Promise.all([
 
 export const CERTIFICATE_SIZE = 2000
 type Palette = { top: string; mid: string; glow: string; accent: string; soft: string; metal: string[] }
-/* One square composition, three finishes: silver (purchase), mint (completion), lime (payout). */
+/* One square composition, one finish per kind: silver (purchase), mint (completion), lime (payout), and the ADR 0062 kinds below. */
 const PALETTES: Record<CertificateKind, Palette> = {
   purchase: { top: '#4a4f4c', mid: '#0b1a16', glow: '#9fd9c0', accent: '#82e7bd', soft: '#b9cbc2', metal: ['#f8fffb', '#a9b8b1', '#ffffff', '#6f8a7f', '#e9fff5', '#b4c9c0', '#f3fff9'] },
   completion: { top: '#24463a', mid: '#061511', glow: '#82e7bd', accent: '#82e7bd', soft: '#b9cbc2', metal: ['#effff7', '#82e7bd', '#ffffff', '#3c8f6c', '#d9fff0', '#82e7bd', '#f4fffa'] },
   payout: { top: '#3f4a17', mid: '#0c1206', glow: '#c6ff52', accent: '#c6ff52', soft: '#cfd9b8', metal: ['#fbffef', '#c6ff52', '#ffffff', '#6d8a2a', '#f4ffd6', '#b9f04a', '#fdfff4'] },
+  /* ADR 0062: Free Trial start (sky), phase pass (teal), Free Trial pass (violet) */
+  trial: { top: '#1f3a4a', mid: '#061019', glow: '#8fd3ff', accent: '#8fd3ff', soft: '#b8cad6', metal: ['#f2fbff', '#8fd3ff', '#ffffff', '#3f7a9c', '#dff4ff', '#9bd8ff', '#f6fcff'] },
+  stage_pass: { top: '#1d4446', mid: '#051314', glow: '#6fe3d6', accent: '#6fe3d6', soft: '#b5d0cd', metal: ['#effffd', '#6fe3d6', '#ffffff', '#2f8a80', '#d6fffa', '#7be9dd', '#f4fffe'] },
+  trial_pass: { top: '#352a4d', mid: '#0d0918', glow: '#c3a6ff', accent: '#c3a6ff', soft: '#cbc2db', metal: ['#f8f3ff', '#c3a6ff', '#ffffff', '#6d55a3', '#ece2ff', '#c9b0ff', '#fbf8ff'] },
 }
 
 /** Draw the Openfund mark with a brushed-metal gradient and a soft glow. */

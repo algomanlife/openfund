@@ -265,6 +265,9 @@ ALTER TABLE demo_accounts ADD CONSTRAINT demo_accounts_status_check
   CHECK (status IN ('active','suspended','closed','liquidating','permanently_disabled'));
 CREATE OR REPLACE FUNCTION protect_terminated_trial() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
+  /* ADR 0062: the owner-run retire-free-demo script deletes every former
+     free demo account in one transaction that sets this flag (SET LOCAL) */
+  IF TG_OP='DELETE' AND current_setting('openfund.retire_free_demo', true) = 'on' THEN RETURN OLD; END IF;
   IF OLD.account_type='free_demo' AND OLD.status='permanently_disabled' THEN
     RAISE EXCEPTION 'permanently_disabled_trial_is_immutable' USING ERRCODE='23514';
   END IF;
@@ -295,6 +298,7 @@ CREATE TABLE IF NOT EXISTS account_equity_samples (
 CREATE OR REPLACE FUNCTION guard_trial_metadata() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE owner_id uuid; state text; ref text; prod text;
 BEGIN
+  IF TG_OP='DELETE' AND current_setting('openfund.retire_free_demo', true) = 'on' THEN RETURN OLD; END IF;
   owner_id := CASE WHEN TG_OP='DELETE' THEN OLD.user_id ELSE NEW.user_id END;
   IF TG_TABLE_NAME='trade_notes' THEN
     SELECT status INTO state FROM demo_accounts WHERE user_id=owner_id AND account_type='free_demo' FOR UPDATE;
@@ -3129,7 +3133,7 @@ CREATE TABLE IF NOT EXISTS tournament_awards (
 
 -- tournament certificates (badges on certificates)
 ALTER TABLE certificates DROP CONSTRAINT IF EXISTS certificates_kind_check;
-ALTER TABLE certificates ADD CONSTRAINT certificates_kind_check CHECK (kind IN ('purchase','completion','payout','tournament'));
+ALTER TABLE certificates ADD CONSTRAINT certificates_kind_check CHECK (kind IN ('purchase','completion','payout','tournament','trial','stage_pass','trial_pass'));
 
 -- ==================================================================
 -- Migration to Openfund (migration.js, ADR 0051). Additive.

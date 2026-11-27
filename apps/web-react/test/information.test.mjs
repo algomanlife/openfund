@@ -59,7 +59,9 @@ test('every rule section has matching bilingual content and unique anchors', () 
     }
   }
   ruleSections.forEach(check)
-  for (const id of ['configurations', 'stages', 'targets', 'daily-loss', 'maximum-loss', 'violations', 'identity', 'fees', 'free-trial', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
+  for (const id of ['configurations', 'stages', 'targets', 'daily-loss', 'maximum-loss', 'violations', 'identity', 'fees', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
+  /* ADR 0062: the request-based Free Trial is operational */
+  assert.equal(ruleSections.find(s => s.id === 'free-trial').status, 'current')
   /* v0.3.1: the evaluation path (purchase → start → live rules) is operational */
   assert.equal(ruleSections.find(s => s.id === 'how-it-works').status, 'current')
   /* implemented and enforced by the server (owner decisions D1–D8, ADR 0029) */

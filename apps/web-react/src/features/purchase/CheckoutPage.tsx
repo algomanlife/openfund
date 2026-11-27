@@ -138,7 +138,9 @@ const EMAIL = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]{2,}$/
 const customerKey = 'of.checkout.customer'
 const readCustomer = () => { try { return JSON.parse(localStorage.getItem(customerKey) || 'null') as { name?: string, email?: string } | null } catch { return null } }
 
-export default function CheckoutPage() {
+/** `embedded`: the same checkout inside the Prop dashboard (ADR 0062), without
+ *  the public page shell (header, navigation and footer). */
+export default function CheckoutPage({ embedded = false }: { embedded?: boolean } = {}) {
   const locale = useInformationLocale()
   const t = (fa: string, en: string) => pick(locale, fa, en)
   const errText = (code: string) => { const e = ERR[code]; return e ? t(e[0], e[1]) : code }
@@ -459,12 +461,10 @@ export default function CheckoutPage() {
   const orderOpen = order?.status === 'pending'
   const orderClosed = order && !orderOpen && !(receipt && receipt.status === 'paid')
 
-  return (
-    <InformationShell page="checkout" title={`${t('خرید چلنج', 'Buy a Challenge')} | Openfund`}
-      description={t('خرید چلنج اوپن‌فاند با پرداخت رمزارزی DePay و تأیید سمت سرور.', 'Buy an Openfund challenge with a DePay crypto payment and server-side verification.')}>
-      <section className="of-co" dir={dirOf(locale)}>
+  const body = (
+      <section className={embedded ? 'of-co of-co--embedded' : 'of-co'} dir={dirOf(locale)}>
         <header className="of-co-head">
-          <h1>{t('خرید چلنج', 'Buy a Challenge')}</h1>
+          {embedded ? <h2>{t('خرید چلنج', 'Buy a Challenge')}</h2> : <h1>{t('خرید چلنج', 'Buy a Challenge')}</h1>}
           <ol className="of-co-steps" aria-label={t('مراحل خرید', 'Checkout steps')}>
             {[t('کیف پول', 'Wallet'), t('انتخاب و بررسی', 'Select & review'), t('پرداخت', 'Payment'), t('رسید', 'Receipt')].map((label, i) => (
               <li key={i} className={i + 1 < step ? 'done' : i + 1 === step ? 'current' : ''} aria-current={i + 1 === step ? 'step' : undefined}><span>{i + 1}</span>{label}</li>
@@ -778,6 +778,11 @@ export default function CheckoutPage() {
         {error && <p className="of-profile-error" role="alert">{error}</p>}
         <p className="of-co-muted of-co-foot"><Link to={`/${locale}/prop/purchases`}>{t('خریدها و فاکتورهای قبلی', 'Previous purchases & invoices')}</Link></p>
       </section>
+  )
+  return embedded ? body : (
+    <InformationShell page="checkout" title={`${t('خرید چلنج', 'Buy a Challenge')} | Openfund`}
+      description={t('خرید چلنج اوپن‌فاند با پرداخت رمزارزی DePay و تأیید سمت سرور.', 'Buy an Openfund challenge with a DePay crypto payment and server-side verification.')}>
+      {body}
     </InformationShell>
   )
 }

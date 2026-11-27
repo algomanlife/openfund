@@ -66,3 +66,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0059 — Open Oracle as the Openfund pricing service](0059-open-oracle-pricing-service.md)
 - [0060 — Openfund is open source under Apache-2.0](0060-open-source-license.md)
 - [0061 — The Openfund leverage ceilings are final for every Prop account](0061-final-prop-leverage-ceilings.md)
+- [0062 — Request-based 14-day Free Trial; the automatic demo account is retired](0062-request-based-free-trial.md)
