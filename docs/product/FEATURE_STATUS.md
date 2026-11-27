@@ -2,14 +2,14 @@
 
 Open Oracle is **Completed (released in v0.9.0 and deployed on GLOBAL on 2026-11-27)** as the Openfund pricing service ([ADR 0059](../decisions/0059-open-oracle-pricing-service.md)): the backend market-data role aggregates three independent sources into one composite per market, the demo engine executes only on usable composites, and the public `/api/oracle/*` REST and SSE API serves them (GLOBAL `/api/oracle/status` reported 496 markets and 161 joined markets on 2026-11-27). **In Progress (in source, unreleased):** the catalog, candles, virtual order book and trades through `/api/oracle/markets…`, so the website and terminal read all market data from Open Oracle, and the Open Oracle mark in the terminal instead of venue names ([integration](../integrations/OPEN_ORACLE.md)).
 
-Admin operators and access levels are **Completed in source (released in
-v0.9.0; not yet deployed or owner-accepted)**: named Backstage operators with
+Admin operators and access levels are **Completed (released in v0.9.0 and
+deployed on GLOBAL on 2026-11-27; not yet owner-accepted)**: named Backstage operators with
 roles `owner`, `finance`, `support`, `content` and `viewer`, checked by the
 backend per path, with the verified operator in the audit trail. Enforcement
 starts when the owner creates the first operator
 ([operations guide](../backstage/OPERATIONS_GUIDE.md#add-operators-and-access-levels)).
-Shared persistent rate limits and backend ESLint are **Completed in source
-(released in v0.9.0)**. Evidence: `test/admin-operators.test.mjs`,
+Shared persistent rate limits and backend ESLint are **Completed (released in
+v0.9.0 and deployed on GLOBAL on 2026-11-27)**. Evidence: `test/admin-operators.test.mjs`,
 `test/rate-limit-store.test.mjs`, Backstage server tests and the
 [2026-11-27 security assessment](../security/SECURITY-ASSESSMENT-2026-11-27.md).
 
