@@ -16,7 +16,8 @@ export function validateConfig(c: OracleConfig): void {
   for (const s of ['gains', 'hyperliquid', 'gmx'] as Source[])
     if (decimal(c.baseWeights[s]) < 0n) throw new RangeError('negative_base_weight');
   for (const policy of Object.values(c.sourcePolicies ?? {}))
-    if (!Number.isSafeInteger(policy.halfLifeMs) || !Number.isSafeInteger(policy.maxAgeMs) || policy.halfLifeMs <= 0 || policy.maxAgeMs <= 0 || policy.maxAgeMs / policy.halfLifeMs > 64) throw new RangeError('invalid_source_policy');
+    if (!Number.isSafeInteger(policy.halfLifeMs) || !Number.isSafeInteger(policy.maxAgeMs) || policy.halfLifeMs <= 0 || policy.maxAgeMs <= 0 || policy.maxAgeMs / policy.halfLifeMs > 64 ||
+        (policy.allowReceiptTimestamps !== undefined && typeof policy.allowReceiptTimestamps !== 'boolean')) throw new RangeError('invalid_source_policy');
   if (!c.version || !c.algorithmVersion || !c.confidenceVersion) throw new RangeError('unversioned_config');
 }
 /** Evaluate only observations known by event time AND receipt time; inputs are immutable. */
@@ -39,7 +40,7 @@ export function calculatePrice(marketId: string, observations: Observation[], ev
     else if (o.timestamp > o.receivedAt + 1000) reason = 'clock_skew';
     else if (o.timestamp > evaluationTime || o.receivedAt > evaluationTime) reason = 'future_observation';
     else if (evaluationTime - o.timestamp > policy.maxAgeMs) reason = 'stale';
-    else if (o.timestampKind === 'RECEIPT' && !config.allowReceiptTimestamps) reason = 'timestamp_unverified';
+    else if (o.timestampKind === 'RECEIPT' && !(config.sourcePolicies?.[o.source]?.allowReceiptTimestamps ?? config.allowReceiptTimestamps)) reason = 'timestamp_unverified';
     if (seen.has(o.source)) reason = 'duplicate_source';
     seen.add(o.source);
     let reliability = SCALE;

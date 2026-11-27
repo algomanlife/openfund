@@ -14,7 +14,7 @@ export interface OracleConfig {
   maxAlignmentMs: number; sigmaFloor: string; huberK: string;
   dualTolerance: string; hardDeviation: string; allowReceiptTimestamps: boolean;
   reliabilityWindowMs: number; watermarkMs: number;
-  sourcePolicies?: Partial<Record<Source, { halfLifeMs: number; maxAgeMs: number }>>;
+  sourcePolicies?: Partial<Record<Source, { halfLifeMs: number; maxAgeMs: number; allowReceiptTimestamps?: boolean }>>;
 }
 export interface SourceContribution {
   source: Source; sourceMarketId: string; rawPrice: string; normalizedPrice: string;

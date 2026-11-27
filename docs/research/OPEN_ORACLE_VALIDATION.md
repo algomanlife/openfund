@@ -121,6 +121,30 @@ units and exact positive multipliers before triple-source calculation, preservin
 raw prices separately. No economic identity is inferred from a ticker. The local
 protocol suite now passes 55 tests; final-commit CI is tracked in PR #223.
 
+## Pricing service acceptance
+
+[ADR 0059](../decisions/0059-open-oracle-pricing-service.md) added
+`scripts/service-live.mjs`, which runs the production service configuration
+against the public providers and records aggregate evidence only.
+
+- **First run** ([45950969018](https://github.com/algomanlife/openfund/actions/runs/45950969018)),
+  with the research default Gains `index` field: 47 joined composites were
+  `DIVERGENT`, and the two-or-three-source spread had p90 0.066. Per-source
+  detail showed the Gains `index` 2–7 % below Hyperliquid and GMX on BTC, ETH,
+  LINK and LTC while Hyperliquid and GMX agreed within 0.3 %.
+- **Accepted run** ([45951569988](https://github.com/algomanlife/openfund/actions/runs/45951569988),
+  commit `d7595e2`), with the Gains `mark` and the Gains age policy: 136
+  joined markets (133 Hyperliquid and 78 GMX members), no `DIVERGENT`
+  composite, spread p50 0.0001, p99 0.0039, max 0.0080. Gains `index` vs the
+  other providers: median 0.044 (p90 0.134) log distance; Gains `mark`:
+  median 0.0007 (p90 0.0018). Last sample of 496 markets: 45 triple-source,
+  61 dual-source, 214 single-source, 54 stale, 83 closed and 39 unavailable;
+  320 executable. [Committed summary](../../packages/open-oracle/benchmarks/ci-service-acceptance.json).
+
+Limits: a two-minute public window, not absolute accuracy, liquidity or
+long-run availability. Gains `updatedAt` is a last-change time (input age p50
+9.7 s, p90 42.8 s), which is why Gains has its own age bound.
+
 ## Remaining integration work
 
 Before a later integration: extend the successful public-data window across

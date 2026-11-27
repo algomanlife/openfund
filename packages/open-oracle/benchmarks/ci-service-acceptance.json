@@ -1,0 +1,412 @@
+{
+  "run": "https://github.com/algomanlife/openfund/actions/runs/45951569988",
+  "job": 140348390294,
+  "implementationCommit": "d7595e2",
+  "collectedAt": "2026-11-27T06:27:23.857Z",
+  "classification": "Public aggregate service window (120 s after a 20 s warm-up), production service configuration; not absolute accuracy or execution liquidity.",
+  "joinedMarkets": 136,
+  "members": {
+    "hyperliquid": 133,
+    "gmx": 78
+  },
+  "lastTick": {
+    "at": "2026-11-27T06:27:23.857Z",
+    "markets": 496,
+    "usable": 320,
+    "modes": {
+      "TRIPLE_SOURCE": 45,
+      "DUAL_SOURCE": 61,
+      "SINGLE_SOURCE": 214,
+      "STALE": 54,
+      "MARKET_CLOSED": 83,
+      "UNAVAILABLE": 39
+    },
+    "joinedModes": {
+      "TRIPLE_SOURCE": 45,
+      "DUAL_SOURCE": 61,
+      "SINGLE_SOURCE": 30
+    }
+  },
+  "spread": {
+    "samples": 2802,
+    "p50": 0.00011428462598509515,
+    "p90": 0.0018118042040393323,
+    "p99": 0.003872394699310925,
+    "max": 0.007992217072754125
+  },
+  "gainsFieldVsPeers": {
+    "index": {
+      "samples": 120,
+      "p50": 0.04436828992190328,
+      "p90": 0.13416648718771462
+    },
+    "mark": {
+      "samples": 120,
+      "p50": 0.0007053442597137179,
+      "p90": 0.0018371295275005296
+    }
+  },
+  "gainsInputAgeMs": {
+    "samples": 377,
+    "p10": 1659,
+    "p50": 9676,
+    "p90": 42825
+  },
+  "exclusions": {
+    "gains:stale": 1273,
+    "gains:timestamp_misaligned": 550
+  },
+  "rejectedReasons": {
+    "gains:no_reference_price": 107,
+    "gmx:no_candidate_price": 6
+  },
+  "divergentMarkets": [],
+  "joinedSample": [
+    {
+      "market": "BTC/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "61623.2",
+          "ageMs": 3231,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "61623.10216416516025",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "61707.0",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "ETH/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "1733.3",
+          "ageMs": 1226,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "1733.294203720628775",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "1735.7",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "LINK/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "9.62289",
+          "ageMs": 3231,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "9.6216761633426485",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "9.6355",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "DOGE/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "0.058001",
+          "ageMs": 1226,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "0.057993587750002155",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "0.058073",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "SUSHI/USD",
+      "mode": "SINGLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "0.155651",
+          "ageMs": 25845,
+          "reason": "timestamp_misaligned"
+        },
+        {
+          "source": "hyperliquid",
+          "price": "0.1557",
+          "ageMs": 400,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "AAVE/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "96.3587",
+          "ageMs": 3231,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "96.3424879663879",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "96.48",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "ALGO/USD",
+      "mode": "DUAL_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "0.0824876",
+          "ageMs": 15249,
+          "reason": "timestamp_misaligned"
+        },
+        {
+          "source": "gmx",
+          "price": "0.08244166309726515",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "0.08257",
+          "ageMs": 400,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "COMP/USD",
+      "mode": "SINGLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "18.1652",
+          "ageMs": 39381,
+          "reason": "stale"
+        },
+        {
+          "source": "hyperliquid",
+          "price": "18.185",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "DOT/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "0.6913",
+          "ageMs": 1226,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "0.69132890448950945",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "0.6923",
+          "ageMs": 400,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "SNX/USD",
+      "mode": "SINGLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "0.1464",
+          "ageMs": 23749,
+          "reason": "timestamp_misaligned"
+        },
+        {
+          "source": "hyperliquid",
+          "price": "0.14655",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "UNI/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "4.8665",
+          "ageMs": 5721,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "4.86608935",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "4.8731",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "XLM/USD",
+      "mode": "DUAL_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "0.129703",
+          "ageMs": 18254,
+          "reason": "timestamp_misaligned"
+        },
+        {
+          "source": "gmx",
+          "price": "0.1296776863841932",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "0.12986",
+          "ageMs": 400,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "XRP/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "0.96976",
+          "ageMs": 1226,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "0.96974832072027695",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "0.9711",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "ZEC/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "755.72",
+          "ageMs": 713,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "755.674705330057575",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "756.81",
+          "ageMs": 400,
+          "reason": null
+        }
+      ]
+    },
+    {
+      "market": "SOL/USD",
+      "mode": "TRIPLE_SOURCE",
+      "sources": [
+        {
+          "source": "gains",
+          "price": "72.9007",
+          "ageMs": 2716,
+          "reason": null
+        },
+        {
+          "source": "gmx",
+          "price": "72.8910166731756025",
+          "ageMs": 3914,
+          "reason": null
+        },
+        {
+          "source": "hyperliquid",
+          "price": "72.995",
+          "ageMs": 401,
+          "reason": null
+        }
+      ]
+    }
+  ],
+  "firstRun": {
+    "run": "https://github.com/algomanlife/openfund/actions/runs/45950969018",
+    "note": "Same service with the Gains index field: 47 joined composites DIVERGENT in the last sample; spread p90 0.066; Gains index 2-7 % below Hyperliquid/GMX on BTC, ETH, LINK, LTC while Hyperliquid and GMX agreed within 0.3 %."
+  }
+}

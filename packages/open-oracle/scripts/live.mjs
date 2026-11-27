@@ -60,5 +60,7 @@ export async function collect({ durationMs = 15000, directory = 'reports/live', 
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   const report = await collect({ directory: process.argv[2] ?? 'reports/live', durationMs: Number(process.argv[3] ?? 15000) });
   console.log(JSON.stringify({ directory: process.argv[2] ?? 'reports/live', elapsedMs: report.elapsedMs, inventoryStatus: report.inventoryStatus, historicalChecks: report.historicalChecks, sourceHealth: report.health, sampleCounts: report.observations.reduce((counts, s) => { counts[s.source] = (counts[s.source] ?? 0) + (s.observations ?? 0); return counts; }, {}), accepted: report.accepted }, null, 2));
-  if (!Object.values(report.inventoryStatus).every(s => s.complete) || ['gains', 'hyperliquid', 'gmx'].some(source => !report.observations.some(s => s.source === source && s.observations > 0))) process.exitCode = 1;
+  // Inventory, live prices and provider history are all acceptance conditions.
+  if (!Object.values(report.inventoryStatus).every(s => s.complete) || ['gains', 'hyperliquid', 'gmx'].some(source => !report.observations.some(s => s.source === source && s.observations > 0))
+    || Object.values(report.historicalChecks).some(check => check.status !== 'SUCCESS')) process.exitCode = 1;
 }

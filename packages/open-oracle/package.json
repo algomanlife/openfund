@@ -16,6 +16,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "lint": "node scripts/lint.mjs",
     "validate:live": "node scripts/live.mjs",
+    "validate:service": "node scripts/service-live.mjs",
     "benchmark": "node --expose-gc scripts/benchmark.mjs",
     "calibrate": "node scripts/calibrate.mjs",
     "start": "node scripts/serve.mjs",

@@ -25,7 +25,8 @@ export const pnl = (qty, entry, mark, side) => D(qty).times(D(mark).minus(entry)
 export const closingFee = (p, md) => D(p.margin).times(p.leverage).times(feePct(md.marketMeta(p.market), p.market)).div(100)
 export function freshMark(md, market) {
   const m = md.mark(market)
-  if (!m || !Number.isFinite(m.at) || m.at > Date.now() + 1000 || Date.now() - m.at > SIM.STALE_MS) return null
+  /* `blocked`: an Open Oracle composite whose sources diverge or whose market is closed (never executable) */
+  if (!m || m.blocked || !Number.isFinite(m.at) || m.at > Date.now() + 1000 || Date.now() - m.at > SIM.STALE_MS) return null
   try { return D(m.mark).isFinite() && D(m.mark).gt(0) ? m : null } catch { return null }
 }
 export function positionMetrics(p, md) {

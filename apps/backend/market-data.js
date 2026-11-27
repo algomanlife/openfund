@@ -13,8 +13,17 @@
  *
  * Test seam: `injectPrice(symbol, mark)` overrides the mark (engine tests use
  * deterministic synthetic prices). `mark()` reports freshness.
+ *
+ * Open Oracle (ADR 0059): with `attachOracle(service)` Gains quotes become one
+ * input of the Openfund pricing service instead of the execution price. The
+ * engine then reads composite marks (`this.marks`) that the service refreshes
+ * every evaluation; a composite that is stale, divergent, closed or
+ * unavailable is never executable (`isUsable`). Raw Gains quotes stay in
+ * `gainsMarks` for diagnostics. Without an attached service the behaviour is
+ * the original Gains-only one (MARKET_PRICE_SOURCE=gains).
  */
 import WebSocket from 'ws'
+import { isUsable } from '../../packages/open-oracle/src/service.mjs'
 
 const API = 'https://api.gains.trade/v1/arbitrum'
 const WSS = 'wss://api.gains.trade/v1/arbitrum/ws'
@@ -37,7 +46,9 @@ export class MarketData {
     this.fetchImpl = fetchImpl; this.WebSocketImpl = WebSocketImpl; this.now = now
     this.api = api; this.wss = wss; this.reconnectMs = reconnectMs
     this.markets = new Map()   /* symbol → metadata (maxLeverage, isOpen, …) */
-    this.marks = new Map()     /* symbol → {mark, index, at, updatedAt} */
+    this.marks = new Map()     /* symbol → {mark, index, at, updatedAt} — execution marks */
+    this.gainsMarks = new Map() /* symbol → raw Gains quote (equals `marks` without an oracle) */
+    this.oracle = null
     this.injected = new Map()  /* test overrides */
     this.priceSeq = null
     this.ws = null
@@ -80,6 +91,7 @@ export class MarketData {
     for (const m of (j.data || [])) {
       if (m && typeof m.symbol === 'string') this.markets.set(m.symbol, m)
     }
+    this.oracle?.setGainsCatalog([...this.markets.values()])
     console.log(`[market-data] ${this.markets.size} markets loaded`)
   }
 
@@ -92,8 +104,8 @@ export class MarketData {
     let n = 0
     for (const p of (j.data || [])) {
       const quote = quoteRecord(p, this.now())
-      if (quote && (!this.marks.has(p.market) || quote.at >= this.marks.get(p.market).at)) {
-        this.marks.set(p.market, quote)
+      if (quote && (!this.gainsMarks.has(p.market) || quote.at >= this.gainsMarks.get(p.market).at)) {
+        this.#quote(p.market, quote, false)
         n++
       }
     }
@@ -122,18 +134,16 @@ export class MarketData {
           try { this.ws.send(JSON.stringify({ op: 'unsubscribe', channel: 'prices' })) } catch {}
           this.priceSeq = null
           try { this.ws.send(JSON.stringify({ op: 'subscribe', channel: 'prices' })) } catch {}
-          this.marks.clear()
+          this.gainsMarks.clear()
+          if (!this.oracle) this.marks.clear()
           return
         }
         if (Number.isFinite(msg.seq)) this.priceSeq = msg.seq
         const now = this.now()
         for (const p of msg.data) {
           const quote = quoteRecord(p,now)
-          if (!quote || (this.marks.has(p.market) && quote.at < this.marks.get(p.market).at)) continue
-          this.marks.set(p.market, quote)
-          const inj = this.injected.get(p.market)
-          if (inj) this.#emit(p.market, inj)
-          else this.#emit(p.market, String(p.mark))
+          if (!quote || (this.gainsMarks.has(p.market) && quote.at < this.gainsMarks.get(p.market).at)) continue
+          this.#quote(p.market, quote, true)
         }
       }
     })
@@ -142,6 +152,49 @@ export class MarketData {
   }
 
   #emit(symbol, mark) { for (const fn of this.subscribers) { try { fn(symbol, mark) } catch {} } }
+
+  /* One Gains quote: the execution mark without an oracle, an oracle input with one. */
+  #quote(symbol, quote, live) {
+    this.gainsMarks.set(symbol, quote)
+    if (this.oracle) {
+      /* the Gains mark is the comparable price; live evidence shows the Gains index field 2–7 % away from Hyperliquid and GMX */
+      this.oracle.ingestGains(symbol, { price: quote.mark, field: 'mark', updatedAt: quote.at, receivedAt: this.now() })
+      return
+    }
+    this.marks.set(symbol, quote)
+    if (!live) return
+    const inj = this.injected.get(symbol)
+    this.#emit(symbol, inj ?? String(quote.mark))
+  }
+
+  /* ---------- Open Oracle ---------- */
+  /** Route Gains quotes into the pricing service and execute on its usable composites. */
+  attachOracle(service) {
+    if (this.oracle === service) return service
+    this.oracle = service
+    this.marks.clear()
+    if (this.markets.size) service.setGainsCatalog([...this.markets.values()])
+    for (const [symbol, quote] of this.gainsMarks) this.#quote(symbol, quote, false)
+    this.detachOracle = service.onUpdate((changed, time) => this.#applyComposites(changed, time))
+    return service
+  }
+  #applyComposites(changed, time) {
+    const now = this.now(), moved = new Set(changed.map(r => r.market))
+    for (const record of this.oracle.snapshot()) {
+      if (isUsable(record, now, STALE_MS)) {
+        const previous = this.marks.get(record.market)
+        this.marks.set(record.market, { mark: record.price, index: null, at: record.at, updatedAt: record.at, mode: record.mode, confidence: record.confidence })
+        if (moved.has(record.market) && previous?.mark !== record.price && !this.injected.has(record.market)) this.#emit(record.market, record.price)
+      } else if (record.price !== null && (record.mode === 'DIVERGENT' || record.mode === 'MARKET_CLOSED')) {
+        /* keep the last good composite for valuation, but never execute on a
+           composite the sources disagree on or on a closed market */
+        const previous = this.marks.get(record.market)
+        this.marks.set(record.market, { mark: record.price, index: null, at: previous?.at ?? record.referenceTimestamp ?? record.at, updatedAt: record.at, mode: record.mode, confidence: 0, blocked: record.mode })
+      }
+      /* STALE / UNAVAILABLE: the previous mark ages out through freshMark() */
+    }
+    void time
+  }
 
   /* ---------- public API (engine) ---------- */
   marketMeta(symbol) { return this.markets.get(symbol) || null }
@@ -154,12 +207,12 @@ export class MarketData {
     const inj = this.injected.get(symbol)
     if (inj != null) return { mark: String(inj), at: this.now(), injected: true }
     const m = this.marks.get(symbol)
-    return m ? { mark: m.mark, at: m.at, injected: false } : null
+    return m ? { mark: m.mark, at: m.at, injected: false, ...(m.blocked ? { blocked: m.blocked } : {}) } : null
   }
 
   freshMark(symbol) {
     const m = this.mark(symbol)
-    if (!m || m.at < this.now() - STALE_MS || !Number.isFinite(Number(m.mark)) || Number(m.mark) <= 0) return null
+    if (!m || m.blocked || m.at < this.now() - STALE_MS || !Number.isFinite(Number(m.mark)) || Number(m.mark) <= 0) return null
     return m
   }
 

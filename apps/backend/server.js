@@ -28,6 +28,7 @@ import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
 import { arbitrum } from 'viem/chains'
 import pg from 'pg'
 import { marketData } from './market-data.js'
+import { oracleConfig, createOpenOracle, OracleMirror, oracleRoutes } from './open-oracle.js'
 import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
@@ -946,6 +947,19 @@ app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
 /* same-origin public CMS content with a last-known-good snapshot (primary on IRAN, fallback on GLOBAL) */
 const cmsSnapshot = cmsSnapshotRoutes({ pool, origin: cmsSnapshotOrigin(process.env) })
 app.use('/cms', limit(240), cmsSnapshot)
+/* Open Oracle (ADR 0059): Openfund's own composite prices from Gains, Hyperliquid and GMX.
+   The market-data role runs the pricing service and executes on its usable
+   composites; a process without that role can mirror another region's
+   public stream (OPEN_ORACLE_UPSTREAM). MARKET_PRICE_SOURCE=gains restores
+   Gains-only marks without a deploy of code. */
+const oracleSettings = oracleConfig(process.env)
+let oracle = null
+if (oracleSettings.source === 'open-oracle') {
+  if (hasRole(region, 'market-data')) marketData.attachOracle(oracle = createOpenOracle())
+  else if (oracleSettings.upstream) oracle = new OracleMirror({ upstream: oracleSettings.upstream })
+}
+const oracleApi = oracleRoutes({ Router: express.Router, oracle: () => oracle, limit })
+app.use(oracleApi)
 /* site search: published-only index per region (IRAN builds its own) and anonymous counts */
 app.use(siteSearchRoutes({ pool, cms: cmsSnapshot, marketData, limit }))
 app.use('/admin/search', siteSearchAdminRoutes({ pool }))
@@ -1002,7 +1016,8 @@ async function regionalHealth() {
     api: { ok: true }, database: { ok: db },
     engine: { role: hasRole(region, 'engine'), running: !!engine.running, lastPassAgeMs: engine.lastPassAt ? now - engine.lastPassAt : null },
     marketData: { role: hasRole(region, 'market-data'), markets: marketData.markets.size, freshMarks: fresh, newestMarkAgeMs: newest ? now - newest : null,
-                  execution: fresh > 0 ? 'available_for_fresh_markets' : 'suspended_no_authoritative_marks' },
+                  execution: fresh > 0 ? 'available_for_fresh_markets' : 'suspended_no_authoritative_marks',
+                  priceSource: oracleSettings.source, oracle: oracle ? (({ running, markets, modes, mirror }) => ({ running, markets, modes, ...(mirror ? { mirror } : {}) }))(oracle.status()) : null },
   }
 }
 app.get('/ready', asyncRoute(async (req, res) => {
@@ -1089,6 +1104,8 @@ try {
    GLOBAL default enables every role, so Render starts exactly what it did. */
 console.log(`[region] ${region.region}, roles: ${region.roles.join(', ') || '(none)'}`)
 if (hasRole(region, 'market-data')) marketData.bootstrap().catch(e => console.error('[market-data] bootstrap failed', e.message))
+if (oracle) { oracle.start(); console.log(`[open-oracle] ${oracle instanceof OracleMirror ? `mirroring ${oracleSettings.upstream}` : 'pricing service started'}`) }
+else console.log(`[open-oracle] not running (price source: ${oracleSettings.source}${hasRole(region, 'market-data') ? '' : ', no market-data role and no OPEN_ORACLE_UPSTREAM'})`)
 if (hasRole(region, 'engine')) engine.start(1000)
 /* challenge-event → notification relay: reads recorded events only */
 if (hasRole(region, 'engine')) startNotificationRelay(pool)
@@ -1175,6 +1192,6 @@ let shuttingDown=false
 /* site search analytics: twelve-month retention, checked daily */
 const searchPruneTimer = setInterval(() => { pruneSearchStats(pool).catch(e => console.error('[search] prune', e.message)) }, 86_400_000)
 searchPruneTimer.unref()
-const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(searchPruneTimer);clearInterval(migrationPurgeTimer);clearInterval(tournamentTimer);clearInterval(fundingSampleTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
+const shutdown = () => { if(shuttingDown)return;shuttingDown=true;server.closeIdleConnections?.();setTimeout(()=>{console.warn('[shutdown] forced after 10 s');server.closeAllConnections?.();process.exit(0)},10_000).unref();const enginePass=engine.stop();tradingStreams.close();oracleApi.close();oracle?.stop();marketData.stop();radar.close();treasury.stop();clearInterval(settlementTimer);clearInterval(searchPruneTimer);clearInterval(migrationPurgeTimer);clearInterval(tournamentTimer);clearInterval(fundingSampleTimer);clearInterval(paymentRecoveryTimer);clearInterval(paymentWatcherTimer);clearInterval(purchaseExpiryTimer);clearInterval(nonceSweep);Promise.all([enginePass.catch(()=>{}),footprint.stop().catch(()=>{}),syncWorker.stop()]).finally(()=>server.close(()=>Promise.all([pool.end(),loopPool.end()]))) }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)

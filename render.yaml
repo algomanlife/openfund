@@ -136,6 +136,8 @@ services:
         sync: false             # only needed for extra origins / custom domain
       - key: SESSION_TTL_HOURS
         value: "168"
+      - key: MARKET_PRICE_SOURCE
+        value: open-oracle      # Open Oracle composite prices (ADR 0059); "gains" = emergency Gains-only marks
       - key: FOOTPRINT_ENABLED
         value: "1"              # Footprint chart (Hyperliquid order-flow analytics), enabled on owner
                                 # request 2026-11-12. "0" turns it off (chart falls back to candles).

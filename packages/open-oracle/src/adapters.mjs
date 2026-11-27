@@ -4,7 +4,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 const valid = value => { if (typeof value !== 'string') throw new ProviderError('INVALID_PRICE'); const n = decimal(value); if (n <= 0n) throw new ProviderError('INVALID_PRICE'); return String(value); };
 const rows = response => array(response?.data);
 const catalog = (response, key) => response && typeof response === 'object' && Object.hasOwn(response, key) ? response[key] : response;
-const addressOf = value => typeof value === 'string' ? value : value?.address ?? value?.tokenAddress ?? null;
+const addressOf = value => { const v = typeof value === 'string' ? value : value?.address ?? value?.tokenAddress ?? null; return typeof v === 'string' && v.trim() ? v.trim() : null; };
+const sameAddress = (a, b) => a !== null && b !== null && a.toLowerCase() === b.toLowerCase();
 const entries = response => Array.isArray(response) ? response : response && typeof response === 'object' ? Object.entries(response).map(([id, value]) => ({ ...value, _key: id })) : array(response);
 class Adapter {
   constructor(source, options = {}) {
@@ -32,7 +33,13 @@ class Adapter {
   }
 }
 export class GainsAdapter extends Adapter {
-  constructor(options = {}) { super('gains', options); this.url = options.url ?? 'https://api.gains.trade/v1/arbitrum'; }
+  constructor(options = {}) {
+    super('gains', options); this.url = options.url ?? 'https://api.gains.trade/v1/arbitrum';
+    // Research default: the `index` field. The pricing service uses `mark`: live evidence shows Gains `index` 2-7% away
+    // from Hyperliquid and GMX on joined crypto markets while `mark` agrees with them (docs/research/OPEN_ORACLE_VALIDATION.md).
+    if (!['index', 'mark'].includes(options.priceField ?? 'index')) throw new Error('invalid_price_field');
+    this.priceField = options.priceField ?? 'index';
+  }
   async discover(signal) {
     const response = await this.transport.request(`${this.url}/markets`, undefined, signal);
     this.inventory = rows(response).map((m, i) => ({ sourceMarketId: String(m?.symbol ?? `unresolved:${i}`), symbol: m?.symbol,
@@ -47,8 +54,8 @@ export class GainsAdapter extends Adapter {
   async snapshot(signal) {
     const data = rows(await this.transport.request(`${this.url}/prices`, undefined, signal)), out = [];
     for (const p of data) try {
-      // Reference index only: a missing index never silently substitutes a mark.
-      out.push(this.observation(String(p.market), p.index, p.updatedAt, p, { microstructure: { markPrice: p.mark ?? null } }));
+      // One configured field only: a missing value never silently substitutes the other field.
+      out.push(this.observation(String(p.market), p[this.priceField], p.updatedAt, p, { microstructure: { priceField: this.priceField, markPrice: p.mark ?? null, indexPrice: p.index ?? null } }));
     } catch (error) { this.error(error, p?.market); }
     return out;
   }
@@ -59,7 +66,9 @@ export class GainsAdapter extends Adapter {
   }
 }
 export class HyperliquidAdapter extends Adapter {
-  constructor(options = {}) { super('hyperliquid', options); this.url = options.url ?? 'https://api.hyperliquid.xyz/info'; this.dexs = ['']; this.spot = []; }
+  constructor(options = {}) { super('hyperliquid', options); this.url = options.url ?? 'https://api.hyperliquid.xyz/info'; this.dexs = ['']; this.spot = [];
+    // Builder dexes and spot are research inventory; a polling service can restrict itself to the main perp dex (rate budget).
+    this.includeBuilderDexs = options.includeBuilderDexs ?? true; this.includeSpot = options.includeSpot ?? true; }
   async info(body, signal) { return this.transport.request(this.url, body, signal); }
   parsePerps(response, dex, receivedAt = this.now()) {
     if (!Array.isArray(response) || !Array.isArray(response[0]?.universe) || !Array.isArray(response[1]) || response[0].universe.length !== response[1].length) throw new ProviderError('SCHEMA_INVALID');
@@ -74,14 +83,14 @@ export class HyperliquidAdapter extends Adapter {
   }
   async discover(signal) {
     this.inventoryComplete = false;
-    const dexs = array(await this.info({ type: 'perpDexs' }, signal));
+    const dexs = this.includeBuilderDexs ? array(await this.info({ type: 'perpDexs' }, signal)) : [];
     this.dexs = ['', ...new Set(dexs.filter(Boolean).map(d => d.name).filter(n => typeof n === 'string' && n))];
     const all = [];
     for (const dex of this.dexs) {
       try { all.push(...this.parsePerps(await this.info({ type: 'metaAndAssetCtxs', dex }, signal), dex).map(p => p.metadata)); }
       catch (error) { this.error(error, `dex:${dex}`); }
     }
-    try {
+    if (this.includeSpot) try {
     const spot = await this.info({ type: 'spotMeta' }, signal);
     if (!Array.isArray(spot?.universe) || !Array.isArray(spot?.tokens)) throw new ProviderError('SCHEMA_INVALID');
     const tokens = new Map(spot.tokens.map(t => [t.index, t]));
@@ -134,18 +143,19 @@ export class GMXAdapter extends Adapter {
       for (const [i, m] of markets.entries()) {
         const address = addressOf(m.marketToken ?? m.marketTokenAddress ?? m.address ?? m._key);
         const indexAddress = addressOf(m.indexToken ?? m.indexTokenAddress);
-        const token = tokens.find(t => addressOf(t.address ?? t.tokenAddress ?? t._key)?.toLowerCase() === indexAddress?.toLowerCase());
+        // A market without an index address never matches a token without one (no undefined === undefined identity).
+        const token = tokens.find(t => sameAddress(addressOf(t.address ?? t.tokenAddress ?? t._key), indexAddress));
         const symbol = token?.symbol ?? token?.tokenSymbol ?? m.name ?? `unresolved:${i}`;
         all.push({ sourceMarketId: `${network.name}/${address ?? `unresolved:${i}`}`, symbol,
           baseAsset: symbol, quoteAsset: token ? 'USD' : null, assetClass: 'UNKNOWN', instrumentType: 'PERPETUAL_UNDERLYING',
-          unit: token?.address ?? token?.tokenAddress ?? token?._key ?? null, priceDecimals: 24,
+          unit: token ? addressOf(token.address ?? token.tokenAddress ?? token._key) : null, priceDecimals: 24,
           identityVerified: Boolean(token && address), semantics: 'UNDERLYING_REFERENCE',
           network: network.name, tokenAddress: indexAddress, marketHours: null, raw: m,
           identityEvidence: 'GMX network-scoped indexToken contract identity; wrapped assets remain distinct' });
       }
       // Every oracle token also remains visible, including tokens with no active trading market.
       for (const [i, token] of tokens.entries()) {
-        const address = token.address ?? token.tokenAddress ?? token._key;
+        const address = addressOf(token.address ?? token.tokenAddress ?? token._key);
         all.push({ sourceMarketId: `${network.name}/token/${address ?? `unresolved:${i}`}`, symbol: token.symbol ?? token.tokenSymbol,
           baseAsset: token.symbol ?? token.tokenSymbol, quoteAsset: 'USD', assetClass: 'UNKNOWN', instrumentType: 'TOKEN_REFERENCE',
           unit: address ?? null, priceDecimals: 24, identityVerified: Boolean(address), semantics: 'UNDERLYING_REFERENCE',

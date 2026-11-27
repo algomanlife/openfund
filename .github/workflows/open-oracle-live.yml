@@ -10,7 +10,7 @@ permissions:
 jobs:
   live-public-reads:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -20,6 +20,9 @@ jobs:
           node-version: 26
       - name: Read-only inventory and observations
         run: node packages/open-oracle/scripts/live.mjs packages/open-oracle/reports/live 60000
+      - name: Pricing service acceptance (production configuration)
+        if: always()
+        run: node packages/open-oracle/scripts/service-live.mjs packages/open-oracle/reports/live 120000
       - name: Preserve actual collection evidence, including failures
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -28,4 +31,5 @@ jobs:
           path: |
             packages/open-oracle/reports/live/validation-summary.json
             packages/open-oracle/reports/live/coverage-summary.json
+            packages/open-oracle/reports/live/service-summary.json
           retention-days: 7

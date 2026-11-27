@@ -5,14 +5,16 @@
 Open Oracle is Openfund's independently developed multi-source market-data
 aggregation and composite reference-price discovery protocol. It calculates
 normalized, quality-adjusted reference prices, native candlesticks and audit
-history from eligible provider observations. It is **In Progress**, independently
-executable and fixture-verified. Remote CI has verified public inventory,
-nonempty reference observations and provider history for all three sources.
-Cross-source economic mapping and empirical calibration remain incomplete. It does not power the production chart.
+history from eligible provider observations. Since [ADR 0059](../decisions/0059-open-oracle-pricing-service.md) it is
+also the **Openfund pricing service**: the backend `market-data` role runs it,
+the demo engine executes on its usable composites and the public
+`/api/oracle/*` API serves them (see [Pricing service](#pricing-service)).
+The research protocol below keeps its own defaults and acceptance limits.
+Remote CI has verified public inventory, nonempty reference observations and
+provider history for all three sources, and a live service acceptance window.
 
-The existing Gains, Hyperliquid analytics and Iran fallback data paths are
-unchanged. No imports from this package have been added to any application.
-The separate dormant Solidity `openfund-protocol` package is unchanged.
+The Hyperliquid footprint analytics path and the separate dormant Solidity
+`openfund-protocol` package are unchanged.
 
 ## Provider interfaces and semantics
 
@@ -84,6 +86,50 @@ Encode instrument IDs as URL components. The server accepts GET only, binds to
 loopback, rejects foreign browser origins/hosts and disconnects slow SSE clients.
 It exposes no signing, order, payment, account or admin operations.
 
+## Pricing service
+
+`OpenOracleService` (`src/service.mjs`) is the production form. The backend
+(`apps/backend/open-oracle.js`, `market-data.js`) wires it as follows.
+
+| Input | Transport | Price used | Age policy |
+| --- | --- | --- | --- |
+| Gains | The backend's existing Gains price socket (REST snapshot every 60 s) | `mark` | `updatedAt`; 30 s bound, 8 s half-life (last-change time) |
+| Hyperliquid | `metaAndAssetCtxs`, main perp dex only, every 3 s | `oraclePx` (thousand-unit `k` coins × 0.001) | receipt time, accepted for this source only; 9 s bound |
+| GMX | Arbitrum `/v1/prices/tickers`, every 2 s | min/max midpoint, 30-decimal whole-token encoding | `originTs` (oldest price, conservative); 15 s bound |
+
+- **Market universe.** One composite per Gains market; Gains stays the
+  catalog for symbols, sessions and specifications.
+- **Equivalence.** `buildEquivalences` joins a Gains crypto/USD market with
+  one Hyperliquid main-dex perp and one GMX Arbitrum token with a unique
+  symbol only when the member's normalized price is within 10 % (log
+  distance) of the Gains price at build time. Forex, stocks, indices,
+  commodities and stablecoins are never joined. Rules are rebuilt every
+  10 minutes; the last composite survives a rebuild as the stale fallback.
+- **Policy** (`SERVICE_CONFIG`, `openfund-service-1`): weights Gains 0.4,
+  Hyperliquid 0.3, GMX 0.3; alignment window 12 s; two-source tolerance 2 %;
+  three-source hard deviation 5 %.
+- **Execution gate** (`isUsable`): `TRIPLE_SOURCE`, `DUAL_SOURCE` or
+  `SINGLE_SOURCE`, not stale, evaluated within 5 s. `DIVERGENT` and
+  `MARKET_CLOSED` composites are kept for valuation but never executed,
+  liquidated on or settled on; `STALE` and `UNAVAILABLE` age out.
+- **Fallback.** `MARKET_PRICE_SOURCE=gains` restores Gains-only marks.
+
+### Public API
+
+Read-only, same origin, `Cache-Control: no-store`, rate limited. Records carry
+composites and per-source contributions, never provider payloads.
+
+| Route | Response |
+| --- | --- |
+| `GET /api/oracle/prices` | `{source, at, status, data: [{market, price, mode, confidence, stale, at, eligible, configured}]}` |
+| `GET /api/oracle/prices/:market` | One composite with each source's normalized and raw price, age, eligibility, exclusion reason and weight (`BTC-USD` or `BTC%2FUSD`) |
+| `GET /api/oracle/status` | Service health: modes, joined markets, members per source, poll and failure counts |
+| `GET /api/oracle/stream` | SSE: one `snapshot` event, then `prices` events with the changed composites of each evaluation; 15 s heartbeat |
+
+Without a running service the routes answer `503 {"error":"oracle_unavailable"}`.
+A process without the market-data role can mirror another region with
+`OPEN_ORACLE_UPSTREAM` (it follows that region's stream).
+
 ## History and future integration
 
 `backfill` retains provider OHLC with source timestamps as `PROVIDER_REFERENCE`.
@@ -91,10 +137,10 @@ It exposes no signing, order, payment, account or admin operations.
 `replayHistory` consumes recorded RAW/HEALTH/composite evaluation boundaries.
 All output identifies algorithm, configuration and confidence versions.
 
-A future integration requires a separately approved mapping corpus, live
-provider and usage-term acceptance, session calendars, empirically calibrated
-source policies, socket acceptance and production capacity evidence. Existing
-terminal/Prop/execution services must not import the package in this phase.
+The pricing service keeps no durable composite history yet (no history store
+is attached in the backend). Chart history therefore remains provider
+reference history; native composite candles are later work, as are session
+calendars and per-category policies.
 
 ## Primary source references
 

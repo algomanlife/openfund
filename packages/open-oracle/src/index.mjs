@@ -6,3 +6,5 @@ export { CandleEngine, bucket, TIMEFRAMES } from './candles.mjs';
 export { HistoryStore } from './history.mjs';
 export { createOracleServer } from './server.mjs';
 export { PublicTransport, ProviderError } from './transport.mjs';
+export { buildEquivalences, STABLECOINS } from './equivalence.mjs';
+export { OpenOracleService, SERVICE_CONFIG, USABLE_MODES, isUsable, publicRecord } from './service.mjs';
