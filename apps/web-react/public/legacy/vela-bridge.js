@@ -5,7 +5,7 @@
    bottom bar, symbol search, keyboard map) as the terminal chart,
    powered by the Gains provider.
 
-   Bundle: dist/assets/vela-workspace.global.min.js
+   Bundle: apps/web-react/public/assets/vela-workspace.global.min.js
            (esbuild IIFE of the vendored @luxalgo/vela 0.10.6 workspace)
    Contract (packages/openfund-charts):
      OpenfundCharts.mount(container, opts) → controller

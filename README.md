@@ -328,7 +328,6 @@ for each part is in the [engineering reference](docs/development/ENGINEERING_REF
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `docs/` | Documentation, ADRs, status, README data and assets |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `brand/` | Brand book, logos, imagery and typography reference |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `indicators/` | Three Openfund Pine indicators and two libraries |
-| <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `dist/` | Tracked source-critical compatibility assets |
 | <img src="docs/assets/readme/icons/gear.svg" width="18" height="18" alt="gear icon" /> | `.github/` | CI, release and security workflows, templates |
 | <img src="docs/assets/readme/icons/gear.svg" width="18" height="18" alt="gear icon" /> | `scripts/` | Docs gates, CI, release, upstream and ops tooling |
 | <img src="docs/assets/readme/icons/gear.svg" width="18" height="18" alt="gear icon" /> | `e2e/` | Browser journeys and acceptance tests |
@@ -550,7 +549,8 @@ Generated from [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), the authoritati
 | Superseded platform releases v0.6.5 and v0.7.0 as the README's current release | retired | The latest official release recorded in [docs/status/status.json](docs/status/status.json) |
 | Dated README galleries ("Recent … captures — YYYY-MM-DD", "Full product gallery — recorded v0.6.5", the v0.4.4 capture set in `docs/assets/screenshots/readme/`) | retired | One curated gallery generated from [docs/assets/gallery/gallery.json](docs/assets/gallery/gallery.json); the old sets are in [docs/reviews/_archive/readme-galleries/](docs/reviews/_archive/readme-galleries/README.md) |
 | Superseded release review snapshots (`docs/reviews/v0.4.1`, `v0.6.5`, `release-0.6.5`, `release-0.6.6`) | retired | Kept as history under [docs/reviews/_archive/](docs/reviews/_archive/README.md); current state lives in [docs/status](docs/status/README.md) |
-| Vanilla JS/CSS legacy layer (`apps/web-react/public/legacy/`) and the tracked `dist/` snapshot | legacy-only pending removal | React application (`apps/web-react/src/`); `dist/` stays source-critical until AGENTS.md says otherwise |
+| Vanilla JS/CSS legacy layer (`apps/web-react/public/legacy/`) | legacy-only pending removal | React application (`apps/web-react/src/`) |
+| Tracked `dist/` classic static snapshot (frozen classic site, asset mirror and script copies) | retired | `apps/web-react/public/` (served assets and the legacy runtime), written by `npm run build:charts` |
 | Openfund Protocol (dormant import of mux-protocol, `packages/openfund-protocol/`) | dormant | None — not retired; not built, shipped or operated ([provenance](packages/openfund-protocol/PROVENANCE.md)) |
 
 Generated from [docs/development/RETIRED.json](docs/development/RETIRED.json); details and reference counts in [RETIRED.md](docs/development/RETIRED.md).

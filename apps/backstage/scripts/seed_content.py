@@ -4,7 +4,7 @@ Openfund backstage — content seeding (idempotent).
 
 Imports the CURRENT Persian and English content of the landing and terminal
 into Directus so the Data Studio starts populated (no empty CMS):
-  - ui_messages: landing dict (fa→en, from dist/translations.json) and
+  - ui_messages: landing dict (fa→en, from apps/web-react/public/translations.json) and
     terminal labels (key→{fa,en}, from terminal-i18n.json)
   - navigation_items + translations (landing header/footer, terminal header)
   - pages + translations (SEO/meta for landing & terminal)
@@ -56,7 +56,7 @@ def main():
     token = req('POST', f'{base}/auth/login', body={'email': a.email, 'password': a.password})['data']['access_token']
 
     # ---------- ui_messages -------------------------------------------------
-    landing = json.load(open(os.path.join(REPO, 'dist', 'translations.json'), encoding='utf8'))
+    landing = json.load(open(os.path.join(REPO, 'apps', 'web-react', 'public', 'translations.json'), encoding='utf8'))
     terminal = json.load(open(os.path.join(HERE, 'terminal-i18n.json'), encoding='utf8'))
     existing = req('GET', f'{base}/items/ui_messages?fields=key&limit=-1', token)['data']
     have = {m['key'] for m in existing}

@@ -54,6 +54,6 @@ jobs:
         run: |
           npm ci --include=dev --prefix apps/web-react
           node scripts/build-charts.mjs
-          git diff --exit-code -- apps/web-react/public/assets apps/web-react/public/legacy dist/assets dist/vela-bridge.js dist/gains-adapter.js
+          git diff --exit-code -- apps/web-react/public/assets apps/web-react/public/legacy
       - name: Pine conformance
         run: npm run test:charts

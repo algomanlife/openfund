@@ -90,8 +90,8 @@ live, see [Feature Status](docs/product/FEATURE_STATUS.md).
 - **Secrets**: no secrets in Git. Render prompts for secrets at blueprint apply
   (`sync: false`) or generates them (`generateValue`). gitleaks runs on every PR
   with the default rule set; the repository `gitleaks.toml` only extends it with
-  a path allowlist for generated browser bundles (`react/`, `publish-openfund/`,
-  `dist/`), whose minified third-party SDK code embeds public constants (the
+  a path allowlist for generated browser bundles (`react/`, `publish-openfund/`),
+  whose minified third-party SDK code embeds public constants (the
   documented RainbowKit provider fallback key and wallet-SDK telemetry keys that
   ship inside the published npm packages). Source directories stay fully
   scanned. One further exact-path allowlist covers `infra/upstream/vendor-manifest.json`,

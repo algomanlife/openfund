@@ -2,7 +2,7 @@
  * Synthetic Gains Network market-data server (REST + WS) for isolated load tests.
  *
  * Mirrors the contract documented in apps/backend/market-data.js and
- * dist/gains-adapter.js so neither the backend nor the browser chart ever
+ * packages/openfund-gains-adapter/src/gains-adapter.js so neither the backend nor the browser chart ever
  * reaches api.gains.trade during a test:
  *   GET /v1/arbitrum/markets
  *   GET /v1/arbitrum/prices

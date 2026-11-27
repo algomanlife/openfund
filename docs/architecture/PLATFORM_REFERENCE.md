@@ -58,7 +58,6 @@ README on 2026-11-21. Architecture overview: [ARCHITECTURE.md](ARCHITECTURE.md).
 | `brand/`, `docs/assets/` | Brand reference, approved assets, diagrams, screenshots and provenance |
 | `e2e/`, `scripts/` | Browser journeys, validation, release, upstream and operational tooling |
 | `infra/`, `render.yaml` | Render Blueprint and regional deployment infrastructure |
-| `dist/` | Tracked source-critical compatibility assets; preserve during builds and cleanup |
 | `react/` | Generated current web build output, not a second authored frontend |
 
 ## Test and acceptance map
