@@ -2,6 +2,17 @@
 
 Open Oracle is **In Progress** as the Openfund pricing service ([ADR 0059](../decisions/0059-open-oracle-pricing-service.md)): the backend market-data role aggregates Gains, Hyperliquid and GMX into one composite per Gains market, the demo engine executes only on usable composites, and the public `/api/oracle/*` REST and SSE API serves them. Implemented and tested in source (unmerged); a live service acceptance window passed with 136 price-confirmed joined crypto markets and no divergent composite ([run 45951569988](https://github.com/algomanlife/openfund/actions/runs/45951569988)). Not released or deployed. In source, the website markets table, Markets page and terminal read prices from the same-origin `/api/oracle/*` (falling back to the Gains socket, labelled as such, only where an origin serves no Open Oracle), and price attribution names Open Oracle in five locales; chart history remains Gains provider reference data and is still labelled with the Gains provider. Forex, stocks, indices and commodities remain single-source (Gains). Durable composite history and native chart candles remain open. The standalone research protocol and its limits are unchanged. [Integration contract](../integrations/OPEN_ORACLE.md#pricing-service), [validation](../research/OPEN_ORACLE_VALIDATION.md#pricing-service-acceptance).
 
+Admin operators and access levels are **Completed in source (released in
+v0.9.0; not yet deployed or owner-accepted)**: named Backstage operators with
+roles `owner`, `finance`, `support`, `content` and `viewer`, checked by the
+backend per path, with the verified operator in the audit trail. Enforcement
+starts when the owner creates the first operator
+([operations guide](../backstage/OPERATIONS_GUIDE.md#add-operators-and-access-levels)).
+Shared persistent rate limits and backend ESLint are **Completed in source
+(released in v0.9.0)**. Evidence: `test/admin-operators.test.mjs`,
+`test/rate-limit-store.test.mjs`, Backstage server tests and the
+[2026-11-27 security assessment](../security/SECURITY-ASSESSMENT-2026-11-27.md).
+
 Release stabilization is **In Progress**. The PostgreSQL 17 release gate
 recorded a deadlock between free-demo equity sampling and fixture cleanup.
 The fix locks the account before the regional ownership trigger runs. The

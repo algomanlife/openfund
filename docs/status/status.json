@@ -1,21 +1,21 @@
 {
   "$comment": "Canonical Openfund status (docs/status/README.md is generated from this file by `node scripts/docs/status.mjs`; `npm run docs:check` validates both). Every state is recorded per environment. Source states come from Git; runtime states (deployed, enabled, verified, accepted) are valid only with `verifiedAt` and `evidence`. CI never probes production: a stale or wrong runtime claim must be corrected by re-verifying, not by editing the date.",
   "schemaVersion": 1,
-  "updatedAt": "2026-11-23",
+  "updatedAt": "2026-11-27",
   "release": {
     "latestOfficial": {
-      "version": "0.8.0",
-      "tag": "v0.8.0",
-      "commit": "0320cf70fa42f0309764f26fc86604f90f2c498e",
-      "publishedAt": "2026-11-20",
-      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.8.0"
+      "version": "0.9.0",
+      "tag": "v0.9.0",
+      "commit": "ae7c17dbf70c78747128ec4aeab04ae193165ff1",
+      "publishedAt": "2026-11-27",
+      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.9.0"
     },
     "next": {
-      "version": "0.9.0",
+      "version": null,
       "candidateCommit": null,
-      "state": "release_candidate",
-      "note": "v0.9.0 is prepared on agent/claude/dastkhat-readme-demess: Dastkhat as the only Persian face, retired Irancell/Vazirmatn files removed, README restructure and permanent structure/retired/font gates. Main also contains Gains read-only readiness (#169), Pine optimization (#170) and the Open Trade 0.0.3 candidate (#171). Not an official release until the owner publishes the tag.",
-      "evidence": "https://github.com/algomanlife/openfund/compare/v0.8.0...main"
+      "state": "planned",
+      "note": "No next version is allocated yet. Open items after v0.9.0 are listed in the 2026-11-27 security assessment (wallet SDK upgrade to wagmi 3, payment review outcome for invalid passes, fee-refund payout verification).",
+      "evidence": "https://github.com/algomanlife/openfund/compare/v0.9.0...main"
     }
   },
   "environments": {

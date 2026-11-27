@@ -12,7 +12,7 @@
 [![Security scans](https://github.com/algomanlife/openfund/actions/workflows/security.yml/badge.svg)](https://github.com/algomanlife/openfund/actions/workflows/security.yml)
 [![Languages](https://img.shields.io/badge/languages-fa%20%C2%B7%20ar%20%C2%B7%20en%20%C2%B7%20ru%20%C2%B7%20zh--CN-82e7bd?labelColor=060808)](#regions)
 [![Regions](https://img.shields.io/badge/regions-GLOBAL%20%C2%B7%20IRAN-82e7bd?labelColor=060808)](#regions)
-![License: decision pending](https://img.shields.io/badge/license-decision%20pending-C6FF52?labelColor=060808)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-82e7bd?labelColor=060808)](LICENSE)
 
 [**Website**](https://openfi.cloud) · [Iran site](https://openfi.live) · [Documentation](docs/README.md) · [Live status](docs/status/README.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md) · [Security](SECURITY.md)
 
@@ -157,9 +157,9 @@ evidence. A merge is not production until `/version` reports it.
 
 <!-- status:summary -->
 
-**Current status** (verified 2026-11-23; canonical: [docs/status](docs/status/README.md)):
+**Current status** (verified 2026-11-27; canonical: [docs/status](docs/status/README.md)):
 
-- Latest official release: **v0.8.0** (`0320cf7`, 2026-11-20).
+- Latest official release: **v0.9.0** (`ae7c17d`, 2026-11-27).
 - GLOBAL (Render) Web/API runs v0.8.0 `9f8b171`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
 - Purchases: enabled in GLOBAL, disabled in IRAN; owner purchase acceptance open (see the purchases row in docs/status).
 - Live execution: disabled (Approved signer/custody design, supported testnet contracts, simulation, security review and management activation).
@@ -405,9 +405,12 @@ Backend suites need a disposable database. Guides:
 
 ## <img src="docs/assets/readme/icons/tag.svg" width="30" height="30" alt="tag icon" /> Versioning and releases
 
-The current official platform release is **v0.8.0**; **v0.9.0** (typography
-consolidation, retired-file removal and repository restructure) is prepared
-for the owner to publish through the release workflow.
+The current official platform release is **v0.9.0** (2026-11-27): the Open
+Oracle pricing service (Gains, Hyperliquid and GMX composites) on the website
+and terminal, named admin
+operators with access levels, shared persistent rate limits, backend ESLint,
+the retired `dist/` snapshot and the
+[27 November security assessment](docs/security/SECURITY-ASSESSMENT-2026-11-27.md).
 Tags are `vMAJOR.MINOR.PATCH`, allocated from Conventional Commits; Open Trade
 has its own `open-trade-vX.Y.Z` line. `/version` returns the deployed version,
 commit and whether the build is official; merging deploys nothing.
