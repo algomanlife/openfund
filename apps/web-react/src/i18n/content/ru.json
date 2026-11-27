@@ -938,7 +938,6 @@
   "Gain needed to be even": "Рост, нужный для безубытка",
   "Gain needed to recover": "Рост, нужный для восстановления",
   "Gains Network markets — verified data · closed markets are view-only": "Рынки Gains Network — проверенные данные · закрытые рынки только для просмотра",
-  "Gains Network — market data source": "Gains Network — источник рыночных данных",
   "Gas": "Газ",
   "General risk warning": "Общее предупреждение о рисках",
   "Generated": "Сгенерировано",
@@ -4405,5 +4404,8 @@
   "This lesson describes how perpetual venues work in general. In Openfund, Perpetual Trading is currently read-only market and account information — on-chain order execution is not enabled — and the prices shown are Open Oracle prices, Openfund’s own aggregation of Gains, Hyperliquid and GMX, rendered on a Vela (LuxAlgo) chart.": "Этот урок описывает, как в целом работают перпетуальные площадки. В Openfund перпетуальная торговля сейчас — рыночная и счётная информация только для чтения: исполнение ордеров в блокчейне не включено, а показанные цены — цены Open Oracle, собственной агрегации Openfund на основе Gains, Hyperliquid и GMX, отображаемые на графике Vela (LuxAlgo).",
   "Open source under Apache-2.0": "Открытый исходный код под Apache-2.0",
   "Openfund’s own code is licensed under Apache-2.0: anyone may use, modify and redistribute it, including commercially, provided the NOTICE that credits Openfund is kept. The Openfund name and logos are not licensed. Third-party components keep their own licences, listed below.": "Собственный код Openfund распространяется по лицензии Apache-2.0: любой может использовать, изменять и распространять его, в том числе в коммерческих целях, при условии сохранения файла NOTICE с указанием Openfund. Название и логотипы Openfund не лицензируются. Сторонние компоненты сохраняют свои лицензии, перечисленные ниже.",
-  "Apache-2.0 with NOTICE (credit Openfund)": "Apache-2.0 с NOTICE (с указанием Openfund)"
+  "Apache-2.0 with NOTICE (credit Openfund)": "Apache-2.0 с NOTICE (с указанием Openfund)",
+  "Gains Network — Open Oracle price source and market data": "Gains Network — источник цен Open Oracle и рыночных данных",
+  "Hyperliquid — Open Oracle price source": "Hyperliquid — источник цен Open Oracle",
+  "GMX — Open Oracle price source": "GMX — источник цен Open Oracle"
 }

@@ -938,7 +938,6 @@
   "Gain needed to be even": "保本所需涨幅",
   "Gain needed to recover": "恢复所需涨幅",
   "Gains Network markets — verified data · closed markets are view-only": "Gains Network 市场——已验证数据 · 休市市场仅供查看",
-  "Gains Network — market data source": "Gains Network——市场数据来源",
   "Gas": "Gas",
   "General risk warning": "一般风险提示",
   "Generated": "生成",
@@ -4405,5 +4404,8 @@
   "This lesson describes how perpetual venues work in general. In Openfund, Perpetual Trading is currently read-only market and account information — on-chain order execution is not enabled — and the prices shown are Open Oracle prices, Openfund’s own aggregation of Gains, Hyperliquid and GMX, rendered on a Vela (LuxAlgo) chart.": "本课介绍永续合约交易场所的一般运作方式。在 Openfund 中，永续合约交易目前是只读的市场和账户信息——未启用链上订单执行——显示的价格是 Open Oracle 价格，即 Openfund 对 Gains、Hyperliquid 和 GMX 的自有价格聚合，并绘制在 Vela（LuxAlgo）图表上。",
   "Open source under Apache-2.0": "基于 Apache-2.0 开源",
   "Openfund’s own code is licensed under Apache-2.0: anyone may use, modify and redistribute it, including commercially, provided the NOTICE that credits Openfund is kept. The Openfund name and logos are not licensed. Third-party components keep their own licences, listed below.": "Openfund 自有代码采用 Apache-2.0 许可：任何人都可以使用、修改和再分发，包括用于商业用途，但须保留注明 Openfund 的 NOTICE 文件。Openfund 名称和标志不在许可范围内。第三方组件保留其各自的许可，见下文。",
-  "Apache-2.0 with NOTICE (credit Openfund)": "Apache-2.0 附 NOTICE（注明 Openfund）"
+  "Apache-2.0 with NOTICE (credit Openfund)": "Apache-2.0 附 NOTICE（注明 Openfund）",
+  "Gains Network — Open Oracle price source and market data": "Gains Network — Open Oracle 价格来源与市场数据",
+  "Hyperliquid — Open Oracle price source": "Hyperliquid — Open Oracle 价格来源",
+  "GMX — Open Oracle price source": "GMX — Open Oracle 价格来源"
 }

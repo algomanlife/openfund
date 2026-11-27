@@ -17,7 +17,7 @@
     {
       "id": "intelligence", "name": "Market intelligence", "icon": "radar", "state": "running", "stateNote": "read-only",
       "tagline": "Trade Radar, Market Heatmap and Hybrid Footprint built on public market data.",
-      "highlights": ["Large-trade tape, leaderboards and whale positions", "Perpetual-market treemap by volume or OI", "Order flow beside unchanged Gains candles"],
+      "highlights": ["Large-trade tape, leaderboards and whale positions", "Perpetual-market treemap by volume or OI", "Order flow beside unchanged provider candles"],
       "where": "Terminal tabs", "href": "docs/integrations/HYPERLIQUID_RADAR.md"
     },
     {

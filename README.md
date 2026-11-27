@@ -39,6 +39,13 @@ can be checked. Start with the [documentation index](docs/README.md).
 - **One professional terminal.** Prop and Perpetual share one workspace: Vela
   charts with Openfund Pine indicators, order panel with risk preview,
   positions, portfolio and a trade journal.
+- **Our own prices: Open Oracle.** Openfund aggregates Gains, Hyperliquid and
+  GMX into one composite price per market and executes the demo only on
+  fresh prices whose sources agree; the website and terminal read it from
+  their own origin ([ADR 0059](docs/decisions/0059-open-oracle-pricing-service.md)).
+- **Wallet identity.** One explicit wallet picker for browser wallets and,
+  with WalletConnect, mobile wallets by QR code; sign-in is a single signed
+  message, never a transaction.
 - **Read-only market intelligence.** Trade Radar, the Market Heatmap and Hybrid
   Footprint read public market data and never touch orders or accounts.
 - **Transparency.** Rules, prices, the revenue model, partner commissions and
@@ -107,7 +114,7 @@ per-capability evidence is in the feature register below.
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/layers.svg" width="26" height="26" alt="layers icon" />&nbsp;<b><a href="docs/trading/INDICATORS.md">Charts and Pine indicators</a></b><ul><li>Vela charts with the official Pine addon</li><li>Open Algo V5, Price Action Concepts, Smart Money Concepts</li><li>Original Pine sources run in a worker</li><li>Settings scoped by product and wallet</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/footprint.svg" width="26" height="26" alt="footprint icon" />&nbsp;<b><a href="docs/integrations/FOOTPRINT.md">Hybrid Footprint</a></b><ul><li>Bid/ask ladder and profiles</li><li>Volume and delta profiles, absolute delta</li><li>POC, value area and imbalances</li><li>Gains candles stay unchanged</li></ul></td></tr>
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/radar.svg" width="26" height="26" alt="radar icon" />&nbsp;<b><a href="docs/integrations/HYPERLIQUID_RADAR.md">Trade Radar</a></b><ul><li>Live large-trade tape from $10K to $1M</li><li>Leaderboards and long/short positioning</li><li>Whale positions and wallet profiles</li><li>Stale data is marked, never hidden</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/heatmap.svg" width="26" height="26" alt="heatmap icon" />&nbsp;<b><a href="docs/integrations/HYPERLIQUID_RADAR.md">Market Heatmap</a></b><ul><li>Area by 24h volume or open interest</li><li>Color by 24h change or hourly funding</li><li>Drill-down, search and proportional +N tiles</li><li>Jump from a tile into the chart</li></ul></td></tr>
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/calculator.svg" width="26" height="26" alt="calculator icon" />&nbsp;<b><a href="docs/website/WEBSITE_EXPANSION.md">Tools Center</a></b><ul><li>Position size, leverage/margin, liquidation</li><li>Perp PnL, funding rate, risk/reward</li><li>Risk of ruin, prop drawdown, consistency rule</li><li>Journal analyzer in the browser</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/school.svg" width="26" height="26" alt="school icon" />&nbsp;<b><a href="docs/website/WEBSITE_EXPANSION.md">Learning center</a></b><ul><li>Learning paths and lessons</li><li>Searchable glossary</li><li>FAQ hub, rulebook and whitepaper</li><li>Tools link to the matching lessons</li></ul></td></tr>
-<tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/wallet.svg" width="26" height="26" alt="wallet icon" />&nbsp;<b><a href="docs/wallet/IDENTITY.md">Wallet identity</a></b><ul><li>Sign-In with Ethereum on Arbitrum One</li><li>Server-side HttpOnly sessions</li><li>Every record scoped to its owner</li><li>Product switch clears the previous view</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/bolt.svg" width="26" height="26" alt="bolt icon" />&nbsp;<b><a href="docs/payments/ORDER_LIFECYCLE.md">Payments</a></b><ul><li>Pay with Wallet and manual transfer</li><li>On-chain verification of token, amount and finality</li><li>Ledger with partial payments and refunds</li><li>Exactly-once challenge activation</li></ul></td></tr>
+<tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/wallet.svg" width="26" height="26" alt="wallet icon" />&nbsp;<b><a href="docs/wallet/IDENTITY.md">Wallet identity</a></b><ul><li>Sign-In with Ethereum on Arbitrum One</li><li>Explicit wallet picker over every page, keyboard and phone friendly</li><li>Mobile wallets by QR code through WalletConnect (Reown)</li><li>Server-side HttpOnly sessions, every record scoped to its owner</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/bolt.svg" width="26" height="26" alt="bolt icon" />&nbsp;<b><a href="docs/payments/ORDER_LIFECYCLE.md">Payments</a></b><ul><li>Pay with Wallet and manual transfer</li><li>On-chain verification of token, amount and finality</li><li>Ledger with partial payments and refunds</li><li>Exactly-once challenge activation</li></ul></td></tr>
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/compass.svg" width="26" height="26" alt="compass icon" />&nbsp;<b><a href="docs/decisions/0052-site-search.md">Site search</a></b><ul><li>Command palette with Ctrl/⌘+K and /, in five locales</li><li>Persian and Arabic normalization, typo tolerance and synonyms</li><li>Published content only, one index per region</li><li>Anonymous search analytics in Backstage</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/route.svg" width="26" height="26" alt="route icon" />&nbsp;<b><a href="docs/decisions/0051-migration-to-openfund.md">Migration to Openfund</a></b><ul><li>Proof of payouts reviewed with KYC</li><li>Single-use pass: normal price, funded-stage start</li><li>Private, encrypted evidence storage with retention</li><li>Editable firm list and rules</li></ul></td></tr>
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/award.svg" width="26" height="26" alt="award icon" />&nbsp;<b><a href="docs/decisions/0050-openfund-premium-league.md">Openfund Premium League</a></b><ul><li>30-day demo competition with daily, maximum-loss and consistency rules</li><li>Email-verified registration, one entry per wallet</li><li>Frozen standings, owner-gated awards and review signals</li><li>Original prize artwork and rank badges</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/scale.svg" width="26" height="26" alt="scale icon" />&nbsp;<b><a href="docs/decisions/0054-funded-trader-agreement.md">Trading objectives</a></b><ul><li>Every objective with the real numbers of each plan and size</li><li>Cards link to their rulebook section</li><li>Wallet-signed funded-trader agreement</li><li>Worked pass and fail scenarios</li></ul></td></tr>
 <tr><td width="50%" valign="top"><img src="docs/assets/readme/icons/flask.svg" width="26" height="26" alt="flask icon" />&nbsp;<b><a href="docs/decisions/0055-labs-limited-drops.md">Labs drops</a></b><ul><li>Numbered drops with limited inventory</li><li>Never oversold: reservations under a row lock</li><li>Rules shown are the rules enforced</li><li>Archive with the real number sold</li></ul></td><td width="50%" valign="top"><img src="docs/assets/readme/icons/sliders.svg" width="26" height="26" alt="sliders icon" />&nbsp;<b><a href="docs/backstage/OPERATIONS_GUIDE.md">Backstage operations</a></b><ul><li>Final-pass review and suspension decisions</li><li>Payment investigation, coupons, payouts</li><li>Partners, finance, risk board and audit</li><li>Owner re-authentication for privileged actions</li><li>Bug bounty rewards and a consent-only hall of fame</li></ul></td></tr>
@@ -253,20 +260,24 @@ flowchart TB
     APIIR["Same release · regional runtime"]
     DBIR[("PostgreSQL")]
   end
-  Gains["Gains Network · markets and prices"]
-  HL["Hyperliquid public API · read-only analytics"]
-  Web -->|REST, SSE| API
+  subgraph Providers["Public market data"]
+    Gains["Gains Network · catalog, candles, prices"]
+    HL["Hyperliquid · prices and analytics"]
+    GMX["GMX · oracle prices"]
+  end
+  Oracle["Open Oracle · composite price per market"]
+  Web -->|"REST, SSE (/api/oracle/*)"| API
   Wallet -->|signature| API
   BS -->|server-side credential| API
   API --> DB
   CMS --> DB
-  API --> Gains
+  Gains --> Oracle
+  HL --> Oracle
+  GMX --> Oracle
+  Oracle -->|"usable composites only"| API
   API --> HL
-  subgraph OracleResearch["Standalone research — no terminal integration"]
-    OracleInputs["Gains, Hyperliquid and GMX public observations"] --> Oracle["Open Oracle · GAACP reference prices"]
-    Oracle --> OracleOutput["Native candles, confidence and audit history"]
-  end
   APIIR --> DBIR
+  APIIR --> Oracle
   API <-.->|"signed sync · one home region per account"| APIIR
 ```
 
@@ -274,7 +285,7 @@ flowchart TB
 | --- | --- |
 | Server authority | Orders, positions, PnL, evaluation and payments are decided only by the backend |
 | Read-only analytics | Radar, Heatmap and Footprint cannot mutate accounts, trading or payments |
-| Oracle isolation | Open Oracle calculates independent reference prices in a standalone package; production data paths remain unchanged |
+| Own price authority | Open Oracle composites drive the demo engine and every displayed price; divergent, stale or closed prices never execute, and `MARKET_PRICE_SOURCE=gains` is the emergency fallback |
 | Content isolation | Directus never writes financial tables |
 | One origin per region | API and SPA share an origin; cookies stay first-party |
 
@@ -306,14 +317,14 @@ for each part is in the [engineering reference](docs/development/ENGINEERING_REF
 | <img src="docs/assets/readme/icons/apps.svg" width="18" height="18" alt="apps icon" /> | `apps/terminal/` | Ownership boundary for the terminal (no separate service) |
 | <img src="docs/assets/readme/icons/apps.svg" width="18" height="18" alt="apps icon" /> | `apps/web/` | Ownership boundary for the public web (not deployed alone) |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-charts/` | Vela bridge and Pine indicator integration |
-| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-gains-adapter/` | Gains market, candle and stream provider |
+| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-gains-adapter/` | Browser market provider: Gains catalog and candles, Open Oracle live prices |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-footprint/` | Order-flow aggregation and chart plugin |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/cms-client/` | Typed contract between the app and Directus |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-ui/` | Planned shared component library |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/plan-validation/` | Challenge plan rules shared by the site and the backend |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/site-search/` | Search normalization, matching and query masking shared by the site and the backend |
 | <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/openfund-protocol/` | Dormant protocol source and provenance |
-| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/open-oracle/` | Standalone multi-source reference pricing, candles and history; no terminal integration |
+| <img src="docs/assets/readme/icons/package.svg" width="18" height="18" alt="package icon" /> | `packages/open-oracle/` | Open Oracle: multi-source pricing service (Gains, Hyperliquid, GMX), research protocol and live acceptance |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `docs/` | Documentation, ADRs, status, README data and assets |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `brand/` | Brand book, logos, imagery and typography reference |
 | <img src="docs/assets/readme/icons/book.svg" width="18" height="18" alt="book icon" /> | `indicators/` | Three Openfund Pine indicators and two libraries |
@@ -357,7 +368,7 @@ tokens are in the [design system](docs/design/DESIGN_SYSTEM.md#typography-and-fo
 | **Desktop** | <img src="https://img.shields.io/badge/Electron-45.3.2-47848F?style=for-the-badge&logo=electron&logoColor=white&labelColor=0c1412" alt="Electron 45.3.2" /> <img src="https://img.shields.io/badge/electron--builder-26.18.0-47848F?style=for-the-badge&logo=electron&logoColor=white&labelColor=0c1412" alt="electron-builder 26.18.0" /> |
 | **Delivery** | <img src="https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?style=for-the-badge&logo=githubactions&logoColor=white&labelColor=0c1412" alt="GitHub Actions CI" /> <img src="https://img.shields.io/badge/Render-GLOBAL-46E3B7?style=for-the-badge&logo=render&logoColor=white&labelColor=0c1412" alt="Render GLOBAL" /> <img src="https://img.shields.io/badge/Liara-IRAN-2496ED?style=for-the-badge&logo=docker&logoColor=white&labelColor=0c1412" alt="Liara IRAN" /> <img src="https://img.shields.io/badge/Cloudflare-edge-F38020?style=for-the-badge&logo=cloudflare&logoColor=white&labelColor=0c1412" alt="Cloudflare edge" /> |
 | **Typography** | <img src="https://img.shields.io/badge/Ubuntu-Latin-E95420?style=for-the-badge&logo=ubuntu&logoColor=white&labelColor=0c1412" alt="Ubuntu Latin" /> <img src="https://img.shields.io/badge/Dastkhat-Persian%2FArabic-82E7BD?style=for-the-badge&logo=googlefonts&logoColor=white&labelColor=0c1412" alt="Dastkhat Persian/Arabic" /> |
-| **Standalone oracle research** | <img src="https://img.shields.io/badge/Open%20Oracle-GAACP%20v1-82E7BD?style=for-the-badge&logo=typescript&logoColor=white&labelColor=0c1412" alt="Open Oracle GAACP v1" /> <img src="https://img.shields.io/badge/GMX-public%20API-82E7BD?style=for-the-badge&logo=ethereum&logoColor=white&labelColor=0c1412" alt="GMX public API" /> |
+| **Pricing (Open Oracle)** | <img src="https://img.shields.io/badge/Open%20Oracle-GAACP%20v1%20service-82E7BD?style=for-the-badge&logo=typescript&logoColor=white&labelColor=0c1412" alt="Open Oracle GAACP v1 service" /> <img src="https://img.shields.io/badge/GMX-public%20API-82E7BD?style=for-the-badge&logo=ethereum&logoColor=white&labelColor=0c1412" alt="GMX public API" /> |
 
 Versions are read from the package manifests when the README is generated.
 
@@ -380,6 +391,9 @@ npm run build:web && PORT=8180 npm run dev:backend   # http://localhost:8180
 | --- | --- |
 | `npm run typecheck` | TypeScript across the web app |
 | `npm run test:web` | Web unit and component tests |
+| `npm --prefix packages/open-oracle test` | Open Oracle pricing, equivalences and service (no network) |
+| `npm --prefix apps/backend run test:oracle` | Backend price source, execution gate, `/api/oracle/*` and region mirror |
+| `node packages/open-oracle/scripts/service-live.mjs` | Live Open Oracle acceptance against the public providers (network) |
 | `npm run docs:check` | README contract, status, retired registry, fonts, language, links, Markdown and Mermaid |
 | `npm run docs:write` | Regenerates README headings, blocks and graphics from `docs/readme/*.json` |
 

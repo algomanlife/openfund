@@ -938,7 +938,6 @@
   "Gain needed to be even": "الربح اللازم للتعادل",
   "Gain needed to recover": "الربح اللازم للتعافي",
   "Gains Network markets — verified data · closed markets are view-only": "أسواق Gains Network — بيانات موثّقة · الأسواق المغلقة للعرض فقط",
-  "Gains Network — market data source": "Gains Network — مصدر بيانات السوق",
   "Gas": "الغاز",
   "General risk warning": "تحذير عام من المخاطر",
   "Generated": "تم إنشاؤها",
@@ -4405,5 +4404,8 @@
   "This lesson describes how perpetual venues work in general. In Openfund, Perpetual Trading is currently read-only market and account information — on-chain order execution is not enabled — and the prices shown are Open Oracle prices, Openfund’s own aggregation of Gains, Hyperliquid and GMX, rendered on a Vela (LuxAlgo) chart.": "يصف هذا الدرس كيف تعمل منصات العقود الدائمة عمومًا. في Openfund، تداول العقود الدائمة حاليًا معلومات سوق وحساب للقراءة فقط — التنفيذ على السلسلة غير مفعّل — والأسعار المعروضة أسعار Open Oracle، نظام Openfund الخاص لتجميع أسعار Gains وHyperliquid وGMX، ومعروضة على رسم بياني من Vela (LuxAlgo).",
   "Open source under Apache-2.0": "مفتوح المصدر بموجب Apache-2.0",
   "Openfund’s own code is licensed under Apache-2.0: anyone may use, modify and redistribute it, including commercially, provided the NOTICE that credits Openfund is kept. The Openfund name and logos are not licensed. Third-party components keep their own licences, listed below.": "شيفرة Openfund الخاصة مرخّصة بموجب Apache-2.0: يمكن لأي شخص استخدامها وتعديلها وإعادة توزيعها، بما في ذلك تجاريًا، بشرط الاحتفاظ بملف NOTICE الذي ينسب العمل إلى Openfund. اسم Openfund وشعاراته غير مرخّصة. تحتفظ المكونات الخارجية بتراخيصها الخاصة المدرجة أدناه.",
-  "Apache-2.0 with NOTICE (credit Openfund)": "Apache-2.0 مع NOTICE (مع ذكر Openfund)"
+  "Apache-2.0 with NOTICE (credit Openfund)": "Apache-2.0 مع NOTICE (مع ذكر Openfund)",
+  "Gains Network — Open Oracle price source and market data": "Gains Network — مصدر أسعار Open Oracle وبيانات السوق",
+  "Hyperliquid — Open Oracle price source": "Hyperliquid — مصدر أسعار Open Oracle",
+  "GMX — Open Oracle price source": "GMX — مصدر أسعار Open Oracle"
 }

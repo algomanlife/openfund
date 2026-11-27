@@ -20,7 +20,7 @@
 | Express | 5.3 | Auth/profile, account/trading, portfolio/journal, purchases/invoices/withdrawal requests and diagnostics APIs | Active | MIT |
 | viem (siwe) | 2.57 | EIP-4361 parse + verify (EOA + EIP-1271) | Active | MIT |
 | pg | 8.13 | PostgreSQL access | Active | MIT |
-| ws | 8.x | Gains WebSocket client (server-side marks) | Active | MIT |
+| ws | 8.x | Gains WebSocket client (server-side Gains quotes, one Open Oracle input) | Active | MIT |
 | decimal.js | 10.x | authoritative money math (NUMERIC storage) | Active | MIT |
 
 Run with Node 26 (viem/siwe + ESM). Server port 8080; env: DATABASE_URL, ALLOWED_DOMAINS, CORS_ORIGINS, SESSION_TTL_HOURS.
@@ -78,11 +78,14 @@ Notes:
 - Per-market `maxLeverage` from `/markets` clamps the leverage control (bounds come from live metadata).
 - WS protocol: `{op:'subscribe',channel:'prices'}`, answer `{op:'ping'}` with `{op:'pong'}`, resubscribe on sequence gap.
 
-## Standalone reference-price research
+## Open Oracle pricing
 
 `packages/open-oracle/` uses Node 26 built-ins and pure TypeScript integer-decimal
 GAACP v1 calculations. TypeScript 6.0.3 is a package-local Apache-2.0 development
 dependency; there are no runtime npm dependencies. Gains Network, Hyperliquid
-and GMX public APIs supply external data subject to their own rights and terms.
-This package is isolated from the production market providers.
-[Interfaces and unverified live acceptance](../integrations/OPEN_ORACLE.md).
+(main perp dex `metaAndAssetCtxs`) and GMX (Arbitrum `/v1/prices/tickers`)
+public APIs supply external data subject to their own rights and terms. Since
+[ADR 0059](../decisions/0059-open-oracle-pricing-service.md) the backend
+market-data role runs `OpenOracleService` in process and serves
+`/api/oracle/*` (REST and SSE); browsers read prices only from their own origin.
+[Interfaces and live acceptance](../integrations/OPEN_ORACLE.md).
