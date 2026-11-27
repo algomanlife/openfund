@@ -206,10 +206,12 @@ async function challengesPage(browser) {
       return { names: imgs.map(img => img.alt), loaded: imgs.every(img => img.complete && img.naturalWidth > 0),
         inside: box.left >= card.left - 0.5 && box.right <= card.right + 0.5,
         animated: [...el.querySelectorAll('.platform-orb')].every(orb => getComputedStyle(orb).animationName === 'platform-orb-orbit'),
-        logoTransform: imgs.every(img => ['none', ''].includes(getComputedStyle(img).transform)) };
+        logoTransform: imgs.every(img => ['none', ''].includes(getComputedStyle(img).transform)),
+        links: [...el.querySelectorAll('.platform-orb')].map(orb => orb.tagName === 'A' && orb.target === '_blank' && /noopener/.test(orb.rel) ? new URL(orb.href).host : null) };
     });
     check(`${tag}: three platform logos`, orbs.names.join(',') === 'Gains,Hyperliquid,GMX', orbs.names.join(','));
     check(`${tag}: orb logos load`, orbs.loaded);
+    check(`${tag}: every orb links to its provider`, orbs.links.join(',') === 'gains.trade,hyperliquid.xyz,gmx.io', orbs.links.join(','));
     check(`${tag}: motion stays inside its card`, orbs.inside);
     check(`${tag}: orbs animate`, orbs.animated);
     check(`${tag}: logos are not rotated or distorted`, orbs.logoTransform);

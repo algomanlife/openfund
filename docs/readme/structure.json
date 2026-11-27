@@ -12,14 +12,14 @@
     ] },
     { "title": "Packages", "icon": "package", "entries": [
       { "path": "packages/openfund-charts/", "role": "Vela bridge and Pine indicator integration" },
-      { "path": "packages/openfund-gains-adapter/", "role": "Gains market, candle and stream provider" },
+      { "path": "packages/openfund-gains-adapter/", "role": "Browser market provider: Gains catalog and candles, Open Oracle live prices" },
       { "path": "packages/openfund-footprint/", "role": "Order-flow aggregation and chart plugin" },
       { "path": "packages/cms-client/", "role": "Typed contract between the app and Directus" },
       { "path": "packages/openfund-ui/", "role": "Planned shared component library" },
       { "path": "packages/plan-validation/", "role": "Challenge plan rules shared by the site and the backend" },
       { "path": "packages/site-search/", "role": "Search normalization, matching and query masking shared by the site and the backend" },
       { "path": "packages/openfund-protocol/", "role": "Dormant protocol source and provenance" },
-      { "path": "packages/open-oracle/", "role": "Standalone multi-source reference pricing, candles and history; no terminal integration" }
+      { "path": "packages/open-oracle/", "role": "Open Oracle: multi-source pricing service (Gains, Hyperliquid, GMX), research protocol and live acceptance" }
     ] },
     { "title": "Content and assets", "icon": "book", "entries": [
       { "path": "docs/", "role": "Documentation, ADRs, status, README data and assets" },
