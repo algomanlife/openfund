@@ -54,11 +54,12 @@
       "id": "open-oracle",
       "name": "Open Oracle",
       "icon": "pulse",
-      "state": "candidate",
-      "stateNote": "pricing service, unreleased",
+      "state": "running",
+      "stateNote": "GLOBAL, since v0.9.0",
       "tagline": "Openfund's own multi-source price aggregation and discovery.",
       "highlights": [
-        "Gains, Hyperliquid and GMX in one composite price",
+        "One composite price per market from three independent sources",
+        "Catalog, candles, prices and the virtual order book for the website and terminal",
         "Execution gate: divergent or stale prices never trade",
         "Public /api/oracle REST and SSE feed"
       ],

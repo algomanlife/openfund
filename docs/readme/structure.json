@@ -12,7 +12,7 @@
     ] },
     { "title": "Packages", "icon": "package", "entries": [
       { "path": "packages/openfund-charts/", "role": "Vela bridge and Pine indicator integration" },
-      { "path": "packages/openfund-gains-adapter/", "role": "Browser market provider: Gains catalog and candles, Open Oracle live prices" },
+      { "path": "packages/openfund-gains-adapter/", "role": "Browser market provider: catalog, candles and live prices from Open Oracle" },
       { "path": "packages/openfund-footprint/", "role": "Order-flow aggregation and chart plugin" },
       { "path": "packages/cms-client/", "role": "Typed contract between the app and Directus" },
       { "path": "packages/openfund-ui/", "role": "Planned shared component library" },

@@ -5,10 +5,10 @@ import {JSDOM} from 'jsdom'
 const source=readFileSync(new URL('../public/legacy/market-depth.js',import.meta.url),'utf8')
 const markup=readFileSync(new URL('../src/pages/terminal-body.html',import.meta.url),'utf8')
 const book=(market='BTC/USD')=>({market,markPrice:'100',timestamp:Date.now(),asks:[{price:'101',size:'2',sizeUsd:'202',cumulativeUsd:'202'}],bids:[{price:'99',size:'3',sizeUsd:'297',cumulativeUsd:'297'}]})
-async function setup(){
+async function setup({oracle=false}={}){
  const dom=new JSDOM(markup,{url:'http://localhost/react/',runScripts:'outside-only'}),w=dom.window,sockets=[];
  class Socket{constructor(){sockets.push(this);this.sent=[]}send(s){this.sent.push(JSON.parse(s))}close(){this.onclose?.()}}
- w.WebSocket=Socket;w.fetch=async url=>({ok:true,json:async()=>url.includes('/book')?(()=>{const market=decodeURIComponent(url.split('/markets/')[1].split('/')[0]);const b=book(market);if(market==='ETH/USD'){b.markPrice='200';b.asks[0].price='201';b.bids[0].price='199'}return b})():{data:[]}});w.eval(source);await w.OpenfundDepth.select('BTC/USD');
+ w.WebSocket=Socket;w.fetch=async url=>(!oracle&&url.startsWith('/api/oracle/'))?{ok:false,status:404,json:async()=>({error:'not_found'})}:({ok:true,json:async()=>url.includes('/book')?(()=>{const market=decodeURIComponent(url.split('/markets/')[1].split('/')[0]);const b=book(market);if(market==='ETH/USD'){b.markPrice='200';b.asks[0].price='201';b.bids[0].price='199'}return b})():{data:[]}});w.eval(source);await w.OpenfundDepth.select('BTC/USD');
  return {w,sockets,close(){w.dispatchEvent(new w.Event('pagehide'));w.close()}}
 }
 test('restores Book/Trades and ignores acknowledgement or malformed trade payloads',async()=>{
@@ -73,5 +73,13 @@ test('board listeners learn which market changed so unrelated ticks can be skipp
 test('a failed boot is retryable instead of caching the rejection',async()=>{
  const a=setupFeed({failFirstBoot:true});try{const board=new a.w.OpenfundTerminal.PriceBoard()
  await assert.rejects(board.boot());await board.boot();assert.equal(board.getMark('BTC/USD'),100)
+ }finally{a.close()}
+})
+
+test('with Open Oracle on the origin the book is read from /api/oracle and polled, without a venue socket',async()=>{
+ const a=await setup({oracle:true});try{
+  assert.equal(a.sockets.length,0);
+  assert.equal(a.w.document.querySelectorAll('#book-asks .bk-row').length,1);
+  assert.ok(a.w.document.querySelector('.of-oracle-badge'));
  }finally{a.close()}
 })

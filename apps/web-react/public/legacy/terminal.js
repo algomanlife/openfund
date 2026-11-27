@@ -62,14 +62,14 @@ const I18N = {
     'dd.searchPh': 'جست‌وجوی بازار…', 'dd.market': 'بازار', 'dd.price': 'قیمت', 'dd.24h': '۲۴ساعته',
     'dd.noMatch': 'بازاری با این عبارت پیدا نشد.',
     'dd.funding': 'فاندینگ', 'dd.oil': 'OI لانگ', 'dd.ois': 'OI شورت', 'dd.hol': 'هولدینگ لانگ', 'dd.hos': 'هولدینگ شورت', 'dd.closed': 'بسته',
-    'dd.foot': 'بازارها از Gains Network و قیمت‌ها از Open Oracle · بازارهای بسته فقط قابل مشاهده‌اند',
+    'dd.foot': 'بازارها و قیمت‌ها از Open Oracle · بازارهای بسته فقط قابل مشاهده‌اند',
     'cat.crypto': 'رمزارز', 'cat.forex': 'فارکس', 'cat.stocks': 'سهام', 'cat.indices': 'شاخص', 'cat.commodity': 'کالا',
     'book.tab': 'اوردربوک', 'book.tradesTab': 'تریدها',
     'book.grouping': 'گروینگ', 'book.compact': 'فشرده', 'book.simulated': 'شبیه‌سازی‌شده',
     'book.price': 'قیمت', 'book.size': 'اندازه', 'book.total': 'جمع', 'book.time': 'زمان',
-    'book.note': 'دفتر مجازی برای نمایش ساخته شده — Gains دفتر سفارش ارائه نمی‌دهد؛ این عمق واقعی نیست.',
+    'book.note': 'دفتر سفارش مجازی Open Oracle — نقدینگی شبیه‌سازی‌شده بر پایهٔ مخزن؛ سفارش ثابتی در دفتر نیست.',
     'book.spread': 'اسپرد',
-    'trades.note': 'معاملات نمایشی مشتق از قیمت Mark — نوار معاملات واقعی توسط Gains ارائه نمی‌شود.',
+    'trades.note': 'معاملات اجراشده از Open Oracle · اندازه به USD',
     'ac.equity': 'ارزش حساب', 'ac.available': 'قابل استفاده', 'ac.margin': 'مارژین در استفاده',
     'ac.unrealized': 'سود/زیان شناور', 'ac.positions': 'موقعیت‌ها', 'ac.orders': 'سفارش‌ها',
     'ac.mode': 'حالت', 'ac.modeVal': 'Cross · شبیه‌سازی‌شده', 'ac.title': 'خلاصه حساب',
@@ -94,7 +94,7 @@ const I18N = {
     'of.size': 'اندازه', 'of.notional': 'نوشنال',
     'sz.collateral': 'کولترال / وثیقه', 'sz.collateralShort': 'کولترال / وثیقه', 'sz.quantity': 'اندازه نماد', 'sz.lots': 'لاتیج',
     'sz.qtyLabel': 'اندازه نماد', 'sz.lotsLabel': 'لاتیج', 'pos.entry': 'نقطه ورود',
-    'ctab.funding': 'فاندینگ', 'ctab.details': 'جزئیات', 'fund.loading': 'در حال بارگذاری دادهٔ بازار…', 'fund.unavailable': 'دادهٔ بازار در دسترس نیست.', 'fund.retry': 'تلاش دوباره', 'fund.long': 'لانگ', 'fund.short': 'شورت', 'fund.borrowing': 'نرخ قرض', 'fund.perHour': 'در ساعت', 'fund.perYear': 'سالانه', 'fund.oi': 'موقعیت‌های باز', 'fund.skew': 'عدم توازن', 'fund.longs': 'لانگ‌ها', 'fund.shorts': 'شورت‌ها', 'fund.range': 'بازهٔ زمانی', 'fund.interval': 'فاصلهٔ نمونه', 'fund.series': 'سمت', 'fund.annualized': 'سالانه‌شده', 'fund.r1d': '۱ روز', 'fund.r1w': '۱ هفته', 'fund.r1m': '۱ ماه', 'fund.r3m': '۳ ماه', 'fund.availableFrom': 'داده از این تاریخ موجود است:', 'fund.noSamples': 'هنوز نمونه‌ای ثبت نشده است؛ تاریخچه با نخستین نمونهٔ ساعتی آغاز می‌شود.', 'fund.source': 'دادهٔ بازار از Gains Network', 'fund.sampled': 'تاریخچه هر ساعت توسط اوپن‌فاند نمونه‌برداری می‌شود', 'fund.chart': 'نمودار نرخ فاندینگ', 'det.spec': 'مشخصات بازار در Gains', 'det.limits': 'محدودیت‌های حساب اوپن‌فاند شما', 'det.market': 'بازار', 'det.status': 'وضعیت', 'det.open': 'باز', 'det.closed': 'بسته', 'det.minLev': 'کمترین اهرم', 'det.maxLev': 'بیشترین اهرم', 'det.minCollateral': 'کمترین وثیقه', 'det.minPosition': 'کمترین اندازهٔ پوزیشن', 'det.openFee': 'کارمزد باز کردن', 'det.closeFee': 'کارمزد بستن', 'det.spread': 'اسپرد', 'det.collaterals': 'وثیقه‌های پذیرفته', 'det.margin': 'حالت مارجین', 'det.isolated': 'ایزوله', 'det.cross': 'کراس', 'det.propMax': 'سقف اهرم سیاست پراپ', 'det.effective': 'بیشترین اهرم مجاز', 'det.planNote': 'پلن چلنج شما می‌تواند سقف پایین‌تری داشته باشد؛ همیشه سخت‌گیرانه‌ترین محدودیت اعمال می‌شود.', 'det.perpNote': 'حساب‌های پرپچوال از محدودیت‌های بازار Gains پیروی می‌کنند.',
+    'ctab.funding': 'فاندینگ', 'ctab.details': 'جزئیات', 'fund.loading': 'در حال بارگذاری دادهٔ بازار…', 'fund.unavailable': 'دادهٔ بازار در دسترس نیست.', 'fund.retry': 'تلاش دوباره', 'fund.long': 'لانگ', 'fund.short': 'شورت', 'fund.borrowing': 'نرخ قرض', 'fund.perHour': 'در ساعت', 'fund.perYear': 'سالانه', 'fund.oi': 'موقعیت‌های باز', 'fund.skew': 'عدم توازن', 'fund.longs': 'لانگ‌ها', 'fund.shorts': 'شورت‌ها', 'fund.range': 'بازهٔ زمانی', 'fund.interval': 'فاصلهٔ نمونه', 'fund.series': 'سمت', 'fund.annualized': 'سالانه‌شده', 'fund.r1d': '۱ روز', 'fund.r1w': '۱ هفته', 'fund.r1m': '۱ ماه', 'fund.r3m': '۳ ماه', 'fund.availableFrom': 'داده از این تاریخ موجود است:', 'fund.noSamples': 'هنوز نمونه‌ای ثبت نشده است؛ تاریخچه با نخستین نمونهٔ ساعتی آغاز می‌شود.', 'fund.source': 'دادهٔ بازار از Open Oracle', 'fund.sampled': 'تاریخچه هر ساعت توسط اوپن‌فاند نمونه‌برداری می‌شود', 'fund.chart': 'نمودار نرخ فاندینگ', 'det.spec': 'مشخصات بازار در Open Oracle', 'det.limits': 'محدودیت‌های حساب اوپن‌فاند شما', 'det.market': 'بازار', 'det.status': 'وضعیت', 'det.open': 'باز', 'det.closed': 'بسته', 'det.minLev': 'کمترین اهرم', 'det.maxLev': 'بیشترین اهرم', 'det.minCollateral': 'کمترین وثیقه', 'det.minPosition': 'کمترین اندازهٔ پوزیشن', 'det.openFee': 'کارمزد باز کردن', 'det.closeFee': 'کارمزد بستن', 'det.spread': 'اسپرد', 'det.collaterals': 'وثیقه‌های پذیرفته', 'det.margin': 'حالت مارجین', 'det.isolated': 'ایزوله', 'det.cross': 'کراس', 'det.propMax': 'سقف اهرم سیاست پراپ', 'det.effective': 'بیشترین اهرم مجاز', 'det.planNote': 'پلن چلنج شما می‌تواند سقف پایین‌تری داشته باشد؛ همیشه سخت‌گیرانه‌ترین محدودیت اعمال می‌شود.', 'det.perpNote': 'حساب‌های پرپچوال از محدودیت‌های بازار اعلام‌شده در Open Oracle پیروی می‌کنند.',
     'ctab.chart': 'نمودار', 'ctab.news': 'اخبار و اطلاعات', 'news.loading': 'در حال بارگذاری تقویم اقتصادی…',
     'news.unavailable': 'تقویم اقتصادی در حال حاضر در دسترس نیست.', 'news.retry': 'تلاش دوباره', 'news.source': 'منبع: TradingView',
     'news.localeNote': 'این تقویم زبان فارسی ندارد و به انگلیسی نمایش داده می‌شود.',
@@ -147,7 +147,7 @@ const I18N = {
     'empty.history': 'هنوز تاریخچهٔ سفارشی وجود ندارد.',
     'empty.fills': 'هنوز معامله‌ای انجام نشده است.',
     'empty.funding': 'هنوز پرداخت فاندینگی وجود ندارد — فاندینگ شبیه‌سازی‌شده به موقعیت‌های دمو اعمال می‌شود.',
-    'sb.source': 'داده‌ها: Gains Network',
+    'sb.source': 'داده‌ها: Open Oracle',
     'sb.tick': 'قیمت زنده', 'sb.assumptions': 'مفروضات دمو',
     'sb.version': 'ترمینال اوپن‌فاند نسخهٔ ۱٫۰', 'sb.support': 'پشتیبانی',
     'mkt.closed': 'این بازار بسته است — امکان ترید نیست، فقط مشاهدهٔ چارت.',
@@ -158,10 +158,10 @@ const I18N = {
     'asm.margin': '<b>Margin:</b> مارجین اولیه = Notional ÷ اهرم. حالت Cross، بدون مارجین جزئی.',
     'asm.liq': '<b>Liquidation:</b> ساده‌شده — Entry × (۱ ∓ (۱/اهرم − ۰٫۵٪ نگهداشت)). صرافی‌های واقعی از نگهداشت پلکانی استفاده می‌کنند.',
     'asm.exec': '<b>اجرا:</b> سفارش Market در قیمت Open Oracle و بدون Slippage انجام می‌شود؛ فقط وقتی منابع قیمت به‌روز و هم‌خوان‌اند. سفارش‌های Limit و Stop با عبور قیمت از قیمت تریگر فعال می‌شوند.',
-    'asm.prices': '<b>قیمت‌ها:</b> Open Oracle، تجمیع قیمت اختصاصی اوپن‌فاند از Gains، Hyperliquid و GMX، از سرورهای ما. قیمت ساختگی نمی‌سازیم.',
-    'asm.book': '<b>Order Book:</b> Gains دفتر سفارش ارائه نمی‌دهد؛ کتاب نمایشی ما شبیه‌سازی است و نمایندهٔ نقدینگی واقعی نیست.',
-    'asm.funding': '<b>فاندینگ:</b> نرخ ساعتی واقعی از متادیتای Gains نمایش داده می‌شود؛ اعمال پرداخت‌ها فقط در سناریوی دمو.',
-    'asm.note': 'این قواعد مدل اجرای dYdX، Gains Network یا هیچ سیستم عملیاتی را بازتولید نمی‌کنند.',
+    'asm.prices': '<b>قیمت‌ها:</b> Open Oracle، سامانهٔ اختصاصی تجمیع و کشف قیمت اوپن‌فاند، از سرورهای ما. قیمت ساختگی نمی‌سازیم.',
+    'asm.book': '<b>دفتر سفارش:</b> دفتر مجازی Open Oracle نقدینگی شبیه‌سازی‌شدهٔ مبتنی بر مخزن را نشان می‌دهد، نه سفارش‌های ثابت.',
+    'asm.funding': '<b>فاندینگ:</b> نرخ ساعتی واقعی از دادهٔ بازار Open Oracle نمایش داده می‌شود؛ اعمال پرداخت‌ها فقط در سناریوی دمو.',
+    'asm.note': 'این قواعد مدل اجرای هیچ سیستم عملیاتی را بازتولید نمی‌کنند.',
     'set.title': 'تنظیمات',
     'set.note': 'ذخیره‌سازی تنظیمات برای فاز بعدی برنامه‌ریزی شده است.',
     'set.tick': 'نمایش قیمت زنده', 'set.flash': 'فلاش قیمت ردیف‌ها', 'set.sound': 'صدای اجرا (غیرفعال)',
@@ -171,7 +171,7 @@ const I18N = {
     'toast.order': 'سفارش در انتظارِ شبیه‌سازی‌شده ایجاد شد.',
     'toast.wallet': 'اتصال کیف پول شبیه‌سازی‌شده — فقط دمو.',
     'toast.noPrice': 'قیمت زنده در دسترس نیست.',
-    'chart.loading': 'در حال دریافت کندل‌های Gains…',
+    'chart.loading': 'در حال دریافت کندل‌های Open Oracle…',
     'chart.error': 'دریافت کندل ممکن نشد.',
     'chart.retry': 'تلاش دوباره',
     'chart.unavailable': 'چارت در دسترس نیست',
@@ -190,14 +190,14 @@ const EN = {
   'dd.searchPh': 'Search market…', 'dd.market': 'Market', 'dd.price': 'Price', 'dd.24h': '24h',
   'dd.noMatch': 'No market matches this search.',
   'dd.funding': 'Funding', 'dd.oil': 'OI (L)', 'dd.ois': 'OI (S)', 'dd.hol': 'Holding (L)', 'dd.hos': 'Holding (S)', 'dd.closed': 'CLOSED',
-  'dd.foot': 'Markets from Gains Network, prices from Open Oracle · closed markets are view-only',
+  'dd.foot': 'Markets and prices from Open Oracle · closed markets are view-only',
   'cat.crypto': 'Crypto', 'cat.forex': 'Forex', 'cat.stocks': 'Stocks', 'cat.indices': 'Indices', 'cat.commodity': 'Commodities',
   'book.tab': 'Order Book', 'book.tradesTab': 'Trades',
   'book.grouping': 'Grouping', 'book.compact': 'Compact', 'book.simulated': 'simulated',
   'book.price': 'Price', 'book.size': 'Size', 'book.total': 'Total', 'book.time': 'Time',
-  'book.note': 'Presentation-only virtual book — Gains does not provide an order book; this is not real depth.',
+  'book.note': 'Open Oracle virtual order book — vault-based simulated liquidity; no resting orders.',
   'book.spread': 'spread',
-  'trades.note': 'Presentation trades derived from the Gains mark price — Gains provides no trade tape.',
+  'trades.note': 'Executed trades from Open Oracle · size in USD',
   'ac.equity': 'Equity', 'ac.available': 'Available', 'ac.margin': 'Margin used',
   'ac.unrealized': 'Unrealized', 'ac.positions': 'Positions', 'ac.orders': 'Orders',
   'ac.mode': 'Mode', 'ac.modeVal': 'Cross · Simulated', 'ac.title': 'Account summary',
@@ -222,7 +222,7 @@ const EN = {
   'of.size': 'Size', 'of.notional': 'Notional',
   'sz.collateral': 'Collateral', 'sz.collateralShort': 'Collateral', 'sz.quantity': 'Quantity', 'sz.lots': 'Lotage',
   'sz.qtyLabel': 'Quantity', 'sz.lotsLabel': 'Lotage', 'pos.entry': 'Entry Price',
-  'ctab.funding': 'Funding', 'ctab.details': 'Details', 'fund.loading': 'Loading market data…', 'fund.unavailable': 'Market data is unavailable.', 'fund.retry': 'Try again', 'fund.long': 'Long', 'fund.short': 'Short', 'fund.borrowing': 'Borrowing', 'fund.perHour': 'per hour', 'fund.perYear': 'per year', 'fund.oi': 'Open interest', 'fund.skew': 'Skew', 'fund.longs': 'Longs', 'fund.shorts': 'Shorts', 'fund.range': 'Range', 'fund.interval': 'Interval', 'fund.series': 'Side', 'fund.annualized': 'Annualized', 'fund.r1d': '1D', 'fund.r1w': '1W', 'fund.r1m': '1M', 'fund.r3m': '3M', 'fund.availableFrom': 'Data available from', 'fund.noSamples': 'No samples yet: the history starts with the first hourly sample.', 'fund.source': 'Market data from Gains Network', 'fund.sampled': 'history sampled hourly by Openfund', 'fund.chart': 'Funding rate chart', 'det.spec': 'Gains market specification', 'det.limits': 'Your Openfund account limits', 'det.market': 'Market', 'det.status': 'Status', 'det.open': 'Open', 'det.closed': 'Closed', 'det.minLev': 'Minimum leverage', 'det.maxLev': 'Maximum leverage', 'det.minCollateral': 'Minimum collateral', 'det.minPosition': 'Minimum position size', 'det.openFee': 'Opening fee', 'det.closeFee': 'Closing fee', 'det.spread': 'Spread', 'det.collaterals': 'Accepted collateral', 'det.margin': 'Margin mode', 'det.isolated': 'Isolated', 'det.cross': 'Cross', 'det.propMax': 'Prop policy leverage cap', 'det.effective': 'Maximum allowed leverage', 'det.planNote': 'Your challenge plan can set a lower limit; the strictest limit always applies.', 'det.perpNote': 'Perpetual accounts follow the Gains market limits.',
+  'ctab.funding': 'Funding', 'ctab.details': 'Details', 'fund.loading': 'Loading market data…', 'fund.unavailable': 'Market data is unavailable.', 'fund.retry': 'Try again', 'fund.long': 'Long', 'fund.short': 'Short', 'fund.borrowing': 'Borrowing', 'fund.perHour': 'per hour', 'fund.perYear': 'per year', 'fund.oi': 'Open interest', 'fund.skew': 'Skew', 'fund.longs': 'Longs', 'fund.shorts': 'Shorts', 'fund.range': 'Range', 'fund.interval': 'Interval', 'fund.series': 'Side', 'fund.annualized': 'Annualized', 'fund.r1d': '1D', 'fund.r1w': '1W', 'fund.r1m': '1M', 'fund.r3m': '3M', 'fund.availableFrom': 'Data available from', 'fund.noSamples': 'No samples yet: the history starts with the first hourly sample.', 'fund.source': 'Market data from Open Oracle', 'fund.sampled': 'history sampled hourly by Openfund', 'fund.chart': 'Funding rate chart', 'det.spec': 'Open Oracle market specification', 'det.limits': 'Your Openfund account limits', 'det.market': 'Market', 'det.status': 'Status', 'det.open': 'Open', 'det.closed': 'Closed', 'det.minLev': 'Minimum leverage', 'det.maxLev': 'Maximum leverage', 'det.minCollateral': 'Minimum collateral', 'det.minPosition': 'Minimum position size', 'det.openFee': 'Opening fee', 'det.closeFee': 'Closing fee', 'det.spread': 'Spread', 'det.collaterals': 'Accepted collateral', 'det.margin': 'Margin mode', 'det.isolated': 'Isolated', 'det.cross': 'Cross', 'det.propMax': 'Prop policy leverage cap', 'det.effective': 'Maximum allowed leverage', 'det.planNote': 'Your challenge plan can set a lower limit; the strictest limit always applies.', 'det.perpNote': 'Perpetual accounts follow the market limits published by Open Oracle.',
   'ctab.chart': 'Chart', 'ctab.news': 'News & info', 'news.loading': 'Loading the economic calendar…',
   'news.unavailable': 'The economic calendar is unavailable right now.', 'news.retry': 'Retry', 'news.source': 'Source: TradingView',
   'news.localeNote': '',
@@ -278,7 +278,7 @@ const EN = {
   'empty.history': 'No order history yet.',
   'empty.fills': 'No fills yet.',
   'empty.funding': 'No funding payments yet.',
-  'sb.source': 'Data: Gains Network',
+  'sb.source': 'Data: Open Oracle',
   'sb.tick': 'live', 'sb.assumptions': 'Demo assumptions',
   'sb.version': 'Openfund Terminal v1.0', 'sb.support': 'Support',
   'sb.live': 'Live', 'sb.reconnecting': 'Reconnecting…', 'sb.connecting': 'Connecting…', 'sb.stale': 'stale',
@@ -287,10 +287,10 @@ const EN = {
   'asm.margin': '<b>Margin:</b> initial margin = notional / leverage. Cross mode, no partial margin.',
   'asm.liq': '<b>Liquidation:</b> simplified — entry × (1 ∓ (1/leverage − 0.5% maintenance)). Real venues use tiered maintenance margins.',
   'asm.exec': '<b>Execution:</b> market orders fill at the Open Oracle price with zero slippage, only while the price sources are fresh and agree. Limit and stop orders trigger when the price crosses the trigger price.',
-  'asm.prices': '<b>Prices:</b> Open Oracle, Openfund’s own aggregation of Gains, Hyperliquid and GMX, streamed from our servers. We never fabricate prices.',
-  'asm.book': '<b>Order book:</b> Gains provides no order book; our presentation book is simulated and does not represent real liquidity.',
-  'asm.funding': '<b>Funding:</b> real hourly rates shown from Gains metadata; payments only applied in the demo scenario.',
-  'asm.note': 'These rules do not reproduce dYdX, Gains Network or any production execution model.',
+  'asm.prices': '<b>Prices:</b> Open Oracle, Openfund’s own price aggregation and discovery, streamed from our servers. We never fabricate prices.',
+  'asm.book': '<b>Order book:</b> the Open Oracle virtual book shows vault-based simulated liquidity, not resting orders.',
+  'asm.funding': '<b>Funding:</b> real hourly rates from Open Oracle market data; payments only applied in the demo scenario.',
+  'asm.note': 'These rules do not reproduce any production execution model.',
   'set.title': 'Settings',
   'set.note': 'Settings persistence is planned for a later phase.',
   'set.tick': 'Live price display', 'set.flash': 'Row price flash', 'set.sound': 'Execution sound (unavailable)',
@@ -299,7 +299,7 @@ const EN = {
   'toast.position': 'Simulated position opened.', 'toast.order': 'Simulated pending order created.',
   'toast.wallet': 'Simulated wallet connection — demo only.',
   'toast.noPrice': 'Live price unavailable.',
-  'chart.loading': 'Loading Gains candles…', 'chart.error': 'Could not load candles.',
+  'chart.loading': 'Loading Open Oracle candles…', 'chart.error': 'Could not load candles.',
   'chart.retry': 'Retry', 'chart.unavailable': 'Chart unavailable',
   'chart.msg': 'The Vela library failed to load.',
   'boot.loading': 'Connecting to market data…',
@@ -614,7 +614,7 @@ function initChart(){
     /* markers and zones re-map to the new timeframe's candle buckets */
     setTimeout(velaPositionsSync, 0);
     if (ev && ev.symbol){
-      const sym = String(ev.symbol).replace(/^gains:/, '');
+      const sym = String(ev.symbol).replace(/^(?:gains|openoracle):/, '');
       if (sym !== S.marketId && board.meta.has(sym)){
         selectMarket(sym);
         /* selectMarket calls setChartMarket → same market, no loop */
@@ -2863,7 +2863,7 @@ function boot(){
     }) : setTimeout(() => { velaRestoreDrawings(); velaPositionsSync(); }, 1000);
     $('market-select-btn').disabled = false;
     $('submit-order').disabled = false;
-    const restoredSymbol = vc?.chart?.market?.symbol?.replace(/^gains:/, '');
+    const restoredSymbol = vc?.chart?.market?.symbol?.replace(/^(?:gains|openoracle):/, '');
     const initialSymbol = requestedSymbol || restoredSymbol || S.marketId;
     selectMarket(board.meta.has(initialSymbol) ? initialSymbol : [...board.meta.keys()][0]);
     renderCats();

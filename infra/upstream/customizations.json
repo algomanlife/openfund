@@ -51,12 +51,12 @@
       "why": "Only intervals the Gains feed supports."
     },
     {
-      "id": "vela-gains-provider",
+      "id": "vela-open-oracle-provider",
       "provider": "vela",
       "area": "market-data",
       "file": "packages/openfund-charts/src/vela-bridge.js",
-      "contains": "providers: { gains:",
-      "why": "Market data enters Vela only through the Openfund provider adapter."
+      "contains": "providers: { openoracle: () => G.createVelaProvider() }",
+      "why": "Market data enters Vela only through the Openfund provider adapter, which reads Open Oracle."
     },
     {
       "id": "vela-persistent-settings",

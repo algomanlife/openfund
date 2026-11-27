@@ -50,6 +50,8 @@ async function toggleLanguage(page) {
 
 async function chartRoutes(context){
  if(!CHART_FIXTURE)return;
+ /* these fixtures stand in for Open Oracle's market API too: the pages fall back to them when it is unavailable */
+ await context.route('**/api/oracle/markets**', route => route.fulfill({ status: 404, json: { error: 'not_found' } }))
  await context.route('https://api.gains.trade/v1/arbitrum/**',async route=>{
   const url=new URL(route.request().url()),pathname=url.pathname;
   const price=chartFixture.bars.at(-1).close;
