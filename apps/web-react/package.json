@@ -30,11 +30,8 @@
     "test:typography": "node --test test/typography.test.mjs"
   },
   "dependencies": {
-    "@luxalgo/vela": "0.10.6",
-    "@luxalgo/vela-pinets": "0.3.4",
     "@rainbow-me/rainbowkit": "^2.2.11",
     "@tanstack/react-query": "^5.108.2",
-    "pinets": "0.13.1",
     "qrcode": "^1.5.4",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -43,10 +40,13 @@
     "wagmi": "^2.19.5"
   },
   "devDependencies": {
+    "@luxalgo/vela": "^0.10.19",
+    "@luxalgo/vela-pinets": "^0.3.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^6.3.0",
     "esbuild": "0.28.2",
+    "pinets": "^0.13.1",
     "typescript": "~7.0.2",
     "typescript-js-api": "npm:typescript@6.0.3",
     "vite": "^8.3.8"
