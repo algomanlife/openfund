@@ -11,7 +11,7 @@
     {
       "id": "terminal", "name": "Web Terminal", "icon": "candles", "state": "running", "stateNote": "GLOBAL",
       "tagline": "One trading workspace for Prop and Perpetual with separate accounts and records.",
-      "highlights": ["Vela charts with Openfund Pine indicators", "Order panel with server risk preview", "Portfolio, journal and certificates"],
+      "highlights": ["Vela charts with Openfund Pine indicators and the Vela built-ins", "Order panel with server risk preview", "Portfolio, journal and certificates"],
       "where": "/:locale/prop/trade", "href": "docs/trading/TERMINAL.md"
     },
     {
@@ -40,8 +40,8 @@
     },
     {
       "id": "certificates", "name": "Certificates", "icon": "award", "state": "running", "stateNote": "GLOBAL",
-      "tagline": "Purchase, completion and payout certificates derived from recorded evidence.",
-      "highlights": ["Verifiable by serial number or QR code", "Issued from server records, not client messages", "Linked from purchases and accounts"],
+      "tagline": "Purchase, Free Trial, phase-pass, final-pass and payout certificates derived from recorded evidence.",
+      "highlights": ["Verifiable by serial number or QR code", "Issued from server records, not client messages", "Soulbound NFT on Arbitrum Sepolia (when enabled)"],
       "where": "/:locale/certificate-verification", "href": "docs/product/PLATFORM_TOUR.md"
     },
     {

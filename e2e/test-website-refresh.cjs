@@ -155,7 +155,7 @@ async function realThemeClicks(browser) {
       check(`${tag} theme`, await page.locator('html').getAttribute('data-theme') === theme);
       check(`${tag} no unreleased app downloads`, await page.locator('#desktop, .desktop-btns').count() === 0);
       check(`${tag} no Team section`, await page.locator('#team, .team-section, #team-dialog').count() === 0);
-      check(`${tag} eight services incl. Render, Liara, Bitpin and Hyperliquid`, await page.locator('.credits-row > a').count() === 8 && await page.locator('.credits-row a[href="https://hyperliquid.xyz"]').count() === 1 && await page.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await page.locator('.credits-row a[href="https://render.com"]').count() === 1 && await page.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
+      check(`${tag} nine services incl. Render, Liara, Bitpin, Hyperliquid and Arbitrum Sepolia`, await page.locator('.credits-row > a').count() === 9 && await page.locator('.credits-row a[href="https://sepolia.arbiscan.io"]').count() === 1 && await page.locator('.credits-row a[href="https://hyperliquid.xyz"]').count() === 1 && await page.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await page.locator('.credits-row a[href="https://render.com"]').count() === 1 && await page.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
       const attribution = locale === 'fa' ? 'توسعه داده شده توسط معامله‌گران' : 'Developed by Traders';
       await page.locator('footer').getByText(attribution, { exact: true }).waitFor();
       check(`${tag} attribution`, (await page.locator('footer').innerText()).includes(attribution));
@@ -255,7 +255,7 @@ async function realThemeClicks(browser) {
       try {
         await entry.goto(`${BASE}/${route}`);
         await entry.locator('footer .telegram-community').waitFor();
-        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 8 && await entry.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await entry.locator('.credits-row a[href="https://render.com"]').count() === 1 && await entry.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
+        check(`${route} shared public footer`, await entry.locator('.credits-row > a').count() === 9 && await entry.locator('.credits-row a[href="https://bitpin.ir"]').count() === 1 && await entry.locator('.credits-row a[href="https://render.com"]').count() === 1 && await entry.locator('.credits-row a[href="https://liara.ir"]').count() === 1);
       } finally { await entry.close(); }
     }
     for (const route of ['en/prop/trade', 'fa/perpetual/trade', 'en/prop/dashboard']) {

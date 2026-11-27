@@ -14,12 +14,17 @@
       { "name": "viem", "from": "apps/web-react/package.json:viem", "logo": "ethereum", "color": "FFC517" },
       { "name": "Arbitrum One", "version": "SIWE", "logo": "arbitrum", "color": "28A0F0" }
     ] },
-    { "layer": "Charts and data", "items": [
+    { "layer": "Charts", "items": [
       { "name": "Vela", "from": "apps/web-react/package.json:@luxalgo/vela", "logo": "tradingview", "color": "82E7BD" },
       { "name": "Vela Pine addon", "from": "apps/web-react/package.json:@luxalgo/vela-pinets", "logo": "tradingview", "color": "82E7BD" },
-      { "name": "PineTS", "from": "apps/web-react/package.json:pinets", "logo": "tradingview", "color": "82E7BD" },
-      { "name": "Gains Network", "version": "API", "logo": "ethereum", "color": "82E7BD" },
-      { "name": "Hyperliquid", "version": "public API", "logo": "liquibase", "color": "82E7BD" }
+      { "name": "PineTS", "from": "apps/web-react/package.json:pinets", "logo": "tradingview", "color": "82E7BD" }
+    ] },
+    { "layer": "Market data and pricing", "items": [
+      { "name": "Open Oracle", "version": "GAACP v1 service", "logo": "typescript", "color": "82E7BD" },
+      { "name": "Gains Network", "version": "API · candles and metadata", "logo": "ethereum", "color": "82E7BD" },
+      { "name": "Hyperliquid", "version": "public API", "logo": "liquibase", "color": "82E7BD" },
+      { "name": "GMX", "version": "public API", "logo": "ethereum", "color": "82E7BD" },
+      { "name": "Bitpin", "version": "Iran ticker", "logo": "bitcoin", "color": "00D890" }
     ] },
     { "layer": "Backend", "items": [
       { "name": "Node.js", "from": "apps/backend/package.json:engines.node", "logo": "nodedotjs", "color": "5FA04E" },
@@ -31,6 +36,12 @@
     { "layer": "Data", "items": [
       { "name": "PostgreSQL", "version": "17", "logo": "postgresql", "color": "4169E1" },
       { "name": "Directus", "version": "11.17.4", "logo": "directus", "color": "6644FF" }
+    ] },
+    { "layer": "On-chain records", "items": [
+      { "name": "Arbitrum Sepolia", "version": "certificates and trade ledger", "logo": "arbitrum", "color": "28A0F0" },
+      { "name": "ERC-721 / ERC-5192", "version": "soulbound NFT", "logo": "ethereum", "color": "627EEA" },
+      { "name": "Solidity", "version": "0.8.28", "logo": "solidity", "color": "363636" },
+      { "name": "Foundry", "version": "forge test", "logo": "ethereum", "color": "F7931A" }
     ] },
     { "layer": "Desktop", "items": [
       { "name": "Electron", "from": "apps/open-trade/package.json:electron", "logo": "electron", "color": "47848F" },
@@ -45,23 +56,6 @@
     { "layer": "Typography", "items": [
       { "name": "Ubuntu", "version": "Latin", "logo": "ubuntu", "color": "E95420" },
       { "name": "Dastkhat", "version": "Persian/Arabic", "logo": "googlefonts", "color": "82E7BD" }
-    ] },
-    {
-      "layer": "Pricing (Open Oracle)",
-      "items": [
-        {
-          "name": "Open Oracle",
-          "version": "GAACP v1 service",
-          "logo": "typescript",
-          "color": "82E7BD"
-        },
-        {
-          "name": "GMX",
-          "version": "public API",
-          "logo": "ethereum",
-          "color": "82E7BD"
-        }
-      ]
-    }
+    ] }
   ]
 }
