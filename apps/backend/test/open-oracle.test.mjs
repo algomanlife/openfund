@@ -103,16 +103,16 @@ test('the public API serves composites without provider payloads and streams cha
   const R = fakeRouter(); let current = null
   const api = oracleRoutes({ Router: R, oracle: () => current, limit: () => (q, s, n) => n(), now: () => clock.t })
   const get = (path, req = {}) => { const res = response(); R.routes.get(path)({ query: {}, params: {}, on() {}, ...req }, res); return res }
-  assert.equal(get('/oracle/prices').statusCode, 503, 'no oracle on this process: explicit unavailability')
+  assert.equal(get('/api/oracle/prices').statusCode, 503, 'no oracle on this process: explicit unavailability')
   current = service
-  const list = get('/oracle/prices')
+  const list = get('/api/oracle/prices')
   assert.equal(list.headers['Cache-Control'], 'no-store'); assert.equal(list.body.source, 'open-oracle')
   assert.deepEqual(Object.keys(list.body.data[0]).sort(), ['at', 'confidence', 'configured', 'eligible', 'market', 'mode', 'price', 'stale'])
-  assert.equal(get('/oracle/prices/:market', { params: { market: 'btc-usd' } }).body.sources.length, 2)
-  assert.equal(get('/oracle/prices/:market', { params: { market: 'NOPE-USD' } }).statusCode, 404)
-  assert.ok(!JSON.stringify(get('/oracle/status').body).includes('rawObservation'))
+  assert.equal(get('/api/oracle/prices/:market', { params: { market: 'btc-usd' } }).body.sources.length, 2)
+  assert.equal(get('/api/oracle/prices/:market', { params: { market: 'NOPE-USD' } }).statusCode, 404)
+  assert.ok(!JSON.stringify(get('/api/oracle/status').body).includes('rawObservation'))
   const req = new EventEmitter(); req.query = {}; req.params = {}
-  const stream = response(); R.routes.get('/oracle/stream')(req, stream)
+  const stream = response(); R.routes.get('/api/oracle/stream')(req, stream)
   assert.match(stream.chunks[1], /^event: snapshot\n/)
   hl(service, '100400', clock.t); clock.t += 1000; service.tick()
   assert.ok(stream.chunks.some(c => c.startsWith('event: prices\n') && c.includes('BTC/USD')))

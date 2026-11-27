@@ -16,7 +16,23 @@ flowchart TB
   History --> Replay["Causal reconstruction and backfill"]
 ```
 
-There is no production-terminal edge. The package uses Node built-ins, its own
+The only production edge is the pricing service ([ADR 0059](../decisions/0059-open-oracle-pricing-service.md)):
+the backend `market-data` role runs `OpenOracleService` and the browser reads
+`/api/oracle/*` from its own origin.
+
+```mermaid
+flowchart LR
+  GainsWS["Gains price socket (backend)"] --> Service["OpenOracleService"]
+  HL["Hyperliquid main perp dex poll"] --> Service
+  GMX["GMX Arbitrum tickers poll"] --> Service
+  Service --> MD["MarketData execution marks"]
+  MD --> Engine["Demo engine (usable composites only)"]
+  Service --> API["/api/oracle/* REST and SSE"]
+  API --> Browser["Website and terminal"]
+  API --> Mirror["Region mirror (OPEN_ORACLE_UPSTREAM)"]
+```
+
+The research package itself still uses Node built-ins, its own
 pure typed decimal/pricing modules and one development-only compiler. Reusing
 production financial services would create unnecessary coupling; those services
 are not imported or modified. Existing footprint mappings were inspected, but

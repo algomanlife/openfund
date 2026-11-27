@@ -63,3 +63,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0057 — Bug bounty program](0057-bug-bounty.md)
 
 - [0058 — Standalone Open Oracle reference-price research](0058-open-oracle-standalone.md)
+- [0059 — Open Oracle as the Openfund pricing service](0059-open-oracle-pricing-service.md)

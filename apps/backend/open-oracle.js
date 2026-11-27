@@ -12,8 +12,9 @@
  *  - `OracleMirror` follows another Openfund region's public stream so
  *    browsers in a region without provider access still read Open Oracle
  *    composites from their own origin.
- *  - `oracleRoutes()` is the public, read-only API: /oracle/prices,
- *    /oracle/prices/:market, /oracle/status and the /oracle/stream SSE feed.
+ *  - `oracleRoutes()` is the public, read-only API: /api/oracle/prices,
+ *    /api/oracle/prices/:market, /api/oracle/status and the
+ *    /api/oracle/stream SSE feed.
  *    Responses carry composites and per-source contributions only, never
  *    provider payloads.
  */
@@ -50,7 +51,7 @@ export function createOpenOracle({ fetchImpl = fetch, logger = console } = {}) {
 
 /**
  * Read-only mirror of another region's Open Oracle, with the service's read
- * interface. It follows the upstream /oracle/stream (snapshot, then only the
+ * interface. It follows the upstream /api/oracle/stream (snapshot, then only the
  * changed composites), so a region pays for changes, not for a full snapshot
  * every second; it reconnects with backoff and reports its own freshness.
  */
@@ -71,7 +72,7 @@ export class OracleMirror {
     while (!this.stopped) {
       this.controller = new AbortController()
       try {
-        const r = await this.fetchImpl(`${this.upstream}/oracle/stream`, { headers: { accept: 'text/event-stream' }, signal: this.controller.signal })
+        const r = await this.fetchImpl(`${this.upstream}/api/oracle/stream`, { headers: { accept: 'text/event-stream' }, signal: this.controller.signal })
         if (!r.ok || !r.body) throw new Error(`upstream_${r.status}`)
         this.connects++
         await this.consume(r.body)
@@ -139,23 +140,23 @@ export function oracleRoutes({ Router, oracle, limit, now = () => Date.now() }) 
   const router = Router()
   const streams = new Set()
   const unavailable = res => res.status(503).set('Cache-Control', 'no-store').json({ error: 'oracle_unavailable' })
-  router.get('/oracle/prices', limit(120), (req, res) => {
+  router.get('/api/oracle/prices', limit(120), (req, res) => {
     const o = oracle(); if (!o) return unavailable(res)
     const records = o.snapshot()
     res.set('Cache-Control', 'no-store').json({ source: 'open-oracle', at: now(), status: summary(o.status()), data: records.map(compact) })
   })
-  router.get('/oracle/prices/:market', limit(240), (req, res) => {
+  router.get('/api/oracle/prices/:market', limit(240), (req, res) => {
     const o = oracle(); if (!o) return unavailable(res)
     const symbol = String(req.params.market || '').replace('-', '/').toUpperCase()
     const record = o.get(symbol)
     if (!record) return res.status(404).set('Cache-Control', 'no-store').json({ error: 'unknown_market' })
     res.set('Cache-Control', 'no-store').json(record)
   })
-  router.get('/oracle/status', limit(60), (req, res) => {
+  router.get('/api/oracle/status', limit(60), (req, res) => {
     const o = oracle(); if (!o) return unavailable(res)
     res.set('Cache-Control', 'no-store').json({ source: 'open-oracle', ...o.status() })
   })
-  router.get('/oracle/stream', limit(30), (req, res) => {
+  router.get('/api/oracle/stream', limit(30), (req, res) => {
     const o = oracle(); if (!o) return unavailable(res)
     if (streams.size >= MAX_STREAMS) return res.status(503).set('Cache-Control', 'no-store').json({ error: 'stream_capacity' })
     res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive', 'X-Accel-Buffering': 'no' })

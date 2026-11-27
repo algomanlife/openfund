@@ -12,8 +12,11 @@ Integrated source baseline: `d05b4b88fc2776e09bf1a701254ac229e8145a7f`, includin
 flowchart TB
   Browser[Browser React and wallet UI] -->|same origin / and API| Node[openfund Node.js API]
   Browser -->|public published content| CMS[openfund-cms Directus 11.17.4]
-  Browser -->|REST candles and WS marks| Gains[Gains market data]
-  Node -->|server execution marks and wallet reads| Gains
+  Browser -->|REST market catalog and candles| Gains[Gains market data]
+  Node -->|marks and wallet reads| Gains
+  Node -->|Open Oracle composite prices| Oracle[Open Oracle pricing service]
+  Oracle -->|price inputs| Gains
+  Oracle -->|price inputs| Providers[Hyperliquid and GMX public APIs]
   Node --> Auth[SIWE sessions and ownership]
   Node --> Engine[Prop simulation and SSE]
   Node --> Product[Product portfolio and journal API]

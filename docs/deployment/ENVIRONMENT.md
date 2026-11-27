@@ -25,6 +25,7 @@ to the browser, SEC = secret, never in Git · **owner** = which Render service
 | `PURCHASE_PAYMENT_CHAIN` | openfund | R | PUB | `42161`. Legacy single settlement chain, used only while `PURCHASE_PAYMENT_CHAINS` is unset. Payments are **not** tied to the Arbitrum sign-in chain. The live service still carried `11155111` at the 2026-11-10 audit. |
 | `PURCHASE_PAYMENT_DECIMALS` | openfund | R | PUB | default `18` — token decimals used in server-side amount checks |
 | `PURCHASE_LATE_GRACE_MINUTES` | openfund | R | PUB | default `60` — a payment verified within this many minutes after order expiry still pays the order; outside the window → explicit `order_expired` for manual reconciliation |
+| `MARKET_PRICE_SOURCE` | openfund | R | PUB | `open-oracle` (default): the market-data role runs the Open Oracle pricing service (Gains, Hyperliquid main perp dex, GMX Arbitrum) and the demo engine executes only on usable composites; `/api/oracle/*` is served. `gains`: emergency fallback to Gains-only marks, no `/api/oracle/*` (answers 503). Any other value refuses to start. See [ADR 0059](../decisions/0059-open-oracle-pricing-service.md) and [Open Oracle](../integrations/OPEN_ORACLE.md#pricing-service) |
 | `FOOTPRINT_ENABLED` | openfund | R | PUB | `0` (off). `1` starts the footprint service (one shared Hyperliquid trade WebSocket, `/api/footprint/*`) and exposes `footprint: true` in the public runtime config so the terminal registers the Footprint chart style and overlay. Off: nothing is registered, fetched or rendered and every `/api/footprint/*` route answers 404. See [Footprint](../integrations/FOOTPRINT.md). |
 | `FOOTPRINT_RETENTION_DAYS` | openfund | R | PUB | `30` — days of stored one-minute footprint history (1–3650) |
 | `FOOTPRINT_MAX_STREAMS` | openfund | R | PUB | `5000` — concurrent live footprint SSE streams one process accepts; extra streams are refused with `footprint_stream_capacity` |
@@ -121,6 +122,15 @@ backend variables listed in [LIARA_IRAN_RUNTIME.md](LIARA_IRAN_RUNTIME.md#enviro
 with their own `DATABASE_URL` (never the Render database). Identifiers,
 roles and GitHub environments: [`stack.json`](../../infra/liara-iran-runtime/stack.json),
 checked by `npm run infra:check`.
+
+Open Oracle there follows `MARKET_PRICE_SOURCE` like Render: both runtime apps
+run the `market-data` role, so each runs its own pricing service and needs
+outbound access to the Gains, Hyperliquid and GMX public APIs; a provider it
+cannot reach drops out and the affected markets degrade to fewer sources,
+labelled as such. `OPEN_ORACLE_UPSTREAM` (optional, runtime, public) is an
+https origin of another Openfund region without a path: a process **without**
+the `market-data` role follows that region's public `/api/oracle/stream` and
+serves the same `/api/oracle/*` from its own origin. It is unset on Render.
 
 ## Iran edge on Liara (dormant; not a Render service)
 

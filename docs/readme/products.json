@@ -55,12 +55,12 @@
       "name": "Open Oracle",
       "icon": "pulse",
       "state": "candidate",
-      "stateNote": "standalone research",
-      "tagline": "Independent multi-source reference prices, native candles and audit history.",
+      "stateNote": "pricing service, unreleased",
+      "tagline": "Openfund's own multi-source price aggregation and discovery.",
       "highlights": [
-        "Gains, Hyperliquid and GMX read-only adapters",
-        "GAACP quality weights, confidence and causal replay",
-        "Public discovery and histories verified; mappings under review"
+        "Gains, Hyperliquid and GMX in one composite price",
+        "Execution gate: divergent or stale prices never trade",
+        "Public /api/oracle REST and SSE feed"
       ],
       "where": "packages/open-oracle",
       "href": "docs/integrations/OPEN_ORACLE.md"

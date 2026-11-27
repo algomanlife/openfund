@@ -38,14 +38,14 @@
       "items": ["Directus owns public editorial copy", "Visual editing mapped to collection and field", "Draft previews stay inside the editor", "Financial collections are never editable"] },
     {
       "id": "open-oracle",
-      "title": "Open Oracle research protocol",
+      "title": "Open Oracle pricing service",
       "icon": "pulse",
       "href": "docs/integrations/OPEN_ORACLE.md",
       "items": [
-        "Union registry with explicit identity and quote evidence",
-        "Gains-anchored adaptive 40/30/30 pricing and confidence",
-        "Native UTC candles, provenance and causal historical replay",
-        "Independent CI and public reads verified; calibration remains open"
+        "One composite price per market from Gains, Hyperliquid and GMX",
+        "Price-confirmed cross-provider equivalences, never ticker guesses",
+        "Demo engine executes only on fresh, agreeing composites",
+        "Public REST and SSE API; live acceptance passed, release pending"
       ]
     }
   ]
