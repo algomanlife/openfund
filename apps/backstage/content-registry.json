@@ -2,9 +2,9 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4923,
+    "uniqueRecords": 4925,
     "mappedCalls": 2336,
-    "exceptions": 61,
+    "exceptions": 62,
     "validationFindings": 0,
     "reviewedExclusions": 53
   },
@@ -1516,26 +1516,6 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 324,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.010548668eaa067a",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "امروز سپردهٔ مشتری‌ای برای امانت گرفتن وجود ندارد: دمو تنها وجه مجازی نگه می‌دارد — یک حساب شبیه‌سازی‌شدهٔ ۱۰۰٬۰۰۰ دای برای هر کاربر، قیمت‌گذاری‌شده از قیمت مرجع زندهٔ Gains Network، بدون واریز یا برداشت. سرمایهٔ واقعیِ فاندشده مرحله‌ای برنامه‌ریزی‌شده است که با عرضهٔ تجاری و قرارداد نهایی می‌آید.",
-      "en": "Today there is no customer capital to custody: the demo holds only virtual funds — one 100,000 DAI simulated account per user, priced from live Gains Network mark prices, with no deposits or withdrawals. Real funded capital is a planned stage that arrives with the commercial launch and the final agreement.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
-          "line": 289,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4623,26 +4603,6 @@
       ]
     },
     {
-      "key": "react.0813acfe86bea30c",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "در اوپن‌فاند، «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شدهٔ سمت سرور است: وجه تضمین و بسته‌شدن‌های اجباری درون همان شبیه‌سازی و با مارک پرایس زندهٔ Gains Network مدیریت می‌شوند، و هیچ نتیجهٔ دموی حقِ مالکیت سرمایه ایجاد نمی‌کند. بخش «معاملات آنی» امروز خواندنی است — اجرای آن‌چینی فعال نیست — پس جای بررسیِ قیمت است، نه آزمودنِ حالت‌های وجه تضمین.",
-      "en": "In Openfund, Prop Trading is a server-side simulated demo: margin and forced closes are handled inside that simulation, priced from live Gains Network mark prices, and no demo result creates a claim on capital. Perpetual Trading is read-only today — on-chain execution is not enabled — so it is a place to study prices, not to test margin modes.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
-          "line": 231,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.081b668b0cbbf50f",
       "namespace": "react",
       "area": "Website",
@@ -5090,7 +5050,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 106,
+          "line": 109,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -5190,7 +5150,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 129,
+          "line": 132,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "pick-pipeline"
@@ -5314,6 +5274,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.099ea75848f0fc1a",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "فیدِ Gains Network که امروز اوپن‌فاند از آن می‌خواند، نه اوپن اینترست دارد، نه عمق دفتر سفارش و نه نوار معاملات؛ پس اوپن‌فاند به‌جای تخمین یا ساختن، این‌ها را «در دسترس نیست» نشان می‌دهد. برای سنجش اسلیپیج یا خواندن عمق، مستقیم به همان صرافی مراجعه کنید. نمای «معاملات آنی» اوپن‌فاند خواندنی است و «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شده است که با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود.",
+      "en": "The price feeds Openfund reads today supply no open interest, no order-book depth and no trade tape, so Openfund shows those as unavailable instead of estimating or fabricating them. To measure slippage or read depth, use the venue you trade on directly. Openfund’s Perpetual Trading view is read-only and Prop Trading runs a simulated demo priced on live Open Oracle prices.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
+          "line": 440,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -7386,7 +7366,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 63,
+          "line": 65,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -8482,6 +8462,26 @@
       ]
     },
     {
+      "key": "react.12a3d85ef6b0e19e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "Open Oracle، سرویس قیمت اختصاصی اوپن‌فاند، قیمت‌های Gains، Hyperliquid و GMX را برای هر بازار به یک قیمت ترکیبی تبدیل می‌کند و از سرورهای ما پخش می‌کند؛ مشخصات بازار را Gains Network تأمین می‌کند. Vela نمودار را نمایش می‌دهد. قیمت بازار، مدرک اجرای سفارش آن‌چین نیست.",
+      "en": "Open Oracle, Openfund’s own price service, combines Gains, Hyperliquid and GMX prices into one composite per market and streams it from our servers; Gains Network supplies market metadata. Vela displays charts. Market prices are not evidence of orders being executed on-chain.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/transparency/content.ts",
+          "line": 5,
+          "page": "transparency",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.12aab81d3a77b569",
       "namespace": "react",
       "area": "Website",
@@ -9445,7 +9445,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 107,
+          "line": 110,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -9586,6 +9586,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 450,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.14bfe2167339ae10",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "دامنه مهم است. در این نسخه معاملهٔ perpetual فقط‌خواندنی است و اجرای آن‌چین فعال نیست، پس سیستمِ خودکار اینجا یعنی تحلیل، پایش و backtest روی سوابق — نه سفارشِ زنده. محیطِ معاملهٔ پراپ یک دموی شبیه‌سازی‌شدهٔ سروری است که یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین و از قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود، و فعال‌سازیِ خرید، حساب فاندشده و برداشت فعال نیستند. هر backtestی را تمرین بدان، و تحلیل‌گرِ ژورنالِ CSV و داشبوردِ پرتفوی — تغذیه‌شده از سوابقِ حساب — را ابزارِ سنجشِ فرآیند بخوان، نه مدرکِ نتیجه‌ها.",
+      "en": "Scope matters. This release is read-only on perpetual markets and cannot execute on-chain, so an automated system here means analysis, monitoring and backtesting over the records, not live orders. The Prop Trading environment is a single server-side simulated demo funded once with 100,000 virtual DAI at live Open Oracle prices, with purchase activation, funded accounts and payouts not enabled. Treat each backtest as a rehearsal, and the CSV journal analyzer and portfolio dashboard - fed by the account records - as tools for measuring a process, not evidence about results.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
+          "line": 457,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -10144,6 +10164,26 @@
           "line": 83,
           "page": "terminal",
           "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.162a63f7abae791d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برنامه مشخصات بازار را از Gains Network و قیمت مرجع را از Open Oracle، سامانهٔ تجمیع قیمت اوپن‌فاند از Gains، Hyperliquid و GMX، می‌خواند. ابزارها به رمزارز، فارکس، سهام، شاخص و کالا دسته‌بندی می‌شوند — فهرست کامل را در صفحهٔ «بازارها» ببین. فهرست در دسترس و وضعیت هر بازار می‌تواند تغییر کند.",
+      "en": "The application loads market metadata from Gains Network and reference prices from Open Oracle, Openfund’s aggregation of Gains, Hyperliquid and GMX. Instruments are grouped into crypto, forex, stocks, indices and commodities — browse the full directory on the Markets page. The available list and each market’s status can change.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/rulebook/content.ts",
+          "line": 121,
+          "page": "rulebook",
+          "route": "/:locale/rulebook",
           "method": "pick-pipeline"
         }
       ]
@@ -11125,7 +11165,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 83,
+          "line": 86,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -14133,26 +14173,6 @@
       ]
     },
     {
-      "key": "react.205d973fb9723bb3",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با مارک پرایس زندهٔ Gains Network، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. پلن‌های چلنج اهرم مرجع ۵× را منتشر می‌کنند، اما سقف واقعیِ هر بازار از فید می‌آید؛ پس به‌جای فرض کردنِ سقفی، آن را در ترمینال بخوانید.",
-      "en": "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge plans publish a reference leverage of 5x; the real per-market maximum comes from the market feed, so read it in the terminal rather than assuming a ceiling.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
-          "line": 127,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.20672d0150f968e5",
       "namespace": "react",
       "area": "Global Content",
@@ -15720,6 +15740,26 @@
       ]
     },
     {
+      "key": "react.23f35cb1289f3e4d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "قیمت‌ها، قیمت ترکیبی زندهٔ Open Oracle از Gains، Hyperliquid و GMX است. منابع قیمت، عمق دفتر سفارش، بهرهٔ باز و نوار معاملات را فراهم نمی‌کند و ترمینال این‌ها را «در دسترس نیست» نشان می‌دهد و برایشان مقدارِ ساختگی نمی‌سازد.",
+      "en": "Prices are live Open Oracle composites of Gains, Hyperliquid and GMX. The price sources do not provide order-book depth, open interest or a trade tape, and the terminal shows those as unavailable rather than inventing values for them.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
+          "line": 273,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.23f68260096e733c",
       "namespace": "react",
       "area": "Global Content",
@@ -17269,26 +17309,6 @@
       ]
     },
     {
-      "key": "react.28123d1421386a46",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "ارتباط با Gains Network برقرار نشد. اتصال خود را بررسی کن و دوباره تلاش کن.",
-      "en": "Could not reach Gains Network. Check your connection and retry.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 116,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.281de44c9a1d45dc",
       "namespace": "react",
       "area": "Global Content",
@@ -17621,7 +17641,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 110,
+          "line": 113,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -18185,33 +18205,6 @@
           "line": 50,
           "page": "labs",
           "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.2a6699069538593a",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Gains Network ببینید: رمزارز، فارکس، سهام، شاخص و کالا.",
-      "en": "Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live Gains Network prices.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/marketsContent.ts",
-          "line": 23,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 68,
-          "page": "markets",
-          "route": "/:locale/markets",
           "method": "bilingual-record"
         }
       ]
@@ -19434,6 +19427,26 @@
       ]
     },
     {
+      "key": "react.2d52ce1384c5c5d5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت‌ها از Open Oracle، سامانهٔ تجمیع قیمت اختصاصی ما از Gains، Hyperliquid و GMX، می‌آیند: رمزارز، فارکس، سهام، شاخص و کالا.",
+      "en": "Prices come from Open Oracle, our own aggregation of Gains, Hyperliquid and GMX: crypto, forex, stocks, indices and commodities.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/campaign/Campaign.tsx",
+          "line": 97,
+          "page": "campaign",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.2d638b1e73717a86",
       "namespace": "react",
       "area": "Website",
@@ -19570,6 +19583,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.2d99d568d38c9ad8",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "امروز دمو اجرا را از قیمت تازهٔ سروریِ Open Oracle — فقط وقتی منابع هم‌خوان‌اند — می‌سازد و در حساب تو ثبتش می‌کند؛ پس اجرا شبیه‌سازی‌شده است و به هیچ بازاری هدایت نمی‌شود. چون شبیه‌سازی است، نتیجهٔ دمو کیفیت اجرای زنده را اثبات نمی‌کند و هر تضمینِ انصاف برای معاملهٔ زنده، به قرارداد نهایی تعلق دارد.",
+      "en": "Today the demo drives fills from fresh server-side Open Oracle prices — only when the sources agree — and records them on your account, so execution is simulated and not routed to any venue. Because it is a simulation, demo results do not prove live execution quality, and any fairness guarantees for live trading belong to the final agreement.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
+          "line": 310,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -23605,6 +23638,26 @@
       ]
     },
     {
+      "key": "react.359696e5a7ef8063",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "بازارها از مشخصات Gains Network می‌آیند و در دسته‌های رمزارز، فارکس، سهام، شاخص و کالا گروه‌بندی می‌شوند — حدود ۴۸۸ نماد. قیمت‌ها، قیمت ترکیبی Open Oracle است: بازارهای رمزارز از Gains، Hyperliquid و GMX تجمیع می‌شوند و سایر بازارها از Gains. فهرستِ در دسترس و وضعیت هر بازار می‌تواند تغییر کند، پس در ترمینال بررسی کن.",
+      "en": "Markets come from Gains Network metadata and are grouped into crypto, forex, stocks, indices and commodities — around 488 symbols. Prices are Open Oracle composites: crypto markets combine Gains, Hyperliquid and GMX, other markets use Gains. The available list and each market’s status can change, so check the terminal.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
+          "line": 239,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.359ff31eabca5454",
       "namespace": "react",
       "area": "Global Content",
@@ -23681,6 +23734,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.35dd3f4f40511767",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "ترمینال، موتور نمودار Vela محصول LuxAlgo را با قیمت زندهٔ Open Oracle و دادهٔ بازار Gains Network جفت کرده است. هر دو محصول — چلنجی و دائمی — روی همین یک رابط اجرا می‌شوند، پس نمودار و بازارها را در یک جا می‌بینی.",
+      "en": "The terminal pairs the Vela charting engine by LuxAlgo with live Open Oracle prices and Gains Network market data. Both products — Prop Trading and Perpetual Trading — run on this one interface, so you chart and view the same markets in one place.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
+          "line": 232,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -23801,6 +23874,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.36284816caec55b2",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "این درس مکانیک عمومی صرافی‌های پرپچوآل را توضیح می‌دهد. در اوپن‌فاند، بخش «معاملات آنی» فعلاً فقط دادهٔ خواندنیِ بازار و حساب است — اجرای آن‌چینیِ سفارش فعال نیست — و قیمت‌های نمایش‌داده‌شده، قیمت‌های Open Oracle، سامانهٔ تجمیع قیمت اختصاصی اوپن‌فاند از Gains، Hyperliquid و GMX، هستند که روی نمودار Vela (LuxAlgo) رسم می‌شوند.",
+      "en": "This lesson describes how perpetual venues work in general. In Openfund, Perpetual Trading is currently read-only market and account information — on-chain order execution is not enabled — and the prices shown are Open Oracle prices, Openfund’s own aggregation of Gains, Hyperliquid and GMX, rendered on a Vela (LuxAlgo) chart.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
+          "line": 101,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -26999,6 +27092,26 @@
       ]
     },
     {
+      "key": "react.3e98f16cb64bde90",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت",
+      "en": "Prices",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 85,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3e99bac64f9316a8",
       "namespace": "react",
       "area": "Website",
@@ -27154,26 +27267,6 @@
           "line": 225,
           "page": "global",
           "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.3efca9f9f8026b8b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "قیمت Mark و مشخصات بازار مربوط به منبع دادهٔ Gains Network است؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منبع نمایش داده می‌شود.",
-      "en": "Mark prices and market specs come from Gains Network (the data source); leverage and Openfund account terms are independent. Only fields provided by the source are shown.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 159,
-          "page": "markets",
-          "route": "/:locale/markets",
           "method": "bilingual-record"
         }
       ]
@@ -29436,6 +29529,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
           "line": 442,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.4493458f2332bbad",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "اوپن‌فاند یک پلتفرم معاملاتی است که دو محصول را روی یک ترمینال دارد: معاملهٔ چلنجی (Prop Trading) و معاملهٔ دائمی (Perpetual Trading). امروز محصول چلنجی یک حساب دموی شبیه‌سازی‌شده اجرا می‌کند — یک حساب برای هر کاربر، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی، قیمت‌گذاری‌شده از قیمت زندهٔ Open Oracle — و محصول دائمی فقط دادهٔ خواندنی از استقرار عمومی Gains Network بر بستر Arbitrum One نشان می‌دهد.",
+      "en": "Openfund is a trading platform with two products on one terminal: Prop Trading and Perpetual Trading. Today Prop Trading runs a simulated demo account — one per user, funded once with 100,000 virtual DAI and priced from live Open Oracle prices — while Perpetual Trading shows read-only data from the public Gains Network deployment on Arbitrum One.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
+          "line": 34,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -31799,6 +31912,33 @@
       ]
     },
     {
+      "key": "react.4a56c35ced5eaed8",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Open Oracle، سامانهٔ تجمیع قیمت اختصاصی اوپن‌فاند، ببینید: رمزارز، فارکس، سهام، شاخص و کالا.",
+      "en": "Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live prices from Open Oracle, Openfund’s own price aggregation.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/marketsContent.ts",
+          "line": 23,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 70,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.4a7574842b62c77c",
       "namespace": "react",
       "area": "Website",
@@ -32148,26 +32288,6 @@
           "line": 156,
           "page": "terminal",
           "route": "/:locale/:product/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.4b6919eb113ad803",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "برنامه مشخصات بازار و قیمت مرجع را از Gains Network می‌خواند. ابزارها به رمزارز، فارکس، سهام، شاخص و کالا دسته‌بندی می‌شوند — فهرست کامل را در صفحهٔ «بازارها» ببین. فهرست در دسترس و وضعیت هر بازار می‌تواند تغییر کند.",
-      "en": "The application loads market metadata and marks from Gains Network. Instruments are grouped into crypto, forex, stocks, indices and commodities — browse the full directory on the Markets page. The available list and each market’s status can change.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/rulebook/content.ts",
-          "line": 121,
-          "page": "rulebook",
-          "route": "/:locale/rulebook",
           "method": "pick-pipeline"
         }
       ]
@@ -32632,7 +32752,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 61,
+          "line": 63,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -35464,6 +35584,26 @@
       ]
     },
     {
+      "key": "react.526667f6813cab74",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت‌ها حاصل تجمیع Open Oracle از Gains، Hyperliquid و GMX است: بازارهای رمزارز تا سه منبع و سایر بازارها یک منبع دارند. مشخصات بازار از Gains Network می‌آید؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منابع نمایش داده می‌شود.",
+      "en": "Prices are Open Oracle composites of Gains, Hyperliquid and GMX: crypto markets combine up to three sources, other markets use one. Market specifications come from Gains Network; leverage and Openfund account terms are independent. Only fields provided by the sources are shown.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 162,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.526ab44d8b0507df",
       "namespace": "react",
       "area": "Global Content",
@@ -35477,6 +35617,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 254,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.52761cf426f8562e",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "امروز سپردهٔ مشتری‌ای برای امانت گرفتن وجود ندارد: دمو تنها وجه مجازی نگه می‌دارد — یک حساب شبیه‌سازی‌شدهٔ ۱۰۰٬۰۰۰ دای برای هر کاربر، قیمت‌گذاری‌شده از قیمت زندهٔ Open Oracle، بدون واریز یا برداشت. سرمایهٔ واقعیِ فاندشده مرحله‌ای برنامه‌ریزی‌شده است که با عرضهٔ تجاری و قرارداد نهایی می‌آید.",
+      "en": "Today there is no customer capital to custody: the demo holds only virtual funds — one 100,000 DAI simulated account per user, priced from live Open Oracle prices, with no deposits or withdrawals. Real funded capital is a planned stage that arrives with the commercial launch and the final agreement.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
+          "line": 289,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35995,26 +36155,6 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.53d10d4f104ba759",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند یک پلتفرم معاملاتی است که دو محصول را روی یک ترمینال دارد: معاملهٔ چلنجی (Prop Trading) و معاملهٔ دائمی (Perpetual Trading). امروز محصول چلنجی یک حساب دموی شبیه‌سازی‌شده اجرا می‌کند — یک حساب برای هر کاربر، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی، قیمت‌گذاری‌شده از قیمت مرجع زندهٔ Gains Network — و محصول دائمی فقط دادهٔ خواندنی از استقرار عمومی Gains Network بر بستر Arbitrum One نشان می‌دهد.",
-      "en": "Openfund is a trading platform with two products on one terminal: Prop Trading and Perpetual Trading. Today Prop Trading runs a simulated demo account — one per user, funded once with 100,000 virtual DAI and priced from live Gains Network mark prices — while Perpetual Trading shows read-only data from the public Gains Network deployment on Arbitrum One.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
-          "line": 34,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -38024,7 +38164,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 114,
+          "line": 117,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -39985,26 +40125,6 @@
       ]
     },
     {
-      "key": "react.5d5527051e6ab8f3",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "ترمینال، موتور نمودار Vela محصول LuxAlgo را با دادهٔ بازار Gains Network جفت کرده است. هر دو محصول — چلنجی و دائمی — روی همین یک رابط اجرا می‌شوند، پس نمودار و بازارها را در یک جا می‌بینی.",
-      "en": "The terminal pairs the Vela charting engine by LuxAlgo with market data from Gains Network. Both products — Prop Trading and Perpetual Trading — run on this one interface, so you chart and view the same markets in one place.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
-          "line": 232,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.5d927b4e131dab5a",
       "namespace": "react",
       "area": "Global Content",
@@ -40057,7 +40177,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/client.ts",
-          "line": 361,
+          "line": 363,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40916,26 +41036,6 @@
           "line": 590,
           "page": "terminal",
           "route": "/:locale/:product/*",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.5f92ba32033d890a",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "قیمت‌ها از Gains Network می‌آیند: رمزارز، فارکس، سهام، شاخص و کالا.",
-      "en": "Prices come from Gains Network: crypto, forex, stocks, indices and commodities.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/campaign/Campaign.tsx",
-          "line": 97,
-          "page": "campaign",
-          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -45424,26 +45524,6 @@
       ]
     },
     {
-      "key": "react.6b254ed6caf2a132",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دموی شبیه‌سازی‌شده شرط را پایین می‌آورد ولی الگو را نه: روی ۱۰۰٬۰۰۰ دای مجازی با مارک پرایسِ زندهٔ Gains Network اجرا می‌شود، پس رگبارِ ضرر چیزی قابلِ برداشت از تو نمی‌گیرد، اما همچنان نشان می‌دهد زیرِ آن حس چگونه رفتار می‌کنی — و تنها موضوعِ همین درس است. هیچ‌چیز اینجا توصیهٔ سرمایه‌گذاری نیست، و آرام ماندن یا ژورنال کردنِ یک ضرر نه راهِ سود است و نه راهِ حساب فاندشده.",
-      "en": "The simulated demo lowers the stakes but not the pattern: it runs on 100,000 virtual DAI at live Gains Network mark prices, so a losing streak costs you nothing withdrawable, yet still shows how you behave under the feeling - the only thing this lesson is about. Nothing here is investment advice, and staying calm or journalling a loss is no route to profit or to a funded account.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
-          "line": 291,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.6b2a1ce312b9c727",
       "namespace": "react",
       "area": "Global Content",
@@ -48578,7 +48658,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 135,
+          "line": 138,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -48994,26 +49074,6 @@
           "component": "apps/web-react/src/features/navigation/megaMenu.ts",
           "line": 82,
           "page": "navigation",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.75803c51d7f25c59",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دامنه مهم است. در این نسخه معاملهٔ perpetual فقط‌خواندنی است و اجرای آن‌چین فعال نیست، پس سیستمِ خودکار اینجا یعنی تحلیل، پایش و backtest روی سوابق — نه سفارشِ زنده. محیطِ معاملهٔ پراپ یک دموی شبیه‌سازی‌شدهٔ سروری است که یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین و از مارک پرایسِ زندهٔ Gains Network قیمت‌گذاری می‌شود، و فعال‌سازیِ خرید، حساب فاندشده و برداشت فعال نیستند. هر backtestی را تمرین بدان، و تحلیل‌گرِ ژورنالِ CSV و داشبوردِ پرتفوی — تغذیه‌شده از سوابقِ حساب — را ابزارِ سنجشِ فرآیند بخوان، نه مدرکِ نتیجه‌ها.",
-      "en": "Scope matters. This release is read-only on perpetual markets and cannot execute on-chain, so an automated system here means analysis, monitoring and backtesting over the records, not live orders. The Prop Trading environment is a single server-side simulated demo funded once with 100,000 virtual DAI at live Gains Network mark prices, with purchase activation, funded accounts and payouts not enabled. Treat each backtest as a rehearsal, and the CSV journal analyzer and portfolio dashboard - fed by the account records - as tools for measuring a process, not evidence about results.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
-          "line": 457,
-          "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -49440,7 +49500,7 @@
         },
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 73,
+          "line": 75,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -51197,26 +51257,6 @@
       ]
     },
     {
-      "key": "react.7a845dfbfeb1c709",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "امروز دمو اجرا را از قیمت مرجع تازهٔ سروریِ Gains Network می‌سازد و در حساب تو ثبتش می‌کند؛ پس اجرا شبیه‌سازی‌شده است و به هیچ بازاری هدایت نمی‌شود. چون شبیه‌سازی است، نتیجهٔ دمو کیفیت اجرای زنده را اثبات نمی‌کند و هر تضمینِ انصاف برای معاملهٔ زنده، به قرارداد نهایی تعلق دارد.",
-      "en": "Today the demo drives fills from fresh server-side Gains Network mark prices and records them on your account, so execution is simulated and not routed to any venue. Because it is a simulation, demo results do not prove live execution quality, and any fairness guarantees for live trading belong to the final agreement.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
-          "line": 310,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.7a8aee07f23988bf",
       "namespace": "react",
       "area": "Global Content",
@@ -51310,26 +51350,6 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 331,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.7ac357c20a7d24f6",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "این درس مکانیک عمومی صرافی‌های پرپچوآل را توضیح می‌دهد. در اوپن‌فاند، بخش «معاملات آنی» فعلاً فقط دادهٔ خواندنیِ بازار و حساب است — اجرای آن‌چینیِ سفارش فعال نیست — و قیمت‌های نمایش‌داده‌شده، مارک پرایس‌های Gains Network هستند که از استقرار عمومی آن روی Arbitrum One خوانده و روی نمودار Vela (LuxAlgo) رسم می‌شوند.",
-      "en": "This lesson describes how perpetual venues work in general. In Openfund, Perpetual Trading is currently read-only market and account information — on-chain order execution is not enabled — and the prices shown are Gains Network mark prices consumed from the public deployment on Arbitrum One, rendered on a Vela (LuxAlgo) chart.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
-          "line": 101,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53761,7 +53781,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 117,
+          "line": 120,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -58137,7 +58157,7 @@
         },
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 135,
+          "line": 138,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -59548,26 +59568,6 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
           "line": 72,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.8fa3e3a94406c7bb",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از مارک پرایسِ زندهٔ Gains Network، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.",
-      "en": "The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 543,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61625,26 +61625,6 @@
       ]
     },
     {
-      "key": "react.948687daf61422be",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "فیدِ Gains Network که امروز اوپن‌فاند از آن می‌خواند، نه اوپن اینترست دارد، نه عمق دفتر سفارش و نه نوار معاملات؛ پس اوپن‌فاند به‌جای تخمین یا ساختن، این‌ها را «در دسترس نیست» نشان می‌دهد. برای سنجش اسلیپیج یا خواندن عمق، مستقیم به همان صرافی مراجعه کنید. نمای «معاملات آنی» اوپن‌فاند خواندنی است و «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شده است که با مارک پرایس زندهٔ Gains قیمت‌گذاری می‌شود.",
-      "en": "The Gains Network feed that Openfund reads today supplies no open interest, no order-book depth and no trade tape, so Openfund shows those as unavailable instead of estimating or fabricating them. To measure slippage or read depth, use the venue you trade on directly. Openfund’s Perpetual Trading view is read-only and Prop Trading runs a simulated demo priced on live Gains mark prices.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
-          "line": 440,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.949baee9c94d43b9",
       "namespace": "react",
       "area": "Website",
@@ -62167,26 +62147,6 @@
           "line": 54,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.95ea4df3d4ebfc79",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "Gains Network مشخصات بازار و قیمت را با REST و WebSocket تأمین می‌کند. Vela نمودار را نمایش می‌دهد. قیمت بازار، مدرک اجرای سفارش آن‌چین نیست.",
-      "en": "Gains Network supplies market metadata and prices over REST and WebSocket. Vela displays charts. Market prices are not evidence of orders being executed on-chain.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/transparency/content.ts",
-          "line": 5,
-          "page": "transparency",
-          "route": "/:locale/*",
           "method": "pick-pipeline"
         }
       ]
@@ -62813,26 +62773,6 @@
       ]
     },
     {
-      "key": "react.97b5bcff61b182ab",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "منبع دادهٔ بازار",
-      "en": "market data source",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 167,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.97b94d4685a31174",
       "namespace": "react",
       "area": "Website",
@@ -63003,26 +62943,6 @@
           "page": "partners",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.980d697c8e15d592",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "قیمت‌ها، کندل‌ها و مشخصات بازار از Gains Network، یک پروتکل غیرمتمرکز معاملات اهرمی، می‌آیند. اوپن‌فاند این داده را می‌خواند؛ روی Gains معامله اجرا نمی‌کند.",
-      "en": "Prices, candles and market metadata come from Gains Network, a decentralized leveraged-trading protocol. Openfund reads this data; it does not execute trades on Gains.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 104,
-          "page": "company",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -69744,6 +69664,26 @@
       ]
     },
     {
+      "key": "react.a7e333275d2409b5",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "در اوپن‌فاند، «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شدهٔ سمت سرور است: وجه تضمین و بسته‌شدن‌های اجباری درون همان شبیه‌سازی و با قیمت زندهٔ Open Oracle مدیریت می‌شوند، و هیچ نتیجهٔ دموی حقِ مالکیت سرمایه ایجاد نمی‌کند. بخش «معاملات آنی» امروز خواندنی است — اجرای آن‌چینی فعال نیست — پس جای بررسیِ قیمت است، نه آزمودنِ حالت‌های وجه تضمین.",
+      "en": "In Openfund, Prop Trading is a server-side simulated demo: margin and forced closes are handled inside that simulation, priced from live Open Oracle prices, and no demo result creates a claim on capital. Perpetual Trading is read-only today — on-chain execution is not enabled — so it is a place to study prices, not to test margin modes.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
+          "line": 231,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a7fffd874276f1e5",
       "namespace": "react",
       "area": "Global Content",
@@ -70260,6 +70200,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/glossary.ts",
           "line": 382,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.a9304d4cc8584bc0",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "وضعیت اوپن‌فاند: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه، قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. آنچه امروز کار می‌کند یک حسابِ شبیه‌سازی‌شدهٔ free_demo در سمت سرور است، به ازای هر کاربر یکی، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین شده و از قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود؛ بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. سودِ دمو پولی نیست که به معامله‌گر بدهکار باشند، و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. هر عددی در این مسیر، شرطِ منتشرشده و مرجع است.",
+      "en": "Openfund status: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. What runs today is a single server-side simulated free_demo account per user, funded once with 100,000 virtual DAI and priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo profit is not money owed to the trader, and trading the demo does not establish eligibility for a funded account. Every figure in this path is a published term of record.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 106,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -71973,7 +71933,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/cms/client.ts",
-          "line": 360,
+          "line": 362,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72830,6 +72790,26 @@
       ]
     },
     {
+      "key": "react.af1e1161fa442963",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "بافتِ اوپن‌فاند: دمو یک حسابِ شبیه‌سازی‌شدهٔ سمت سرور است — ۱۰۰٬۰۰۰ دای مجازی یک‌بار برای هر کاربر، بدون واریز، برداشت، شارژ یا بازنشانی، با قیمت‌گذاری از قیمت زندهٔ Open Oracle. سودِ دمو طلبِ مالی نیست و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. سقف‌های ضرری که اینجا آمده، شرایط منتشرشده و مرجع است و در این نسخه اجرا نمی‌شود.",
+      "en": "Openfund context: the demo is a server-side simulated account — 100,000 virtual DAI once per user, no deposits, withdrawals, refills or resets, priced from live Open Oracle prices. Demo profit is not money owed, and demo trading does not establish eligibility for a funded account. The loss limits quoted here are published terms of record, not enforced in this release.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
+          "line": 559,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.af1e52a7c7168523",
       "namespace": "react",
       "area": "Trading Terminal",
@@ -73120,26 +73100,6 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 325,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.af8c552e7357a03a",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "بافتِ اوپن‌فاند: دمو یک حسابِ شبیه‌سازی‌شدهٔ سمت سرور است — ۱۰۰٬۰۰۰ دای مجازی یک‌بار برای هر کاربر، بدون واریز، برداشت، شارژ یا بازنشانی، با قیمت‌گذاری از مارک پرایس زندهٔ Gains Network. سودِ دمو طلبِ مالی نیست و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. سقف‌های ضرری که اینجا آمده، شرایط منتشرشده و مرجع است و در این نسخه اجرا نمی‌شود.",
-      "en": "Openfund context: the demo is a server-side simulated account — 100,000 virtual DAI once per user, no deposits, withdrawals, refills or resets, priced from live Gains Network mark prices. Demo profit is not money owed, and demo trading does not establish eligibility for a funded account. The loss limits quoted here are published terms of record, not enforced in this release.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
-          "line": 559,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74326,7 +74286,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 153,
+          "line": 156,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "pick-pipeline"
@@ -74562,26 +74522,6 @@
       ]
     },
     {
-      "key": "react.b37214870c64bfc9",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "وضعیت اوپن‌فاند: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه، قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. آنچه امروز کار می‌کند یک حسابِ شبیه‌سازی‌شدهٔ free_demo در سمت سرور است، به ازای هر کاربر یکی، یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین شده و از مارک پرایسِ زندهٔ Gains Network قیمت‌گذاری می‌شود؛ بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. سودِ دمو پولی نیست که به معامله‌گر بدهکار باشند، و معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. هر عددی در این مسیر، شرطِ منتشرشده و مرجع است.",
-      "en": "Openfund status: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. What runs today is a single server-side simulated free_demo account per user, funded once with 100,000 virtual DAI and priced from live Gains Network mark prices, with no deposits, withdrawals, refills or resets. Demo profit is not money owed to the trader, and trading the demo does not establish eligibility for a funded account. Every figure in this path is a published term of record.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 106,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.b3826ffdd7bf00d7",
       "namespace": "react",
       "area": "Website",
@@ -74805,26 +74745,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.b3e48918f89d75aa",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "قیمت‌ها، قیمت مرجعِ زندهٔ Gains Network است. منبع داده، عمق دفتر سفارش، بهرهٔ باز و نوار معاملات را فراهم نمی‌کند و ترمینال این‌ها را «در دسترس نیست» نشان می‌دهد و برایشان مقدارِ ساختگی نمی‌سازد.",
-      "en": "Prices are live Gains Network mark prices. The data source does not provide order-book depth, open interest or a trade tape, and the terminal shows those as unavailable rather than inventing values for them.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
-          "line": 273,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -78573,7 +78493,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 64,
+          "line": 66,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -80809,7 +80729,7 @@
         },
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 94,
+          "line": 97,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -81842,33 +81762,6 @@
       ]
     },
     {
-      "key": "react.c688ce9f1bfc6a4b",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت Mark مستقیم از Gains Network. بازار را انتخاب کن و مستقیم به ترمینال ببر.",
-      "en": "Every asset class the Openfund trading ecosystem tracks, with live mark prices straight from Gains Network. Pick a market and take it straight into the terminal.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/marketsContent.ts",
-          "line": 18,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 75,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.c6aabeb26001a5f6",
       "namespace": "react",
       "area": "Website",
@@ -82303,6 +82196,26 @@
       ]
     },
     {
+      "key": "react.c81824d3b7d2021b",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "دموی شبیه‌سازی‌شده شرط را پایین می‌آورد ولی الگو را نه: روی ۱۰۰٬۰۰۰ دای مجازی با قیمت زندهٔ Open Oracle اجرا می‌شود، پس رگبارِ ضرر چیزی قابلِ برداشت از تو نمی‌گیرد، اما همچنان نشان می‌دهد زیرِ آن حس چگونه رفتار می‌کنی — و تنها موضوعِ همین درس است. هیچ‌چیز اینجا توصیهٔ سرمایه‌گذاری نیست، و آرام ماندن یا ژورنال کردنِ یک ضرر نه راهِ سود است و نه راهِ حساب فاندشده.",
+      "en": "The simulated demo lowers the stakes but not the pattern: it runs on 100,000 virtual DAI at live Open Oracle prices, so a losing streak costs you nothing withdrawable, yet still shows how you behave under the feeling - the only thing this lesson is about. Nothing here is investment advice, and staying calm or journalling a loss is no route to profit or to a funded account.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
+          "line": 291,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.c83e66673687ef1b",
       "namespace": "react",
       "area": "Global Content",
@@ -82713,6 +82626,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.c9585f40528d373c",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "در اوپن‌فاند قیمت‌هایی که می‌بینید، قیمت‌های Open Oracle‌اند: قیمت ترکیبی اختصاصی اوپن‌فاند از Gains، Hyperliquid و GMX که روی نمودار Vela (LuxAlgo) رسم می‌شود. وقتی منابع با هم اختلاف دارند، اوپن‌فاند قیمت را علامت‌گذاری می‌کند و قیمت گمراه‌کننده منتشر نمی‌کند.",
+      "en": "In Openfund the prices you see are Open Oracle prices: Openfund’s own composite of Gains, Hyperliquid and GMX, drawn on a Vela (LuxAlgo) chart. When the sources disagree, Openfund flags the price instead of publishing a misleading one.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
+          "line": 271,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -83978,6 +83911,26 @@
       ]
     },
     {
+      "key": "react.cc514ee239ac9a50",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دریافت دادهٔ بازار ممکن نشد. اتصال خود را بررسی کن و دوباره تلاش کن.",
+      "en": "Could not load market data. Check your connection and retry.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 119,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.cc549262a3198954",
       "namespace": "react",
       "area": "Website",
@@ -84150,7 +84103,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 91,
+          "line": 94,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -84386,6 +84339,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 95,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.cd9010b40ffc4552",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "دموی شبیه‌سازی‌شده تنها محیطِ معاملاتیِ فعالِ امروز است: یک حساب free_demo برای هر کاربر، ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری از قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژِ مجدد یا بازنشانی. فعالیتِ دمو حقِ سرمایه، سهمِ پاداش یا برداشت ایجاد نمی‌کند و قبولی در معاملهٔ دمو واجدِ شرایط شدن برای حساب فاندشده را اثبات نمی‌کند. قواعدِ معاملهٔ خبری و آخرِ هفته برای مرحلهٔ فاندشده، طرحِ scaling و فرایندِ بازنشانی و اعتراض نهایی نشده‌اند؛ شرایطِ دقیقِ مرحلهٔ فاندشده تابعِ قراردادِ نهاییِ نسخه‌داری است که پیش از عرضه منتشر می‌شود.",
+      "en": "The simulated demo is the only trading environment active today: one free_demo account per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets. Demo activity does not create a right to capital, a reward share or a withdrawal, and passing demo trading does not establish eligibility for a funded account. News-trading and weekend rules for funded stages, the scaling plan and the reset and appeal process are not finalized; the exact funded-stage conditions follow the final versioned agreement to be published before launch.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 543,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85380,7 +85353,7 @@
         },
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 135,
+          "line": 138,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -87909,6 +87882,26 @@
       ]
     },
     {
+      "key": "react.d57b9da0ef28214c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "منبع قیمت",
+      "en": "price source",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 170,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.d5884e499e48c851",
       "namespace": "react",
       "area": "Global Content",
@@ -89213,7 +89206,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 62,
+          "line": 64,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -90546,7 +90539,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 65,
+          "line": 67,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -90835,6 +90828,26 @@
           "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
           "line": 20,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.dc5eb572ad36d3e2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "کندل‌ها و مشخصات بازار از Gains Network، یک پروتکل غیرمتمرکز معاملات اهرمی، می‌آیند که یکی از سه منبع قیمت Open Oracle هم هست. اوپن‌فاند این داده را می‌خواند؛ روی Gains معامله اجرا نمی‌کند.",
+      "en": "Candles and market metadata come from Gains Network, a decentralized leveraged-trading protocol, which is also one of the three price sources of Open Oracle. Openfund reads this data; it does not execute trades on Gains.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/company/aboutContent.ts",
+          "line": 104,
+          "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -92110,6 +92123,26 @@
       ]
     },
     {
+      "key": "react.dfcfa70ba9f6d649",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مشخصات بازار",
+      "en": "market specifications",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 172,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.dff13ea77dde50fd",
       "namespace": "react",
       "area": "Website",
@@ -92740,26 +92773,6 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.e15178a0c85738d2",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "در اوپن‌فاند قیمت‌هایی که می‌بینید، مارک پرایس‌های Gains Network‌اند که از استقرار عمومی Gains روی Arbitrum One خوانده و روی نمودار Vela (LuxAlgo) رسم می‌شوند. اوپن‌فاند این مارک‌ها را همان‌طور که فید منتشر می‌کند گزارش می‌دهد و مارک مستقلِ خودش را نمی‌سازد.",
-      "en": "In Openfund the prices you see are Gains Network mark prices, consumed from the public Gains deployment on Arbitrum One and drawn on a Vela (LuxAlgo) chart. Openfund reports these marks as they are published by that feed; it does not compute a separate mark of its own.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
-          "line": 271,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -96462,6 +96475,26 @@
       ]
     },
     {
+      "key": "react.ea61f61e146d1c0a",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "دموی اوپن‌فاند یک حساب شبیه‌سازی‌شدهٔ سمت سرور است: برای هر کاربر یکی، با ۱۰۰٬۰۰۰ دای مجازی که یک‌بار تخصیص می‌یابد، قیمت‌گذاری‌شده با قیمت زندهٔ Open Oracle، بدون واریز، برداشت، شارژ یا بازنشانی — و سود دمو طلبِ مالی هیچ‌کس نیست. پلن‌های چلنج اهرم مرجع ۵× را منتشر می‌کنند، اما سقف واقعیِ هر بازار از فید می‌آید؛ پس به‌جای فرض کردنِ سقفی، آن را در ترمینال بخوانید.",
+      "en": "The Openfund demo is a server-side simulated account: one per user, 100,000 virtual DAI allocated once, priced from live Open Oracle prices, with no deposits, withdrawals, refills or resets — and a demo profit is not money owed to anyone. Challenge plans publish a reference leverage of 5x; the real per-market maximum comes from the market feed, so read it in the terminal rather than assuming a ceiling.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
+          "line": 127,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ea72eb27fd73bc09",
       "namespace": "react",
       "area": "Global Content",
@@ -98862,7 +98895,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 119,
+          "line": 122,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -101287,6 +101320,33 @@
       ]
     },
     {
+      "key": "react.f685e33199a48711",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر.",
+      "en": "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/marketsContent.ts",
+          "line": 18,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 77,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.f696746dc3df9c47",
       "namespace": "react",
       "area": "Website",
@@ -101659,7 +101719,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 74,
+          "line": 76,
           "page": "markets",
           "route": "/:locale/markets",
           "method": "bilingual-record"
@@ -103593,26 +103653,6 @@
       ]
     },
     {
-      "key": "react.fbd28c971ca41205",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "بازارها از مشخصات Gains Network می‌آیند و در دسته‌های رمزارز، فارکس، سهام، شاخص و کالا گروه‌بندی می‌شوند — حدود ۴۸۸ نماد. قیمت‌ها، قیمت مرجعِ Gains Network است نه یک خوراکِ مستقلِ شاخص. فهرستِ در دسترس و وضعیت هر بازار می‌تواند تغییر کند، پس در ترمینال بررسی کن.",
-      "en": "Markets come from Gains Network metadata and are grouped into crypto, forex, stocks, indices and commodities — around 488 symbols. Prices are Gains Network mark prices, not an independent index feed. The available list and each market’s status can change, so check the terminal.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
-          "line": 239,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.fbf84fa91c4f43e7",
       "namespace": "react",
       "area": "Global Content",
@@ -105490,6 +105530,14 @@
       "expression": "pickFormat(locale, v.fa, v.en, values)"
     },
     {
+      "component": "apps/web-react/src/features/markets/Markets.tsx",
+      "line": 169,
+      "page": "markets",
+      "route": "/:locale/markets",
+      "reason": "literal-jsx-review",
+      "text": "Open Oracle"
+    },
+    {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
       "line": 122,
       "page": "migration",
@@ -106038,7 +106086,7 @@
     },
     {
       "component": "apps/web-react/src/features/markets/Markets.tsx",
-      "line": 166,
+      "line": 171,
       "page": "markets",
       "route": "/:locale/markets",
       "reason": "language-neutral-brand-or-identifier",

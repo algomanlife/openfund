@@ -160,8 +160,9 @@ Production terminal integration is a separate future authorization.
 owner-authorized production pricing from Open Oracle. Done in source: the
 service, price-confirmed equivalences, backend execution gate, public
 `/api/oracle/*` API and region mirror, with a passing live acceptance window.
-Remaining: the website and terminal reading prices from `/api/oracle/*` with
-Open Oracle attribution, review and merge, an official release, and deployed
+Done in source as well: the website and terminal read prices from
+`/api/oracle/*` with Open Oracle attribution in five locales. Remaining:
+review and merge, an official release, and deployed
 verification on GLOBAL and IRAN (including provider reachability from Liara).
 Later: durable composite history and native chart candles, per-category
 session calendars and policies.

@@ -15,19 +15,21 @@ import DirArrow from '../../ui/DirArrow'
 
 const PAGE_STEP = 120
 
-/** Markets directory — Gains Network is the authoritative market source.
- *  Prices come from the shared Gains prices WebSocket via the existing
- *  adapter; fields Gains does not provide (volume, 24h change, market cap)
- *  are never invented. Selecting a market deep-links it into the terminal. */
+/** Markets directory — Gains Network is the market catalog; live prices are
+ *  Open Oracle composites from the same origin (ADR 0059), via the shared
+ *  adapter, which falls back to the Gains socket only when this origin
+ *  serves no Open Oracle (the chip then names Gains). Fields the sources do
+ *  not provide (volume, market cap) are never invented. Selecting a market
+ *  deep-links it into the terminal. */
 export default function Markets() {
   const locale = useInformationLocale()
   const navigate = useNavigate()
-  const { markets, prices, stream, loaded, failed, lastUpdate } = useGainsMarkets()
+  const { markets, prices, stream, loaded, failed, lastUpdate, source } = useGainsMarkets()
   const [category, setCategory] = useState<CategoryKey | 'all'>('all')
   const [query, setQuery] = useState('')
   const [limit, setLimit] = useState(PAGE_STEP)
   const [meta, setMeta] = useState<CmsPageMeta | null>(null)
-  /* editorial hero copy from Directus (instruments and prices stay on Gains) */
+  /* editorial hero copy from Directus (instruments stay on Gains, prices on Open Oracle) */
   useEffect(() => {
     let alive = true
     void fetchCmsPageMeta('markets').then(d => { if (alive) setMeta(d) })
@@ -66,20 +68,21 @@ export default function Markets() {
 
   return <InformationShell page="markets"
       description={meta?.description[locale] || text(
-        'Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live Gains Network prices.',
-        'همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Gains Network ببینید: رمزارز، فارکس، سهام، شاخص و کالا.'
+        'Explore every Openfund market — crypto, forex, stocks, indices and commodities — with live prices from Open Oracle, Openfund’s own price aggregation.',
+        'همهٔ بازارهای اوپن‌فاند را با قیمت زندهٔ Open Oracle، سامانهٔ تجمیع قیمت اختصاصی اوپن‌فاند، ببینید: رمزارز، فارکس، سهام، شاخص و کالا.'
       )[locale]}>
     <Hero locale={locale} page="markets"
       title={meta?.title[locale] || text('Explore Openfund', 'بازارهای جهانی')[locale]}
       accent={meta?.subtitle[locale] || text('Markets', 'Openfund')[locale]}
       intro={meta?.description[locale] || text(
-        'Every asset class the Openfund trading ecosystem tracks, with live mark prices straight from Gains Network. Pick a market and take it straight into the terminal.',
-        'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت Mark مستقیم از Gains Network. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
+        'Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal.',
+        'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
       )[locale]}>
       <div className="mk-hero-meta">
         <span className={`mk-stream ${stream === 'live' ? 'live' : ''} ${failed ? 'error' : ''}`} role="status">
           <i aria-hidden="true" /> {statusLabel}
         </span>
+        {source && <span>{text('Prices', 'قیمت')[locale]}: <bdi dir="ltr">{source === 'open-oracle' ? 'Open Oracle' : 'Gains Network'}</bdi></span>}
         {total > 0 && <span>{number(total, locale)} {text('markets', 'بازار')[locale]}</span>}
         {lastUpdate > 0 && <span dir="ltr">{new Intl.DateTimeFormat(intlLocale(locale), { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Dubai' }).format(lastUpdate)}</span>}
       </div>
@@ -113,7 +116,7 @@ export default function Markets() {
 
       {!loaded && !failed && <div className="mk-empty mk-loading" role="status">{text('Loading market data…', 'در حال دریافت اطلاعات بازار…')[locale]}</div>}
       {failed && !total && <div className="mk-empty" role="alert">
-        <p>{text('Could not reach Gains Network. Check your connection and retry.', 'ارتباط با Gains Network برقرار نشد. اتصال خود را بررسی کن و دوباره تلاش کن.')[locale]}</p>
+        <p>{text('Could not load market data. Check your connection and retry.', 'دریافت دادهٔ بازار ممکن نشد. اتصال خود را بررسی کن و دوباره تلاش کن.')[locale]}</p>
         <button className="refresh" onClick={() => location.reload()} aria-label={text('Retry', 'تلاش دوباره')[locale]}>↻</button>
       </div>}
       {loaded && visible.length === 0 && <div className="mk-empty">{text('No market matches this search.', 'نمادی با این عبارت پیدا نشد.')[locale]}</div>}
@@ -157,14 +160,16 @@ export default function Markets() {
 
       <p className="market-disclaimer">
         {text(
-          'Mark prices and market specs come from Gains Network (the data source); leverage and Openfund account terms are independent. Only fields provided by the source are shown.',
-          'قیمت Mark و مشخصات بازار مربوط به منبع دادهٔ Gains Network است؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منبع نمایش داده می‌شود.'
+          'Prices are Open Oracle composites of Gains, Hyperliquid and GMX: crypto markets combine up to three sources, other markets use one. Market specifications come from Gains Network; leverage and Openfund account terms are independent. Only fields provided by the sources are shown.',
+          'قیمت‌ها حاصل تجمیع Open Oracle از Gains، Hyperliquid و GMX است: بازارهای رمزارز تا سه منبع و سایر بازارها یک منبع دارند. مشخصات بازار از Gains Network می‌آید؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منابع نمایش داده می‌شود.'
         )[locale]}
       </p>
       <p className="mk-source">
         <span className="dot" aria-hidden="true" />
+        <a href="https://github.com/algomanlife/openfund/blob/main/docs/integrations/OPEN_ORACLE.md" target="_blank" rel="noopener" dir="ltr">Open Oracle <DirArrow kind="external" /></a>
+        <span>{text('price source', 'منبع قیمت')[locale]}</span>
         <a href="https://gains.trade" target="_blank" rel="noopener" dir="ltr">Gains Network <DirArrow kind="external" /></a>
-        <span>{text('market data source', 'منبع دادهٔ بازار')[locale]}</span>
+        <span>{text('market specifications', 'مشخصات بازار')[locale]}</span>
       </p>
     </div>
   </InformationShell>

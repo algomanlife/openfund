@@ -1,8 +1,9 @@
-/* Gains market-data access for React pages.
- * Reuses the existing Openfund Gains adapter (public/legacy/gains-adapter.js)
- * as the SHARED data source — same REST endpoints, same singleton prices
- * WebSocket (subscribe/unsubscribe, ping/pong, seq-gap resubscribe), no
- * duplicate price engine. The adapter is injected as a script once per
+/* Market data for React pages.
+ * Reuses the existing Openfund adapter (public/legacy/gains-adapter.js) as
+ * the SHARED data source: the Gains market catalog, and live prices from
+ * the same-origin Open Oracle stream (ADR 0059), falling back to the Gains
+ * prices socket only when the origin serves no Open Oracle. `source` says
+ * which one is live; no duplicate price engine. The adapter is injected as a script once per
  * browser page; the hook only subscribes.
  *
  * Follows the legacy-page teardown contract: because this page owns a
@@ -15,8 +16,11 @@ type GainsApi = {
   marketList: (force?: boolean) => Promise<Map<string, GainsMarket>>
   priceSnapshot: () => Promise<Array<{ market: string; mark: string | number; index?: string | number; updatedAt?: string | number }>>
   subscribePrices: (h: (p: { market: string; mark: number; index: number | null; updatedAt: number }) => void) => () => void
-  subscribeStatus: (h: (s: string, info: { lastMsgAt: number }) => void) => () => void
+  subscribeStatus: (h: (s: string, info: { lastMsgAt: number; source?: PriceSource | null }) => void) => () => void
 }
+
+/** Which feed the live prices come from: Openfund's Open Oracle or the Gains fallback. */
+export type PriceSource = 'open-oracle' | 'gains'
 
 declare global { interface Window { OpenfundGains?: GainsApi; __ofGainsAdapterPromise?: Promise<GainsApi> } }
 
@@ -44,6 +48,8 @@ export type MarketsState = {
   loaded: boolean
   failed: boolean
   lastUpdate: number
+  /** live price feed, once decided */
+  source: PriceSource | null
 }
 
 export function useGainsMarkets(): MarketsState {
@@ -53,6 +59,7 @@ export function useGainsMarkets(): MarketsState {
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const [lastUpdate, setLastUpdate] = useState(0)
+  const [source, setSource] = useState<PriceSource | null>(null)
   const buffer = useRef(new Map<string, PricePoint>())
   const flushTimer = useRef<number | undefined>(undefined)
   const lastUpdateRef = useRef(0)
@@ -100,7 +107,7 @@ export function useGainsMarkets(): MarketsState {
         lastUpdateRef.current = Date.now()
         scheduleFlush()
       }))
-      unsubs.push(G.subscribeStatus(s => { if (active) setStream(s) }))
+      unsubs.push(G.subscribeStatus((s, info) => { if (active) { setStream(s); if (info?.source) setSource(info.source) } }))
     }).catch(() => { if (active) setFailed(true) })
 
     return () => {
@@ -110,7 +117,7 @@ export function useGainsMarkets(): MarketsState {
     }
   }, [])
 
-  return { markets, prices, stream, loaded, failed, lastUpdate }
+  return { markets, prices, stream, loaded, failed, lastUpdate, source }
 }
 
 export function priceFor(prices: ReadonlyMap<string, PricePoint>, symbol: string): PricePoint | undefined {

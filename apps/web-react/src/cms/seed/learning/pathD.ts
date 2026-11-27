@@ -10,7 +10,7 @@ import type { LearningPathContent } from '../../contentTypes'
  *  the verified set - the app ships a trading journal and a portfolio dashboard
  *  fed by the server account records plus a CSV-based journal analyzer in the
  *  Tools Center; Prop Trading runs one server-side simulated demo funded once
- *  with 100,000 virtual DAI at live Gains Network mark prices, with purchase
+ *  with 100,000 virtual DAI at live Open Oracle prices, with purchase
  *  activation, funded accounts and payouts not enabled in this release, a daily
  *  loss measured against the higher of day-start balance or equity that resets
  *  at 00:00 UTC+3 where touching a limit is a breach, and a consistency payout
@@ -289,8 +289,8 @@ export const pathD: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'The simulated demo lowers the stakes but not the pattern: it runs on 100,000 virtual DAI at live Gains Network mark prices, so a losing streak costs you nothing withdrawable, yet still shows how you behave under the feeling - the only thing this lesson is about. Nothing here is investment advice, and staying calm or journalling a loss is no route to profit or to a funded account.',
-            'دموی شبیه‌سازی‌شده شرط را پایین می‌آورد ولی الگو را نه: روی ۱۰۰٬۰۰۰ دای مجازی با مارک پرایسِ زندهٔ Gains Network اجرا می‌شود، پس رگبارِ ضرر چیزی قابلِ برداشت از تو نمی‌گیرد، اما همچنان نشان می‌دهد زیرِ آن حس چگونه رفتار می‌کنی — و تنها موضوعِ همین درس است. هیچ‌چیز اینجا توصیهٔ سرمایه‌گذاری نیست، و آرام ماندن یا ژورنال کردنِ یک ضرر نه راهِ سود است و نه راهِ حساب فاندشده.'
+            'The simulated demo lowers the stakes but not the pattern: it runs on 100,000 virtual DAI at live Open Oracle prices, so a losing streak costs you nothing withdrawable, yet still shows how you behave under the feeling - the only thing this lesson is about. Nothing here is investment advice, and staying calm or journalling a loss is no route to profit or to a funded account.',
+            'دموی شبیه‌سازی‌شده شرط را پایین می‌آورد ولی الگو را نه: روی ۱۰۰٬۰۰۰ دای مجازی با قیمت زندهٔ Open Oracle اجرا می‌شود، پس رگبارِ ضرر چیزی قابلِ برداشت از تو نمی‌گیرد، اما همچنان نشان می‌دهد زیرِ آن حس چگونه رفتار می‌کنی — و تنها موضوعِ همین درس است. هیچ‌چیز اینجا توصیهٔ سرمایه‌گذاری نیست، و آرام ماندن یا ژورنال کردنِ یک ضرر نه راهِ سود است و نه راهِ حساب فاندشده.'
           )
         },
       ]
@@ -455,8 +455,8 @@ export const pathD: LearningPathContent = {
         {
           type: 'p',
           text: text(
-            'Scope matters. This release is read-only on perpetual markets and cannot execute on-chain, so an automated system here means analysis, monitoring and backtesting over the records, not live orders. The Prop Trading environment is a single server-side simulated demo funded once with 100,000 virtual DAI at live Gains Network mark prices, with purchase activation, funded accounts and payouts not enabled. Treat each backtest as a rehearsal, and the CSV journal analyzer and portfolio dashboard - fed by the account records - as tools for measuring a process, not evidence about results.',
-            'دامنه مهم است. در این نسخه معاملهٔ perpetual فقط‌خواندنی است و اجرای آن‌چین فعال نیست، پس سیستمِ خودکار اینجا یعنی تحلیل، پایش و backtest روی سوابق — نه سفارشِ زنده. محیطِ معاملهٔ پراپ یک دموی شبیه‌سازی‌شدهٔ سروری است که یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین و از مارک پرایسِ زندهٔ Gains Network قیمت‌گذاری می‌شود، و فعال‌سازیِ خرید، حساب فاندشده و برداشت فعال نیستند. هر backtestی را تمرین بدان، و تحلیل‌گرِ ژورنالِ CSV و داشبوردِ پرتفوی — تغذیه‌شده از سوابقِ حساب — را ابزارِ سنجشِ فرآیند بخوان، نه مدرکِ نتیجه‌ها.'
+            'Scope matters. This release is read-only on perpetual markets and cannot execute on-chain, so an automated system here means analysis, monitoring and backtesting over the records, not live orders. The Prop Trading environment is a single server-side simulated demo funded once with 100,000 virtual DAI at live Open Oracle prices, with purchase activation, funded accounts and payouts not enabled. Treat each backtest as a rehearsal, and the CSV journal analyzer and portfolio dashboard - fed by the account records - as tools for measuring a process, not evidence about results.',
+            'دامنه مهم است. در این نسخه معاملهٔ perpetual فقط‌خواندنی است و اجرای آن‌چین فعال نیست، پس سیستمِ خودکار اینجا یعنی تحلیل، پایش و backtest روی سوابق — نه سفارشِ زنده. محیطِ معاملهٔ پراپ یک دموی شبیه‌سازی‌شدهٔ سروری است که یک‌بار با ۱۰۰٬۰۰۰ دای مجازی تأمین و از قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود، و فعال‌سازیِ خرید، حساب فاندشده و برداشت فعال نیستند. هر backtestی را تمرین بدان، و تحلیل‌گرِ ژورنالِ CSV و داشبوردِ پرتفوی — تغذیه‌شده از سوابقِ حساب — را ابزارِ سنجشِ فرآیند بخوان، نه مدرکِ نتیجه‌ها.'
           )
         },
         {

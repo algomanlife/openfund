@@ -127,6 +127,22 @@ composites and per-source contributions, never provider payloads.
 | `GET /api/oracle/stream` | SSE: one `snapshot` event, then `prices` events with the changed composites of each evaluation; 15 s heartbeat |
 
 Without a running service the routes answer `503 {"error":"oracle_unavailable"}`.
+
+### Browser consumers
+
+The shared adapter (`packages/openfund-gains-adapter`, mirrored to
+`public/legacy/gains-adapter.js`) and the website markets table
+(`public/legacy/market.js`) read `/api/oracle/prices` and follow
+`/api/oracle/stream`. They fall back to the Gains prices socket only when
+the origin serves no Open Oracle (404/503 or no priced composite) or the
+stream never delivers, and report which source is live (`priceSource()`;
+the Markets page shows it). Stale composites are shown flagged and never
+print a chart bar. The market catalog, specifications and chart history
+stay on Gains, so the chart keeps its Gains provider label.
+
+Published Directus copy that still equals a retired default (the old
+"prices from Gains" texts) is shown as the current default
+(`apps/web-react/src/cms/retiredCopy.ts`); edited copy is never replaced.
 A process without the market-data role can mirror another region with
 `OPEN_ORACLE_UPSTREAM` (it follows that region's stream).
 

@@ -99,8 +99,8 @@ export const pathA: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'This lesson describes how perpetual venues work in general. In Openfund, Perpetual Trading is currently read-only market and account information — on-chain order execution is not enabled — and the prices shown are Gains Network mark prices consumed from the public deployment on Arbitrum One, rendered on a Vela (LuxAlgo) chart.',
-            'این درس مکانیک عمومی صرافی‌های پرپچوآل را توضیح می‌دهد. در اوپن‌فاند، بخش «معاملات آنی» فعلاً فقط دادهٔ خواندنیِ بازار و حساب است — اجرای آن‌چینیِ سفارش فعال نیست — و قیمت‌های نمایش‌داده‌شده، مارک پرایس‌های Gains Network هستند که از استقرار عمومی آن روی Arbitrum One خوانده و روی نمودار Vela (LuxAlgo) رسم می‌شوند.'
+            'This lesson describes how perpetual venues work in general. In Openfund, Perpetual Trading is currently read-only market and account information — on-chain order execution is not enabled — and the prices shown are Open Oracle prices, Openfund’s own aggregation of Gains, Hyperliquid and GMX, rendered on a Vela (LuxAlgo) chart.',
+            'این درس مکانیک عمومی صرافی‌های پرپچوآل را توضیح می‌دهد. در اوپن‌فاند، بخش «معاملات آنی» فعلاً فقط دادهٔ خواندنیِ بازار و حساب است — اجرای آن‌چینیِ سفارش فعال نیست — و قیمت‌های نمایش‌داده‌شده، قیمت‌های Open Oracle، سامانهٔ تجمیع قیمت اختصاصی اوپن‌فاند از Gains، Hyperliquid و GMX، هستند که روی نمودار Vela (LuxAlgo) رسم می‌شوند.'
           )
         },
         {
@@ -269,8 +269,8 @@ export const pathA: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'In Openfund the prices you see are Gains Network mark prices, consumed from the public Gains deployment on Arbitrum One and drawn on a Vela (LuxAlgo) chart. Openfund reports these marks as they are published by that feed; it does not compute a separate mark of its own.',
-            'در اوپن‌فاند قیمت‌هایی که می‌بینید، مارک پرایس‌های Gains Network‌اند که از استقرار عمومی Gains روی Arbitrum One خوانده و روی نمودار Vela (LuxAlgo) رسم می‌شوند. اوپن‌فاند این مارک‌ها را همان‌طور که فید منتشر می‌کند گزارش می‌دهد و مارک مستقلِ خودش را نمی‌سازد.'
+            'In Openfund the prices you see are Open Oracle prices: Openfund’s own composite of Gains, Hyperliquid and GMX, drawn on a Vela (LuxAlgo) chart. When the sources disagree, Openfund flags the price instead of publishing a misleading one.',
+            'در اوپن‌فاند قیمت‌هایی که می‌بینید، قیمت‌های Open Oracle‌اند: قیمت ترکیبی اختصاصی اوپن‌فاند از Gains، Hyperliquid و GMX که روی نمودار Vela (LuxAlgo) رسم می‌شود. وقتی منابع با هم اختلاف دارند، اوپن‌فاند قیمت را علامت‌گذاری می‌کند و قیمت گمراه‌کننده منتشر نمی‌کند.'
           )
         },
       ]
@@ -438,8 +438,8 @@ export const pathA: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'The Gains Network feed that Openfund reads today supplies no open interest, no order-book depth and no trade tape, so Openfund shows those as unavailable instead of estimating or fabricating them. To measure slippage or read depth, use the venue you trade on directly. Openfund’s Perpetual Trading view is read-only and Prop Trading runs a simulated demo priced on live Gains mark prices.',
-            'فیدِ Gains Network که امروز اوپن‌فاند از آن می‌خواند، نه اوپن اینترست دارد، نه عمق دفتر سفارش و نه نوار معاملات؛ پس اوپن‌فاند به‌جای تخمین یا ساختن، این‌ها را «در دسترس نیست» نشان می‌دهد. برای سنجش اسلیپیج یا خواندن عمق، مستقیم به همان صرافی مراجعه کنید. نمای «معاملات آنی» اوپن‌فاند خواندنی است و «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شده است که با مارک پرایس زندهٔ Gains قیمت‌گذاری می‌شود.'
+            'The price feeds Openfund reads today supply no open interest, no order-book depth and no trade tape, so Openfund shows those as unavailable instead of estimating or fabricating them. To measure slippage or read depth, use the venue you trade on directly. Openfund’s Perpetual Trading view is read-only and Prop Trading runs a simulated demo priced on live Open Oracle prices.',
+            'فیدِ Gains Network که امروز اوپن‌فاند از آن می‌خواند، نه اوپن اینترست دارد، نه عمق دفتر سفارش و نه نوار معاملات؛ پس اوپن‌فاند به‌جای تخمین یا ساختن، این‌ها را «در دسترس نیست» نشان می‌دهد. برای سنجش اسلیپیج یا خواندن عمق، مستقیم به همان صرافی مراجعه کنید. نمای «معاملات آنی» اوپن‌فاند خواندنی است و «معاملات حرفه‌ای» یک دموی شبیه‌سازی‌شده است که با قیمت زندهٔ Open Oracle قیمت‌گذاری می‌شود.'
           )
         },
         {
