@@ -48,16 +48,13 @@ await build({
     },
   }],
 });
-await mkdir(path.join(root, 'dist/assets'), { recursive: true });
-await copyFile(path.join(root, `apps/web-react/public/${asset}`), path.join(root, `dist/${asset}`));
-await copyFile(path.join(root, `apps/web-react/public/${workerAsset}`), path.join(root, `dist/${workerAsset}`));
 for (const [source, targets] of [
-  ['packages/openfund-charts/src/vela-bridge.js', ['apps/web-react/public/legacy/vela-bridge.js', 'dist/vela-bridge.js']],
-  ['packages/openfund-gains-adapter/src/gains-adapter.js', ['apps/web-react/public/legacy/gains-adapter.js', 'dist/gains-adapter.js']],
+  ['packages/openfund-charts/src/vela-bridge.js', ['apps/web-react/public/legacy/vela-bridge.js']],
+  ['packages/openfund-gains-adapter/src/gains-adapter.js', ['apps/web-react/public/legacy/gains-adapter.js']],
 ]) {
   for (const target of targets) await copyFile(path.join(root, source), path.join(root, target));
 }
-for (const target of ['apps/web-react/public/assets/notices', 'dist/assets/notices']) {
+for (const target of ['apps/web-react/public/assets/notices']) {
   await mkdir(path.join(root, target), { recursive: true });
   for (const [source, name] of [
     ['apps/web-react/node_modules/pinets/LICENSE', 'PineTS-AGPL-3.0.txt'],

@@ -132,7 +132,7 @@ declares the only Persian/Arabic `@font-face` set** — `'Dastkhat'`,
 `'Dastkhat Arabic'` and `'Dastkhat FaNum'` — and every surface loads it from
 its own origin: legacy pages and the terminal iframe (`@import`), the React app
 and Open Trade (`<link>` in `index.html`), Backstage (`@import`, same-origin
-route) and the `dist/` snapshot (`@import`). The certificate canvas registers
+route). The certificate canvas registers
 the same file as the `FontFace` `'Dastkhat Certificate'`.
 
 | Token | Stack | Use |
@@ -158,7 +158,7 @@ separate documents, so they carry verbatim copies of these tokens.
 `apps/web-react/test/typography.test.mjs` fails if a copy drifts, if any owned
 stylesheet declares a Persian/Arabic `@font-face` outside `dastkhat.css`, or if
 a pinned file changes; `scripts/docs/check-fonts.mjs` (part of `docs:check`)
-fails if a retired face is referenced anywhere in code, assets or `dist/`. `e2e/test-typography.mjs` measures the rendered font in a
+fails if a retired face is referenced anywhere in code or assets. `e2e/test-typography.mjs` measures the rendered font in a
 browser.
 
 Third-party UI kits were evaluated in [ADR 0035](../decisions/0035-design-system-foundation-and-ui-kit-evaluation.md).

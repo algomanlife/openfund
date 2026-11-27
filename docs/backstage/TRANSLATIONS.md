@@ -41,5 +41,5 @@ there is **no second page load**, only dictionary lookups.
 
 `seed_content.py` imports the current wording once and never overwrites
 editorial changes afterwards (upsert by key). Re-extract terminal keys after
-editing `dist/terminal.js` (brace-counted extraction, see
+editing `apps/web-react/public/legacy/terminal.js` (brace-counted extraction, see
 `apps/backstage/scripts/terminal-i18n.json`).
