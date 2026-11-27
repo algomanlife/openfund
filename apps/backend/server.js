@@ -811,8 +811,7 @@ if (testMode) {
   app.post('/internal/inject-price', internalAuth, (req, res) => {
     const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
-    /* merged into a loaded catalog row, so the Open Oracle catalog keeps the venue specification */
-    if (metadata) marketData.markets.set(symbol, { ...marketData.markets.get(symbol), symbol, base: metadata.base, group: metadata.group, maxLeverage: metadata.maxLeverage, isOpen: true })
+    if (metadata) marketData.markets.set(symbol, { symbol, base: metadata.base, group: metadata.group, maxLeverage: metadata.maxLeverage, isOpen: true })
     marketData.injectPrice(symbol, String(price))
     res.json({ ok: true })
   })
@@ -957,8 +956,11 @@ if (oracleSettings.source === 'open-oracle') {
   if (hasRole(region, 'market-data')) marketData.attachOracle(oracle = createOpenOracle())
   else if (oracleSettings.upstream) oracle = new OracleMirror({ upstream: oracleSettings.upstream })
 }
+/* The market data routes are off on the simulation test server: its catalog is
+   whatever the suites inject, and the browser suites pin the venue fixtures
+   (the pages then use their fallback, as before). */
 const oracleApi = oracleRoutes({ Router: express.Router, oracle: () => oracle, limit,
-  marketApi: oracleMarketData({ markets: () => marketData.markets, oracle: () => oracle, upstream: oracleSettings.upstream }) })
+  marketApi: testMode ? null : oracleMarketData({ markets: () => marketData.markets, oracle: () => oracle, upstream: oracleSettings.upstream }) })
 app.use(oracleApi)
 /* site search: published-only index per region (IRAN builds its own) and anonymous counts */
 app.use(siteSearchRoutes({ pool, cms: cmsSnapshot, marketData, limit }))
