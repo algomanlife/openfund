@@ -666,3 +666,5 @@ html[data-theme="light"] .submit:hover{background:#096b44}
   color: #82E7BD; font: 700 15px/1 var(--ds-font-latin, Ubuntu), sans-serif;
   vertical-align: -1px;
 }
+/* light theme: the darker brand green keeps WCAG AA contrast on white */
+html[data-theme="light"] .of-oracle-badge { color: #17734f; }
