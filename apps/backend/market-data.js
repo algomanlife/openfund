@@ -2,7 +2,7 @@
  * Server-side Gains Network market data — the authoritative price stream for
  * the demo trading engine (the browser adapter stays for the chart).
  *
- * Protocol (verified 2026-10-31, mirrors dist/gains-adapter.js):
+ * Protocol (verified 2026-10-31, mirrors packages/openfund-gains-adapter):
  *   REST  GET /v1/arbitrum/markets  → 488 markets with metadata
  *         GET /v1/arbitrum/prices   → [{market, mark, index, updatedAt}]
  *   WS    wss://api.gains.trade/v1/arbitrum/ws

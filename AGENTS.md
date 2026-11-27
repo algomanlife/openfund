@@ -10,7 +10,7 @@ authority are defined in [Repository governance](docs/development/REPOSITORY_GOV
 - Canonical repository: `https://github.com/algomanlife/openfund`.
 - Inspect the working tree, branch, remotes, package scripts, existing files and current docs before changing anything.
 - Never create a separate disconnected Openfund repository or overwrite the current application.
-- `dist/` is currently a source-critical deliverable, not disposable generated output.
+- The former tracked `dist/` snapshot was retired by owner decision (2026-11-27); never re-add build output to Git.
 
 ## Git collaboration
 
@@ -202,8 +202,8 @@ Code/config changes (if any), documentation, test results, change log, accurate 
 
 - Before editing, fetch references and record local status, `main` SHA, latest
   official tag/release/manifest, open PRs and occupied server ports.
-- Use an isolated worktree with its own build output; preserve tracked `dist/`
-  and other agents' work.
+- Use an isolated worktree with its own build output; preserve other agents'
+  work.
 - Check the current release manifest before calling a candidate official.
 - Reuse public footer/locale components and keep marketing actions outside
   trading workspaces.

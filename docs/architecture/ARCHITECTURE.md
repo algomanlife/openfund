@@ -36,12 +36,11 @@ flowchart TB
 | `apps/web-react/` | React/TypeScript routes, product views, wallet/session contexts and authoritative public legacy assets |
 | `apps/backend/` | Express auth, ownership, simulation engine, market data, portfolio and product APIs; additive schema migrations |
 | `apps/backstage/scripts/` | Directus schema and published-content seeding/admin utilities |
-| `packages/openfund-charts/` | Openfund Vela bridge; script-load mirror in `dist/` |
-| `packages/openfund-gains-adapter/` | Gains REST/WS market provider; script-load mirror in `dist/` |
+| `packages/openfund-charts/` | Openfund Vela bridge; copied into `apps/web-react/public/legacy/` by `build:charts` |
+| `packages/openfund-gains-adapter/` | Browser market provider (Gains catalog and candles, Open Oracle prices); copied into `public/legacy/` by `build:charts` |
 | `packages/cms-client/` | Shared CMS contract; actual React client lives in app source |
 | `packages/openfund-ui/`, `apps/web/`, `apps/terminal/` | Ownership/contract directories; not additional deployed applications |
 | `vendor/`, `third_party/` | Preserved upstream sources, attribution and analytical core provenance |
-| `dist/` | Source-critical classic compatibility deliverable; not disposable build output |
 | `react/` | Tracked historical build plus output of the current Vite build; Render rebuilds from `apps/web-react/` |
 
 The root package orchestrates commands and repository tooling. Applications install from their own lockfiles. `packages/openfund-protocol/` already contains dormant Solidity source, tests and provenance; it is not connected to operational venue routing.

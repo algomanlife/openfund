@@ -144,46 +144,28 @@
       "id": "vela-bridge-copies",
       "source": "packages/openfund-charts/src/vela-bridge.js",
       "copies": [
-        "apps/web-react/public/legacy/vela-bridge.js",
-        "dist/vela-bridge.js"
+        "apps/web-react/public/legacy/vela-bridge.js"
       ]
     },
     {
       "id": "gains-adapter-copies",
       "source": "packages/openfund-gains-adapter/src/gains-adapter.js",
       "copies": [
-        "apps/web-react/public/legacy/gains-adapter.js",
-        "dist/gains-adapter.js"
-      ]
-    },
-    {
-      "id": "vela-bundle-copies",
-      "source": "apps/web-react/public/assets/vela-workspace.global.min.js",
-      "copies": [
-        "dist/assets/vela-workspace.global.min.js"
-      ]
-    },
-    {
-      "id": "pine-worker-copies",
-      "source": "apps/web-react/public/assets/openfund-pine-worker.min.js",
-      "copies": [
-        "dist/assets/openfund-pine-worker.min.js"
+        "apps/web-react/public/legacy/gains-adapter.js"
       ]
     },
     {
       "id": "vela-notice-copies",
       "source": "vendor/vela/NOTICE",
       "copies": [
-        "apps/web-react/public/assets/notices/Vela-NOTICE.txt",
-        "dist/assets/notices/Vela-NOTICE.txt"
+        "apps/web-react/public/assets/notices/Vela-NOTICE.txt"
       ]
     },
     {
       "id": "vela-license-copies",
       "source": "vendor/vela/LICENSE",
       "copies": [
-        "apps/web-react/public/assets/notices/Vela-Apache-2.0.txt",
-        "dist/assets/notices/Vela-Apache-2.0.txt"
+        "apps/web-react/public/assets/notices/Vela-Apache-2.0.txt"
       ]
     }
   ]
