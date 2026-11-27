@@ -34,7 +34,9 @@ const fallbackTranslations: Record<string, string> = {
   'دریافت برندبوک': 'Download brandbook',
   'بازگشت به بالا': 'Back to top',
   'قلب تپنده': 'Beating heart',
-  'Gains Network — منبع دادهٔ بازار': 'Gains Network — market data source',
+  'Gains Network — منبع قیمت Open Oracle و دادهٔ بازار': 'Gains Network — Open Oracle price source and market data',
+  'Hyperliquid — منبع قیمت Open Oracle': 'Hyperliquid — Open Oracle price source',
+  'GMX — منبع قیمت Open Oracle': 'GMX — Open Oracle price source',
   'Vela by LuxAlgo — موتور چارت': 'Vela by LuxAlgo — chart engine',
 }
 
