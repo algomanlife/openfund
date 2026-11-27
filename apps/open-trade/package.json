@@ -1,6 +1,7 @@
 {
   "name": "open-trade",
   "version": "0.0.4",
+  "license": "Apache-2.0",
   "private": true,
   "description": "Open Trade by Openfund — desktop workspace",
   "author": "Openfund",

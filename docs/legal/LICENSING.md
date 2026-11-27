@@ -1,6 +1,18 @@
 # Licensing audit and compatibility report
 
-## Current source clarification — 2026-11-21
+## First-party license — 2026-11-27
+
+Openfund's own code and documentation are licensed under **Apache-2.0** with
+a root [`NOTICE`](../../NOTICE) that credits Openfund
+([ADR 0060](../decisions/0060-open-source-license.md)). Exclusions:
+third-party and vendored code, `packages/openfund-protocol/` (GPL-2.0),
+`indicators/`, `brand/` trademarks, the investor pack and fonts. The web
+bundle that includes PineTS and the Vela Pine addon is conveyed as an
+AGPL-3.0 combined work; its corresponding source is this public repository at
+the commit reported by `/version`. Statements below that say "no license" or
+"all rights reserved" for first-party code are historical.
+
+## Source clarification — 2026-11-21 (historical)
 
 This update checks repository source at `adbdeabd64b2ba69379411db607be12d35339426`.
 It does not repeat the historical bundle or production audit below.

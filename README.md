@@ -497,10 +497,14 @@ new documents appear here automatically.
 
 ## <img src="docs/assets/readme/icons/license.svg" width="30" height="30" alt="license icon" /> License
 
-No first-party license has been chosen: Openfund's own code is all rights
-reserved, and the repository being public grants no reuse license. The owner's
-options and remaining blockers are in the
-[license decision](docs/legal/LICENSE_DECISION.md) and the
+Openfund is open source under the [Apache License 2.0](LICENSE)
+([ADR 0060](docs/decisions/0060-open-source-license.md)). Redistributions and
+derivative works must keep the [NOTICE](NOTICE), which credits Openfund by
+name; the license grants no rights to the Openfund name or logos. The
+investor pack, `brand/` trademarks, `indicators/` and the GPL-2.0
+`packages/openfund-protocol/` import keep their own terms. The web bundle
+includes AGPL-3.0-only PineTS and the Vela Pine addon; its complete source is
+this repository at the commit reported by `/version`. Details:
 [licensing report](docs/legal/LICENSING.md). Third-party components keep their
 own terms:
 

@@ -1,6 +1,7 @@
 {
   "name": "@openfund/open-oracle",
   "version": "0.1.0",
+  "license": "Apache-2.0",
   "private": true,
   "type": "module",
   "description": "Isolated read-only GAACP v1 reference-price research protocol",

@@ -1,6 +1,7 @@
 {
   "name": "openfund",
   "version": "0.1.0",
+  "license": "Apache-2.0",
   "private": true,
   "description": "Openfund monorepo — root orchestration only. Applications install their own dependencies (apps/web-react, apps/backend) with per-app lockfiles; this package adds no runtime dependencies.",
   "scripts": {
