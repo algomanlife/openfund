@@ -77,9 +77,26 @@ export function run(command, args = [], options = {}) {
     child.on('exit', (code, signal) => code === 0 ? resolve() : reject(Error(`${command} ${args.join(' ')} failed (${signal || code})`)));
   });
 }
+/* Every repository path the backend imports at runtime must be listed here:
+   the release archive and the GHCR image contain only these files.
+   payloadImportProblems() fails the release build when one is missing. */
 export function releasePayloadFiles() {
-  return git('ls-files', 'apps/backend', 'packages/openfund-footprint/src',
+  return git('ls-files', 'apps/backend', 'packages/openfund-footprint/src', 'packages/open-oracle/src',
+    'packages/plan-validation', 'packages/site-search',
     'third_party/luxalgo-trade-journal', 'LICENSE', 'NOTICE', 'render.yaml').split('\n').filter(Boolean);
+}
+/** Relative imports in the shipped backend that resolve outside the payload. */
+export function payloadImportProblems(files = releasePayloadFiles()) {
+  const shipped = new Set(files), problems = [];
+  for (const file of files) {
+    if (!/^apps\/backend\/(?!test\/|node_modules\/)[^]*\.(?:m?js)$/.test(file)) continue;
+    const text = fs.readFileSync(path.join(root, file), 'utf8');
+    for (const m of text.matchAll(/(?:from\s*|import\s*\(\s*)['"](\.{1,2}\/[^'"]+)['"]/g)) {
+      const target = path.posix.normalize(path.posix.join(path.posix.dirname(file), m[1]));
+      if (!shipped.has(target)) problems.push(`${file} imports ${m[1]} (${target}), which is not in the release payload`);
+    }
+  }
+  return problems;
 }
 export function filesIn(dir, prefix = '') {
   return fs.readdirSync(dir, { withFileTypes: true }).sort((a,b) => a.name.localeCompare(b.name, 'en')).flatMap(e => {

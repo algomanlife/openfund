@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Fix: complete release payload.** The v0.9.0 release archive and GHCR image did not contain `packages/open-oracle/src`, `packages/plan-validation` and `packages/site-search`, so a backend started from them (local `release:local`, the image smoke test) stopped at its first import; the Render deployment builds from the full commit and was not affected. The payload now includes them, and the release build fails when a backend module imports a repository path outside the payload.
+
 ## v0.9.0 — 2026-11-27
 
 - **Backend lint.** `apps/backend` runs ESLint 10 on its production modules (`npm --prefix apps/backend run lint`, in the CI backend job). The first run removed four unused imports and constants and a `var` redeclaration in `portfolio.js`; behaviour is unchanged. The dependency candidate workflow now keeps its pushed branch when Actions may not open pull requests.
