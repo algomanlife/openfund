@@ -4,13 +4,15 @@ The [root security policy](../../SECURITY.md) defines private vulnerability repo
 
 ## Assessments
 
-The [November 2026 self-assessment](SECURITY-AUDIT-2026-11.md) and its [penetration test](PENETRATION-TEST-2026-11.md) list what was reviewed and tested, the findings and their status. Open items are in the [remediation plan](SECURITY-REMEDIATION-PLAN.md), and the commands that were run are in the [test matrix](SECURITY-TEST-MATRIX.md).
+The [27 November 2026 assessment](SECURITY-ASSESSMENT-2026-11-27.md) is the latest, written for the v0.9.0 release. The [November 2026 self-assessment](SECURITY-AUDIT-2026-11.md) and its [penetration test](PENETRATION-TEST-2026-11.md) list what was reviewed and tested, the findings and their status. Open items are in the [remediation plan](SECURITY-REMEDIATION-PLAN.md), and the commands that were run are in the [test matrix](SECURITY-TEST-MATRIX.md).
 
 ## Current controls
 
 SIWE validates message domain, URI, time, chain, nonce and signature; atomic nonce consumption prevents replay races. Opaque session IDs are hashed at rest and use HttpOnly/SameSite cookies, Secure in production. Expired nonces and sessions are deleted by an hourly sweep. Logout, expiry and suspension are backend-enforced. Product APIs derive wallet/account ownership from sessions; SSE revalidates access.
 
 Prop simulated mutations use Decimal arithmetic, account locks, database transactions and owned idempotency. Missing execution marks fail closed. Journals validate scope and optimistic versions; metadata import cannot write financial records. CSV export escapes formula-like values. Directus public content permissions must not expose private user/session/trading tables.
+
+Admin API: `ADMIN_API_TOKEN` authenticates the Backstage service, not a person. People sign in to Backstage as named operators (`admin_operators`, scrypt verifiers) with a role (`owner`, `finance`, `support`, `content`, `viewer`); the backend resolves the operator named in `X-Admin-Actor`, refuses unknown or disabled names and checks the role against the path (`apps/backend/admin-operators.js`). Audit rows carry the verified operator name. Until the first operator exists the console keeps its single-owner behaviour.
 
 ## Operational limits
 

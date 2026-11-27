@@ -61,6 +61,23 @@ CREATE TABLE IF NOT EXISTS rate_limit_hits (
 );
 CREATE INDEX IF NOT EXISTS idx_rate_limit_hits_reset ON rate_limit_hits (reset_at);
 
+-- named admin operators and access levels (admin-operators.js). The service
+-- token authenticates Backstage; the operator named in X-Admin-Actor must be
+-- active here once the first operator exists. Verifiers are scrypt (never a
+-- password); an active operator always has one.
+CREATE TABLE IF NOT EXISTS admin_operators (
+  username text PRIMARY KEY CHECK (username ~ '^[A-Za-z0-9._@-]{2,50}$'),
+  role text NOT NULL CHECK (role IN ('owner','finance','support','content','viewer')),
+  status text NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')),
+  password_verifier text CHECK (password_verifier ~ '^[a-f0-9]{32}:[a-f0-9]{64}$'),
+  created_by text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  last_login_at timestamptz,
+  CONSTRAINT admin_operators_active_has_password CHECK (status <> 'active' OR password_verifier IS NOT NULL)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_admin_operators_username_ci ON admin_operators (lower(username));
+
 -- server-side sessions (cookie holds only the opaque id; hash stored)
 CREATE TABLE IF NOT EXISTS auth_sessions (
   id_hash    text PRIMARY KEY,
