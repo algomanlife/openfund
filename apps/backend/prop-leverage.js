@@ -15,6 +15,11 @@
  *
  * The browser copy lives in apps/web-react/public/legacy/prop-leverage.js;
  * test/prop-leverage.test.mjs asserts both tables are identical.
+ *
+ * Owner decision 2026-11-27 (ADR 0061): these ceilings are final for every
+ * Prop account. The 5× plan cap that rules snapshots before v3 recorded is
+ * released (planLeverageCap below); a plan published at v3 or later may still
+ * set a stricter referenceLeverageX, which only ever lowers the ceiling.
  */
 export const PROP_LEVERAGE_POLICY = Object.freeze({
   version: 1,
@@ -51,4 +56,16 @@ export function propMaxLeverage(meta, market, planLimit = null) {
   const limits = [Number(meta?.maxLeverage || 100), propLeverageCap(meta, market)];
   if (planLimit != null && Number.isFinite(Number(planLimit)) && Number(planLimit) > 0) limits.push(Number(planLimit));
   return Math.floor(Math.min(...limits.filter((v) => v != null && Number.isFinite(v) && v > 0)));
+}
+
+/**
+ * The plan's own leverage cap for a frozen rules snapshot, or null when only
+ * the Openfund ceilings and the market limit apply. Snapshots before rules
+ * version 3 carried the retired 5× reference cap; it no longer applies
+ * (ADR 0061). The snapshot itself is never rewritten.
+ */
+export function planLeverageCap(rules) {
+  if (!rules || !(Number(rules.rulesVersion) >= 3)) return null;
+  const cap = Number(rules.referenceLeverageX);
+  return Number.isFinite(cap) && cap > 0 ? cap : null;
 }

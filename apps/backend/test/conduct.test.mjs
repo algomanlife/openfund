@@ -17,7 +17,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { Engine } from '../engine.js'
 import { ChallengeService, normalizeRules } from '../evaluation.js'
 import { ConductService, validateCalendarImport, calendarAdminRoutes } from '../conduct.js'
-import { propMaxLeverage } from '../prop-leverage.js'
+import { propMaxLeverage, planLeverageCap } from '../prop-leverage.js'
 import { PLAN_SEEDS } from '../plan-catalog.js'
 
 if (!/test|audit|_ci/.test(process.env.DATABASE_URL || '')) throw new Error('Use an isolated test DATABASE_URL')
@@ -259,14 +259,16 @@ test('C11 funded Standard: open positions are closed in the daily holding window
   assert.equal(await status(ch), 'started')
 })
 
-test('C12 D6 leverage: v3 challenges use the Openfund ceilings; older 5× snapshots keep their cap', () => {
+test('C12 D6/ADR 0061 leverage: every challenge uses the Openfund ceilings; the retired 5× snapshot cap is released', () => {
   const meta = s => md.marketMeta(s)
   const v3 = normalizeRules(plans.standard.configuration)
   assert.equal(v3.referenceLeverageX, null)
   assert.equal(propMaxLeverage(meta('BTC/USD'), 'BTC/USD', v3.referenceLeverageX ?? 100), 20)
   assert.equal(propMaxLeverage(meta('EUR/USD'), 'EUR/USD', v3.referenceLeverageX ?? 100), 50)
   assert.equal(propMaxLeverage({ ...meta('BTC/USD'), symbol: 'SOL/USD', base: 'SOL' }, 'SOL/USD', 100), 15)
-  assert.equal(propMaxLeverage(meta('EUR/USD'), 'EUR/USD', 5), 5, 'a sold v1/v2 snapshot keeps its 5× plan cap')
+  const legacy = { ...v3, rulesVersion: 2, referenceLeverageX: 5 }
+  assert.equal(planLeverageCap(legacy), null, 'a v1/v2 snapshot no longer carries its retired 5× cap')
+  assert.equal(propMaxLeverage(meta('EUR/USD'), 'EUR/USD', planLeverageCap(legacy) ?? 100), 50)
 })
 
 test('C13 snapshots before v3 are never given new conduct obligations', async () => {
