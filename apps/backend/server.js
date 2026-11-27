@@ -811,7 +811,8 @@ if (testMode) {
   app.post('/internal/inject-price', internalAuth, (req, res) => {
     const { symbol, price, metadata } = req.body || {}
     if (typeof symbol !== 'string' || price == null) return res.status(400).json({ error: 'invalid' })
-    if (metadata) marketData.markets.set(symbol, { symbol, base: metadata.base, group: metadata.group, maxLeverage: metadata.maxLeverage, isOpen: true })
+    /* merged into a loaded catalog row, so the Open Oracle catalog keeps the venue specification */
+    if (metadata) marketData.markets.set(symbol, { ...marketData.markets.get(symbol), symbol, base: metadata.base, group: metadata.group, maxLeverage: metadata.maxLeverage, isOpen: true })
     marketData.injectPrice(symbol, String(price))
     res.json({ ok: true })
   })
