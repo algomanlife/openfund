@@ -37,6 +37,8 @@ const { fixtureCandles, FIXTURE_MARKETS, FIXTURE_PRICES } = require('./helpers/m
     } else {
       /* the chart check keeps the real clock but not the live Gains API: an upstream
          error response has no CORS header and would surface as a console error */
+      /* these fixtures stand in for Open Oracle's market API too: the pages fall back to them when it is unavailable */
+      await context.route('**/api/oracle/markets**', route => route.fulfill({ status: 404, json: { error: 'not_found' } }))
       await context.route('https://api.gains.trade/v1/arbitrum/**', route => {
         const url = new URL(route.request().url())
         const candles = url.pathname.match(/\/markets\/([^/]+)\/candles$/)

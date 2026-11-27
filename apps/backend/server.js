@@ -28,7 +28,7 @@ import { parseSiweMessage, verifySiweMessage } from 'viem/siwe'
 import { arbitrum } from 'viem/chains'
 import pg from 'pg'
 import { marketData } from './market-data.js'
-import { oracleConfig, createOpenOracle, OracleMirror, oracleRoutes } from './open-oracle.js'
+import { oracleConfig, createOpenOracle, OracleMirror, oracleRoutes, oracleMarketData } from './open-oracle.js'
 import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
@@ -962,7 +962,11 @@ if (oracleSettings.source === 'open-oracle') {
   if (hasRole(region, 'market-data')) marketData.attachOracle(oracle = createOpenOracle())
   else if (oracleSettings.upstream) oracle = new OracleMirror({ upstream: oracleSettings.upstream })
 }
-const oracleApi = oracleRoutes({ Router: express.Router, oracle: () => oracle, limit })
+/* The market data routes are off on the simulation test server: its catalog is
+   whatever the suites inject, and the browser suites pin the venue fixtures
+   (the pages then use their fallback, as before). */
+const oracleApi = oracleRoutes({ Router: express.Router, oracle: () => oracle, limit,
+  marketApi: testMode ? null : oracleMarketData({ markets: () => marketData.markets, oracle: () => oracle, upstream: oracleSettings.upstream }) })
 app.use(oracleApi)
 /* site search: published-only index per region (IRAN builds its own) and anonymous counts */
 app.use(siteSearchRoutes({ pool, cms: cmsSnapshot, marketData, limit }))

@@ -15,10 +15,10 @@ import DirArrow from '../../ui/DirArrow'
 
 const PAGE_STEP = 120
 
-/** Markets directory — Gains Network is the market catalog; live prices are
+/** Markets directory — Open Oracle serves the catalog (/api/oracle/markets); live prices are
  *  Open Oracle composites from the same origin (ADR 0059), via the shared
- *  adapter, which falls back to the Gains socket only when this origin
- *  serves no Open Oracle (the chip then names Gains). Fields the sources do
+ *  adapter, which falls back to the venue feed only when this origin
+ *  serves no Open Oracle (the chip then says "backup feed"). Fields the sources do
  *  not provide (volume, market cap) are never invented. Selecting a market
  *  deep-links it into the terminal. */
 export default function Markets() {
@@ -29,7 +29,7 @@ export default function Markets() {
   const [query, setQuery] = useState('')
   const [limit, setLimit] = useState(PAGE_STEP)
   const [meta, setMeta] = useState<CmsPageMeta | null>(null)
-  /* editorial hero copy from Directus (instruments stay on Gains, prices on Open Oracle) */
+  /* editorial hero copy from Directus (catalog and prices from Open Oracle) */
   useEffect(() => {
     let alive = true
     void fetchCmsPageMeta('markets').then(d => { if (alive) setMeta(d) })
@@ -75,14 +75,14 @@ export default function Markets() {
       title={meta?.title[locale] || text('Explore Openfund', 'بازارهای جهانی')[locale]}
       accent={meta?.subtitle[locale] || text('Markets', 'Openfund')[locale]}
       intro={meta?.description[locale] || text(
-        'Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal.',
-        'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
+        'Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal.',
+        'همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی اوپن‌فاند برای تجمیع و کشف قیمت. بازار را انتخاب کن و مستقیم به ترمینال ببر.'
       )[locale]}>
       <div className="mk-hero-meta">
         <span className={`mk-stream ${stream === 'live' ? 'live' : ''} ${failed ? 'error' : ''}`} role="status">
           <i aria-hidden="true" /> {statusLabel}
         </span>
-        {source && <span>{text('Prices', 'قیمت')[locale]}: <bdi dir="ltr">{source === 'open-oracle' ? 'Open Oracle' : 'Gains Network'}</bdi></span>}
+        {source && <span>{text('Prices', 'قیمت')[locale]}: <bdi dir="ltr">{source === 'open-oracle' ? 'Open Oracle' : text('backup feed', 'منبع پشتیبان')[locale]}</bdi></span>}
         {total > 0 && <span>{number(total, locale)} {text('markets', 'بازار')[locale]}</span>}
         {lastUpdate > 0 && <span dir="ltr">{new Intl.DateTimeFormat(intlLocale(locale), { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Dubai' }).format(lastUpdate)}</span>}
       </div>
@@ -160,16 +160,14 @@ export default function Markets() {
 
       <p className="market-disclaimer">
         {text(
-          'Prices are Open Oracle composites of Gains, Hyperliquid and GMX: crypto markets combine up to three sources, other markets use one. Market specifications come from Gains Network; leverage and Openfund account terms are independent. Only fields provided by the sources are shown.',
-          'قیمت‌ها حاصل تجمیع Open Oracle از Gains، Hyperliquid و GMX است: بازارهای رمزارز تا سه منبع و سایر بازارها یک منبع دارند. مشخصات بازار از Gains Network می‌آید؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منابع نمایش داده می‌شود.'
+          'Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown.',
+          'قیمت‌ها، کندل‌ها و مشخصات بازار از Open Oracle، سامانهٔ قیمت اختصاصی اوپن‌فاند، می‌آیند: بازارهای رمزارز تا سه منبع مستقل و سایر بازارها یک منبع دارند. اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهایی که این سامانه ارائه می‌دهد نمایش داده می‌شود.'
         )[locale]}
       </p>
       <p className="mk-source">
         <span className="dot" aria-hidden="true" />
         <a href="https://github.com/algomanlife/openfund/blob/main/docs/integrations/OPEN_ORACLE.md" target="_blank" rel="noopener" dir="ltr">Open Oracle <DirArrow kind="external" /></a>
-        <span>{text('price source', 'منبع قیمت')[locale]}</span>
-        <a href="https://gains.trade" target="_blank" rel="noopener" dir="ltr">Gains Network <DirArrow kind="external" /></a>
-        <span>{text('market specifications', 'مشخصات بازار')[locale]}</span>
+        <span>{text('prices and market specifications', 'قیمت و مشخصات بازار')[locale]}</span>
       </p>
     </div>
   </InformationShell>

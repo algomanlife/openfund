@@ -6,7 +6,7 @@
     "mappedCalls": 2357,
     "exceptions": 62,
     "validationFindings": 0,
-    "reviewedExclusions": 53
+    "reviewedExclusions": 52
   },
   "editorial": {
     "locales": [
@@ -3589,26 +3589,6 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.058045546326e052",
-      "namespace": "react",
-      "area": "Trading Terminal",
-      "owner": "Content editor",
-      "fa": "معاملات اجراشدهٔ Gains · اندازه به USD",
-      "en": "Gains executed trades · size in USD",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 378,
-          "page": "terminal",
-          "route": "/:locale/:product/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -11388,6 +11368,26 @@
           "line": 10,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1947bde0534609d4",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "دفتر سفارش مجازی Open Oracle؛ نقدینگی شبیه‌سازی‌شده بر پایهٔ مخزن و بدون سفارش ثابت.",
+      "en": "Open Oracle virtual order book; vault-based simulated liquidity, no resting orders.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
+          "line": 377,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "bilingual-record"
         }
       ]
@@ -35831,26 +35831,6 @@
       ]
     },
     {
-      "key": "react.526667f6813cab74",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "قیمت‌ها حاصل تجمیع Open Oracle از Gains، Hyperliquid و GMX است: بازارهای رمزارز تا سه منبع و سایر بازارها یک منبع دارند. مشخصات بازار از Gains Network می‌آید؛ اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهای موجود در منابع نمایش داده می‌شود.",
-      "en": "Prices are Open Oracle composites of Gains, Hyperliquid and GMX: crypto markets combine up to three sources, other markets use one. Market specifications come from Gains Network; leverage and Openfund account terms are independent. Only fields provided by the sources are shown.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 162,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.526ab44d8b0507df",
       "namespace": "react",
       "area": "Global Content",
@@ -48726,26 +48706,6 @@
       ]
     },
     {
-      "key": "react.736cb425dae0216f",
-      "namespace": "react",
-      "area": "Trading Terminal",
-      "owner": "Content editor",
-      "fa": "نقدینگی شبیه سازی شده؛ این یک دفتر سفارش غیر متمرکز مجازی است\nداده های از بروکر های Gains و hyperliquid تجمیع میشود.",
-      "en": "Gains virtual execution liquidity; no resting orders.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 377,
-          "page": "terminal",
-          "route": "/:locale/:product/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.738121a07ac125a2",
       "namespace": "react",
       "area": "Website",
@@ -50386,6 +50346,33 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.7806d29db25fa2ef",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی اوپن‌فاند برای تجمیع و کشف قیمت. بازار را انتخاب کن و مستقیم به ترمینال ببر.",
+      "en": "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — Openfund’s own price aggregation and discovery. Pick a market and take it straight into the terminal.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/marketsContent.ts",
+          "line": 18,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 77,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -57937,6 +57924,26 @@
       ]
     },
     {
+      "key": "react.8b3160a1bdae90cf",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "Open Oracle VOB",
+      "en": "Open Oracle VOB",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
+          "line": 376,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8b3444a3664e4567",
       "namespace": "react",
       "area": "Website",
@@ -61840,26 +61847,6 @@
       ]
     },
     {
-      "key": "react.9418252d012dd2cf",
-      "namespace": "react",
-      "area": "Trading Terminal",
-      "owner": "Content editor",
-      "fa": "Gains VOB",
-      "en": "Gains VOB",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 376,
-          "page": "terminal",
-          "route": "/:locale/:product/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.94221b4d1dc2aa3b",
       "namespace": "react",
       "area": "Website",
@@ -63585,6 +63572,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.9875e143552e21c5",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "معاملات اجراشده از Open Oracle · اندازه به USD",
+      "en": "Executed trades from Open Oracle · size in USD",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
+          "line": 378,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -67848,6 +67855,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.a2e6c87646ef30d4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "منبع پشتیبان",
+      "en": "backup feed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 85,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -79617,6 +79644,26 @@
       ]
     },
     {
+      "key": "react.bf7374d9d50c95f5",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت و مشخصات بازار",
+      "en": "prices and market specifications",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 170,
+          "page": "markets",
+          "route": "/:locale/markets",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.bf742112f17fb9ee",
       "namespace": "react",
       "area": "Website",
@@ -88511,26 +88558,6 @@
       ]
     },
     {
-      "key": "react.d57b9da0ef28214c",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "منبع قیمت",
-      "en": "price source",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 170,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.d5884e499e48c851",
       "namespace": "react",
       "area": "Global Content",
@@ -92786,26 +92813,6 @@
       ]
     },
     {
-      "key": "react.dfcfa70ba9f6d649",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "مشخصات بازار",
-      "en": "market specifications",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 172,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.dff13ea77dde50fd",
       "namespace": "react",
       "area": "Website",
@@ -96973,6 +96980,26 @@
           "line": 19,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e9d030caa2be4820",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قیمت‌ها، کندل‌ها و مشخصات بازار از Open Oracle، سامانهٔ قیمت اختصاصی اوپن‌فاند، می‌آیند: بازارهای رمزارز تا سه منبع مستقل و سایر بازارها یک منبع دارند. اهرم و شرایط حساب‌های اوپن‌فاند مستقل است. تنها فیلدهایی که این سامانه ارائه می‌دهد نمایش داده می‌شود.",
+      "en": "Prices, candles and market specifications come from Open Oracle, Openfund’s own price service: crypto markets combine up to three independent sources, other markets use one. Leverage and Openfund account terms are independent. Only fields the service provides are shown.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/markets/Markets.tsx",
+          "line": 162,
+          "page": "markets",
+          "route": "/:locale/markets",
           "method": "bilingual-record"
         }
       ]
@@ -101983,33 +102010,6 @@
       ]
     },
     {
-      "key": "react.f685e33199a48711",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "همهٔ کلاس‌های دارایی که اکوسیستم معاملاتی اوپن‌فاند پوشش می‌دهد، با قیمت زندهٔ Open Oracle؛ سامانهٔ اختصاصی ما برای تجمیع قیمت از Gains، Hyperliquid و GMX. بازار را انتخاب کن و مستقیم به ترمینال ببر.",
-      "en": "Every asset class the Openfund trading ecosystem tracks, priced live by Open Oracle — our own aggregation of Gains, Hyperliquid and GMX. Pick a market and take it straight into the terminal.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/marketsContent.ts",
-          "line": 18,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/markets/Markets.tsx",
-          "line": 77,
-          "page": "markets",
-          "route": "/:locale/markets",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.f696746dc3df9c47",
       "namespace": "react",
       "area": "Website",
@@ -106786,14 +106786,6 @@
       "route": "/:locale/markets",
       "reason": "language-neutral-brand-or-identifier",
       "text": "Ag"
-    },
-    {
-      "component": "apps/web-react/src/features/markets/Markets.tsx",
-      "line": 171,
-      "page": "markets",
-      "route": "/:locale/markets",
-      "reason": "language-neutral-brand-or-identifier",
-      "text": "Gains Network"
     },
     {
       "component": "apps/web-react/src/features/partners/Ambassador.tsx",

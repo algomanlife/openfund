@@ -54,6 +54,8 @@ async function walletContext(browser,{fixtures=false}={}){
  },wallets.map(w=>w.address));
  if(fixtures){
   await context.route('http://localhost:8055/**',route=>route.abort());
+  /* these fixtures stand in for Open Oracle's market API too: the pages fall back to them when it is unavailable */
+  await context.route('**/api/oracle/markets**', route => route.fulfill({ status: 404, json: { error: 'not_found' } }))
   await context.route('https://api.gains.trade/v1/arbitrum/**',async route=>{
    const url=route.request().url();const data=url.includes('/candles')?[]:url.endsWith('/markets')?[{symbol:'BTC/USD',base:'BTC',quote:'USD',group:'crypto',pairIndex:0,isOpen:true,minLeverage:'1',maxLeverage:'100',pricePrecision:1,sizePrecision:5}]:[{market:'BTC/USD',mark:'50000',index:'50000',updatedAt:Date.now()}];
    await route.fulfill({json:{data}});
