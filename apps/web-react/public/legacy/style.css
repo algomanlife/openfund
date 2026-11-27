@@ -313,8 +313,6 @@ address.offices p{font-size:12px;color:#a3bbab;line-height:2.1;direction:rtl}
 /* Every official mark uses the same neutral canvas; no recoloring or per-logo offsets. */
 .footer-credits .service-logo-slot { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 80px; width: 80px; height: 40px; padding: 8px 0; box-sizing: border-box; background: #fff; border-radius: 6px; }
 .footer-credits .service-logo-slot img { display: block; height: 24px; width: auto; max-width: 100%; object-fit: contain; flex-shrink: 0; filter: none; }
-/* the official Arbitrum logomark ships with its clear space inside the file */
-.footer-credits .service-logo-slot img.service-logo-clearspace { height: 38px; margin-block: -7px; }
 .footer-credits .service-heading b { font-size: 12px; font-weight: 600; line-height: 20px; white-space: nowrap; color: var(--white); }
 .footer-credits .service-description { font-size: 11px; line-height: 1.8; color: var(--muted); }
 footer .footer-top p, footer .footer-bottom p, footer .footer-bottom > span { color: var(--muted); }

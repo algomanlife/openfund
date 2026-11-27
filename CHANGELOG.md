@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Footer: Arbitrum Sepolia.** The public footer credits gain a ninth card, Arbitrum Sepolia, "Blockchain and distributed ledger of records", with the official Arbitrum logomark from the brand kit (unchanged file, provenance in `assets/notices/Public-brand-assets.txt`), linked to the network explorer. The credit grid shows nine columns on desktop and three below 1200 px, so no card is left alone on a row.
+- **Footer: Arbitrum Sepolia.** The public footer credits gain a ninth card, Arbitrum Sepolia, "Blockchain and distributed ledger of records", with the official full-colour Arbitrum logomark (unchanged Offchain Labs SVG, provenance in `assets/notices/Public-brand-assets.txt`), linked to the network explorer. The credit grid shows nine columns on desktop and three below 1200 px, so no card is left alone on a row.
 
 - Rate-limit the public chain status, challenge-record and certificate-metadata reads to 60 requests per minute per client IP using the shared PostgreSQL limiter; rejected requests return `429 rate_limited` before record queries.
 

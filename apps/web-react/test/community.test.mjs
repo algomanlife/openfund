@@ -76,9 +76,9 @@ test('the public page lists no unreleased app downloads and nine service credits
   assert.equal(doc.querySelectorAll('#desktop, .desktop-btns').length, 0)
   assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 9)
   assert.deepEqual([...doc.querySelectorAll('.credits-row > a b')].map(b => b.textContent), ['Gains', 'Vela', 'TradingView', 'GMX', 'Render', 'Liara', 'Bitpin', 'Hyperliquid', 'Arbitrum Sepolia'])
-  /* ADR 0063: the on-chain records network, official logomark (unchanged brand-kit file) */
+  /* ADR 0063: the on-chain records network, official logomark (unchanged Offchain Labs SVG) */
   const arbitrum = doc.querySelector('.credits-row a[href="https://sepolia.arbiscan.io"]')
-  assert.ok(arbitrum.querySelector('img[src="assets/arbitrum-logomark.webp"]'))
+  assert.ok(arbitrum.querySelector('img[src="assets/arbitrum-logo.svg"]'))
   assert.equal(arbitrum.querySelector('.service-description').textContent, 'بلاکچین و دفتر توزیع‌شدهٔ ثبت اطلاعات')
   assert.equal(doc.querySelectorAll('.credits-row a[href="https://bitpin.ir"] img[src="assets/bitpin-logo.svg"]').length, 1)
   assert.equal(doc.querySelector('.credits-row a[href="https://bitpin.ir"] .service-description').textContent, 'داده‌های بازار و عمق بازار ایران')
