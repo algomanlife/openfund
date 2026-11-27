@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Open Oracle serves all market data; venue names removed from the data UI.** New public routes `GET /api/oracle/markets`, `/api/oracle/markets/:market/candles`, `/book` and `/trades` serve the market catalog, candle history (the open candle closes at the Open Oracle composite), the virtual order book and executed trades from the server, so browsers no longer call the venue API. This fixes the home page market table, which stayed on "loading markets" where the browser could not reach the venue API. The terminal chart legend, depth panel and status bar show the Open Oracle mark (a green "O") instead of "GAINS" and the Gains/Hyperliquid logos, and the order-book, trades, funding, details, status-bar, assumptions and chart-loading copy and the home market footer name Open Oracle in five locales. The README product card shows Open Oracle as running.
+
 ## v0.9.0 — 2026-11-27
 
 - **Backend lint.** `apps/backend` runs ESLint 10 on its production modules (`npm --prefix apps/backend run lint`, in the CI backend job). The first run removed four unused imports and constants and a `var` redeclaration in `portfolio.js`; behaviour is unchanged. The dependency candidate workflow now keeps its pushed branch when Actions may not open pull requests.

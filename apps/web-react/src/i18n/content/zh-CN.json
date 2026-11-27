@@ -4407,5 +4407,6 @@
   "Apache-2.0 with NOTICE (credit Openfund)": "Apache-2.0 附 NOTICE（注明 Openfund）",
   "Gains Network — Open Oracle price source and market data": "Gains Network — Open Oracle 价格来源与市场数据",
   "Hyperliquid — Open Oracle price source": "Hyperliquid — Open Oracle 价格来源",
-  "GMX — Open Oracle price source": "GMX — Open Oracle 价格来源"
+  "GMX — Open Oracle price source": "GMX — Open Oracle 价格来源",
+  "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.": "在此版本中，价格、K 线和市场规格均来自 Openfund 自有的价格服务 Open Oracle —— 与 Openfund 交易终端使用的来源相同。"
 }

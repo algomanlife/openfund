@@ -650,3 +650,11 @@ html[data-theme="light"] .submit:hover{background:#096b44}
 /* legacy fa/en toggle: same globe face as the React language selector (src/i18n/language.css) */
 .language-toggle{display:inline-flex;align-items:center;gap:6px;width:auto;padding:0 8px}
 .language-toggle .of-globe-icon{flex:none;fill:none;stroke:var(--mint);stroke-width:1.5}
+
+/* Open Oracle mark: chart legend (vela-bridge.js), depth panel and status bar */
+.of-oracle-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; margin-inline-end: 2px; border-radius: 50%;
+  background: #82e7bd; color: #060808; font: 700 11px/1 Ubuntu, system-ui, sans-serif;
+  vertical-align: -3px;
+}

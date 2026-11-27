@@ -3533,26 +3533,6 @@
       ]
     },
     {
-      "key": "react.058045546326e052",
-      "namespace": "react",
-      "area": "Trading Terminal",
-      "owner": "Content editor",
-      "fa": "معاملات اجراشدهٔ Gains · اندازه به USD",
-      "en": "Gains executed trades · size in USD",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 378,
-          "page": "terminal",
-          "route": "/:locale/:product/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.0583a578f6b14996",
       "namespace": "react",
       "area": "Website",
@@ -11308,6 +11288,26 @@
           "line": 10,
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1947bde0534609d4",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "دفتر سفارش مجازی Open Oracle؛ نقدینگی شبیه‌سازی‌شده بر پایهٔ مخزن و بدون سفارش ثابت.",
+      "en": "Open Oracle virtual order book; vault-based simulated liquidity, no resting orders.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
+          "line": 377,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "bilingual-record"
         }
       ]
@@ -48392,26 +48392,6 @@
       ]
     },
     {
-      "key": "react.736cb425dae0216f",
-      "namespace": "react",
-      "area": "Trading Terminal",
-      "owner": "Content editor",
-      "fa": "نقدینگی شبیه سازی شده؛ این یک دفتر سفارش غیر متمرکز مجازی است\nداده های از بروکر های Gains و hyperliquid تجمیع میشود.",
-      "en": "Gains virtual execution liquidity; no resting orders.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 377,
-          "page": "terminal",
-          "route": "/:locale/:product/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.738121a07ac125a2",
       "namespace": "react",
       "area": "Website",
@@ -57576,6 +57556,26 @@
       ]
     },
     {
+      "key": "react.8b3160a1bdae90cf",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "Open Oracle VOB",
+      "en": "Open Oracle VOB",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
+          "line": 376,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.8b3444a3664e4567",
       "namespace": "react",
       "area": "Website",
@@ -61465,26 +61465,6 @@
       ]
     },
     {
-      "key": "react.9418252d012dd2cf",
-      "namespace": "react",
-      "area": "Trading Terminal",
-      "owner": "Content editor",
-      "fa": "Gains VOB",
-      "en": "Gains VOB",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 376,
-          "page": "terminal",
-          "route": "/:locale/:product/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.94221b4d1dc2aa3b",
       "namespace": "react",
       "area": "Website",
@@ -63150,6 +63130,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.9875e143552e21c5",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "معاملات اجراشده از Open Oracle · اندازه به USD",
+      "en": "Executed trades from Open Oracle · size in USD",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
+          "line": 378,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -105507,7 +105507,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 75,
+      "line": 77,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "dynamic-pair",
@@ -106062,7 +106062,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/InformationShell.tsx",
-      "line": 225,
+      "line": 227,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "language-neutral-brand-or-identifier",

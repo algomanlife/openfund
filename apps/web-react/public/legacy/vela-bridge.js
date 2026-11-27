@@ -3,7 +3,7 @@
    Mounts the full LuxAlgo Vela workspace (topbar with symbol /
    timeframe / style / indicators, drawing toolbar, status line,
    bottom bar, symbol search, keyboard map) as the terminal chart,
-   powered by the Gains provider.
+   powered by the Open Oracle provider (catalog, candles and prices from /api/oracle).
 
    Bundle: apps/web-react/public/assets/vela-workspace.global.min.js
            (esbuild IIFE of the vendored @luxalgo/vela 0.10.6 workspace)
@@ -71,14 +71,34 @@ function mount(container, opts){
   /* Openfund hosts its own market selector — Vela's symbol chip is omitted.
      Timeframe / style / indicators / undo-redo stay (left side),
      alerts / panels / screenshot on the right. */
+  /* The chart legend names the data provider after the symbol ("· OPENORACLE ·").
+     Openfund shows the Open Oracle mark there instead: a green "O" badge. The
+     legend rewrites its text on every symbol/timeframe change, so an observer
+     re-applies the badge. */
+  const PROVIDER_TEXT = /^·\s*(?:OPENORACLE|GAINS)\s+/;
+  const brandLegend = () => {
+    for (const meta of el.querySelectorAll('.vela-sl-meta')) {
+      if (meta.querySelector('.of-oracle-badge') || !PROVIDER_TEXT.test(meta.textContent || '')) continue;
+      const rest = (meta.textContent || '').replace(PROVIDER_TEXT, '');
+      const badge = document.createElement('span');
+      badge.className = 'of-oracle-badge';
+      badge.textContent = 'O';
+      badge.title = 'Open Oracle';
+      badge.setAttribute('aria-label', 'Open Oracle');
+      meta.replaceChildren(badge, document.createTextNode(' ' + rest));
+    }
+  };
+  new MutationObserver(brandLegend).observe(el, { subtree: true, childList: true, characterData: true });
+
   const ws = new WLib.VelaWorkspace(el, {
     /* Vela's own UI is English-only and LTR in every Openfund locale
        (docs/integrations/VELA.md): the host locale is never forwarded */
     locale: 'en',
     layout: false,                    /* single-chart mode */
-    symbol: 'gains:' + (opts.symbol || 'BTC/USD'),
+    symbol: 'openoracle:' + String(opts.symbol || 'BTC/USD').replace(/^(?:gains|openoracle):/, ''),
     timeframe: canonicalTimeframe(opts.timeframe || '1'),
-    providers: { gains: () => G.createVelaProvider() },
+    /* the chart legend shows the provider id: Open Oracle serves catalog, candles and prices */
+    providers: { openoracle: () => G.createVelaProvider() },
     timeframes: TIMEFRAMES,
     live: true,
     theme: THEMES[document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'],
@@ -134,11 +154,11 @@ function mount(container, opts){
     /* debug/testing handle */
     __set: (k, v) => { try { return ws.chart.renderer.set(k, v); } catch(e){ return 'ERR:' + e.message; } },
     get chart(){ return ws.chart; },
-    setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'gains:' + symbol }); },
+    setSymbol(symbol){ return ws.chart.setMarket({ symbol: 'openoracle:' + String(symbol).replace(/^(?:gains|openoracle):/, '') }); },
     setTimeframe(tf){ return ws.chart.setMarket({ timeframe: canonicalTimeframe(tf) }); },
     setMarket(next){
       return ws.chart.setMarket({ ...next,
-        ...(next.symbol ? { symbol: 'gains:' + next.symbol.replace(/^gains:/, '') } : {}),
+        ...(next.symbol ? { symbol: 'openoracle:' + next.symbol.replace(/^(?:gains|openoracle):/, '') } : {}),
         ...(next.timeframe ? { timeframe: canonicalTimeframe(next.timeframe) } : {})
       });
     },

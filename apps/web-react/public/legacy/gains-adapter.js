@@ -82,12 +82,29 @@ function aggregate(bars, spec){
 }
 
 /* ---------- REST ---------- */
-async function get(path, timeoutMs){
-  const r = await fetch(API + path, { signal: AbortSignal.timeout(timeoutMs || 12000) });
-  if (!r.ok) throw new Error('HTTP ' + r.status);
+async function getFrom(base, path, timeoutMs){
+  const r = await fetch(base + path, { signal: AbortSignal.timeout(timeoutMs || 12000) });
+  if (!r.ok) throw Object.assign(new Error('HTTP ' + r.status), { status: r.status });
   const j = await r.json();
   if (!Array.isArray(j.data)) throw new Error('Invalid data envelope');
   return j.data;
+}
+/* Catalog and candles come from Open Oracle (/api/oracle/markets…) on this
+   origin; the venue API is read directly only where the origin has no Open
+   Oracle market API (404), e.g. a static preview. */
+let oracleMarketApi = null;   /* null = unknown, true/false once decided */
+async function get(path, timeoutMs){
+  if (oracleMarketApi !== false){
+    try {
+      const data = await getFrom(ORACLE, path, timeoutMs);
+      oracleMarketApi = true;
+      return data;
+    } catch (e) {
+      if (oracleMarketApi === true || e.status !== 404) throw e;
+      oracleMarketApi = false;
+    }
+  }
+  return getFrom(API, path, timeoutMs);
 }
 
 /* ---------- state ---------- */
@@ -133,7 +150,7 @@ async function priceSnapshot(){
   if (await oracleAvailable()){
     try { return await oracleSnapshot(); } catch(e){ /* stream below keeps reconnecting */ }
   }
-  return get('/prices', 8000); /* [{market, mark, index, updatedAt}] */
+  return getFrom(API, '/prices', 8000); /* venue fallback only: [{market, mark, index, updatedAt}] */
 }
 
 /* ---------- candles ---------- */

@@ -1490,6 +1490,7 @@
 "In the published structure the money you hand over is a one-time evaluation fee, quoted per account size; it is not capital that becomes the account. That matters twice. It explains why the loss limits are the real contract - they decide how much of the supplied size you may lose before the agreement ends - and it explains why the fee can be refundable at all: on the Openfund Standard terms of record the fee comes back with the fourth reward, while One-phase and Instant do not refund it.",
 "In the ranking",
 "In this release, prices and market specifications come from Gains Network — the same source the Openfund trading terminal uses.",
+"In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses.",
 "Inactive / In Development",
 "Inactivity limit",
 "Inbound",

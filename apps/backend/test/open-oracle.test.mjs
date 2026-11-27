@@ -139,3 +139,31 @@ test('the regional mirror follows the upstream stream and reports its freshness'
   assert.equal(mirror.status().mirror.connected, true)
   now += 31000; assert.equal(mirror.status().mirror.connected, false)
 })
+
+test('Open Oracle market API: catalog, validated candles closed at the composite, cached book', async () => {
+  const { oracleMarketData } = await import('../open-oracle.js')
+  const calls = []
+  let clock = 1_800_000_000_000
+  const markets = new Map([['BTC/USD', { symbol: 'BTC/USD', base: 'BTC' }]])
+  const fetchImpl = async url => {
+    calls.push(String(url))
+    const body = String(url).includes('/candles')
+      ? { data: [{ time: clock - 3_600_000, open: 100, high: 110, low: 90, close: 105 }, { time: clock - 60_000, open: 105, high: 106, low: 104, close: 105 }] }
+      : { market: 'BTC/USD', markPrice: 105, timestamp: clock, bids: [], asks: [] }
+    return { ok: true, json: async () => body }
+  }
+  const api = oracleMarketData({ markets: () => markets, oracle: () => ({ get: () => ({ price: 120, stale: false }) }), fetchImpl, now: () => clock })
+  assert.deepEqual((await api.catalog()).data, [{ symbol: 'BTC/USD', base: 'BTC' }])
+  const candles = await api.candles('BTC-USD', '1h', clock - 7_200_000, clock)
+  assert.equal(candles.source, 'open-oracle')
+  assert.deepEqual(candles.data.at(-1), { time: clock - 60_000, open: 105, high: 120, low: 104, close: 120 })
+  await assert.rejects(api.candles('ETH-USD', '1h', 0, clock), /invalid_request/)
+  await assert.rejects(api.candles('BTC-USD', '1w', 0, clock), /invalid_request/)
+  await assert.rejects(api.candles('../x', '1h', 0, clock), /invalid_request/)
+  await api.book('BTC/USD', 15); await api.book('BTC/USD', 15)
+  assert.equal(calls.filter(u => u.includes('/book')).length, 1, 'book cached for one second')
+  clock += 1_500
+  await api.book('BTC/USD', 15)
+  assert.equal(calls.filter(u => u.includes('/book')).length, 2)
+  assert.ok(calls.every(u => u.startsWith('https://api.gains.trade/v1/arbitrum/markets/')))
+})

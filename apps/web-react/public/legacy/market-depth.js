@@ -1,10 +1,14 @@
-/** Public Gains VOB and executed trades. Never derive liquidity or prints from marks. */
+/** Virtual order book (VOB) and executed trades through the same-origin Open Oracle market API
+    (/api/oracle/markets/:market/book|trades, ADR 0059), polled; the venue socket only where the
+    origin has no Open Oracle market API. Never derive liquidity or prints from marks. */
 (() => {
   const $ = (id) => document.getElementById(id),
     L = (a, b) =>
       window.ofLang === "fa" ? a : window.OpenfundTerminalLocales?.L?.[window.ofLang]?.[b] || b;
   const api = "https://api.gains.trade/v1/arbitrum",
-    wsUrl = "wss://api.gains.trade/v1/arbitrum/ws";
+    wsUrl = "wss://api.gains.trade/v1/arbitrum/ws",
+    oracleApi = "/api/oracle";
+  let viaOracle = null; /* null until the first read decides */
   const valid = (v) =>
     v != null && Number.isFinite(Number(v)) && Number(v) >= 0;
   let symbol = "",
@@ -206,11 +210,12 @@
     const brands = document.createElement("span");
     brands.className = "depth-brands";
     brands.dir = "ltr";
-    for (const [src, alt, w] of [["assets/gains-logo.svg", "Gains Network", 12], ["assets/hyperliquid-mark.svg", "Hyperliquid", 14]]) {
-      const img = document.createElement("img");
-      img.src = src; img.alt = alt; img.width = w; img.height = 12;
-      brands.append(img);
-    }
+    const mark = document.createElement("span");
+    mark.className = "of-oracle-badge";
+    mark.textContent = "O";
+    mark.title = "Open Oracle";
+    mark.setAttribute("aria-label", "Open Oracle");
+    brands.append(mark);
     note.replaceChildren(label, brands);
     renderBook();
     return true;
@@ -240,6 +245,25 @@
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 50);
     renderTrades();
+  }
+  /* Open Oracle: the book every 2 s and the trades every 4 s (cached server-side) */
+  function poll(g, tick = 0) {
+    if (stopped || g !== generation) return;
+    retry = setTimeout(async () => {
+      if (stopped || g !== generation) return;
+      const base = `${oracleApi}/markets/${encodeURIComponent(symbol)}`;
+      try {
+        const r = await fetch(base + "/book?levels=15", { signal: controller.signal });
+        if (r.ok && g === generation) acceptBook(await r.json());
+        if (tick % 2 === 1) {
+          const t = await fetch(base + "/trades?limit=50", { signal: controller.signal });
+          if (t.ok && g === generation) acceptTrades((await t.json()).data, true);
+        }
+      } catch {
+        if (book) markStale(true);
+      }
+      poll(g, tick + 1);
+    }, 2000);
   }
   function connect(g) {
     if (stopped || g !== generation) return;
@@ -329,32 +353,32 @@
     lastBookTimestamp = 0;
     renderBook();
     renderTrades();
-    note.textContent = L("در حال اتصال به Gains…", "Connecting to Gains…");
-    const base = `${api}/markets/${encodeURIComponent(symbol)}`;
-    const reads = await Promise.allSettled([
-      fetch(base + "/book?levels=15", { signal: controller.signal }).then(
-        (r) => {
-          if (!r.ok) throw Error();
+    note.textContent = L("در حال اتصال به Open Oracle…", "Connecting to Open Oracle…");
+    const readAll = (root) => {
+      const base = `${root}/markets/${encodeURIComponent(symbol)}`;
+      const read = (path) =>
+        fetch(base + path, { signal: controller.signal }).then((r) => {
+          if (!r.ok) throw Object.assign(Error(), { status: r.status });
           return r.json();
-        },
-      ),
-      fetch(base + "/trades?limit=50", { signal: controller.signal }).then(
-        (r) => {
-          if (!r.ok) throw Error();
-          return r.json();
-        },
-      ),
-    ]);
+        });
+      return Promise.allSettled([read("/book?levels=15"), read("/trades?limit=50")]);
+    };
+    let reads = viaOracle === false ? null : await readAll(oracleApi);
+    if (g !== generation || stopped) return;
+    if (reads && viaOracle === null)
+      viaOracle = !reads.every((r) => r.status === "rejected" && r.reason?.status === 404);
+    if (!viaOracle) reads = await readAll(api);
     if (g !== generation || stopped) return;
     if (reads[0].status === "fulfilled") acceptBook(reads[0].value);
     if (reads[1].status === "fulfilled")
       acceptTrades(reads[1].value.data, true);
     if (!book)
       note.textContent = L(
-        "دادهٔ عمق Gains در دسترس نیست.",
-        "Gains depth unavailable.",
+        "دادهٔ عمق در دسترس نیست.",
+        "Depth data unavailable.",
       );
-    connect(g);
+    if (viaOracle) poll(g);
+    else connect(g);
   }
   denomination.addEventListener("change", renderBook);
   $("book-group")?.addEventListener("change", renderBook);

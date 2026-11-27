@@ -409,5 +409,6 @@
   "مهاجرت به اوپن‌فاند": "Migration to Openfund",
   "شروع مهاجرت": "Start migration",
   "معامله‌گر فاندشدهٔ اثبات‌شده‌ای؟ با سه برداشت تأییدشده از ارزیابی عبور کن.": "Proven funded trader? Skip evaluation with three verified payouts.",
-  "همهٔ اهداف معاملاتی در یک نگاه": "Every trading objective at a glance"
+  "همهٔ اهداف معاملاتی در یک نگاه": "Every trading objective at a glance",
+  "در این نسخه، قیمت‌ها، کندل‌ها و مشخصات بازار از Open Oracle، سامانهٔ اختصاصی اوپن‌فاند، دریافت می‌شوند — همان منبعی که ترمینال معاملاتی اوپن‌فاند از آن استفاده می‌کند.": "In this release, prices, candles and market specifications come from Open Oracle, Openfund’s own price service — the same source the Openfund trading terminal uses."
 }
