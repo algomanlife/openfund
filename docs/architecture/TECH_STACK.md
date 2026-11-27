@@ -54,7 +54,7 @@ Notes:
 | Gains Network public API | api.gains.trade/v1/arbitrum | REST: /markets (dynamic count), /prices, /markets/{sym}/candles (1m…1d, **no 1w**); WS: prices channel with ping/pong + seq-gap resubscribe (source-dependent update rate) | Active | Public API, CORS `*` (verified) |
 | @gainsnetwork/sdk | 1.8.10 | On-chain trading SDK | Vendored — **unused** (intentionally: public market-data API only, no contracts assumed) | See `vendor/gains-sdk` |
 
-## Legacy runtime (classic pages `dist/` + embedded in React shell)
+## Legacy runtime (classic pages embedded in the React shell)
 
 | Technology | Role | Status |
 | :--- | :--- | :--- |

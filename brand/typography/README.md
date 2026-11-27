@@ -8,8 +8,8 @@ Openfund uses exactly two faces (owner decision, 2026-11-21):
 | Dastkhat v1.210 (Dastyar) | The only Persian/Arabic face | SIL OFL 1.1 (no Reserved Font Name), based on Vazirmatn by Saber Rastikerdar | `apps/web-react/public/assets/fonts/dastkhat/` |
 
 Binaries are stored once and reused by the site, the terminal iframe,
-Backstage, Open Trade desktop (copied at build by `apps/open-trade/scripts/prepare.mjs`)
-and the `dist/` snapshot; no modified forks exist. The single `@font-face` file
+Backstage and Open Trade desktop (copied at build by
+`apps/open-trade/scripts/prepare.mjs`); no modified forks exist. The single `@font-face` file
 is `apps/web-react/public/assets/fonts/dastkhat/dastkhat.css`.
 
 ## Dastkhat provenance

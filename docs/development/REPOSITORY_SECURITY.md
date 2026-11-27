@@ -66,7 +66,7 @@ the two checks and add them again, choosing **GitHub Actions** as the source.
 ### 3. Turn on secret scanning push protection
 
 Effect: pushes containing a recognized provider credential are blocked unless
-the pusher records a bypass reason. Generated bundles in `dist/` contain
+the pusher records a bypass reason. Generated browser bundles contain
 documented public SDK constants (see `gitleaks.toml`); if one of them is ever
 recognized as a provider secret, the push can be allowed with a "false
 positive" bypass. **Settings → Code security → Secret Protection → Push protection → Enable.**

@@ -1,7 +1,7 @@
 {
   "$comment": "Machine-readable registry of retired, legacy-only and dormant items. Edit this file, then run `node scripts/docs/check-retired.mjs --write` to regenerate RETIRED.md and the README block. `npm run docs:check` fails if a `retired` item still has an active reference, if a retired component is listed in the active license table, or if a generated output is stale. Contract: docs/development/README_STRUCTURE.md.",
   "schemaVersion": 1,
-  "updatedAt": "2026-11-21",
+  "updatedAt": "2026-11-27",
   "statuses": {
     "retired": "Removed. Zero active references allowed; history may still name it.",
     "legacy-only pending removal": "Still shipped for compatibility; no new work; replacement named; remaining references are counted, not gated.",
@@ -110,13 +110,27 @@
     },
     {
       "id": "vanilla-legacy-layer",
-      "item": "Vanilla JS/CSS legacy layer (`apps/web-react/public/legacy/`) and the tracked `dist/` snapshot",
+      "item": "Vanilla JS/CSS legacy layer (`apps/web-react/public/legacy/`)",
       "kind": "code",
       "status": "legacy-only pending removal",
       "retiredSince": "2026-11-21",
-      "replacement": "React application (`apps/web-react/src/`); `dist/` stays source-critical until AGENTS.md says otherwise",
+      "replacement": "React application (`apps/web-react/src/`)",
       "gate": {
-        "files": ["^apps/web-react/public/legacy/", "^dist/"],
+        "files": ["^apps/web-react/public/legacy/"],
+        "text": [],
+        "scope": "active"
+      }
+    },
+    {
+      "id": "dist-snapshot",
+      "item": "Tracked `dist/` classic static snapshot (frozen classic site, asset mirror and script copies)",
+      "kind": "code",
+      "status": "retired",
+      "retiredSince": "2026-11-27",
+      "replacement": "`apps/web-react/public/` (served assets and the legacy runtime), written by `npm run build:charts`",
+      "note": "Never served by the backend; most files were byte-identical copies. Removed by owner decision together with its build-charts, upstream-guard and test references.",
+      "gate": {
+        "files": ["^dist/"],
         "text": [],
         "scope": "active"
       }

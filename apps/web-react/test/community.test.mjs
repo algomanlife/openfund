@@ -92,13 +92,12 @@ test('owned styles remove logo recoloring and support shared reduced motion', ()
   assert.match(community, /prefers-reduced-motion: reduce/)
   assert.match(community, /\.community-button, \.community-button img \{ transition: none/)
   assert.ok(!/filter\s*:/.test(community))
-  for (const path of ['apps/web-react/public/legacy/style.css', 'dist/style.css']) {
+  for (const path of ['apps/web-react/public/legacy/style.css']) {
     const css = read(path).split('/* Public platform and service presentation; terminal styling stays separate. */')[1]
     assert.ok(css)
     assert.ok([...css.matchAll(/filter:\s*([^;]+);/g)].every(match => match[1].trim() === 'none'))
     assert.ok(!css.includes('google-play.png'))
   }
-  for (const name of ['discord-logo.svg', 'instagram-logo.svg', 'instagram-logo-white.svg', 'vela-logo.svg', 'depay-logo.svg', 'tradingview-mark.svg', 'app-store-icon.svg', 'google-play-icon.svg']) assert.equal(read(`apps/web-react/public/assets/${name}`), read(`dist/assets/${name}`))
   assert.match(read('apps/web-react/public/assets/discord-logo.svg'), /#5865[Ff]2/)
   assert.match(read('apps/web-react/public/assets/gains-logo.svg'), /linearGradient/)
 })
@@ -120,7 +119,7 @@ test('Instagram accepts only HTTPS profile destinations and never infers ownersh
 })
 
 test('all footer marks and community glyphs are actual vectors without raster payloads', () => {
-  for (const file of ['apps/web-react/src/pages/landing-body.html', 'dist/index.html']) {
+  for (const file of ['apps/web-react/src/pages/landing-body.html']) {
     const doc = new JSDOM(read(file)).window.document
     for (const card of doc.querySelectorAll('.credits-row > a')) {
       assert.ok(card.querySelector('.service-heading > .service-logo-slot > img'))
@@ -130,7 +129,6 @@ test('all footer marks and community glyphs are actual vectors without raster pa
       const svg = read(`apps/web-react/public/${asset}`)
       assert.match(svg, /<path\b/)
       assert.ok(!/<(?:image|foreignObject)\b|data:image|base64/i.test(svg), asset)
-      assert.equal(svg, read(`dist/${asset}`))
     }
   }
   for (const provider of load().communityProviders) {

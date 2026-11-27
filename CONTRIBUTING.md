@@ -155,7 +155,7 @@ description. See [AGENTS.md](AGENTS.md#developer-docs-merge-rule).
 
 ## Architecture contract
 
-Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React hosting (site root; `/react/` is a compatibility redirect). Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. `dist/` remains source-critical. The integrated Protocol source is dormant; operational venue routing remains planned.
+Preserve the three Render resources (`openfund`, `openfund-db`, `openfund-cms`) and same-origin React hosting (site root; `/react/` is a compatibility redirect). Keep the shared terminal presentation and product financial state isolated. PostgreSQL/Decimal own Prop simulation; Gains owns Perpetual read records; Directus owns published content/catalog administration. Never commit build output (the former `dist/` snapshot is retired). The integrated Protocol source is dormant; operational venue routing remains planned.
 
 ## Validation
 

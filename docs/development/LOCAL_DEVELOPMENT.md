@@ -58,7 +58,7 @@ With the backend running and database configured, open [built Home](http://local
 
 ## Source care
 
-`dist/` and `apps/web-react/public/legacy/` contain required compatibility sources. `react/` is generated build output: it is not tracked, and `npm run build:web` creates it (the backend reads `react/index.html` at start-up, so build before `npm start`). `dist/` remains a tracked source-critical deliverable; do not delete it. See [Testing](TESTING.md), [Repository maintenance](DOCUMENTATION.md) and [Contributing](../../CONTRIBUTING.md).
+`apps/web-react/public/legacy/` contains required compatibility sources. `react/` is generated build output: it is not tracked, and `npm run build:web` creates it (the backend reads `react/index.html` at start-up, so build before `npm start`). The former `dist/` snapshot was retired (2026-11-27); never commit build output. See [Testing](TESTING.md), [Repository maintenance](DOCUMENTATION.md) and [Contributing](../../CONTRIBUTING.md).
 
 ## Safe shared-machine acceptance
 
