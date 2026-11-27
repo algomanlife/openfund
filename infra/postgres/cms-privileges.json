@@ -102,6 +102,11 @@
    "protected": true,
    "cms": "none"
   },
+  "chain_records": {
+   "domain": "trading",
+   "protected": true,
+   "cms": "none"
+  },
   "challenge_equity_days": {
    "domain": "trading",
    "protected": true,
