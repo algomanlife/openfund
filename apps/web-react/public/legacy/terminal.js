@@ -1131,8 +1131,9 @@ $('of-price').addEventListener('input', computeForm);
 $('of-sl').addEventListener('input', computeForm);
 $('of-tp').addEventListener('input', computeForm);
 document.querySelectorAll('.pct-btns button').forEach(b => b.addEventListener('click', () => {
+  if (!tp || tp.canTrade === false) return;
   const avail = tp.getAccount()?.available;
-  if (avail == null || tp.canTrade === false) return;
+  if (avail == null) return;
   const rate = tp.feeRate?.(S.marketId);
   const budget = tp.serverMode && rate != null ? avail / (1 + S.leverage * rate) : avail;
   const v = Math.floor(budget * (+b.dataset.pct) / 100 * 100) / 100;
