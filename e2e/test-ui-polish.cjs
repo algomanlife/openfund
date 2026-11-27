@@ -268,7 +268,7 @@ async function walletDisclosureFits(page){
     }
    }
    await page.goto(BASE+`/${locale}/faq`);await tv.waitFor();
-   check(prefix+' DePay identification',await page.locator('.credits-row a[href="https://depay.com/"]').count()===1);
+   check(prefix+' GMX identification',await page.locator('.credits-row a[href="https://gmx.io/"]').count()===1);
    if(width===1440&&!connected){const file=`footer-${locale}-${theme}.png`;await page.locator('.credits-row').evaluate(el=>el.scrollIntoView({behavior:'instant',block:'center'}));await page.screenshot({animations:'disabled',path:path.join(OUT,file)});screenshots.push({file,fixture:'none'})}
    for(const product of ['prop','perpetual']){
     for(const section of ['dashboard','trade','portfolio','journal','journal?section=accounts',...(product==='prop'?['purchases','withdrawals','leaderboard','certificates']:['leaderboard','rewards'])]){

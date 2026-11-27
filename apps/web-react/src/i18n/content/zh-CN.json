@@ -4397,5 +4397,6 @@
   "Single use, bound to your wallet": "一次性使用，绑定您的钱包",
   "The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.": "该账户是发放到您钱包的免费 5 万美元标准挑战。无法寄送的奖品可能以现金等值支付。",
   "Valid for 90 days from the award": "自颁发之日起 90 天内有效",
-  "off one challenge": "一次挑战折扣"
+  "off one challenge": "一次挑战折扣",
+  "Detecting browser wallets…": "正在检测浏览器钱包…"
 }
