@@ -4397,5 +4397,6 @@
   "Single use, bound to your wallet": "لاستخدام واحد، ومرتبطة بمحفظتك",
   "The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.": "الحساب تحدٍّ قياسي مجاني بقيمة 50 ألف دولار على محفظتك. قد يُدفع ما يعادل نقدًا لأي جائزة يتعذّر شحنها.",
   "Valid for 90 days from the award": "صالحة لمدة 90 يومًا من تاريخ المنح",
-  "off one challenge": "خصم على تحدٍّ واحد"
+  "off one challenge": "خصم على تحدٍّ واحد",
+  "Detecting browser wallets…": "جارٍ اكتشاف محافظ المتصفح…"
 }

@@ -197,8 +197,8 @@ async function realThemeClicks(browser) {
       check(`${tag} images load`, await page.locator('.credits-row img,.community-button img').evaluateAll(images => images.every(img => img.complete && img.naturalWidth > 0)));
       check(`${tag} official images preserve geometry`, await page.locator('.credits-row img,.community-button img').evaluateAll(images => images.every(img => getComputedStyle(img).objectFit === 'contain')));
       const destinations = await page.locator('.credits-row > a').evaluateAll(links => links.map(a => a.href));
-      check(`${tag} truthful service destinations`, ['https://gains.trade/', 'https://www.tradingview.com/news/', 'https://depay.com/'].every(url => destinations.includes(url)));
-      check(`${tag} DePay description`, (await page.locator('a[href="https://depay.com/"]').innerText()).includes(locale === 'fa' ? 'سیستم دریافت و پرداخت' : 'Payment & Collection System'));
+      check(`${tag} truthful service destinations`, ['https://gains.trade/', 'https://www.tradingview.com/news/', 'https://gmx.io/'].every(url => destinations.includes(url)));
+      check(`${tag} GMX market-data description`, (await page.locator('.credits-row a[href="https://gmx.io/"]').innerText()).includes(locale === 'fa' ? 'داده‌های بازار' : 'Market data'));
       check(`${tag} Shiraz preserved`, (await page.locator('footer').innerText()).includes(locale === 'fa' ? 'شیراز' : 'Shiraz'));
       check(`${tag} no horizontal overflow`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
       if (width === 1440 && ['dark', 'light'].includes(theme)) {

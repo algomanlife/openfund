@@ -75,7 +75,7 @@ test('the public page lists no unreleased app downloads and eight service credit
   const doc = new JSDOM(read('apps/web-react/src/pages/landing-body.html')).window.document
   assert.equal(doc.querySelectorAll('#desktop, .desktop-btns').length, 0)
   assert.equal(doc.querySelectorAll('.credits-row .service-logo-slot').length, 8)
-  assert.deepEqual([...doc.querySelectorAll('.credits-row > a b')].map(b => b.textContent), ['Gains', 'Vela', 'TradingView', 'DePay', 'Render', 'Liara', 'Bitpin', 'Hyperliquid'])
+  assert.deepEqual([...doc.querySelectorAll('.credits-row > a b')].map(b => b.textContent), ['Gains', 'Vela', 'TradingView', 'GMX', 'Render', 'Liara', 'Bitpin', 'Hyperliquid'])
   assert.equal(doc.querySelectorAll('.credits-row a[href="https://bitpin.ir"] img[src="assets/bitpin-logo.svg"]').length, 1)
   assert.equal(doc.querySelector('.credits-row a[href="https://bitpin.ir"] .service-description').textContent, 'داده‌های بازار و عمق بازار ایران')
   const hyperliquid = doc.querySelector('.credits-row a[href="https://hyperliquid.xyz"]')
