@@ -133,13 +133,18 @@ export async function upsertOperator({ username, role, status = 'active', passwo
     /* there is always at least one active owner once operators exist */
     if ((role !== 'owner' || status !== 'active') && owners.others === 0)
       throw Object.assign(new Error(owners.owners === 0 ? 'first_operator_must_be_owner' : 'last_owner'), { status: 400 })
-    const { rows: [row] } = await client.query(
-      `INSERT INTO admin_operators (username, role, status, password_verifier, created_by)
-         VALUES ($1, $2, $3, $4, $5)
-       ON CONFLICT (username) DO UPDATE SET role = EXCLUDED.role, status = EXCLUDED.status,
-         password_verifier = COALESCE(EXCLUDED.password_verifier, admin_operators.password_verifier), updated_at = now()
-       RETURNING username, role, status, created_at, updated_at, last_login_at`,
-      [name, role, status, verifier, actor])
+    /* an existing operator is updated in place: the CHECK on an INSERT
+       ... ON CONFLICT row would apply before the conflict, so a change
+       without a new password must not go through INSERT */
+    const { rows: [row] } = current
+      ? await client.query(
+        `UPDATE admin_operators SET role = $2, status = $3, password_verifier = COALESCE($4, password_verifier), updated_at = now()
+          WHERE username = $1 RETURNING username, role, status, created_at, updated_at, last_login_at`,
+        [name, role, status, verifier])
+      : await client.query(
+        `INSERT INTO admin_operators (username, role, status, password_verifier, created_by)
+           VALUES ($1, $2, $3, $4, $5) RETURNING username, role, status, created_at, updated_at, last_login_at`,
+        [name, role, status, verifier, actor])
     await client.query('COMMIT')
     bootstrapCache = { until: 0, value: true }
     return row

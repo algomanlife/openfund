@@ -937,7 +937,8 @@ if (region.region === 'GLOBAL') {
 }
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool, conduct }))
-app.use('/admin/operators', express.json({ limit: '4kb' }), operatorAdminRoutes({ Router: express.Router, adminAuth, adminActor, audit, limiter }))
+app.use('/admin/operators', express.json({ limit: '4kb' }))
+app.use('/admin/operators', operatorAdminRoutes({ Router: express.Router, adminAuth, adminActor, audit, limiter }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
 app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, runtime, adminAuth, adminActor, syncWorker, audit, health: regionalHealth }))
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))
