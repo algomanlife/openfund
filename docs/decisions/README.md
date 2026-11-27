@@ -64,3 +64,4 @@ Read newer decisions alongside historical ones; current implementation and expli
 
 - [0058 — Standalone Open Oracle reference-price research](0058-open-oracle-standalone.md)
 - [0059 — Open Oracle as the Openfund pricing service](0059-open-oracle-pricing-service.md)
+- [0060 — Openfund is open source under Apache-2.0](0060-open-source-license.md)

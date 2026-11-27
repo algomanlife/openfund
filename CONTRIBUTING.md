@@ -5,11 +5,11 @@ merged pull request. Coding agents additionally follow [AGENTS.md](AGENTS.md);
 roles and review authority are in [Repository governance](docs/development/REPOSITORY_GOVERNANCE.md).
 By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-> **Licensing notice.** No first-party license has been selected yet, so the
-> repository is public but not open-source licensed (see [License](README.md#license)).
-> The terms under which contributions are accepted are an open owner decision
-> ([Licensing](docs/legal/LICENSING.md)). Until it is made, the maintainer may
-> ask contributors to confirm they have the right to submit their work.
+> **Licensing.** Openfund is open source under the [Apache License 2.0](LICENSE)
+> ([ADR 0060](docs/decisions/0060-open-source-license.md)). Contributions are
+> accepted under the same license. Sign off every commit (`git commit -s`) to
+> certify the [Developer Certificate of Origin](https://developercertificate.org/):
+> you wrote the change or have the right to submit it under Apache-2.0.
 
 > **Security issues are never contributed through public issues or pull
 > requests.** Follow [SECURITY.md](SECURITY.md).

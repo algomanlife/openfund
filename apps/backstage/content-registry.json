@@ -40265,6 +40265,26 @@
       ]
     },
     {
+      "key": "react.5df4e55c5fc7a826",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "Apache-2.0 همراه NOTICE (ذکر نام اوپن‌فاند)",
+      "en": "Apache-2.0 with NOTICE (credit Openfund)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
+          "line": 176,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5e091bfe0e8cc4c8",
       "namespace": "react",
       "area": "Global Content",
@@ -40673,6 +40693,26 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/datasets.ts",
           "line": 27,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5ece5c9856a9ed8e",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "کد خود اوپن‌فاند با مجوز Apache-2.0 منتشر می‌شود: هر کسی می‌تواند آن را، حتی به‌صورت تجاری، استفاده، تغییر و بازتوزیع کند، به شرط آنکه فایل NOTICE با نام اوپن‌فاند حفظ شود. نام و لوگوهای اوپن‌فاند مشمول این مجوز نیستند. اجزای ثالث مجوزهای خود را حفظ می‌کنند که در ادامه آمده‌اند.",
+      "en": "Openfund’s own code is licensed under Apache-2.0: anyone may use, modify and redistribute it, including commercially, provided the NOTICE that credits Openfund is kept. The Openfund name and logos are not licensed. Third-party components keep their own licences, listed below.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
+          "line": 172,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43256,26 +43296,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.65cc71b5ead284fd",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "بدون مجوز ریشه (به‌طور پیش‌فرض همهٔ حقوق محفوظ)",
-      "en": "No root licence (all rights reserved by default)",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
-          "line": 176,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -46496,26 +46516,6 @@
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.6db71baf5ac0bc19",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "کد در دسترس، نه مجوز فراگیر",
-      "en": "Source-available, not a blanket licence",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
-          "line": 172,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
@@ -96315,6 +96315,26 @@
       ]
     },
     {
+      "key": "react.ea14e780ff6d47ea",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "متن‌باز با مجوز Apache-2.0",
+      "en": "Open source under Apache-2.0",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
+          "line": 172,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.ea2a0a1e6b7fcc30",
       "namespace": "react",
       "area": "Global Content",
@@ -98679,26 +98699,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.efaef41631276b2e",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "مخزن مجوز ریشه ندارد. در دسترس بودن عمومی کد به معنای اجازهٔ کپی، توزیع مجدد یا استفادهٔ تجاری از کد خود اوپن‌فاند نیست و این کار نیازمند توافق با نگهدارندگان است. اجزای ثالث مجوزهای خود را حفظ می‌کنند که در ادامه آمده‌اند.",
-      "en": "The repository has no root licence. Public source availability is not a grant to copy, redistribute or reuse Openfund’s own code commercially; that requires agreement with the maintainers. Third-party components keep their own licences, listed below.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/whitepaper/chapters-foundation.ts",
-          "line": 172,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "pick-pipeline"
         }
       ]
     },
