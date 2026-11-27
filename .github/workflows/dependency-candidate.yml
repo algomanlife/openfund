@@ -1,0 +1,103 @@
+name: Dependency candidate
+
+# Controlled, manually dispatched dependency change for one first-party
+# package directory: an advisory fix (`npm audit fix`), an in-range update of
+# named packages, or adding named development dependencies. It changes only
+# that directory's package.json and package-lock.json (lifecycle scripts are
+# never run), records `npm audit` before and after, and opens a DRAFT pull
+# request. It never merges or deploys; the normal PR checks are the gate.
+# Inputs are validated before use and passed through the environment only.
+
+on:
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: First-party package directory
+        type: choice
+        options: [apps/web-react, apps/backend, ., packages/open-oracle, apps/open-trade]
+        required: true
+      operation:
+        description: audit-fix = npm audit fix (no --force); update = npm update <packages>; add-dev = npm install --save-dev <packages>
+        type: choice
+        options: [audit-fix, update, add-dev]
+        required: true
+      packages:
+        description: Space-separated package specs for update/add-dev (e.g. "eslint@^9 globals@^16")
+        type: string
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dependency-candidate-${{ inputs.directory }}
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    name: Prepare dependency candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DIR: ${{ inputs.directory }}
+      OPERATION: ${{ inputs.operation }}
+      PACKAGES: ${{ inputs.packages }}
+    steps:
+      - name: Validate inputs
+        run: |
+          set -euo pipefail
+          case "$OPERATION" in
+            audit-fix) [ -z "$PACKAGES" ] || { echo "audit-fix takes no packages"; exit 1; } ;;
+            update|add-dev)
+              [ -n "$PACKAGES" ] || { echo "packages required"; exit 1; }
+              for spec in $PACKAGES; do
+                [[ "$spec" =~ ^(@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*(@[0-9A-Za-z.^~<>=|*+-]+)?$ ]] || { echo "invalid package spec: $spec"; exit 1; }
+              done ;;
+          esac
+      # Credentials persist on purpose: this job pushes the candidate branch
+      # with GITHUB_TOKEN. No artifacts are uploaded.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: true # zizmor: ignore[artipacked]
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+      - name: Change dependencies (no lifecycle scripts)
+        run: |
+          set -euo pipefail
+          cd "$DIR"
+          (npm audit --omit=dev --audit-level=none || true) > "$RUNNER_TEMP/audit-before.txt" 2>&1
+          case "$OPERATION" in
+            audit-fix) npm audit fix --ignore-scripts || true ;;
+            update)    read -r -a specs <<< "$PACKAGES"; npm update --ignore-scripts "${specs[@]}" ;;
+            add-dev)   read -r -a specs <<< "$PACKAGES"; npm install --ignore-scripts --save-dev "${specs[@]}" ;;
+          esac
+          npm ci --ignore-scripts --include=dev > /dev/null
+          (npm audit --omit=dev --audit-level=none || true) > "$RUNNER_TEMP/audit-after.txt" 2>&1
+          git -C "$GITHUB_WORKSPACE" status --short
+      - name: Open draft pull request
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then echo "No dependency change for $DIR ($OPERATION)."; exit 0; fi
+          mapfile -t changed < <(git diff --name-only)
+          for f in "${changed[@]}"; do
+            case "$f" in "${DIR#./}/package.json"|"${DIR#./}/package-lock.json"|package.json|package-lock.json) ;; *) echo "unexpected change: $f"; exit 1 ;; esac
+          done
+          branch="deps-candidate/${GITHUB_RUN_ID}"
+          git config user.name "openfund-dependency-candidate"
+          git config user.email "dependency-candidate@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add -- "${changed[@]}"
+          git commit -m "chore(deps): ${OPERATION} in ${DIR} (candidate)"
+          git push origin "$branch"
+          {
+            echo "Dependency candidate for \`${DIR}\`: \`${OPERATION}\` ${PACKAGES:+(\`${PACKAGES}\`)}. Lifecycle scripts were not run. **Not reviewed.**"
+            echo
+            echo "## npm audit (production dependencies) before"; echo '```text'; tail -c 5000 "$RUNNER_TEMP/audit-before.txt"; echo '```'
+            echo "## npm audit (production dependencies) after"; echo '```text'; tail -c 5000 "$RUNNER_TEMP/audit-after.txt"; echo '```'
+            echo
+            echo "Required before merge: the normal pull request checks, a reviewed diff of the lockfile, and the PR template sections added by the reviewer."
+          } > pr-body.md
+          gh pr create --draft --base main --head "$branch" --title "chore(deps): ${OPERATION} in ${DIR} (candidate)" --body-file pr-body.md

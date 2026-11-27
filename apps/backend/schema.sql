@@ -49,6 +49,18 @@ CREATE TABLE IF NOT EXISTS auth_nonces (
 );
 CREATE INDEX IF NOT EXISTS idx_nonces_expires ON auth_nonces (expires_at);
 
+-- Shared rate-limit counters (rate-limit-store.js): one fixed window per
+-- limiter, client and route, shared by every instance of the region and
+-- surviving restarts. A key holds the limiter name, client IP and route
+-- path; a row lives at most one window and expired rows are swept every
+-- 10 minutes. Additive and idempotent.
+CREATE TABLE IF NOT EXISTS rate_limit_hits (
+  key       text PRIMARY KEY CHECK (length(key) <= 512),
+  hits      integer NOT NULL CHECK (hits >= 0),
+  reset_at  timestamptz NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_rate_limit_hits_reset ON rate_limit_hits (reset_at);
+
 -- server-side sessions (cookie holds only the opaque id; hash stored)
 CREATE TABLE IF NOT EXISTS auth_sessions (
   id_hash    text PRIMARY KEY,

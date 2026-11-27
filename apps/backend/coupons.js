@@ -23,7 +23,7 @@
  * changes the rules this module evaluates.
  */
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import { adminAuth } from './admin.js'
 import { mountControlledChallenges } from './controlled-challenges.js'
 import { cents } from './economy-math.js'
@@ -181,7 +181,7 @@ export function couponAdminRoutes({ pool }) {
       accountSizesUsd: Array.isArray(p.configuration?.accountSizesUsd) ? p.configuration.accountSizesUsd : [] })) })
   }))
 
-  const couponWriteLimit = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const couponWriteLimit = limiter('coupons.write', { windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
   /* create a commercial coupon (controlled test coupons keep their own flow) */
   router.post('/', couponWriteLimit, wrap(async (req, res) => {
     const actor = actorOf(req), b = req.body || {}

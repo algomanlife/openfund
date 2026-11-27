@@ -28,7 +28,7 @@ import { passForOrderTx } from './migration.js'
  */
 import { ConductService } from './conduct.js'
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import crypto from 'node:crypto'
 import { invoicePdf } from './invoice-pdf.js'
 import { ChallengeService, normalizeRules } from './evaluation.js'
@@ -986,7 +986,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      (labelled as reported), the invoice and the provisioned challenge.
      Rate-limited per client IP (express-rate-limit; `trust proxy` is set in
      server.js) — the receipt page reads it once per load and after payment. */
-  const receiptLimiter = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-7', legacyHeaders: false,
+  const receiptLimiter = limiter('purchases.receipt', { windowMs: 60_000, limit: 60, standardHeaders: 'draft-7', legacyHeaders: false,
     message: { error: 'rate_limited' } })
   router.get('/purchases/orders/:id/receipt', receiptLimiter, requireAuth, wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
@@ -1051,7 +1051,7 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      an SPL Memo). Rate-limited per client: every call may reach an RPC. */
   /* per-client ceiling (express-rate-limit, like the receipt route) on top of
      the stricter per-path limit(10) */
-  const verifyLimiter = rateLimit({ windowMs: 60_000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false,
+  const verifyLimiter = limiter('purchases.verify', { windowMs: 60_000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false,
     message: { error: 'rate_limited' } })
   router.post('/purchases/verify', verifyLimiter, requireAuth, limit(10), wrap(async (req, res) => {
     if (!paymentEnabled()) throw fail(403, 'purchases_disabled')
@@ -1112,8 +1112,8 @@ export function purchaseRoutes({ pool, requireAuth, audit, verifier = null, limi
      the SIGNER must stay the authenticated wallet (the verifier enforces it). */
   /* per-client ceilings (express-rate-limit, like the receipt/verify routes)
      on top of the per-path limit(); the status route is polled every 3 s */
-  const intentLimiter = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
-  const statusLimiter = rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const intentLimiter = limiter('purchases.intent', { windowMs: 60_000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const statusLimiter = limiter('purchases.status', { windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false, message: { error: 'rate_limited' } })
   router.post('/purchases/orders/:id/intents', intentLimiter, requireAuth, limit(20), wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'order_not_found')
     if (!(await paymentMethodSettings(pool)).wallet.enabled) throw fail(403, 'method_disabled')

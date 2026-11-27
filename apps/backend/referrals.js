@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import crypto from 'node:crypto'
 
 /**
@@ -92,7 +92,7 @@ export function referralRoutes({ pool, requireAuth, audit }) {
      attribution list. Nothing else exists to show — reward data is not
      invented here. Auth is applied per route — a router-level guard would
      also swallow requests for unrelated routes mounted after this router. */
-  const summaryLimit = rateLimit({ windowMs: 60_000, limit: 60 })
+  const summaryLimit = limiter('referrals.summary', { windowMs: 60_000, limit: 60 })
   router.get('/referral/summary', requireAuth, summaryLimit, async (req, res) => {
     try {
       const code = await ensureCode(pool, req.user.user_id)
