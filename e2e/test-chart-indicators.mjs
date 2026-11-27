@@ -35,6 +35,8 @@ let page;
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   if (!live) {
+    /* these fixtures stand in for Open Oracle's market API too: the pages fall back to them when it is unavailable */
+    await context.route('**/api/oracle/markets**', route => route.fulfill({ status: 404, json: { error: 'not_found' } }))
     await context.route('https://api.gains.trade/v1/arbitrum/**', async route => {
       const url = route.request().url();
       const data = url.includes('/candles') ? fixture.bars : url.endsWith('/markets')
