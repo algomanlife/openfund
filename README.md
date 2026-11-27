@@ -93,7 +93,7 @@ links to the document that owns its detail; the full walk-through is the
 <a href="docs/website/WEBSITE_EXPANSION.md"><img src="docs/assets/readme/products/tools.svg" width="49%" alt="Tools Center — Ten browser-side calculators for sizing, risk, funding and journal review." /></a>
 <a href="apps/open-trade/README.md"><img src="docs/assets/readme/products/open-trade.svg" width="49%" alt="Open Trade — Lightweight Electron desktop workspace with one to four independent Vela charts." /></a>
 <a href="docs/backstage/OPERATIONS_GUIDE.md"><img src="docs/assets/readme/products/backstage.svg" width="49%" alt="Backstage — Bilingual owner console for Prop business operations and website content." /></a>
-<a href="docs/product/PLATFORM_TOUR.md"><img src="docs/assets/readme/products/certificates.svg" width="49%" alt="Certificates — Purchase, completion and payout certificates derived from recorded evidence." /></a>
+<a href="docs/product/PLATFORM_TOUR.md"><img src="docs/assets/readme/products/certificates.svg" width="49%" alt="Certificates — Purchase, Free Trial, phase-pass, final-pass and payout certificates derived from recorded evidence." /></a>
 <a href="packages/openfund-protocol/PROVENANCE.md"><img src="docs/assets/readme/products/protocol.svg" width="49%" alt="Openfund Protocol — Planned venue aggregation and routing; today a dormant imported code base." /></a>
 <a href="docs/integrations/OPEN_ORACLE.md"><img src="docs/assets/readme/products/open-oracle.svg" width="49%" alt="Open Oracle — Openfund's own multi-source price aggregation and discovery." /></a>
 </p>
