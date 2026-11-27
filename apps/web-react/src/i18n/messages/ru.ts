@@ -57,6 +57,7 @@ export const ru: Record<string, string> = {
   'International Cloud Infrastructure': 'Международная облачная инфраструктура',
   'Iranian Cloud Infrastructure': 'Иранская облачная инфраструктура',
   'Iranian market data & market depth': 'Рыночные данные и глубина рынка Ирана',
+  'Blockchain and distributed ledger of records': 'Блокчейн и распределённый реестр записей',
   'Inactive / In Development': 'Неактивно / В разработке',
   'Checking your wallet connection…': 'Проверяем подключение кошелька…',
   'Wallet connected': 'Кошелёк подключён',

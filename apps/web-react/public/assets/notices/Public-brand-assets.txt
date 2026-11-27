@@ -63,3 +63,11 @@ one equivalent translate with a tight viewBox. No artwork traced or recolored.
 GMX's public oracle API is one of the three Open Oracle price inputs (ADR 0059);
 the footer listing does not indicate a commercial agreement or an endorsement.
 GMX trademark/brand guidelines apply.
+
+Arbitrum: official full-colour logomark, unchanged (paths, colours and viewBox as published)
+https://github.com/OffchainLabs/arbitrum-docs/blob/70c6d8ad7971d916caa0b93ea39119c7429a4dca/public/img/logo.svg
+(Offchain Labs, the Arbitrum developer; the same design as the Full Color logomark of the
+official brand kit, https://arbitrum.io/brand-kit, which the owner supplied as a raster
+reference on 2026-11-28). Shown as arbitrum-logo.svg for the Arbitrum Sepolia network that
+records Openfund certificates and trades (ADR 0063). It does not indicate a partnership or
+endorsement. Arbitrum trademark/brand guidelines apply.
