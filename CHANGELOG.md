@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Final leverage ceilings for every Prop account (ADR 0061).** BTC and ETH 20×, other crypto 15×, forex, stocks, indices and commodities 50×, with a lower market limit always applying, are now the only leverage rule for every challenge. The 5× cap that challenges sold before rules v3 carried is released (`planLeverageCap` in `apps/backend/prop-leverage.js`; frozen snapshots are not rewritten). The Rulebook, the FAQ, the leverage learning note, the challenge catalog and the product rules no longer mention a 5× reference leverage or a kept older limit, in five locales; published CMS copy still equal to the old default shows the new one.
+
 - **Fix: complete release payload.** The v0.9.0 release archive and GHCR image did not contain `packages/open-oracle/src`, `packages/plan-validation` and `packages/site-search`, so a backend started from them (local `release:local`, the image smoke test) stopped at its first import; the Render deployment builds from the full commit and was not affected. The payload now includes them, and the release build fails when a backend module imports a repository path outside the payload.
 
 ## v0.9.0 — 2026-11-27
@@ -1355,6 +1357,8 @@ Historical entries describe their original changes, including past UI copy. They
 Notable changes are recorded here. Dates should use ISO 8601.
 
 ## Unreleased
+
+- **Final leverage ceilings for every Prop account (ADR 0061).** BTC and ETH 20×, other crypto 15×, forex, stocks, indices and commodities 50×, with a lower market limit always applying, are now the only leverage rule for every challenge. The 5× cap that challenges sold before rules v3 carried is released (`planLeverageCap` in `apps/backend/prop-leverage.js`; frozen snapshots are not rewritten). The Rulebook, the FAQ, the leverage learning note, the challenge catalog and the product rules no longer mention a 5× reference leverage or a kept older limit, in five locales; published CMS copy still equal to the old default shows the new one.
 
 - Directus upgrade readiness (no version change): staged rehearsal of 11.9.1 to 12.6.1 on an isolated
   PostgreSQL 17 database shows Directus 12 locks the current content model without a licence (Core tier:
