@@ -39,8 +39,9 @@ https://bitpin.ir/assets/logo/bitpin.svg  https://bitpin.ir
 Displayed as a market-data credit only; it does not indicate a commercial
 agreement or a live integration status. Bitpin trademark/brand guidelines apply.
 
-All seven footer service logos (Gains, Vela, TradingView, DePay, Render, Liara,
-Bitpin) use one neutral wrapper; no CSS color filters.
+All footer service logos (Gains, Vela, TradingView, GMX, Render, Liara,
+Bitpin, Hyperliquid) use one neutral wrapper; no CSS color filters. DePay
+remains the checkout payment widget and is no longer listed in the footer.
 Community destinations remain owner-configured. No Telegram, Discord or
 Instagram destination ownership is verified by these assets or URL validators.
 

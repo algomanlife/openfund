@@ -4397,5 +4397,6 @@
   "Single use, bound to your wallet": "Одноразовый, привязан к вашему кошельку",
   "The account is a free $50K Standard challenge on your wallet. An item that cannot be shipped may be paid as a cash equivalent.": "Счёт — бесплатный стандартный челлендж на $50K на ваш кошелёк. Приз, который нельзя доставить, может быть выплачен денежным эквивалентом.",
   "Valid for 90 days from the award": "Действует 90 дней с момента награждения",
-  "off one challenge": "скидка на один челлендж"
+  "off one challenge": "скидка на один челлендж",
+  "Detecting browser wallets…": "Поиск кошельков в браузере…"
 }

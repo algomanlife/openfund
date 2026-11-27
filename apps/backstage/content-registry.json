@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4922,
-    "mappedCalls": 2335,
+    "uniqueRecords": 4923,
+    "mappedCalls": 2336,
     "exceptions": 61,
     "validationFindings": 0,
     "reviewedExclusions": 53
@@ -16381,7 +16381,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 93,
+          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -20728,7 +20728,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 83,
+          "line": 105,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -22546,7 +22546,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 77,
+          "line": 99,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27492,7 +27492,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 85,
+          "line": 107,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -41040,7 +41040,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 93,
+          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43500,6 +43500,26 @@
       ]
     },
     {
+      "key": "react.66926a1a06f7db24",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "در حال شناسایی کیف پول‌های مرورگر…",
+      "en": "Detecting browser wallets…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/wallet/WalletPicker.tsx",
+          "line": 109,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.669d63690dcd35c3",
       "namespace": "react",
       "area": "User Dashboard",
@@ -44180,7 +44200,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 99,
+          "line": 123,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -67209,7 +67229,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 93,
+          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72575,7 +72595,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 82,
+          "line": 104,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76212,7 +76232,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 102,
+          "line": 126,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -103129,7 +103149,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-          "line": 104,
+          "line": 128,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -106258,7 +106278,7 @@
     },
     {
       "component": "apps/web-react/src/wallet/WalletPicker.tsx",
-      "line": 38,
+      "line": 46,
       "page": "global",
       "route": "/:locale/*",
       "reason": "helper-wrapper-definition",

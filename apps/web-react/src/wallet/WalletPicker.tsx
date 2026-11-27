@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useConnect, type Connector } from 'wagmi'
 import { pick, dirOf, type AppLocale } from '../i18n/locales'
 import { classifyWalletError, isNeutral, walletErrorMessage, type ClassifiedWalletError } from './errors'
@@ -14,6 +15,13 @@ import { classifyWalletError, isNeutral, walletErrorMessage, type ClassifiedWall
 
    WalletConnect (mobile / QR) is offered only when a WalletConnect Cloud
    project id is configured; it opens the RainbowKit modal.
+
+   The dialog is portalled to <body>. Rendered inside the site header it
+   inherited the header's containing block (backdrop-filter / sticky
+   stacking), so `position: fixed` was resolved against the header: the
+   panel was clipped under the header and the backdrop did not cover the
+   page. Focus is trapped inside the dialog and page scroll is locked while
+   it is open.
    ============================================================ */
 
 export interface WalletChoice { id: string; name: string; icon?: string; connector: Connector; generic: boolean }
@@ -42,6 +50,10 @@ export function WalletPicker({ locale, walletConnect, onWalletConnect, onClose, 
   const [pending, setPending] = useState<string | null>(null)
   const [result, setResult] = useState<ClassifiedWalletError | null>(null)
   const dialog = useRef<HTMLDivElement>(null)
+  /* The parent passes inline callbacks; keep the latest one in a ref so the
+     open/close effect runs once per opening (no focus jump on re-render). */
+  const closeRef = useRef(onClose)
+  closeRef.current = onClose
 
   useEffect(() => {
     let active = true
@@ -54,11 +66,21 @@ export function WalletPicker({ locale, walletConnect, onWalletConnect, onClose, 
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null
-    dialog.current?.querySelector<HTMLElement>('button')?.focus()
-    const key = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }
-    addEventListener('keydown', key)
-    return () => { removeEventListener('keydown', key); previous?.focus?.() }
-  }, [onClose])
+    dialog.current?.focus()
+    const key = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.stopPropagation(); closeRef.current(); return }
+      if (event.key !== 'Tab' || !dialog.current) return
+      const focusable = [...dialog.current.querySelectorAll<HTMLElement>('button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')]
+      if (!focusable.length) { event.preventDefault(); return }
+      const first = focusable[0], last = focusable[focusable.length - 1]
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog.current)) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+    }
+    addEventListener('keydown', key, true)
+    const overflow = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+    return () => { removeEventListener('keydown', key, true); document.documentElement.style.overflow = overflow; previous?.focus?.() }
+  }, [])
 
   const choose = async (choice: WalletChoice) => {
     setResult(null)
@@ -75,21 +97,23 @@ export function WalletPicker({ locale, walletConnect, onWalletConnect, onClose, 
   }
 
   const label = (c: WalletChoice) => c.generic ? t('کیف پول مرورگر', 'Browser wallet') : c.name
-  return (
-    <div className="of-wallet-picker-backdrop" onPointerDown={event => { if (event.target === event.currentTarget) onClose() }}>
-      <div ref={dialog} className="of-wallet-picker" role="dialog" aria-modal="true" aria-labelledby="of-wallet-picker-title" dir={dirOf(locale)} lang={locale} data-wallet-picker>
+  return createPortal(
+    <div className="of-wallet-picker-backdrop" dir={dirOf(locale)} onPointerDown={event => { if (event.target === event.currentTarget) onClose() }}>
+      <div ref={dialog} tabIndex={-1} className="of-wallet-picker" role="dialog" aria-modal="true" aria-labelledby="of-wallet-picker-title" dir={dirOf(locale)} lang={locale} data-wallet-picker>
         <header>
           <h2 id="of-wallet-picker-title">{t('انتخاب کیف پول', 'Choose a wallet')}</h2>
           <button type="button" className="of-wallet-picker-close" onClick={onClose} aria-label={t('بستن', 'Close')}>×</button>
         </header>
         <p className="of-wallet-picker-note">{t('فقط اتصال و امضای ورود؛ هیچ تراکنش یا مجوز توکنی درخواست نمی‌شود.', 'Connection and sign-in signature only; no transaction or token approval is requested.')}</p>
-        {availableChoices === null ? null : availableChoices.length > 0 ? (
+        {availableChoices === null ? (
+          <p className="of-wallet-picker-note" role="status" data-wallet-detecting>{t('در حال شناسایی کیف پول‌های مرورگر…', 'Detecting browser wallets…')}</p>
+        ) : availableChoices.length > 0 ? (
           <ul className="of-wallet-list">
             {availableChoices.map(choice => (
               <li key={choice.id}>
                 <button type="button" data-wallet-id={choice.id} disabled={pending !== null} aria-busy={pending === choice.id} onClick={() => void choose(choice)}>
                   {choice.icon ? <img src={choice.icon} alt="" width={28} height={28} /> : <span className="of-wallet-icon" aria-hidden="true">◎</span>}
-                  <span className="of-wallet-name" dir="auto">{label(choice)}</span>
+                  <span className="of-wallet-name"><bdi>{label(choice)}</bdi></span>
                   <small>{pending === choice.id ? t('در انتظار تأیید در کیف پول…', 'Waiting for approval in your wallet…') : choice.generic ? t('کیف پول فعال در مرورگر', 'Active browser extension') : t('نصب‌شده', 'Installed')}</small>
                 </button>
               </li>
@@ -109,6 +133,7 @@ export function WalletPicker({ locale, walletConnect, onWalletConnect, onClose, 
           </p>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
