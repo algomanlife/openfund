@@ -1,4 +1,5 @@
 import { createServer } from 'node:http'
+import { AsyncLocalStorage } from 'node:async_hooks'
 import { randomBytes, randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
@@ -433,17 +434,40 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
   const duration = 8 * 60 * 60_000
   const idleDuration = 30 * 60_000
   const windowSize = 5 * 60_000
-  let session, attempts = { until: 0, count: 0 }, hashing = 0
+  /* one session per signed-in operator (admin_operators on the backend); the
+     BACKSTAGE_OWNER account signs in with its local verifier */
+  const sessions = new Map()
+  const operator = new AsyncLocalStorage()
+  /* failed sign-ins are counted per account name (10 per 5 minutes) under an
+     overall ceiling, so guessing one name cannot lock every operator out */
+  const attempts = new Map()
+  let overall = { until: 0, count: 0 }, hashing = 0
   const cookie = (id, maxAge) => `${cookieName}=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${secure ? '; Secure' : ''}`
 
-  async function authenticate(password, usernameMatches = true) {
-    if (attempts.until <= now()) attempts = { until: now() + windowSize, count: 0 }
-    if (attempts.count >= 10 || hashing >= 2) throw fail(429, 'try_later')
-    attempts.count++
+  /* who may sign in: the BACKSTAGE_OWNER account (local verifier) or an
+     active operator verified by the backend; returns { username, role } */
+  async function authenticate(username, password) {
+    const key = String(username || '').toLowerCase().slice(0, 50)
+    if (overall.until <= now()) { overall = { until: now() + windowSize, count: 0 }; attempts.clear() }
+    const bucket = attempts.get(key) ?? { count: 0 }
+    if (bucket.count >= 10 || overall.count >= 100 || hashing >= 2) throw fail(429, 'try_later')
+    bucket.count++; overall.count++
+    attempts.set(key, bucket)
     hashing++
     try {
-      if (!(await verifyPassword(password, config.verifier)) || !usernameMatches) throw fail(401, 'invalid_credentials')
-      attempts.count = 0
+      let user = null
+      if (username === config.owner) {
+        if (await verifyPassword(password, config.verifier)) user = { username: config.owner, role: 'owner' }
+      } else if (typeof username === 'string' && /^[A-Za-z0-9._@-]{2,50}$/.test(username) && typeof password === 'string' && password.length <= 256) {
+        user = await backend('/admin/operators/authenticate', 'POST', { username, password }, randomUUID()).catch(error => {
+          if (error.status === 401 || error.status === 404) return null
+          throw error
+        })
+        if (user && !(typeof user.username === 'string' && ['owner', 'finance', 'support', 'content', 'viewer'].includes(user.role))) user = null
+      }
+      if (!user) throw fail(401, 'invalid_credentials')
+      attempts.delete(key); overall.count = Math.max(0, overall.count - bucket.count)
+      return { username: user.username, role: user.role }
     } finally { hashing-- }
   }
 
@@ -470,7 +494,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
     try {
       const res = await fetch(target, {
         method, redirect: 'error', signal: AbortSignal.timeout(12_000),
-        headers: { Authorization: `Bearer ${config.credential}`, 'X-Admin-Actor': config.owner,
+        headers: { Authorization: `Bearer ${config.credential}`, 'X-Admin-Actor': operator.getStore()?.username ?? config.owner,
           'X-Request-Id': correlationId, ...(body && { 'Content-Type': 'application/json' }) },
         body: body ? JSON.stringify(body) : undefined,
       })
@@ -482,6 +506,9 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
         }
         /* name the reason (a bounded snake_case code, never free text) so the
            console can show it, e.g. settlement_unavailable or no_time_limit */
+        /* the operator's access level does not cover this action */
+        if (res.status === 403) { await res.body?.cancel(); throw fail(403, 'forbidden') }
+        if (res.status === 401) { await res.body?.cancel(); throw fail(401, 'invalid_credentials') }
         if ([400, 404, 409].includes(res.status)) {
           const code = String((await res.json().catch(() => ({}))).error ?? '')
           throw Object.assign(fail(res.status, 'backend_rejected'), /^[a-z][a-z0-9_]{2,60}$/.test(code) ? { details: [code] } : {})
@@ -496,17 +523,19 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
     }
   }
 
+  /* password re-entry by the signed-in operator for every change */
   async function confirmOwner(current, password, correlationId) {
-    await authenticate(password)
+    await authenticate(current.user.username, password)
     const runtime = await backend('/runtime/status', 'GET', undefined, correlationId)
     if (runtime.region !== 'GLOBAL' || runtime.mode !== 'GLOBAL_CONNECTED') throw fail(409, 'wrong_region')
-    if (current !== session || now() >= Math.min(current.expires, current.idle)) throw fail(401, 'sign_in_required')
+    if (sessions.get(current.id) !== current || now() >= Math.min(current.expires, current.idle)) throw fail(401, 'sign_in_required')
   }
 
-  const server = createServer(async (req, res) => {
+  const server = createServer((req, res) => operator.run({}, () => handle(req, res)))
+  async function handle(req, res) {
     const correlationId = randomUUID()
     const log = (action, outcome, target) => audit({ event: 'backstage', timestamp: new Date(now()).toISOString(),
-      actor: config.owner, action, outcome, target, correlationId })
+      actor: operator.getStore()?.username ?? null, role: operator.getStore()?.role ?? null, action, outcome, target, correlationId })
     res.setHeader('X-Request-Id', correlationId)
     res.setHeader('Cache-Control', 'no-store')
     res.setHeader('X-Content-Type-Options', 'nosniff')
@@ -535,11 +564,14 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       if (path === '/api/login' && req.method === 'POST') {
         try {
           const { username, password } = await json(req)
-          await authenticate(password, username === config.owner)
-          session = { id: token(), csrf: token(), expires: now() + duration, idle: now() + idleDuration }
+          const user = await authenticate(username, password)
+          Object.assign(operator.getStore(), user)
+          for (const [id, other] of sessions) if (other.user.username === user.username || now() >= Math.min(other.expires, other.idle)) sessions.delete(id)
+          const session = { id: token(), csrf: token(), expires: now() + duration, idle: now() + idleDuration, user }
+          sessions.set(session.id, session)
           res.setHeader('Set-Cookie', cookie(session.id, duration / 1000))
           log('sign_in', 'success')
-          return send(res, 200, { owner: config.owner, csrf: session.csrf, cms: config.cms })
+          return send(res, 200, { owner: user.username, role: user.role, csrf: session.csrf, cms: config.cms })
         } catch (error) {
           log('sign_in', 'denied')
           throw error
@@ -547,19 +579,27 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
       }
 
       const id = (req.headers.cookie || '').split(/;\s*/).find(value => value.startsWith(cookieName + '='))?.slice(cookieName.length + 1)
-      const current = session
-      if (!current || id !== current.id || now() >= Math.min(current.expires, current.idle))
+      const current = id ? sessions.get(id) : undefined
+      if (!current || now() >= Math.min(current.expires, current.idle)) {
+        if (current) sessions.delete(current.id)
         throw fail(401, 'sign_in_required')
+      }
+      Object.assign(operator.getStore(), current.user)
       if (req.method === 'POST' && req.headers['x-csrf-token'] !== current.csrf) throw fail(403, 'invalid_origin')
       current.idle = now() + idleDuration
       if (path === '/api/session' && req.method === 'GET')
-        return send(res, 200, { owner: config.owner, csrf: current.csrf, cms: config.cms })
+        return send(res, 200, { owner: current.user.username, role: current.user.role, csrf: current.csrf, cms: config.cms })
       if (path === '/api/logout' && req.method === 'POST') {
-        session = undefined
+        sessions.delete(current.id)
         res.setHeader('Set-Cookie', cookie('', 0))
         log('sign_out', 'success')
         return send(res, 200, { ok: true })
       }
+
+      /* site content written straight to Directus (no backend role check
+         on the way): owners and content editors only */
+      if (req.method === 'POST' && ['/api/campaigns/', '/api/bounty/', '/api/guides/', '/api/content/'].some(prefix => path.startsWith(prefix)) &&
+          !['owner', 'content'].includes(current.user.role)) throw fail(403, 'forbidden')
 
       /* Marketing: promotional popups and announcement bars (campaigns.js).
          Reads need the owner session; writes also need CSRF (checked above)
@@ -880,7 +920,7 @@ export function createBackstage(config, { now = Date.now, audit = event => conso
     } catch (error) {
       if (!res.headersSent) send(res, error.status || 500, { error: error.status ? error.message : 'unexpected_error', ...(error.status && Array.isArray(error.details) ? { details: error.details } : {}) })
     }
-  })
+  }
   server.requestTimeout = 20_000
   server.headersTimeout = 10_000
   return server

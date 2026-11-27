@@ -32,6 +32,39 @@ Directus login and workspace.
    Backstage variables and run `npm --prefix apps/backstage ci`, then
    `npm --prefix apps/backstage start`.
 
+## Add operators and access levels
+
+The `BACKSTAGE_BACKEND_TOKEN` (the backend's `ADMIN_API_TOKEN`) is a service
+credential for Backstage only; no person holds it. Each person signs in to
+Backstage with their own operator account, and the backend checks the
+operator's role on every admin request.
+
+Roles: `owner` (everything, including operators and runtime/regional
+controls), `finance` (payments, withdrawals, economy, live funding, coupons,
+certificates, partners, rewards), `support` (support, user status, migration
+requests), `content` (guides, campaigns, site search, calendar, tournaments
+and the Directus content workspace) and `viewer` (read only). Every role can
+read; changes still need password re-entry.
+
+From a shell with the backend's `DATABASE_URL` (the Render shell of the API
+service), create your own owner first, with the same name as
+`BACKSTAGE_OWNER`:
+
+```sh
+npm --prefix apps/backend run operator -- set <owner-name> owner
+npm --prefix apps/backend run operator -- set <name> finance
+npm --prefix apps/backend run operator -- list
+```
+
+The password is asked on standard input (16 to 256 characters) and only an
+scrypt verifier is stored. Creating the first operator switches enforcement
+on: from then on an admin request that names an unknown or disabled operator
+is refused (`403 operator_unknown_or_disabled`), as is a change outside the
+operator's role (`403 operator_role_forbidden`). Disable a person with
+`set <name> <role> disabled`; the last active owner cannot be disabled or
+demoted. Until the first operator exists, Backstage keeps the single-owner
+behaviour.
+
 ## Deploy after review
 
 1. Confirm the security review and acceptance results in the pull request.

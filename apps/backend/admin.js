@@ -32,6 +32,7 @@ import { mountPayoutThreads } from './payout-threads.js'
 import { notify } from './notifications.js'
 import { createPayoutClaimClient } from './payout-claims.js'
 import { DAI_PAYOUT_TOKEN, payoutHash, payoutVerifier } from './payout-settlement.js'
+import { OPERATOR_NAME, operatorsBootstrap, resolveOperator, roleAllows } from './admin-operators.js'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const fail = (status, error) => { const e = new Error(error); e.status = status; return e }
@@ -44,24 +45,43 @@ const PAGE = (v, def, max) => {
   return n
 }
 
-/* the admin API is disabled until the operator sets ADMIN_API_TOKEN */
-export function adminAuth(req, res, next) {
+/* the admin API is disabled until the operator sets ADMIN_API_TOKEN.
+   The token authenticates the Backstage service; the person is the named
+   operator in X-Admin-Actor, resolved against admin_operators with its
+   role checked for this path (admin-operators.js). */
+export async function adminAuth(req, res, next) {
   const expected = process.env.ADMIN_API_TOKEN || null
   if (!expected) return res.status(404).json({ error: 'not_found' })
   const provided = String((req.headers.authorization || '').replace(/^Bearer\s+/i, ''))
   const a = Buffer.from(provided), b = Buffer.from(expected)
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b))
     return res.status(403).json({ error: 'admin_forbidden' })
-  next()
+  if (req.adminOperator) return next()
+  const path = (req.originalUrl || req.url).split('?')[0]
+  /* operator password check for Backstage sign-in: service token only */
+  if (path === '/admin/operators/authenticate') return next()
+  const name = String(req.headers['x-admin-actor'] || '').trim()
+  try {
+    /* single-owner bootstrap (no operator created yet): the previous
+       behaviour, the actor stays as Backstage named it */
+    if (await operatorsBootstrap()) return next()
+    if (!OPERATOR_NAME.test(name)) return res.status(400).json({ error: 'admin_actor_required' })
+    const operator = await resolveOperator(name)
+    if (!operator) return res.status(403).json({ error: 'operator_unknown_or_disabled' })
+    if (!roleAllows(operator.role, req.method, path)) return res.status(403).json({ error: 'operator_role_forbidden' })
+    req.adminOperator = operator
+    /* modules that read the header directly see the verified, canonical name */
+    req.headers['x-admin-actor'] = operator.username
+    next()
+  } catch (error) { next(error) }
 }
 
 /**
- * Named operator for financial decisions (`X-Admin-Actor`). The shared
- * service token authorizes; the actor name attributes the decision in the
- * financial audit trail. Decisions without a valid actor are refused.
+ * Named operator for financial decisions: the operator adminAuth verified
+ * against admin_operators (`X-Admin-Actor` outside adminAuth is refused).
  */
 export function adminActor(req) {
-  const actor = String(req.headers['x-admin-actor'] || '').trim()
+  const actor = req.adminOperator?.username ?? String(req.headers['x-admin-actor'] || '').trim()
   if (!/^[\w.@ -]{2,60}$/.test(actor)) throw Object.assign(new Error('admin_actor_required'), { status: 400 })
   return `admin:${actor}`
 }

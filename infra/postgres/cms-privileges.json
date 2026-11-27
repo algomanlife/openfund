@@ -39,6 +39,11 @@
    "protected": true,
    "cms": "none"
   },
+  "admin_operators": {
+   "domain": "security",
+   "protected": true,
+   "cms": "none"
+  },
   "ambassador_attributions": {
    "domain": "rewards",
    "protected": true,

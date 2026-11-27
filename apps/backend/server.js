@@ -75,6 +75,7 @@ import { cmsSnapshotRoutes, cmsSnapshotOrigin } from './cms-snapshot.js'
 import { marketFundingRoutes, sampleFunding } from './market-funding.js'
 import { adminAuth, adminActor } from './admin.js'
 import { limiter, routeLimit, configureRateLimitStore, sweepRateLimits } from './rate-limit-store.js'
+import { configureAdminOperators, operatorAdminRoutes } from './admin-operators.js'
 import { internalTokenGuard, sweepExpiredAuth } from './auth-hygiene.js'
 
 const cfg = {
@@ -280,6 +281,7 @@ app.use((req, res, next) => {
    and starts each boot with empty counters. */
 const limitScale = testMode ? 50 : 1
 await configureRateLimitStore(pool, { testMode })
+configureAdminOperators(pool)
 setInterval(() => sweepRateLimits(pool).catch(e => console.error('[rate-limit] sweep failed', e.message)), 10 * 60_000).unref()
 const limit = max => routeLimit(max)
 
@@ -935,6 +937,7 @@ if (region.region === 'GLOBAL') {
 }
 app.use('/admin/rewards', rewardAdminRoutes({ pool }))
 app.use('/admin/calendar', calendarAdminRoutes({ pool, conduct }))
+app.use('/admin/operators', express.json({ limit: '4kb' }), operatorAdminRoutes({ Router: express.Router, adminAuth, adminActor, audit, limiter }))
 app.use('/admin/runtime', runtimeAdminRoutes({ Router: express.Router, runtime, adminAuth, adminActor, audit }))
 app.use('/admin/regional', regionalAdminRoutes({ Router: express.Router, pool, runtime, adminAuth, adminActor, syncWorker, audit, health: regionalHealth }))
 app.use(remoteAccountRoutes({ Router: express.Router, pool, requireAuth }))

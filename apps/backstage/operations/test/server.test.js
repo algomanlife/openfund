@@ -15,7 +15,11 @@ test('login, privilege checks, step-up, expiration, revocation and throttling', 
     for await (const part of req) parts.push(part)
     calls.push({ path: req.url, method: req.method, headers: req.headers, body: Buffer.concat(parts).toString() })
     res.setHeader('Content-Type', 'application/json')
-    if (req.url === '/admin/runtime') {
+    if (req.url === '/admin/operators/authenticate') {
+      const { username, password } = JSON.parse(Buffer.concat(parts).toString())
+      if (username === 'fin' && password === 'finance-password-long-enough') res.end(JSON.stringify({ username: 'fin', role: 'finance' }))
+      else res.writeHead(401).end(JSON.stringify({ error: 'invalid_credentials' }))
+    } else if (req.url === '/admin/runtime') {
       res.writeHead(302, { Location: '/private' }).end()
     } else if (req.url === '/runtime/status') {
       res.end(JSON.stringify({ region, mode: 'GLOBAL_CONNECTED' }))
@@ -47,6 +51,8 @@ test('login, privilege checks, step-up, expiration, revocation and throttling', 
   assert.equal((await call('/api/users')).status, 401)
   assert.equal((await call('/api/login', { username: settings.owner, password }, { Origin: 'https://example.invalid' })).status, 403)
   assert.equal((await call('/api/login', { username: 'other', password })).status, 401)
+  /* operators other than BACKSTAGE_OWNER are verified by the backend */
+  assert.equal(calls.splice(0).map(c => c.path).join(), '/admin/operators/authenticate')
   const login = await call('/api/login', { username: settings.owner, password })
   assert.equal(login.status, 200)
   assert.match(login.cookie, /^__Host-openfund-backstage=.*HttpOnly; SameSite=Strict;.*Secure/)
@@ -387,4 +393,50 @@ test('health reports the deployed commit (release identity) and nothing else', a
     const parts = []; for await (const p of res) parts.push(p); resolve(JSON.parse(Buffer.concat(parts)))
   }).on('error', reject).end())
   assert.deepEqual(body, { ok: true, commit })
+})
+
+test('named operators sign in with their own role and are named to the backend', async t => {
+  const calls = []
+  const upstream = createServer(async (req, res) => {
+    const parts = []
+    for await (const part of req) parts.push(part)
+    calls.push({ path: req.url, method: req.method, actor: req.headers['x-admin-actor'] })
+    res.setHeader('Content-Type', 'application/json')
+    if (req.url === '/admin/operators/authenticate') {
+      const { username } = JSON.parse(Buffer.concat(parts).toString())
+      return res.end(JSON.stringify(username === 'editor' ? { username: 'editor', role: 'content' } : { username: 'fin', role: 'finance' }))
+    }
+    if (req.url.startsWith('/admin/support')) return res.writeHead(403).end(JSON.stringify({ error: 'operator_role_forbidden' }))
+    res.end(JSON.stringify({ users: [], total: 0 }))
+  })
+  const password = randomBytes(24).toString('base64url')
+  const settings = { origin: 'https://backstage.example.test', backend: await open(upstream), cms: 'http://127.0.0.1:8055',
+    owner: 'owner-fixture', credential: randomBytes(32).toString('hex'), verifier: await createVerifier(password) }
+  const server = createBackstage(settings, { audit: () => {} })
+  const local = await open(server)
+  t.after(() => { server.close(); upstream.close() })
+  const call = (path, body, headers = {}) => new Promise((resolve, reject) => {
+    const req = request(local + path, { method: body ? 'POST' : 'GET',
+      headers: { Host: 'backstage.example.test', ...(body && { Origin: settings.origin, 'Content-Type': 'application/json' }), ...headers } }, async res => {
+      const parts = []; for await (const p of res) parts.push(p)
+      resolve({ status: res.statusCode, cookie: res.headers['set-cookie']?.[0], body: JSON.parse(Buffer.concat(parts)) })
+    })
+    req.on('error', reject)
+    req.end(body ? JSON.stringify(body) : undefined)
+  })
+  const fin = await call('/api/login', { username: 'fin', password: 'finance-password-long-enough' })
+  assert.deepEqual([fin.status, fin.body.owner, fin.body.role], [200, 'fin', 'finance'])
+  const owner = await call('/api/login', { username: 'owner-fixture', password })
+  assert.equal(owner.body.role, 'owner')
+  const finHeaders = { Cookie: fin.cookie.split(';')[0], 'X-CSRF-Token': fin.body.csrf }
+  /* both sessions live side by side; each request names its own operator */
+  assert.equal((await call('/api/session', undefined, finHeaders)).body.owner, 'fin')
+  assert.equal((await call('/api/users', undefined, finHeaders)).status, 200)
+  assert.equal(calls.at(-1).actor, 'fin')
+  assert.equal((await call('/api/users', undefined, { Cookie: owner.cookie.split(';')[0] })).status, 200)
+  assert.equal(calls.at(-1).actor, 'owner-fixture')
+  /* a content write is refused for finance before anything is sent */
+  assert.equal((await call('/api/content/pages', { password: 'x' }, finHeaders)).status, 403)
+  const editor = await call('/api/login', { username: 'editor', password: 'editor-password-long-enough' })
+  assert.equal(editor.body.role, 'content')
 })
