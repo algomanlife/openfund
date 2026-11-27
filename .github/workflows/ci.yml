@@ -1012,11 +1012,14 @@ jobs:
         with:
           persist-credentials: false
       - name: Install Foundry
+        # FOUNDRY_DIR pins the install location (the installer otherwise
+        # follows XDG_CONFIG_HOME, which differs between runner images).
         run: |
+          export FOUNDRY_DIR="$RUNNER_TEMP/foundry"
           curl -fsSL https://foundry.paradigm.xyz -o "$RUNNER_TEMP/foundry-install.sh"
           bash "$RUNNER_TEMP/foundry-install.sh"
-          "$HOME/.foundry/bin/foundryup" --install stable
-          echo "$HOME/.foundry/bin" >> "$GITHUB_PATH"
+          "$FOUNDRY_DIR/bin/foundryup" --install stable
+          echo "$FOUNDRY_DIR/bin" >> "$GITHUB_PATH"
       - name: Build and test
         working-directory: packages/openfund-chain-records
         run: |
