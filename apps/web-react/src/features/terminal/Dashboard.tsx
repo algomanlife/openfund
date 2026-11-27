@@ -3,6 +3,7 @@ import { JournalAnalytics } from "./JournalAnalytics";
 import { AccountCards, AccountLinks, useAccounts } from "./Accounts";
 import { ChallengePanel } from "./ChallengePanel";
 import { TrialActivation } from "./TrialActivation";
+import { ChainRecords } from "./ChainRecords";
 import { useSession } from "../../session/useOpenfundSession";
 import { AccessGate } from "./TerminalShell";
 import { useTerminal } from "./TerminalContext";
@@ -58,6 +59,7 @@ export function ProductDashboard() {
         {context?.state?.positions?.length ? <div className="of-table-wrap"><table><thead><tr><th>{t("بازار", "Market")}</th><th>{t("جهت", "Side")}</th><th>{t("سود باز", "Unrealized PnL")}</th></tr></thead>
           <tbody>{context.state.positions.slice(0, 5).map((position: any) => <tr key={position.id}><td>{position.market}</td><td>{position.side === "long" ? t("خرید", "Long") : t("فروش", "Short")}</td><td dir="ltr">{money(position.unrealized_pnl)} {unit}</td></tr>)}</tbody></table></div> : null}
         <ChallengePanel challengeId={selected.id} />
+        <ChainRecords challengeId={selected.id} />
       </> : product === "prop" ? <>
         {context?.state?.account?.status === "permanently_disabled" && <p role="status" className="of-error">{t("این حساب برای همیشه غیرفعال شده است. تاریخچه قابل مشاهده است.", "Permanently disabled. Historical records remain available in read-only mode.")}</p>}
         {overview.error && <p role="alert" className="of-error">{t("دریافت خلاصه ناموفق بود.", "Summary unavailable.")}</p>}

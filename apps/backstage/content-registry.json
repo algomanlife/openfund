@@ -2,9 +2,9 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4957,
-    "mappedCalls": 2357,
-    "exceptions": 62,
+    "uniqueRecords": 4983,
+    "mappedCalls": 2381,
+    "exceptions": 63,
     "validationFindings": 0,
     "reviewedExclusions": 53
   },
@@ -1127,7 +1127,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 72,
+          "line": 74,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -3204,7 +3204,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 63,
+          "line": 65,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -3965,7 +3965,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 96,
+          "line": 98,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -4581,14 +4581,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 59,
+          "line": 60,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 86,
+          "line": 88,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -6480,7 +6480,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 46,
+          "line": 48,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -7017,14 +7017,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 58,
+          "line": 59,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 85,
+          "line": 87,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -8602,6 +8602,26 @@
       ]
     },
     {
+      "key": "react.12bd31738eeda7f9",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "در صف ثبت",
+      "en": "Queued",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 49,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.12c6db023ebfa3cc",
       "namespace": "react",
       "area": "Global Content",
@@ -8803,28 +8823,28 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 56,
+          "line": 57,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 58,
+          "line": 59,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 68,
+          "line": 70,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 85,
+          "line": 87,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -11105,7 +11125,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 53,
+          "line": 55,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -11900,7 +11920,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 78,
+          "line": 80,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -12979,6 +12999,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1d3e54d85d1e1672",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "رد",
+      "en": "failed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 46,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -14425,7 +14465,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 68,
+          "line": 70,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -15492,7 +15532,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 64,
+          "line": 66,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -16809,6 +16849,26 @@
       ]
     },
     {
+      "key": "react.268dc75630c09a92",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "دریافت سوابق بلاکچین ناموفق بود.",
+      "en": "On-chain records could not be loaded.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 53,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.26afcc90155ea838",
       "namespace": "react",
       "area": "Global Content",
@@ -17828,7 +17888,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 49,
+          "line": 50,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -21750,6 +21810,26 @@
       ]
     },
     {
+      "key": "react.3160b3f410fd7098",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "تغییر حد ضرر / حد سود",
+      "en": "Stop loss / take profit changed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 47,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.317b825ce209c39a",
       "namespace": "react",
       "area": "Global Content",
@@ -22158,7 +22238,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 77,
+          "line": 79,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -22606,7 +22686,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 75,
+          "line": 77,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -22626,7 +22706,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 49,
+          "line": 51,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -25656,7 +25736,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 74,
+          "line": 76,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -27391,7 +27471,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 80,
+          "line": 82,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -27772,7 +27852,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 96,
+          "line": 98,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -28960,7 +29040,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 51,
+          "line": 53,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -29121,7 +29201,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 62,
+          "line": 64,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -29803,6 +29883,26 @@
       ]
     },
     {
+      "key": "react.44b649de9ebb74a0",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "پایان مهلت",
+      "en": "expired",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 46,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.44cc09bc26dab8b6",
       "namespace": "react",
       "area": "Website",
@@ -30416,7 +30516,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 65,
+          "line": 67,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -30611,6 +30711,26 @@
       ]
     },
     {
+      "key": "react.467fb5c3d8f21dfb",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی قبولی تست رایگان",
+      "en": "Free Trial pass certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 44,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.468ce9586bc7bf3c",
       "namespace": "react",
       "area": "Global Content",
@@ -30663,7 +30783,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 47,
+          "line": 49,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -30703,7 +30823,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 75,
+          "line": 77,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -30767,6 +30887,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.472305ba4f613662",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مشاهدهٔ NFT روی Arbitrum Sepolia",
+      "en": "View the NFT on Arbitrum Sepolia",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 38,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -34165,7 +34305,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 96,
+          "line": 98,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -34994,7 +35134,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 67,
+          "line": 69,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -39108,7 +39248,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 58,
+          "line": 60,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -39867,6 +40007,26 @@
           "line": 381,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.5c28f97269f9b024",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "مشاهده در Arbiscan",
+      "en": "View on Arbiscan",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 66,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -40651,7 +40811,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 47,
+          "line": 48,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -41841,7 +42001,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 76,
+          "line": 78,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -42455,7 +42615,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 61,
+          "line": 63,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -42962,7 +43122,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 57,
+          "line": 59,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -43109,7 +43269,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 81,
+          "line": 83,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -45502,7 +45662,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 84,
+          "line": 86,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -46398,7 +46558,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 87,
+          "line": 89,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -47978,6 +48138,26 @@
       ]
     },
     {
+      "key": "react.707c234fb01b21f5",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "باز کردن پوزیشن",
+      "en": "Position opened",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 47,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.7083386d27017819",
       "namespace": "react",
       "area": "Global Content",
@@ -49154,6 +49334,26 @@
       ]
     },
     {
+      "key": "react.74bbc721371a8cb1",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی",
+      "en": "Certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 45,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.74d5be08c68133d0",
       "namespace": "react",
       "area": "Website",
@@ -50070,6 +50270,26 @@
       ]
     },
     {
+      "key": "react.77668836a6b8becc",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "تراکنش",
+      "en": "Transaction",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 57,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.7769f561015678c1",
       "namespace": "react",
       "area": "Global Content",
@@ -50682,7 +50902,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 100,
+          "line": 102,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -51870,7 +52090,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 80,
+          "line": 82,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -51957,7 +52177,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 70,
+          "line": 72,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -54699,14 +54919,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 54,
+          "line": 55,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 65,
+          "line": 67,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -55395,7 +55615,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 78,
+          "line": 80,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -57179,6 +57399,26 @@
       ]
     },
     {
+      "key": "react.89b189346c5cf818",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی قبولی چالش",
+      "en": "Challenge pass certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 43,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.89b877946b3d34a4",
       "namespace": "react",
       "area": "Global Content",
@@ -57809,7 +58049,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 48,
+          "line": 50,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -57949,7 +58189,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 41,
+          "line": 43,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -57973,6 +58213,13 @@
           "line": 317,
           "page": "radar",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 54,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
@@ -58656,6 +58903,26 @@
           "line": 154,
           "page": "campaign",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8ccb0f314cb82bb1",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی قبولی مرحلهٔ اول",
+      "en": "Phase 1 pass certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 43,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -60670,7 +60937,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 50,
+          "line": 52,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -65292,6 +65559,26 @@
       ]
     },
     {
+      "key": "react.9d28f288b401ca4c",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "هنوز رکوردی ثبت نشده است.",
+      "en": "No records yet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 55,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.9d43bf5e92832ac2",
       "namespace": "react",
       "area": "Global Content",
@@ -66015,6 +66302,26 @@
       ]
     },
     {
+      "key": "react.9efba6f1ebac62c9",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "بستن پوزیشن",
+      "en": "Position closed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 48,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.9f06cc9493d482c2",
       "namespace": "react",
       "area": "Global Content",
@@ -66361,7 +66668,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 67,
+          "line": 69,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -67002,7 +67309,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 76,
+          "line": 78,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -67527,6 +67834,26 @@
           "line": 278,
           "page": "global",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.a1f0d7cdb827d109",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "در صف ثبت روی بلاکچین",
+      "en": "Queued for the blockchain record",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/certificates/content.ts",
+          "line": 39,
+          "page": "certificates",
+          "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
         }
       ]
@@ -68151,14 +68478,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 88,
+          "line": 90,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 100,
+          "line": 102,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -68885,7 +69212,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 79,
+          "line": 81,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -70311,7 +70638,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 71,
+          "line": 73,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -70801,7 +71128,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 83,
+          "line": 85,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -70911,7 +71238,7 @@
     {
       "key": "react.a9f421b26f365294",
       "namespace": "react",
-      "area": "Global Content",
+      "area": "Trading Terminal",
       "owner": "Content editor",
       "fa": "جزئیات",
       "en": "Details",
@@ -70919,6 +71246,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 57,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/pages/Portfolio.tsx",
           "line": 478,
@@ -72228,7 +72562,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 39,
+          "line": 41,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -72435,7 +72769,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 54,
+          "line": 56,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -74401,7 +74735,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 79,
+          "line": 81,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -76133,6 +76467,26 @@
       ]
     },
     {
+      "key": "react.b6763a6b6e5e0679",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "قبول",
+      "en": "passed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 46,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b677ca866ff7567c",
       "namespace": "react",
       "area": "Website",
@@ -76727,7 +77081,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 44,
+          "line": 46,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -76806,6 +77160,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.b81c6966269dee1a",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "ثبت‌شده",
+      "en": "Recorded",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 49,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -77187,6 +77561,26 @@
           "line": 149,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b906e06798a45947",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "نتیجهٔ ارزیابی",
+      "en": "Evaluation outcome",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 46,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -77601,6 +77995,13 @@
           "line": 331,
           "page": "radar",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 57,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -79048,7 +79449,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 42,
+          "line": 44,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -79473,6 +79874,26 @@
           "page": "labs",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.bf16cb2f4f455de3",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "ناموفق",
+      "en": "Failed",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 49,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -82068,7 +82489,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 82,
+          "line": 84,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -83699,7 +84120,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 40,
+          "line": 42,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -83808,7 +84229,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 62,
+          "line": 64,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -84424,7 +84845,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 59,
+          "line": 61,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -84987,7 +85408,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 77,
+          "line": 79,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -85047,7 +85468,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 87,
+          "line": 89,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -85208,7 +85629,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 43,
+          "line": 45,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -85608,7 +86029,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 60,
+          "line": 62,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -85855,7 +86276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 45,
+          "line": 47,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -86270,7 +86691,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 38,
+          "line": 40,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -87413,7 +87834,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 73,
+          "line": 75,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -87941,6 +88362,26 @@
       ]
     },
     {
+      "key": "react.d43743c25abe95f4",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی خرید چالش",
+      "en": "Challenge purchase certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 42,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.d438db29efdea9bb",
       "namespace": "react",
       "area": "Website",
@@ -88393,7 +88834,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 72,
+          "line": 74,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -88482,7 +88923,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 95,
+          "line": 97,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -88999,6 +89440,26 @@
       ]
     },
     {
+      "key": "react.d6a07548a4a5ea8c",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "بستن بخشی از پوزیشن",
+      "en": "Partial close",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 48,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.d6a9dbee633cd1be",
       "namespace": "react",
       "area": "Global Content",
@@ -89104,15 +89565,22 @@
           "method": "pick-pipeline"
         },
         {
-          "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 58,
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 57,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 85,
+          "line": 59,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
+        {
+          "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
+          "line": 87,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -89373,7 +89841,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 55,
+          "line": 57,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -89400,14 +89868,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 55,
+          "line": 56,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 66,
+          "line": 68,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -90049,7 +90517,7 @@
         },
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 56,
+          "line": 58,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -91021,7 +91489,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 46,
+          "line": 47,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -92638,7 +93106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 69,
+          "line": 71,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -95721,6 +96189,26 @@
       ]
     },
     {
+      "key": "react.e671ad6a438ec914",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی شروع تست رایگان",
+      "en": "Free Trial start certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 42,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.e6a4c78387569101",
       "namespace": "react",
       "area": "Website",
@@ -96354,7 +96842,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 52,
+          "line": 54,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -96856,14 +97344,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 59,
+          "line": 60,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 86,
+          "line": 88,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -97417,7 +97905,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 66,
+          "line": 68,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -97561,6 +98049,26 @@
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.eba5e19a0b1de302",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "ثبت روی بلاکچین",
+      "en": "On-chain records",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 51,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -98870,7 +99378,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 74,
+          "line": 76,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -100642,7 +101150,7 @@
     {
       "key": "react.f31bb6ef7436e911",
       "namespace": "react",
-      "area": "User Dashboard",
+      "area": "Trading Terminal",
       "owner": "Content editor",
       "fa": "رویداد",
       "en": "Event",
@@ -100650,6 +101158,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "mapped",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 57,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
+          "method": "pick-pipeline"
+        },
         {
           "component": "apps/web-react/src/features/terminal/Portfolio.tsx",
           "line": 560,
@@ -101611,6 +102126,26 @@
           "line": 91,
           "page": "navigation",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.f527db20641bc84c",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی دریافت پاداش",
+      "en": "Payout certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 44,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -103232,6 +103767,26 @@
           "line": 11,
           "page": "global",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.f9f58e66c7a95fcc",
+      "namespace": "react",
+      "area": "Trading Terminal",
+      "owner": "Content editor",
+      "fa": "گواهی‌ها و همهٔ رویدادهای معاملاتی این ارزیابی به‌صورت عمومی روی بلاکچین ثبت می‌شوند. هزینهٔ ثبت با اوپن‌فاند است و نیازی به امضای شما نیست.",
+      "en": "The certificates and every trading event of this evaluation are recorded publicly on the blockchain. Openfund pays for every record; no signature from you is needed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+          "line": 52,
+          "page": "terminal",
+          "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         }
       ]
@@ -105517,7 +106072,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-          "line": 35,
+          "line": 36,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -106091,7 +106646,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/certificates/content.ts",
-          "line": 63,
+          "line": 65,
           "page": "certificates",
           "route": "/:locale/certificate-verification; /:locale/:product/certificates",
           "method": "bilingual-record"
@@ -106471,6 +107026,14 @@
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
       "expression": "t(fa, en)"
+    },
+    {
+      "component": "apps/web-react/src/features/terminal/ChainRecords.tsx",
+      "line": 67,
+      "page": "terminal",
+      "route": "/:locale/:product/*",
+      "reason": "literal-jsx-review",
+      "text": "NFT"
     },
     {
       "component": "apps/web-react/src/features/terminal/GainsPortfolio.tsx",
@@ -106877,7 +107440,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/Dashboard.tsx",
-      "line": 95,
+      "line": 97,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
