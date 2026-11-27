@@ -173,7 +173,10 @@ export function oracleMarketData({ markets, oracle, upstream = null, fetchImpl =
   const remote = path => read(upstream + '/api/oracle' + path)
   return {
     async catalog() {
-      if (local()) return { data: [...markets().values()] }
+      /* venue catalog rows only (a pair index); placeholder rows a test server
+         injects with a price are not a catalog */
+      const data = [...markets().values()].filter(m => Number.isInteger(m?.pairIndex))
+      if (data.length) return { data }
       if (upstream) return cached('catalog', 60_000, () => remote('/markets'))
       throw Object.assign(new Error('catalog_unavailable'), { status: 503 })
     },

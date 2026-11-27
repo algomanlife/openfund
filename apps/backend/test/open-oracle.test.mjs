@@ -144,7 +144,7 @@ test('Open Oracle market API: catalog, validated candles closed at the composite
   const { oracleMarketData } = await import('../open-oracle.js')
   const calls = []
   let clock = 1_800_000_000_000
-  const markets = new Map([['BTC/USD', { symbol: 'BTC/USD', base: 'BTC' }]])
+  const markets = new Map([['BTC/USD', { symbol: 'BTC/USD', base: 'BTC', pairIndex: 0 }], ['X/USD', { symbol: 'X/USD', base: 'X' }]])
   const fetchImpl = async url => {
     calls.push(String(url))
     const body = String(url).includes('/candles')
@@ -153,7 +153,7 @@ test('Open Oracle market API: catalog, validated candles closed at the composite
     return { ok: true, json: async () => body }
   }
   const api = oracleMarketData({ markets: () => markets, oracle: () => ({ get: () => ({ price: 120, stale: false }) }), fetchImpl, now: () => clock })
-  assert.deepEqual((await api.catalog()).data, [{ symbol: 'BTC/USD', base: 'BTC' }])
+  assert.deepEqual((await api.catalog()).data, [{ symbol: 'BTC/USD', base: 'BTC', pairIndex: 0 }])
   const candles = await api.candles('BTC-USD', '1h', clock - 7_200_000, clock)
   assert.equal(candles.source, 'open-oracle')
   assert.deepEqual(candles.data.at(-1), { time: clock - 60_000, open: 105, high: 120, low: 104, close: 120 })
