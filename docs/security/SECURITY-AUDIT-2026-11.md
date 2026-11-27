@@ -81,7 +81,7 @@ not live until released and deployed. The status columns were updated on
 | OF-2026-11-17 | Low | Test seams | CodeQL flagged a SHA-256 digest of the internal token as a weak password hash | Fixed | #147 | CodeQL check on the pull request |
 | OF-2026-11-06 | Low | Desktop build | A `minimatch` advisory through `electron-builder`; build time only | Fixed (build time) | #152 (`minimatch` override) | npm audit |
 | OF-2026-11-19 | Low | API | CodeQL `missing-rate-limiting` (44 alerts): authenticated reads without a per-route limit; the custom in-memory limiter is not recognized | Accepted; limits now keyed on the visitor IP behind Cloudflare | #153 | Triage |
-| OF-2026-11-08 | Info | Backend | The rate limiter is in memory and per process | Accepted, documented | [Security architecture](SECURITY.md) | — |
+| OF-2026-11-08 | Info | Backend | The rate limiter is in memory and per process | Fixed 2026-11-27: counters shared and persistent in PostgreSQL | [Security architecture](SECURITY.md) | — |
 | OF-2026-11-16 | Info | HTTP headers | CSP has `unsafe-eval` (Pine/Vela engine on HTML pages only) and `style-src 'unsafe-inline'` | Accepted, documented in `server.js` | — | ZAP |
 | OF-2026-11-18 | Info | Vendored code | `vendor/gains-sdk` and `vendor/vela` lockfiles carry advisories (7 critical in `gains-sdk`). These lockfiles are never installed or built; the app resolves its own dependencies | Accepted | — | OSV |
 | OF-2026-11-21 | Info | Secret scanning | gitleaks in working-tree mode flags 49 public contract addresses and locale strings in vendored and dormant code | Accepted (false positives) | — | gitleaks |

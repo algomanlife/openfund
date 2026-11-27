@@ -22,7 +22,7 @@
  *    a transfer the operator has already made.
  */
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import crypto from 'node:crypto'
 import { D } from './trading-math.js'
 import { governanceAdminRoutes } from './governance-routes.js'
@@ -125,7 +125,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
   /* ---------- user status (operational decision; no financial writes) ----------
      active ⇄ suspended with a recorded reason and named actor. Suspension is
      enforced by requireAuth (sessions end) and the auth flow (sign-in refused). */
-  const userStatusLimit = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const userStatusLimit = limiter('admin.user-status', { windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
   router.post('/users/:id/status', userStatusLimit, wrap(async (req, res) => {
     const actor = adminActor(req)
     if (!uuid.test(req.params.id)) throw fail(404, 'user_not_found')
@@ -173,7 +173,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     simulate: { from: 'approved', to: 'simulated_settled' },
   }
 
-  const withdrawalReadLimit = rateLimit({ windowMs: 60_000, limit: 90 })
+  const withdrawalReadLimit = limiter('admin.withdrawal-read', { windowMs: 60_000, limit: 90 })
   router.get('/withdrawals', withdrawalReadLimit, wrap(async (req, res) => {
     const limit = PAGE(req.query.limit, 25, 100), offset = PAGE(req.query.offset, 0, 1000000)
     const params = []
@@ -225,7 +225,7 @@ export function adminRoutes({ pool, audit, verifyPayout = payoutVerifier(), clai
     res.set('Cache-Control', 'no-store').json({ events: rows })
   }))
 
-  const withdrawalReviewLimit = rateLimit({ windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,
+  const withdrawalReviewLimit = limiter('admin.withdrawal-review', { windowMs: 60_000, limit: 60, standardHeaders: 'draft-8', legacyHeaders: false,
     message: { error: 'rate_limited' } })
   const reviewWithdrawal = settleReward => wrap(async (req, res) => {
     if (!uuid.test(req.params.id)) throw fail(404, 'withdrawal_not_found')

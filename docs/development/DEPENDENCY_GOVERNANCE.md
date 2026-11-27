@@ -42,6 +42,17 @@ merge only in the documented order (`docs/development/PULL_REQUESTS.md`).
 advisory in a *runtime* dependency is a release blocker to triage; a tooling-only
 advisory is recorded in the pull request. The audit never auto-fixes.
 
+**Dependency candidate workflow.** `.github/workflows/dependency-candidate.yml`
+is dispatched by a maintainer for one first-party directory with one operation:
+`audit-fix` (`npm audit fix`, never `--force`), `update` (in-range update of named
+packages, including transitive ones) or `add-dev` (named development
+dependencies). Lifecycle scripts are not run, package specs are validated, only
+that directory's `package.json` and `package-lock.json` may change, and the
+result is a **draft** pull request with `npm audit` before and after. It never
+merges or deploys; the normal checks and review apply. Pull requests opened with
+the workflow token do not start other workflows, so a maintainer pushes a
+commit (for example the review notes) to start the checks.
+
 ## Registry check
 
 `node scripts/deps/check-registry.mjs` (run in CI) fails when a pinned version in

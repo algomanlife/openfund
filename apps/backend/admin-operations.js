@@ -8,7 +8,7 @@
  * runs, samples or mutates the engine or any financial record.
  */
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import { adminAuth } from './admin.js'
 import { metricsSnapshot } from './observability.js'
 
@@ -28,7 +28,7 @@ const PAGE = (v, def, max) => {
 export function operationsAdminRoutes({ pool, engine = null, marketData = null }) {
   const router = Router()
   router.use(adminAuth)
-  const readLimit = rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-8', legacyHeaders: false,
+  const readLimit = limiter('admin-operations.read', { windowMs: 60_000, limit: 120, standardHeaders: 'draft-8', legacyHeaders: false,
     message: { error: 'rate_limited' } })
 
   /* ---------- unified audit viewer (operational + financial trails) ---------- */

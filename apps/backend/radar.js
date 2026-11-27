@@ -11,7 +11,7 @@
  * balances, pricing, evaluation or the trading engine.
  */
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import WebSocket from 'ws'
 import { execFile } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -337,7 +337,7 @@ export function openfundMarketFor(coin, gainsMarkets) {
 
 export function radarRoutes({ radar, gainsMarkets = () => new Map() }) {
   const router = Router()
-  const limit = rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
+  const limit = limiter('radar.read', { windowMs: 60_000, limit: 120, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'rate_limited' } })
   const send = (res, maxAge, body) => res.set('Cache-Control', `public, max-age=${maxAge}`).json(body)
   const fail = res => res.status(503).set('Cache-Control', 'no-store').json({ error: 'radar_unavailable' })
   const windowOf = value => (WINDOWS.includes(value) ? value : 'month')

@@ -1,6 +1,6 @@
 /** Certificates attest recorded events; they never authorize financial mutations. */
 import { Router } from 'express'
-import { rateLimit } from 'express-rate-limit'
+import { limiter } from './rate-limit-store.js'
 import { adminAuth, adminActor } from './admin.js'
 const fail = (status, code) => Object.assign(new Error(code), { status })
 const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
@@ -66,7 +66,7 @@ export async function syncCertificates(pool, userId) {
 
 export function certificateRoutes({ pool, requireAuth }) {
   const router = Router()
-  const publicLimit = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false,
+  const publicLimit = limiter('certificates.public', { windowMs: 60_000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false,
     message: { error: 'rate_limited' } })
   router.post('/certificates/verify', publicLimit, wrap(async (req, res) => {
     res.set('Cache-Control', 'no-store')
