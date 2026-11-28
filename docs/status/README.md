@@ -2,21 +2,21 @@
 
 <!-- Generated from docs/status/status.json by `node scripts/docs/status.mjs`; edit the JSON, not this page. -->
 
-Canonical, per-environment status. Last updated **2026-11-27**. Source states come from Git; every
+Canonical, per-environment status. Last updated **2026-11-28**. Source states come from Git; every
 runtime state names the time it was verified and its evidence. Older snapshots elsewhere in the
 documentation are historical unless they match this page.
 
 ## Release
 
-- **Latest official release:** [v0.9.0](https://github.com/algomanlife/openfund/releases/tag/v0.9.0) — commit `ae7c17dbf70c78747128ec4aeab04ae193165ff1`, published 2026-11-27.
-- **Next release:** version not yet allocated — planned; candidate commit not yet tagged. No next version is allocated yet. Open items after v0.9.0 are listed in the 2026-11-27 security assessment (wallet SDK upgrade to wagmi 3, payment review outcome for invalid passes, fee-refund payout verification). ([evidence](https://github.com/algomanlife/openfund/compare/v0.9.0...main))
+- **Latest official release:** [v0.9.1](https://github.com/algomanlife/openfund/releases/tag/v0.9.1) — commit `7e813248baedee029ef68c72f22ed52baa15523f`, published 2026-11-28.
+- **Next release:** version not yet allocated — planned; candidate commit not yet tagged. No next version is allocated yet. Open after v0.9.1: the owner fix batch of 2026-11-28 (gateway, navigation, lot sizing, mobile layout) and the items of the 2026-11-27 security assessment. ([evidence](https://github.com/algomanlife/openfund/compare/v0.9.1...main))
 
 ## Services
 
 | Environment | Service | Role | Version | Commit | Official | Verified | Evidence | Note |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| GLOBAL — Render | `openfund` | Web/API | 0.9.0 | `ae7c17d` | yes | 2026-11-27 14:25 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46005804268) | The release workflow's chained deploy built the exact v0.9.0 commit on Render and its identity report read version 0.9.0 at ae7c17d from GLOBAL /version; the live SIWE gate passed. |
-| GLOBAL — Render | `openfund-backstage` | Backstage | 0.9.0 | `ae7c17d` | yes | 2026-11-27 14:25 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46005804268) | The release identity report read commit ae7c17d from Backstage /health after the v0.9.0 deploy. |
+| GLOBAL — Render | `openfund` | Web/API | 0.9.1 | `7e81324` | yes | 2026-11-28 05:04 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46086722197) | The release workflow's chained deploy built the exact v0.9.1 commit on Render and its identity report read version 0.9.1 at 7e81324 from GLOBAL /version; the live SIWE gate passed. |
+| GLOBAL — Render | `openfund-backstage` | Backstage | 0.9.1 | `7e81324` | yes | 2026-11-28 05:04 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46086722197) | The release identity report read commit 7e81324 from Backstage /health after the v0.9.1 deploy. |
 | GLOBAL — Render | `openfund-cms` | Directus CMS | directus/directus:11.17.4 | — | — | 2026-11-18 07:40 UTC | [evidence](https://cms.openfi.cloud/server/health) | Independent image identity; health verified, image digest not re-verified on this date. |
 | IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-20 10:24 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |
 | IRAN — Liara | `openfund-iran-worker` | Worker | — | — | — | 2026-11-18 07:40 UTC | Liara API GET /v1/projects/openfund-iran-worker | Running (Liara status ACTIVE, defaultSubdomain false). Its commit is not independently attributable: the worker exposes no public route and Liara's release listing was unavailable through the API on this date. |

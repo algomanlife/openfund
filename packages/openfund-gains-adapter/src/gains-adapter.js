@@ -98,10 +98,18 @@ async function get(path, timeoutMs){
     try {
       const data = await getFrom(ORACLE, path, timeoutMs);
       oracleMarketApi = true;
+      /* an empty Open Oracle catalog is no catalog: read the venue feed for this catalog read */
+      if (path === '/markets' && !data.length) throw new Error('Empty catalog');
       return data;
     } catch (e) {
-      if (oracleMarketApi === true) throw e;
-      oracleMarketApi = false;
+      /* Only an origin without the Open Oracle routes (404, or an HTML page
+         instead of the JSON envelope) switches this session to the venue
+         feed. A busy (429/5xx), timed-out or empty reply falls back for this
+         read only, so candles keep coming from Open Oracle afterwards (the
+         desktop app cannot read the venue directly). */
+      const absent = e?.status === 404 || e instanceof SyntaxError || e?.message === 'Invalid data envelope';
+      if (absent && oracleMarketApi !== true) oracleMarketApi = false;
+      else if (oracleMarketApi === true && path !== '/markets') throw e;
     }
   }
   return getFrom(API, path, timeoutMs);

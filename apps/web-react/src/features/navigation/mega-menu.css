@@ -6,7 +6,7 @@
 .mega-icon-svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 /* tiles carry the design-system face, so drawers that do not set one never fall back to serif */
 .mega-tile{font-family:var(--ds-font-sans,'Ubuntu',system-ui,sans-serif);display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 12px;border-radius:12px;color:var(--white,#eef5f1);text-decoration:none;
-  border:1px solid transparent;transition:background .2s,border-color .2s,transform .2s}
+  background:transparent;border:1px solid transparent;transition:background .2s,border-color .2s,transform .2s}
 .mega-tile:hover,.mega-tile:focus-visible{background:color-mix(in srgb,var(--mint,#82e7bd) 7%,transparent);border-color:color-mix(in srgb,var(--mint,#82e7bd) 28%,transparent)}
 .mega-tile:focus-visible{outline:2px solid var(--mint,#82e7bd);outline-offset:1px}
 .mega-tile[aria-current=page] b{color:var(--mint,#82e7bd)}
@@ -73,12 +73,18 @@ html[data-theme=light] .mega-tile,html[data-theme=light] .openfund-header .nav-m
 .of-drawer-chevron{transition:transform .2s}
 .of-drawer-accordion[aria-expanded=true] .of-drawer-chevron{transform:rotate(180deg)}
 .of-drawer-subgroup h4{margin:10px 4px 4px;font-size:11px;color:var(--muted,#8a9a92);font-weight:600}
+/* a tile can be a button (the terminal guide): same look as the links, never the browser's button face */
+button.mega-tile{width:100%;font:inherit;font-family:var(--ds-font-sans,'Ubuntu',system-ui,sans-serif);text-align:start;cursor:pointer}
+/* drawer tiles: icon beside the label in two compact, even columns */
 .mega-tiles.is-drawer{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.mega-tiles.is-drawer .mega-tile{flex-direction:column;align-items:flex-start;gap:8px;padding:10px;min-height:76px;border-color:var(--line,#ffffff1a)}
-.mega-tiles.is-drawer .mega-text b{font-size:13px}
+.mega-tiles.is-drawer > li{display:grid}
+.mega-tiles.is-drawer .mega-tile{box-sizing:border-box;flex-direction:row;align-items:center;gap:10px;padding:8px 10px;min-height:54px;border-color:var(--line,#ffffff1a)}
+.mega-tiles.is-drawer .mega-icon{width:32px;height:32px;border-radius:9px}
+.mega-tiles.is-drawer .mega-text b{font-size:13px;line-height:1.45}
+.mega-tiles.is-drawer .mega-badge{margin-inline-start:4px}
 .mega-banner.is-compact{display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px;min-height:44px}
 .mega-banner.is-compact .mega-banner-copy small{font-size:12px}
-@media (min-width:768px){.mega-tiles.is-drawer .mega-tile{flex-direction:row;align-items:center;min-height:56px}}
+@media (min-width:768px){.mega-tiles.is-drawer .mega-tile{min-height:56px}}
 @media (prefers-reduced-motion:reduce){
   .openfund-header .nav-mega,.mega-tile,.of-drawer-chevron{transition:none}
   .openfund-header .nav-account.resources-open .mega-art-seat,html.mega-open::after{animation:none}
@@ -154,7 +160,9 @@ html[data-theme=light] .wp-page{fill:#eef6f2}
   padding:0;border-radius:10px;color:inherit;text-decoration:none;font-size:inherit;font-weight:inherit;background:none}
 .openfund-header .nav-mega a.mega-banner-main:hover{background:none;color:inherit}
 .mega-banner-main:focus-visible{outline:2px solid var(--mint,#82e7bd);outline-offset:4px}
-.mega-banner.is-desktop .mega-banner-art{align-self:center;max-height:180px}
+/* Extra card height (a longer tile list) sits above the art, so the art stays
+   against the title instead of leaving a tall gap under the picture. */
+.mega-banner.is-desktop .mega-banner-art{align-self:end;max-height:180px}
 .mega-art-button{fill:color-mix(in srgb,var(--mint,#82e7bd) 14%,var(--surface,#0b1510));stroke:var(--mint,#82e7bd);stroke-width:1.4}
 html[data-theme=light] .mega-art-button{fill:#e6f3ec}
 .mega-art-pulse{fill:none;stroke:var(--mint,#82e7bd);stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:center}

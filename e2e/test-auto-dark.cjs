@@ -28,6 +28,15 @@ async function runAutoDark({ configureContext = async () => {} } = {}) {
     assert.equal(await page.locator('#theme-toggle,button[aria-label="Toggle theme"],button[aria-label="تغییر پوسته"]').first().getAttribute('aria-pressed'), String(theme === 'dark'), label + ' theme control');
     if (theme === 'light') assert.match(state.scheme, /only/);
     let points = [{ x: 4, y: 200 }, { x: 3355, y: 500 }], chart;
+    /* The gateway scene fills the viewport under the header. Sample the header
+       bar, which is the theme surface, not the illustrated sky. */
+    if (!trade && await page.locator('.home-gateway').count()) {
+      const bar = await page.locator('header.openfund-header').boundingBox();
+      if (bar && bar.height > 8 && bar.width > 24) {
+        const y = Math.round(bar.y + Math.min(8, bar.height / 2));
+        points = [{ x: Math.round(bar.x + 12), y }, { x: Math.round(bar.x + bar.width - 12), y }];
+      }
+    }
     if (trade) {
       const frame = page.frames().find(frame => frame.parentFrame());
       await frame.waitForFunction(() => !!window.__openfundChart?.chart);

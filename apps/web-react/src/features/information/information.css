@@ -252,7 +252,10 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
 .openfund-header .nav-actions .nav-cta { display:inline-flex; }
 /* Animated landing artwork stays within the existing content viewport. */
 body:has(.openfund-header) main { overflow-x:clip; }
-.openfund-header ~ footer #footer-links, footer #footer-links { display:flex; flex-wrap:wrap; min-width:0; gap:12px 18px; }
+/* footer destinations in even columns (the list is long; a ragged wrap read as clutter on phones) */
+.openfund-header ~ footer #footer-links, footer #footer-links { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(150px, 100%), 1fr)); min-width:0; gap:12px 18px; }
+.openfund-header ~ footer #footer-links a, footer #footer-links a { min-width:0; overflow-wrap:anywhere; }
+@media(max-width:420px) { .openfund-header ~ footer #footer-links, footer #footer-links { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
 @media(max-width:600px) {
   .openfund-header .rk-chip-connect .rk-connect-label { display:none; }
   .openfund-header .rk-chip-connect { width:32px; min-width:32px; padding:0; justify-content:center; flex-shrink:0; }
@@ -287,8 +290,14 @@ html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=
 :root .openfund-header.nav-overflow .nav > .brand { flex: 0 0 auto; }
 :root .openfund-header.nav-overflow .nav-actions { margin-inline-start: auto; flex: 0 0 auto; }
 :root .openfund-header.nav-overflow .nav-actions .menu { display: inline-flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 5px; }
-/* staged by fitNavigation from real widths (long locales, wallet states) */
-:root .openfund-header.nav-overflow.nav-tight .nav-actions .nav-cta { display: none; }
+/* staged by fitNavigation from real widths (long locales, wallet states).
+   The terminal entry stays on the header: it becomes an icon button so the
+   row can fit, instead of leaving the header. */
+:root .openfund-header.nav-overflow.nav-tight .nav-actions .nav-cta {
+  display: inline-flex; font-size: 0; gap: 0; width: var(--hc-h, 36px); min-width: var(--hc-h, 36px);
+  padding-inline: 0; justify-content: center;
+}
+:root .openfund-header.nav-overflow.nav-tight .nav-actions .nav-cta svg { width: 16px; height: 16px; flex: none; }
 :root .openfund-header.nav-overflow.nav-tighter .nav-actions :is(#language-slot, .language-slot, .theme-toggle) { display: none; }
 @media (max-width: 600px) {
   /* the two-row phone header stays only for the menu-less product gateway */

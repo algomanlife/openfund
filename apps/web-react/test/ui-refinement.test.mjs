@@ -286,10 +286,13 @@ test('the public header measures real widths instead of a fixed English-length b
   assert.match(src('styles/header-controls.css'), /--hc-h: 36px/)
 })
 
-test('Home drops the proposal label and labels Perpetual as inactive in every locale', () => {
-  assert.doesNotMatch(src('features/home/TechnicalFeatureStrip.tsx'), /طرح پیشنهادی · نیازمند تأیید محصول/)
-  assert.match(src('features/home/Home.tsx'), /'غیرفعال \/ در حال توسعه', 'Inactive \/ In Development'/)
-  for (const locale of ['ar', 'ru', 'zh-CN']) assert.match(src(`i18n/messages/${locale}.ts`), /'Inactive \/ In Development':/, locale)
+test('Home is the one-screen solar gateway with two actions', () => {
+  const home = src('features/home/Home.tsx'), css = src('features/home/home.css')
+  assert.match(home, /startSolarScene\(element, \{ still: reduced\.matches, theme: current \}\)/)
+  assert.match(home, /pick\(locale, 'خرید سریع چلنج', 'Buy a challenge'\)/)
+  assert.match(home, /pick\(locale, 'قوانین معاملاتی', 'Trading rules'\)/)
+  assert.match(css, /\.home-gateway\.solar-gateway \{\n  position: fixed;/)
+  assert.match(css, /top: var\(--gateway-top, 72px\); bottom: var\(--gateway-bottom, 0px\);/)
 })
 
 test('the terminal status bar has no Vela label while the website keeps its Vela credit', () => {

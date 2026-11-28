@@ -84,3 +84,49 @@ test('a stream that has delivered keeps reconnecting to Open Oracle', async () =
   for (let i = 0; i < 6; i++) { const s = streams.at(-1); s.readyState = 2; s.onerror(); await flush() }
   assert.equal(sockets.length, 0); assert.equal(G.priceSource(), 'open-oracle'); assert.equal(streams.length, 7)
 })
+
+/* catalog and candle reads: only an origin without the Open Oracle routes
+   switches the session to the venue feed */
+function loadRest(oracleReply) {
+  const fetched = []
+  const fetch = async url => {
+    fetched.push(url)
+    if (url.startsWith('/api/oracle/')) return oracleReply(url)
+    return { ok: true, status: 200, json: async () => ({ data: url.includes('/candles') ? [{ time: 1, open: 1, high: 1, low: 1, close: 1 }] : [{ symbol: 'BTC/USD', pairIndex: 0 }] }) }
+  }
+  const window = { fetch, AbortSignal, setTimeout, clearTimeout }
+  window.window = window
+  vm.runInNewContext(source, { window, fetch, AbortSignal, setTimeout, clearTimeout, console })
+  return { G: window.OpenfundGains, fetched }
+}
+/* Hostname equality: a prefix check would also match api.gains.trade.attacker.example. */
+const isVenueUrl = url => { try { return new URL(url).hostname === 'api.gains.trade' } catch { return false } }
+const venue = urls => urls.filter(isVenueUrl)
+const oracleCandles = { ok: true, status: 200, json: async () => ({ data: [{ time: 2, open: 2, high: 2, low: 2, close: 2 }] }) }
+
+test('a busy Open Oracle catalog falls back for that read only; candles stay on Open Oracle', async () => {
+  let busy = true
+  const { G, fetched } = loadRest(url => url.endsWith('/markets') && busy
+    ? { ok: false, status: 429, json: async () => ({ error: 'rate_limited' }) } : oracleCandles)
+  assert.equal((await G.rest('/markets')).length, 1)
+  assert.equal(venue(fetched).length, 1, 'the catalog read used the venue once')
+  busy = false
+  const bars = await G.fetchCandles('BTC/USD', '1h', 0, 10)
+  assert.equal(bars[0].close, 2, 'candles still come from Open Oracle')
+  assert.equal(venue(fetched).length, 1)
+})
+
+test('an empty Open Oracle catalog reads the venue catalog; candles stay on Open Oracle', async () => {
+  const { G, fetched } = loadRest(url => url.endsWith('/markets')
+    ? { ok: true, status: 200, json: async () => ({ data: [] }) } : oracleCandles)
+  assert.equal((await G.rest('/markets')).length, 1)
+  assert.equal((await G.fetchCandles('BTC/USD', '1h', 0, 10))[0].close, 2)
+  assert.deepEqual(venue(fetched).map(u => u.split('/arbitrum')[1]), ['/markets'])
+})
+
+test('an origin without the Open Oracle routes (404) reads the venue for the session', async () => {
+  const { G, fetched } = loadRest(() => ({ ok: false, status: 404, json: async () => ({}) }))
+  await G.rest('/markets')
+  assert.equal((await G.fetchCandles('BTC/USD', '1h', 0, 10))[0].close, 1)
+  assert.equal(fetched.filter(u => u.startsWith('/api/oracle/')).length, 1, 'Open Oracle is not asked again')
+})

@@ -20,6 +20,8 @@ export function setupWorkspaceLayout(doc: Document) {
       doc.querySelectorAll<HTMLButtonElement>("button[data-workspace-view]").forEach((tab) => {
         tab.setAttribute("aria-pressed", String(tab === button));
       });
+      /* the bar scrolls on narrow screens: keep the chosen view in sight */
+      button.scrollIntoView({ block: "nearest", inline: "nearest" });
     });
   });
   setupWorkspacePopovers(doc);

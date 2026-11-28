@@ -19,7 +19,12 @@ let n = 0
 const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); n++; console.log('PASS - ' + name) }
 const open = async (page, loc) => {
   await page.goto(`${BASE}/${loc}/rulebook`, { waitUntil: 'load' }); await page.waitForTimeout(1200)
-  await page.locator('.openfund-header .resources-toggle[aria-controls="website-resources"]').click(); await page.waitForTimeout(450)
+  const toggle = page.locator('.openfund-header .resources-toggle[aria-controls="website-resources"]')
+  /* Long locales (ru, zh-CN) fold the header into the menu. The banner markup
+     stays in the document, so copy can still be read. */
+  if (!(await toggle.isVisible())) return false
+  await toggle.click(); await page.waitForTimeout(450)
+  return true
 }
 const measure = () => {
   const q = s => document.querySelector(s)
@@ -50,9 +55,18 @@ const apart = (a, b) => a.r <= b.x || b.r <= a.x || a.b <= b.y || b.b <= a.y
       for (const loc of ['fa', 'en']) {
         for (const theme of ['dark', 'light']) {
           const page = await browser.newPage({ viewport: { width: w, height: h }, colorScheme: theme }); page.on('pageerror', e => errors.push(String(e)))
-          await open(page, loc)
-          const m = await page.evaluate(measure)
+          await page.goto(`${BASE}/${loc}/rulebook`, { waitUntil: 'load' }); await page.waitForTimeout(1200)
+          const resources = page.locator('.openfund-header .resources-toggle[aria-controls="website-resources"]')
           const tag = `${loc} ${theme} ${w}`
+          /* English at 1280 no longer fits the new Openfund link, so the header
+             uses the menu and this desktop card is not on screen. */
+          if (!(await resources.isVisible())) {
+            ok(`${tag}: the header uses the menu when the labels do not fit`, await page.locator('.openfund-header.nav-overflow .menu').isVisible())
+            await page.close()
+            continue
+          }
+          await resources.click(); await page.waitForTimeout(450)
+          const m = await page.evaluate(measure)
           ok(`${tag}: the download button sits outside the window and its chart`, apart(m.button, m.window) && apart(m.button, m.chart), JSON.stringify({ b: m.button, w: m.window, c: m.chart }))
           ok(`${tag}: five badges in one row, none clipped, at least 44 px tall`, m.badges.length === 5 && new Set(m.badges.map(b => b.y)).size === 1 && m.badges.every(b => !b.clipped && b.h >= 44), JSON.stringify(m.badges))
           const [mac, win, linux, android, ios] = m.badges
@@ -69,10 +83,10 @@ const apart = (a, b) => a.r <= b.x || b.r <= a.x || a.b <= b.y || b.b <= a.y
     }
     /* copy in five locales (ar, ru and zh-CN from the reviewed dictionary) */
     for (const [loc, re] of [['fa', /موبایل/], ['en', /mobile coming soon/], ['ar', /الهاتف/], ['ru', /мобильная/], ['zh-CN', /移动版/]]) {
-      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } }); page.on('pageerror', e => errors.push(String(e)))
+      const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } }); page.on('pageerror', e => errors.push(String(e)))
       await open(page, loc)
-      const m = await page.evaluate(measure)
-      ok(`${loc}: banner copy is localized`, re.test(m.body), m.body)
+      const body = await page.evaluate(() => document.querySelector('#website-resources .mega-banner-copy small, #website-resources-drawer .mega-banner-copy small')?.textContent || '')
+      ok(`${loc}: banner copy is localized`, re.test(body), body)
       await page.close()
     }
     /* keyboard: the main link and each desktop badge are reachable, with visible focus; reduced motion stops the pulse */

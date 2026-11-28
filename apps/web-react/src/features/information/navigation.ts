@@ -11,11 +11,11 @@ type Locale = AppLocale
 const primary = ['markets', 'rulebook'] as const
 /** Trading challenges dropdown: compare, buy, migrate, the tournament and the rules.
  *  `challenges` is the comparison page (the former primary link). */
-const challengeGroup = ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'rulebook'] as const
+const challengeGroup = ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'airdrop', 'rulebook'] as const
 /** Economy dropdown: governance, the consolidated Ambassador (IB) page and
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
-const resources = ['faq', 'learn', 'tools', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact', 'bug-bounty'] as const
+const resources = ['faq', 'learn', 'tools', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact', 'bug-bounty', 'smart-contracts'] as const
 /** Website-owned labels that win over a stale CMS navigation/footer label. */
 const FIXED_LABELS = new Set(['referral'])
 /** footer "Openfund documents" entries */
@@ -33,6 +33,7 @@ const challengeTileLabels: Record<string, { en: string; fa: string }> = {
   labs: text('Openfund Labs', 'آزمایشگاه اوپن‌فاند'),
   migrate: text('Migration to Openfund', 'مهاجرت به اوپن‌فاند'),
   tournament: text('Openfund Premium League', 'لیگ برتر اوپن‌فاند'),
+  airdrop: text('Airdrop', 'ایردراپ'),
   rulebook: text('Trading rules', 'قوانین معاملاتی'),
 }
 const tileIcons: Record<string, string> = { challenges: 'compare' }
@@ -55,7 +56,8 @@ export interface NavigationPlatform { id: string; name: string; glyph: string; h
 export interface NavigationBanner { kind: MegaBannerKind; href: string; title: string; body: string; cta: string; description: string
   platforms: NavigationPlatform[]; platformsLabel: string; soon: string }
 export interface NavigationGroup { id: string; label: string; links: NavigationLink[]; current: boolean; sections: NavigationSection[]; banner: NavigationBanner | null; banners: NavigationBanner[] }
-export interface NavigationModel { primary: NavigationLink[]; groups: NavigationGroup[] }
+/** `home`: the Openfund gateway (/:locale/home), first in every menu */
+export interface NavigationModel { home: NavigationLink; primary: NavigationLink[]; groups: NavigationGroup[] }
 
 /** One source for the website's primary destinations and dropdown groups:
  *  the desktop header and the off-canvas drawer render the same model. */
@@ -98,6 +100,7 @@ export function navigationModel(locale: Locale, pathname: string, navItems: CmsN
     return item
   })
   return {
+    home: link('home'),
     primary: primary.map(route => link(route)),
     groups: [
       group('website-challenges', labels.challenges, challengeLinks),
@@ -236,7 +239,8 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
     const model = navigationModel(locale, pathname, navItems)
     /* Trading challenges keeps the first position the primary link had */
     const [challenges, ...others] = model.groups
-    nav.replaceChildren(dropdownGroup(challenges), ...model.primary.map(anchor), ...others.map(dropdownGroup))
+    /* the Openfund gateway leads; Trading challenges keeps the first menu position */
+    nav.replaceChildren(anchor(model.home), dropdownGroup(challenges), ...model.primary.map(anchor), ...others.map(dropdownGroup))
   }
   const footer = root.querySelector('#footer-links')
   if (footer) {

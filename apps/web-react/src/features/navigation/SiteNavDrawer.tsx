@@ -89,6 +89,8 @@ export default function SiteNavDrawer({ locale, pathname, navItems, onLocaleChan
       }}><span aria-hidden="true">◐</span>{pick(locale, 'حالت روشن / تیره', 'Light / dark mode')}</button>
     </>}>
     <nav id={SITE_DRAWER_ID} className="of-drawer-nav" aria-label={pick(locale, 'ناوبری اصلی', 'Main navigation')}>
+      {/* the Openfund gateway leads the menu, as in the desktop header */}
+      <ul className="of-drawer-home"><li>{link(model.home)}</li></ul>
       {model.groups.map((group, index) => {
         const expanded = openGroups.has(group.id)
         return <div key={group.id} className="of-drawer-group">{index === 1 && <ul>{model.primary.map(item => <li key={item.route}>{link(item)}</li>)}</ul>}<section className="of-drawer-section of-drawer-mega">
