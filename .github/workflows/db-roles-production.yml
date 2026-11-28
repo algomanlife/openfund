@@ -1,0 +1,53 @@
+name: Production database roles (OF-2026-11-12)
+# Owner-dispatched only. Gives Directus its own least-privilege PostgreSQL
+# role, rotates its password and switches openfund-cms to it, then verifies.
+# Runs in the protected production environment; credentials are read from the
+# Render API at run time, masked, and never stored or printed.
+# Runbook: docs/security/DATABASE_ROLES.md ("Automated path").
+on:
+  workflow_dispatch:
+    inputs:
+      step:
+        description: plan (no change), apply (roles, new password, switch, verify) or verify (read-only)
+        required: true
+        default: plan
+        type: choice
+        options: [plan, apply, verify]
+      confirm:
+        description: For apply, type exactly "switch openfund-cms to openfund_directus"
+        required: false
+        default: ''
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: openfund-production
+  cancel-in-progress: false
+jobs:
+  roles:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      STEP: ${{ inputs.step }}
+      CONFIRM: ${{ inputs.confirm }}
+      RENDER_API_TOKEN: ${{ secrets.RENDER_API_TOKEN }}
+      RELEASE_CMS_URL: ${{ vars.RELEASE_CMS_URL }}
+      DB_SSLMODE: ${{ vars.DB_SSLMODE }}
+    steps:
+      - name: Confirmation for apply
+        run: |
+          if [ "$STEP" = "apply" ] && [ "$CONFIRM" != "switch openfund-cms to openfund_directus" ]; then
+            echo "::error::apply needs the exact confirmation text"; exit 1
+          fi
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 26
+      - name: Install the database client
+        run: npm --prefix apps/backend ci --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Database roles
+        run: node scripts/ops/db-roles-production.mjs "$STEP"

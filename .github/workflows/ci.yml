@@ -264,6 +264,8 @@ jobs:
           node ../../scripts/liara/check-infra.mjs
           # ADR 0043: Cloudflare rules agree with the application's alias redirect
           node --test ../../scripts/cloudflare/test/policy.test.mjs ../../scripts/cloudflare/test/check-live.test.mjs ../../scripts/ops/test/geo-redirect-readiness.test.mjs
+          # OF-2026-11-12: production role switch helpers and workflow gates
+          node --test ../../scripts/ops/test/db-roles-production.test.mjs
       - name: Cache Playwright browsers
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
