@@ -158,7 +158,10 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | Capability | Status | Scope |
 | --- | --- | --- | --- |
 | React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
-| Home product gateway and market discovery | Completed | `features/home`, `features/markets`; Gains data with source/freshness handling; instrument counts vary |
+| Openfund gateway (one-screen animated solar system, two actions) | In Progress (implemented; review and release pending) | `features/home` (`solarScene.ts`); fixed between header and price strip at every viewport; light theme and reduced motion covered by `e2e/test-landing-motion.cjs` |
+| Market discovery | Completed | `features/markets`; Open Oracle with venue fallback, including an empty catalog; instrument counts vary |
+| Airdrop page | In Progress (reserved route, no content) | `/:locale/airdrop`, Challenges menu |
+| Smart contracts page | In Progress (implemented; contracts not deployed) | `/:locale/smart-contracts`; addresses from `GET /chain/status` |
 | Home hero card trader journey (evaluation → target → verification flip → funded loop) | Completed (merged #188; deployed on GLOBAL at `main` `9f8b171` (`/version` checked 2026-11-23; not yet in an official release)) | `features/home/heroJourney.ts`; illustration only, no real account data; `e2e/test-hero-journey.cjs`; checked at 360–1920 px, RTL/LTR, dark/light, reduced motion |
 | Footer "alien trader" banner (shared site footer) | Completed (merged #189; deployed on GLOBAL at `main` `9f8b171` (`/version` checked 2026-11-23; not yet in an official release)) | `features/footer`; decorative, lazy, illustrated SVG (raster swap documented in [Footer banner](../website/FOOTER_BANNER.md)); `e2e/test-footer-banner.cjs` |
 | Compact terminal presentation | Completed | [Local acceptance](../reviews/terminal-ui/DELIVERY.md); both products/languages, 74px header, non-scrolling form at four desktop sizes; no production or execution change |
@@ -316,13 +319,12 @@ and route restrictions, external TradingView resource attribution, native termin
 and Vela light/dark synchronization. [Scope and acceptance](../reviews/ui-polish/DELIVERY.md).
 Country eligibility and actual wallet-device acceptance remain separate.
 
-## Persian gateway motion
+## Persian gateway motion (Historical)
 
-**In Progress:** landing-only SVG terminal illustration, pointer-reactive background,
-compact proposed Perpetual concepts and Made by Humans badge. Existing CMS and
-English Prop entry remain authoritative. Review,
-product claims and unified-release acceptance remain open. [Implementation and
-local checks](../reviews/landing-motion/DELIVERY.md).
+Superseded on 2026-11-28 by the one-screen Openfund gateway (animated solar
+system, two actions); the SVG terminal illustration, pointer-reactive background
+and proposed Perpetual concepts are retired (`docs/development/RETIRED.json`,
+`home-product-gateway`). [Earlier implementation notes](../reviews/landing-motion/DELIVERY.md).
 
 ## Public website launch content
 

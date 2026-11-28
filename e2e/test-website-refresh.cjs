@@ -94,8 +94,7 @@ async function realThemeClicks(browser) {
         await page.locator('.openfund-header').waitFor();
         await sample(page, `${prefix}-${route}-light`, 'light');
       }
-      await page.goto(`${BASE}/${locale}/home`, { waitUntil: 'domcontentloaded' });
-      await page.locator(`a[href="/${locale}/prop/trade"]`).first().click();
+      await page.goto(`${BASE}/${locale}/prop/trade`, { waitUntil: 'domcontentloaded' });
       await page.locator('.of-terminal-top').waitFor();
       const iframe = page.frameLocator('iframe');
       await velaReady(page);
@@ -210,43 +209,27 @@ async function realThemeClicks(browser) {
     }
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
     await page.goto(`${BASE}/fa/home`);
-    await page.locator('.home-community .telegram-community').waitFor();
-    await page.waitForFunction(() => getComputedStyle(document.querySelector('.home-stage')).display === 'flex' && getComputedStyle(document.querySelector('.home-community .community-group')).flexWrap === 'nowrap');
+    await page.locator('.solar-gateway .solar-actions .button').last().waitFor();
     await page.evaluate(() => document.fonts.ready);
     check('Persian Home has no footer', await page.locator('footer').count() === 0);
     check('Persian Home has no Instagram promo', await page.locator('.instagram-community').count() === 0);
-    /* TEMPORARY diagnostics (PR #161): the assertion is unchanged; the message
-       records the measured boxes so a Linux-only failure can be diagnosed. */
-    const communityBoxes = await page.locator('.home-community .community-button').evaluateAll(buttons => buttons.map(button => {
-      const box = button.getBoundingClientRect(), style = getComputedStyle(button);
-      return { top: box.top, height: box.height, width: box.width, text: button.innerText, font: style.font, display: style.display };
-    }));
-    check(`Persian Home desktop single community action ${JSON.stringify(communityBoxes)}`,
-      communityBoxes.length === 1 && communityBoxes.every(box => Math.abs(box.top - communityBoxes[0].top) <= 1 && Math.abs(box.height - 44) <= 1 && box.width < 300));
-    check('Persian Home has no Discord action', await page.locator('.discord-community').count() === 0);
-    check('Persian Home hero community including unavailable CMS', await page.locator('.telegram-community').count() === 1 && await page.locator('.home-community .telegram-community').count() === 1);
+    check('Persian Home is the one-screen gateway with two actions', await page.locator('.solar-actions .button').count() === 2 &&
+      await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1));
     await shot(page, 'home-fa', '/fa/home');
     await page.close();
     const englishHome = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
     try {
       await englishHome.goto(`${BASE}/en/home`);
-      await englishHome.locator('.home-community .telegram-community').waitFor();
-      // CMS, language and route teardown can settle in different frames. Wait
-      // for the complete final state atomically before asserting it.
       const ready = await englishHome.waitForFunction(() => {
         const state = {
           path: location.pathname, lang: document.documentElement.lang,
-          panels: document.querySelectorAll('.home-panel').length,
+          actions: document.querySelectorAll('.solar-actions .button').length,
           footers: document.querySelectorAll('footer').length,
-          heading: document.querySelector('.home-gateway h1')?.textContent || '',
         };
-        return state.lang === 'en' && state.footers === 0
-          && (state.panels === 2 || state.panels === 0 && /content is unavailable/i.test(state.heading)) ? state : false;
+        return state.lang === 'en' && state.footers === 0 && state.actions === 2 ? state : false;
       }, null, { timeout: 30000 });
       const homeState = await ready.jsonValue();
-      check(`English Home shows the gateway or explicit CMS-unavailable state without a footer: ${JSON.stringify(homeState)}`,
-        homeState.lang === 'en' && homeState.footers === 0 &&
-        (homeState.panels === 2 || homeState.panels === 0 && /content is unavailable/i.test(homeState.heading)));
+      check(`English Home shows the gateway without a footer: ${JSON.stringify(homeState)}`, homeState.actions === 2 && homeState.footers === 0);
     } finally { await englishHome.close(); }
     // These are direct-entry checks, not transition checks. Isolate each entry
     // from the preceding legacy Landing teardown's scheduled document reload.

@@ -97,6 +97,8 @@ async function get(path, timeoutMs){
   if (oracleMarketApi !== false){
     try {
       const data = await getFrom(ORACLE, path, timeoutMs);
+      /* an empty Open Oracle catalog is no catalog: use the venue feed instead */
+      if (path === '/markets' && Array.isArray(data) && !data.length) throw new Error('Empty catalog');
       oracleMarketApi = true;
       return data;
     } catch (e) {

@@ -122,7 +122,8 @@
         "Soulbound certificate NFTs: purchase, Free Trial start, phase pass, final pass, payout",
         "Every position open, SL/TP change, partial close and close recorded publicly",
         "Arbitrum Sepolia; Openfund pays, traders never sign",
-        "Transactional outbox with idempotent, retried sends"
+        "Transactional outbox with idempotent, retried sends",
+        "Public Smart contracts page: addresses, Arbiscan links, source and audit status"
       ]
     },
     {
@@ -135,6 +136,18 @@
         "On-chain verification of token, amount and finality",
         "Ledger with partial payments and refunds",
         "Exactly-once challenge activation"
+      ]
+    },
+    {
+      "id": "website",
+      "title": "Public website",
+      "icon": "browser",
+      "href": "docs/product/FEATURE_STATUS.md",
+      "items": [
+        "One-screen Openfund gateway: an animated miniature solar system with Buy a challenge and Trading rules",
+        "One navigation model for the header mega menus, the site drawer and the terminal menu, led by Openfund",
+        "Airdrop and Smart contracts entries in the Challenges and Resources menus",
+        "Five locales with right-to-left layouts, light and dark themes"
       ]
     },
     {

@@ -1,0 +1,18 @@
+/* /smart-contracts and the reserved /airdrop page */
+.information-page .of-reserved-page { min-height: 40vh; display: grid; align-content: center; }
+.information-page .of-reserved-page h1 { margin: 0; }
+.information-page .of-contract-note { color: var(--body, #a5b9ae); font-size: 14px; line-height: 1.9; }
+.information-page .of-contract-note span { display: inline-block; margin-inline-start: 8px; }
+.information-page .of-contract-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding-bottom: clamp(40px, 6vw, 80px); }
+.information-page .of-contract-card { min-width: 0; padding: clamp(18px, 2.4vw, 28px); border: 1px solid var(--line); border-radius: var(--ds-radius-lg, 18px);
+  background: color-mix(in srgb, var(--surface, #0d1511) 70%, transparent); display: grid; gap: 12px; align-content: start; }
+.information-page .of-contract-card h2 { margin: 0; font-size: clamp(18px, 1.6vw, 22px); }
+.information-page .of-contract-card p { margin: 0; color: var(--body, #a5b9ae); line-height: 1.9; font-size: 14px; }
+.information-page .of-contract-card dl { margin: 0; display: grid; gap: 8px; }
+.information-page .of-contract-card dl > div { display: grid; grid-template-columns: minmax(84px, max-content) minmax(0, 1fr); gap: 12px; align-items: baseline;
+  padding-top: 8px; border-top: 1px solid var(--line); }
+.information-page .of-contract-card dt { color: var(--body, #a5b9ae); font-size: 13px; }
+.information-page .of-contract-card dd { margin: 0; font-size: 14px; min-width: 0; }
+.information-page .of-contract-address { font-variant-numeric: tabular-nums; font-size: 13px; overflow-wrap: anywhere; letter-spacing: .02em; }
+.information-page .of-contract-links { display: flex; flex-wrap: wrap; gap: 16px; }
+@media (max-width: 760px) { .information-page .of-contract-grid { grid-template-columns: minmax(0, 1fr); } }

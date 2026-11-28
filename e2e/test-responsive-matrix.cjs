@@ -59,7 +59,7 @@ const SHOTS = new Set([
 const SHOT_FOCUS = { challenges: '.market-tabs', markets: '.mk-toolbar, .market-tabs, [role=tablist]', whitepaper: '.wp-chapter-num', transparency: '.econ-state' };
 const DRAWER_SHOTS = new Set(['markets fa dark 375', 'markets en light 375', 'prop/trade ar dark 390', 'prop/trade en dark 390']);
 /* drawer behaviour is exercised at every width on one public page with the site
-   navigation (/home is the nav-less product gateway) and on the trading terminal */
+   navigation and on the trading terminal */
 const DRAWER_ROUTES = new Set(['markets', 'prop/trade']);
 
 const [shardIndex, shardCount] = (process.env.MATRIX_SHARD || '1/1').split('/').map(Number);

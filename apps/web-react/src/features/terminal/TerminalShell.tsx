@@ -115,6 +115,8 @@ export default function TerminalShell({ product }: { product: Product }) {
   const TOP_LEVEL = ["dashboard", "trade", "chart", "radar", "heatmap", "portfolio"];
   const navigation = (
     <nav id="terminal-navigation" aria-label={t("ناوبری ترمینال", "Terminal navigation")}>
+      {/* the Openfund gateway, first in every menu */}
+      <Link to={`/${locale}/home`} className="of-gateway-link">{t("اوپن‌فاند", "Openfund")}</Link>
       {primary[product].filter(([id]) => TOP_LEVEL.includes(id)).map(([id, fa, en]) => (
         <Link key={id} to={route(locale, product, id)} aria-current={page === id ? "page" : undefined}
           className={page === id ? "active" : ""}>
@@ -133,6 +135,7 @@ export default function TerminalShell({ product }: { product: Product }) {
           {primary[product].map(([id, fa, en]) => <Link key={id}
             className={TOP_LEVEL.includes(id) ? "of-compact-destination" : page === id ? "active" : undefined}
             aria-current={page === id ? "page" : undefined} to={route(locale, product, id)}>{t(fa, en)}</Link>)}
+          <Link className="of-compact-destination" to={`/${locale}/home`}>{t("اوپن‌فاند", "Openfund")}</Link>
           <Link className="of-compact-destination" to={route(locale, product, "journal")}>{t("ژورنال", "Journal")}</Link>
           <Link className="of-compact-destination" to={accountsHref}>{t("حساب‌ها", "Accounts")}</Link>
           {/* reopens the terminal guide at any time (features/guide) */}

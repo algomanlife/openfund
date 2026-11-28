@@ -1,7 +1,7 @@
 {
   "$comment": "Machine-readable registry of retired, legacy-only and dormant items. Edit this file, then run `node scripts/docs/check-retired.mjs --write` to regenerate RETIRED.md and the README block. `npm run docs:check` fails if a `retired` item still has an active reference, if a retired component is listed in the active license table, or if a generated output is stale. Contract: docs/development/README_STRUCTURE.md.",
   "schemaVersion": 1,
-  "updatedAt": "2026-11-27",
+  "updatedAt": "2026-11-28",
   "statuses": {
     "retired": "Removed. Zero active references allowed; history may still name it.",
     "legacy-only pending removal": "Still shipped for compatibility; no new work; replacement named; remaining references are counted, not gated.",
@@ -32,8 +32,16 @@
       "replacement": "Dastkhat v1.210 — [typography policy](../design/DESIGN_SYSTEM.md#typography-and-font-tokens)",
       "note": "\"All rights reserved\" with no recorded license; removed from public assets, `dist/`, `brand/typography/` and the investor pack, which resolved the provenance blocker.",
       "gate": {
-        "files": ["(^|/)irancell-\\d+[\\w-]*\\.ttf$", "(^|/)openfund-[1-5]\\.ttf$"],
-        "text": ["irancell-\\d+[\\w-]*\\.ttf", "openfund-[1-5]\\.ttf", "font-family\\s*:[^;{}]*\\bIrancell\\b", "['\"]Irancell['\"]"],
+        "files": [
+          "(^|/)irancell-\\d+[\\w-]*\\.ttf$",
+          "(^|/)openfund-[1-5]\\.ttf$"
+        ],
+        "text": [
+          "irancell-\\d+[\\w-]*\\.ttf",
+          "openfund-[1-5]\\.ttf",
+          "font-family\\s*:[^;{}]*\\bIrancell\\b",
+          "['\"]Irancell['\"]"
+        ],
         "notice": "\\bIrancell\\b",
         "scope": "active"
       }
@@ -47,8 +55,15 @@
       "replacement": "Dastkhat v1.210 (`/assets/fonts/dastkhat/`); certificate face `Dastkhat Certificate`",
       "note": "Same unlicensed glyphs as Irancell under a new family name.",
       "gate": {
-        "files": ["(^|/)openfund-persian-[\\w-]+\\.woff2?$"],
-        "text": ["openfund-persian-[\\w-]+\\.woff2?", "/persian\\.woff2", "OpenfundCertificateFa", "['\"]Openfund Persian['\"]"],
+        "files": [
+          "(^|/)openfund-persian-[\\w-]+\\.woff2?$"
+        ],
+        "text": [
+          "openfund-persian-[\\w-]+\\.woff2?",
+          "/persian\\.woff2",
+          "OpenfundCertificateFa",
+          "['\"]Openfund Persian['\"]"
+        ],
         "notice": "Openfund Persian|openfund-persian",
         "scope": "active"
       }
@@ -62,8 +77,18 @@
       "replacement": "Dastkhat v1.210, which is based on Vazirmatn (SIL OFL 1.1) and credits it",
       "note": "Prose attribution \"based on Vazirmatn\" is required by the OFL and is not a reference to the retired copy.",
       "gate": {
-        "files": ["(^|/)Vazirmatn[\\w-]*\\.(ttf|otf|woff2?)$", "(^|/)Vazirmatn-LICENSE\\.txt$"],
-        "text": ["Vazirmatn[\\w-]*\\.(ttf|otf|woff2?)", "Vazirmatn-LICENSE\\.txt", "family=Vazirmatn", "typeface=\"Vazirmatn\"", "font-family\\s*:[^;{}]*\\bVazirmatn\\b", "['\"]Vazirmatn['\"]"],
+        "files": [
+          "(^|/)Vazirmatn[\\w-]*\\.(ttf|otf|woff2?)$",
+          "(^|/)Vazirmatn-LICENSE\\.txt$"
+        ],
+        "text": [
+          "Vazirmatn[\\w-]*\\.(ttf|otf|woff2?)",
+          "Vazirmatn-LICENSE\\.txt",
+          "family=Vazirmatn",
+          "typeface=\"Vazirmatn\"",
+          "font-family\\s*:[^;{}]*\\bVazirmatn\\b",
+          "['\"]Vazirmatn['\"]"
+        ],
         "notice": "^Vazirmatn",
         "scope": "active"
       }
@@ -78,7 +103,10 @@
       "note": "Runtime facts (for example a region still running v0.6.5) stay in the generated status block; release notes keep their history.",
       "gate": {
         "files": [],
-        "text": ["\\bv0\\.6\\.5\\b", "\\bv0\\.7\\.0\\b"],
+        "text": [
+          "\\bv0\\.6\\.5\\b",
+          "\\bv0\\.7\\.0\\b"
+        ],
         "scope": "readme"
       }
     },
@@ -90,8 +118,13 @@
       "retiredSince": "2026-11-21",
       "replacement": "One curated gallery generated from [docs/assets/gallery/gallery.json](../assets/gallery/gallery.json); the old sets are in [docs/reviews/_archive/readme-galleries/](../reviews/_archive/readme-galleries/README.md)",
       "gate": {
-        "files": ["^docs/assets/screenshots/readme/"],
-        "text": ["^#{2,6} .*\\b\\d{4}-\\d{2}-\\d{2}\\b", "screenshots/readme/"],
+        "files": [
+          "^docs/assets/screenshots/readme/"
+        ],
+        "text": [
+          "^#{2,6} .*\\b\\d{4}-\\d{2}-\\d{2}\\b",
+          "screenshots/readme/"
+        ],
         "scope": "readme"
       }
     },
@@ -103,7 +136,9 @@
       "retiredSince": "2026-11-21",
       "replacement": "Kept as history under [docs/reviews/_archive/](../reviews/_archive/README.md); current state lives in [docs/status](../status/README.md)",
       "gate": {
-        "files": ["^docs/reviews/(v0\\.4\\.1|v0\\.6\\.5|release-0\\.6\\.[56])/"],
+        "files": [
+          "^docs/reviews/(v0\\.4\\.1|v0\\.6\\.5|release-0\\.6\\.[56])/"
+        ],
         "text": [],
         "scope": "active"
       }
@@ -116,7 +151,9 @@
       "retiredSince": "2026-11-21",
       "replacement": "React application (`apps/web-react/src/`)",
       "gate": {
-        "files": ["^apps/web-react/public/legacy/"],
+        "files": [
+          "^apps/web-react/public/legacy/"
+        ],
         "text": [],
         "scope": "active"
       }
@@ -130,7 +167,9 @@
       "replacement": "`apps/web-react/public/` (served assets and the legacy runtime), written by `npm run build:charts`",
       "note": "Never served by the backend; most files were byte-identical copies. Removed by owner decision together with its build-charts, upstream-guard and test references.",
       "gate": {
-        "files": ["^dist/"],
+        "files": [
+          "^dist/"
+        ],
         "text": [],
         "scope": "active"
       }
@@ -143,7 +182,9 @@
       "retiredSince": null,
       "replacement": "None — not retired; not built, shipped or operated ([provenance](../../packages/openfund-protocol/PROVENANCE.md))",
       "gate": {
-        "files": ["^packages/openfund-protocol/"],
+        "files": [
+          "^packages/openfund-protocol/"
+        ],
         "text": [],
         "scope": "active"
       }
@@ -158,7 +199,32 @@
       "note": "Sign-in no longer creates the account outside test mode. The engine keeps the account type as the fixture the backend and browser suites trade on (`SIM_TEST_MODE`); no product surface offers it.",
       "gate": {
         "files": [],
-        "text": ["free_demo"],
+        "text": [
+          "free_demo"
+        ],
+        "scope": "active"
+      }
+    },
+    {
+      "id": "home-product-gateway",
+      "item": "Two-card product gateway on /:locale/home (Prop and Perpetual product cards with terminal illustrations, the pointer-parallax network background and the perpetual technical-features strip)",
+      "kind": "code",
+      "status": "retired",
+      "retiredSince": "2026-11-28",
+      "replacement": "One-screen Openfund gateway: an animated solar-system scene with two actions, Buy a challenge and Trading rules (`apps/web-react/src/features/home/solarScene.ts`)",
+      "note": "Owner decision. The Home content row in Directus keeps only its SEO title and description in use; the product-card fields are no longer rendered.",
+      "gate": {
+        "files": [
+          "apps/web-react/src/features/home/AnimatedTradingTerminalIllustration.tsx",
+          "apps/web-react/src/features/home/LeveragedMarketIllustration.tsx",
+          "apps/web-react/src/features/home/TechnicalFeatureStrip.tsx",
+          "apps/web-react/src/features/home/LandingMotionBackground.tsx"
+        ],
+        "text": [
+          "TechnicalFeatureStrip",
+          "LeveragedMarketIllustration",
+          "AnimatedTradingTerminalIllustration"
+        ],
         "scope": "active"
       }
     }

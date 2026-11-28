@@ -4,13 +4,13 @@
     {
       "path": "home",
       "view": "home",
-      "icon": null,
+      "icon": "home",
       "title": {
-        "fa": "خانه",
-        "en": "Home",
-        "ar": "Home",
-        "ru": "Home",
-        "zh-CN": "Home"
+        "fa": "اوپن‌فاند",
+        "en": "Openfund",
+        "ar": "Openfund",
+        "ru": "Openfund",
+        "zh-CN": "Openfund"
       },
       "description": null
     },
@@ -371,6 +371,44 @@
       }
     },
     {
+      "path": "airdrop",
+      "view": "airdrop",
+      "icon": "airdrop",
+      "title": {
+        "fa": "ایردراپ",
+        "en": "Airdrop",
+        "ar": "الإسقاط الجوي",
+        "ru": "Аирдроп",
+        "zh-CN": "空投"
+      },
+      "description": {
+        "fa": "ایردراپ اوپن‌فاند؛ جزئیات به‌زودی.",
+        "en": "Openfund airdrop: details coming soon.",
+        "ar": "الإسقاط الجوي من Openfund: التفاصيل قريبًا.",
+        "ru": "Аирдроп Openfund: подробности скоро.",
+        "zh-CN": "Openfund 空投：详情即将公布。"
+      }
+    },
+    {
+      "path": "smart-contracts",
+      "view": "smart-contracts",
+      "icon": "smart-contracts",
+      "title": {
+        "fa": "اسمارت کانترکت‌ها",
+        "en": "Smart contracts",
+        "ar": "العقود الذكية",
+        "ru": "Смарт-контракты",
+        "zh-CN": "智能合约"
+      },
+      "description": {
+        "fa": "قراردادهای ما روی Arbitrum Sepolia، قابل بررسی برای همه.",
+        "en": "Our contracts on Arbitrum Sepolia, open to verify.",
+        "ar": "عقودنا على Arbitrum Sepolia، متاحة للتحقق للجميع.",
+        "ru": "Наши контракты в Arbitrum Sepolia, открытые для проверки.",
+        "zh-CN": "我们在 Arbitrum Sepolia 上的合约，人人可验证。"
+      }
+    },
+    {
       "path": "migrate",
       "view": "migrate",
       "icon": "migrate",
@@ -630,8 +668,8 @@
         "fa": "تغییرات برای توسعه‌دهندگان"
       },
       "text": {
-        "en": "2026 11 27 — on chain certificates and trade records (ADR 0063) New package packages/openfund chain records (Solidity 0.8.28, Foundry): OpenfundCertificate (soulbound ERC 721 / ERC 5192) and OpenfundTradeLedger. New CI job \"Chain records contracts\" runs forge build and forge test. apps/backend/schema.sql (additive, idempotent): table chain records (transactional outbox) and triggers on openfund challenges, challenge events, withdrawal requests and trading positions that queue certificates, evaluation outcomes and every position open, SL/TP change, partial close and close of a challenge or Free",
-        "fa": "۱۴۰۵/۰۹/۰۶ — گواهی‌ها و سوابق معاملات روی بلاکچین (ADR 0063) پکیج تازهٔ packages/openfund chain records (Solidity 0.8.28، Foundry): OpenfundCertificate (ERC 721 غیرقابل‌انتقال / ERC 5192) و OpenfundTradeLedger. کار تازهٔ CI به نام «Chain records contracts» دستورهای forge build و forge test را اجرا می‌کند. apps/backend/schema.sql (افزایشی و تکرارپذیر): جدول chain records (outbox تراکنشی) و تریگرهایی روی openfund challenges، challenge events، withdrawal requests و trading positions که گواهی‌ها، نتیجهٔ ارزیابی و هر باز شدن، تغییر SL/TP، بستن بخشی و بستن پوزیشن حساب چلنج یا تست رایگان را در صف می‌"
+        "en": "2026 11 28 — Openfund gateway, navigation and new pages New public routes /:locale/airdrop (reserved, no content yet) and /:locale/smart contracts (contract addresses from GET /chain/status, Arbiscan and source links); both are in the sitemap (apps/backend/seo.js) and the editorial route registry. /:locale/home is one fixed screen: the canvas scene in features/home/solarScene.ts and two actions; the site navigation now shows on it. The navigation model (features/information/navigation.ts) gains home, first in the header, the site drawer and the terminal menus. The shared market adapter and the",
+        "fa": "۲۸ نوامبر ۲۰۲۶: صفحهٔ اوپن‌فاند، ناوبری و صفحه‌های تازه مسیرهای عمومی تازه: /:locale/airdrop (رزروشده، فعلاً بدون محتوا) و /:locale/smart contracts (آدرس قراردادها از GET /chain/status، با پیوند Arbiscan و کد منبع). هر دو در نقشهٔ سایت (apps/backend/seo.js) و فهرست مسیرهای تحریریه ثبت شده‌اند. /:locale/home یک صفحهٔ ثابت است: صحنهٔ بوم در features/home/solarScene.ts و دو دکمه؛ منوی سایت اکنون روی این صفحه هم نمایش داده می‌شود. مدل ناوبری (features/information/navigation.ts) مورد home را دارد که در هدر، کشوی سایت و منوهای ترمینال اول می‌آید. آداپتور مشترک بازار و جدول بازار سایت، فهرست خالی Ope"
       }
     }
   ]

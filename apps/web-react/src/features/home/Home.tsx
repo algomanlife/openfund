@@ -1,134 +1,105 @@
 import { normalizeLocale, pick } from '../../i18n/locales'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import InformationShell from '../information/InformationShell'
 import type { Locale } from '../information/content'
 import { fetchCmsHome, type CmsHome } from '../../cms/client'
-import LandingMotionBackground from './LandingMotionBackground'
-import AnimatedTradingTerminalIllustration from './AnimatedTradingTerminalIllustration'
-import TechnicalFeatureStrip from './TechnicalFeatureStrip'
-import LeveragedMarketIllustration from './LeveragedMarketIllustration'
+import { startSolarScene } from './solarScene'
 import './home.css'
-import TelegramCommunity from '../community/TelegramCommunity'
-import type { ReactNode } from 'react'
-import { useSpotlight } from '../../styles/useSpotlight'
-import DirArrow from '../../ui/DirArrow'
-
-/* Right-to-left copy: isolate embedded Latin names (e.g. "Gains Network") so
-   they keep their word order and never split across lines. Display only. */
-function isolateLatin(text: string, rtl: boolean): ReactNode {
-  if (!rtl) return text
-  return text.split(/([A-Za-z][A-Za-z0-9.&'-]*(?: [A-Za-z0-9][A-Za-z0-9.&'-]*)*)/).map((part, index) =>
-    index % 2 ? <bdi key={index} dir="ltr">{part}</bdi> : part)
-}
-
-
-/** Persian-only product gateway. Editorial fields remain owned by Directus;
- * decorative components do not connect to market, wallet or execution APIs. */
-export default function Home() {
-  const locale: Locale = normalizeLocale(useParams().locale, 'fa')
-  const [content, setContent] = useState<CmsHome | null | 'error'>(null)
-  useEffect(() => {
-    let active = true
-    void fetchCmsHome().then(data => { if (active) setContent(data || 'error') })
-    return () => { active = false }
-  }, [])
-  const c = content === 'error' ? null : content
-  return <InformationShell page="home" footer={false} nav={false}
-      title={c ? (c.translations[locale].seoTitle || 'Openfund') : 'Openfund'}
-      description={c ? (c.translations[locale].seoDescription || '') : 'Openfund'}>
-    {/* loading: a quiet placeholder, never the "unavailable" message (that
-        flashed while the CMS answered and remounted the page when it did) */}
-    {c ? <HomeBody locale={locale} content={c} /> : content === 'error' ? <HomeUnavailable locale={locale} />
-      : <div id="top" className="home-gateway" aria-busy="true"><div className="container home-stage" /></div>}
-  </InformationShell>
-}
-
-/* CTA destination whitelist — the CMS picks from these; arbitrary URLs are never rendered */
-const CTA_HREF: Record<'challenges' | 'terminal', (locale: Locale) => string> = {
-  challenges: locale => `/${locale}/challenges`,
-  terminal: locale => `/${locale}/perpetual/trade`,
-}
 
 /* the single shared checkout route (also used by the wallet card and the campaign page) */
 export const CHECKOUT_HREF = (locale: string) => `/${locale}/checkout`
 
-function HomeUnavailable({ locale }: { locale: Locale }) {
-  return <div id="top" className="home-gateway">
-    <div className="container home-stage">
-      <h1>{pick(locale, 'محتوای این بخش در دسترس نیست', 'This section’s content is unavailable')}</h1>
-      <p className="hero-intro">
-        {pick(locale, 'اتصال به سامانهٔ مدیریت محتوا برقرار نشد. چند لحظه بعد صفحه را تازه‌سازی کن.', 'The content management service could not be reached. Please refresh in a moment.')}
-      </p>
-      <div className="home-community"><TelegramCommunity locale={locale} /></div>
-    </div>
-  </div>
+/** Openfund gateway: one fixed screen under the site header — a miniature
+ *  solar system turning on its dusty disc, and two actions. The page never
+ *  scrolls; the scene fills whatever space the header, the announcement bar
+ *  and the Persian price strip leave. SEO title and description stay owned
+ *  by Directus; the scene connects to no market, wallet or execution API. */
+export default function Home() {
+  const locale: Locale = normalizeLocale(useParams().locale, 'fa')
+  const [content, setContent] = useState<CmsHome | null>(null)
+  useEffect(() => {
+    let active = true
+    void fetchCmsHome().then(data => { if (active && data) setContent(data) })
+    return () => { active = false }
+  }, [])
+  const seo = content?.translations[locale]
+  return <InformationShell page="home" footer={false}
+      title={seo?.seoTitle || 'Openfund'}
+      description={seo?.seoDescription || pick(locale, 'اوپن‌فاند: چلنج‌های معاملاتی شفاف در محیط شبیه‌سازی‌شده.', 'Openfund: transparent trading challenges in a simulated environment.')}>
+    <SolarGateway locale={locale} />
+  </InformationShell>
 }
 
-/** Product card with a pointer-following border light (inert on touch / reduced motion). */
-function SpotPanel({ className, children }: { className: string; children: ReactNode }) {
-  const ref = useSpotlight<HTMLElement>()
-  return <article ref={ref} className={className}>{children}</article>
-}
+function SolarGateway({ locale }: { locale: Locale }) {
+  const stage = useRef<HTMLDivElement>(null)
+  const canvas = useRef<HTMLCanvasElement>(null)
 
-function HomeBody({ locale, content: c }: { locale: Locale; content: CmsHome }) {
-  const t = c.translations[locale]
-  const rtl = locale === 'fa' || locale === 'ar'
-  /* headline split: last word becomes the accent line (two-line composition) */
-  const cut = t.headline.lastIndexOf(' ')
-  const [main, accent] = cut > 0 ? [t.headline.slice(0, cut), t.headline.slice(cut + 1)] : [t.headline, '']
+  /* one screen: the stage spans from the bottom of the header (and the
+     announcement bar above it) to the top of the fixed price strip */
+  useEffect(() => {
+    const element = stage.current
+    if (!element) return
+    const root = document.documentElement
+    root.classList.add('of-gateway-locked')
+    const page = element.closest('.information-page')
+    const measure = () => {
+      const header = page?.querySelector('header')
+      const strip = document.querySelector<HTMLElement>('.bitpin-ticker')
+      const top = Math.max(0, header?.getBoundingClientRect().bottom ?? 0)
+      element.style.setProperty('--gateway-top', `${top}px`)
+      element.style.setProperty('--gateway-bottom', `${strip?.getBoundingClientRect().height ?? 0}px`)
+    }
+    const resize = new ResizeObserver(measure)
+    const watch = () => {
+      const header = page?.querySelector('header'), strip = document.querySelector('.bitpin-ticker')
+      const bar = page?.querySelector('.of-announcement')
+      for (const el of [header, strip, bar]) if (el) resize.observe(el)
+      measure()
+    }
+    watch()
+    addEventListener('of-announcement', watch)
+    addEventListener('resize', measure)
+    /* the strip mounts after the page: pick it up when it arrives */
+    const late = new MutationObserver(watch)
+    late.observe(document.body, { childList: true })
+    return () => {
+      root.classList.remove('of-gateway-locked')
+      resize.disconnect(); late.disconnect()
+      removeEventListener('of-announcement', watch)
+      removeEventListener('resize', measure)
+    }
+  }, [])
 
-  return <div id="top" className="home-gateway">
-    <LandingMotionBackground />
+  /* the scene follows the site theme and the reduced-motion preference */
+  useEffect(() => {
+    const element = canvas.current
+    if (!element) return
+    const html = document.documentElement
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)')
+    const theme = () => html.getAttribute('data-theme') === 'light' ? 'light' as const : 'dark' as const
+    let current = theme()
+    let stop = startSolarScene(element, { still: reduced.matches, theme: current })
+    const restart = () => { current = theme(); stop(); stop = startSolarScene(element, { still: reduced.matches, theme: current }) }
+    const themeWatch = new MutationObserver(() => { if (theme() !== current) restart() })
+    themeWatch.observe(html, { attributes: true, attributeFilter: ['data-theme'] })
+    reduced.addEventListener('change', restart)
+    return () => { themeWatch.disconnect(); reduced.removeEventListener('change', restart); stop() }
+  }, [])
 
-    <div className="container home-stage">
-      <div className="home-hero">
-        <div className="home-enter e1 eyebrow"><span className="tiny-mark" aria-hidden="true">✳</span> OPENFUND</div>
-        <h1 className="home-enter e2">{accent ? <>{main} <em>{accent}</em></> : main}</h1>
-        <p className="home-lead home-enter e3">{pick(locale, 'ارزیابی معاملاتی شفاف در محیط شبیه‌سازی‌شده و ابزارهای حرفه‌ای تحلیل بازار، در یک پلتفرم.', 'Transparent trading evaluations in a simulated environment and professional market analysis tools, in one platform.')}</p>
-      </div>
-
-      <div className="home-products">
-        <SpotPanel className="home-panel home-enter e4">
-          <div className="home-art"><AnimatedTradingTerminalIllustration /></div>
-          <div className="home-panel-copy">
-            <div className="home-panel-heading"><h2>{t.propTitle}</h2></div>
-            <p className="home-product-note" title={t.propDescription || undefined}>{isolateLatin(t.propDescription || pick(locale, 'ارزیابی معاملاتی در محیط شبیه‌سازی‌شده', 'Trading evaluations in a simulated environment'), rtl)}</p>
-            <div className="home-cta-row">
-              <a className="button" href={c.propCtaDestination === 'terminal' ? `/${locale}/prop/trade` : CTA_HREF.challenges(locale)}>
-                {t.propCta}
-                <DirArrow kind="forward" />
-              </a>
-              {/* straight to the one shared checkout; the challenge type is chosen there.
-                  Client-side navigation keeps the wallet connection and session. */}
-              <Link className="button button-secondary home-buy-cta" to={CHECKOUT_HREF(locale)} data-cta="home-quick-buy">
-                {pick(locale, 'خرید سریع چالش', 'Buy Challenge')}
-              </Link>
-            </div>
-          </div>
-        </SpotPanel>
-
-        <SpotPanel className="home-panel home-enter e5">
-          <div className="home-art home-perpetual-art" aria-hidden="true">
-            <LeveragedMarketIllustration />
-          </div>
-          <div className="home-panel-copy">
-            <div className="home-panel-heading">
-              <h2 id="home-perpetual-title">{t.perpetualTitle}</h2>
-              {/* status label only: market data, charts and routing stay as they are */}
-              <span className="home-status-badge" aria-describedby="home-perpetual-title">{pick(locale, 'غیرفعال / در حال توسعه', 'Inactive / In Development')}</span>
-            </div>
-            <p className="home-product-note" title={t.perpetualDescription || undefined}>{isolateLatin(t.perpetualDescription || pick(locale, 'داده‌های بازار · دسترسی خواندنی', 'Market data · read-only access'), rtl)}</p>
-            <a className="button" href={CTA_HREF[c.perpetualCtaDestination](locale)}>
-              {t.perpetualCta}
-              <DirArrow kind="forward-down" />
-            </a>
-          </div>
-        </SpotPanel>
-      </div>
-
-      <div className="home-community"><TelegramCommunity locale={locale} /></div>
-      <TechnicalFeatureStrip locale={locale} />
-    </div>
+  return <div id="top" ref={stage} className="home-gateway solar-gateway">
+    <canvas ref={canvas} className="solar-canvas" aria-hidden="true" />
+    {/* miniature look: the near and far parts of the scene fall out of focus */}
+    <div className="solar-focus solar-focus-top" aria-hidden="true" />
+    <div className="solar-focus solar-focus-bottom" aria-hidden="true" />
+    <h1 className="visually-hidden">{pick(locale, 'اوپن‌فاند', 'Openfund')}</h1>
+    <nav className="solar-actions" aria-label={pick(locale, 'شروع', 'Get started')}>
+      <Link className="button solar-buy" to={CHECKOUT_HREF(locale)} data-cta="home-quick-buy">
+        {pick(locale, 'خرید سریع چلنج', 'Buy a challenge')}
+      </Link>
+      <Link className="button button-secondary solar-rules" to={`/${locale}/rulebook`} data-cta="home-rulebook">
+        {pick(locale, 'قوانین معاملاتی', 'Trading rules')}
+      </Link>
+    </nav>
   </div>
 }

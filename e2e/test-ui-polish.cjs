@@ -166,7 +166,7 @@ async function readableText(page,selector,theme){
  });
  check(`${page.url()} light text WCAG >=4.5: ${JSON.stringify(failures)}`,failures.length===0);
 }
-const PUBLIC_TEXT='header .brand,header .navlinks,.hero h1,.hero-intro,.home-panel-copy,.technical-heading,.technical-feature,.desktop-btns .dl,.desktop-sub,.desktop-note,footer,.info-hero,.section-heading,.model-card h3,.feature-card h3,.faq-question,.faq-answer,.tool-card h2,.learn-path-card h2,.mk-symbol,.mk-price';
+const PUBLIC_TEXT='header .brand,header .navlinks,.hero h1,.hero-intro,.solar-actions,.desktop-btns .dl,.desktop-sub,.desktop-note,footer,.info-hero,.section-heading,.model-card h3,.feature-card h3,.faq-question,.faq-answer,.tool-card h2,.learn-path-card h2,.mk-symbol,.mk-price';
 const TERMINAL_TEXT='.of-brand,.of-terminal h1,.of-terminal h2,.of-panel label,.of-metric,.of-terminal p,.of-purchase-page,.of-profile,.of-checkout';
 async function walletDisclosureFits(page){
  const menu=page.locator('header .rk-account-menu');
@@ -208,7 +208,7 @@ async function walletDisclosureFits(page){
    await page.reload();
    await page.locator('header .nav-cta').waitFor();
    await page.waitForTimeout(locale==='en'?1800:350);
-   await page.locator('.home-products').waitFor();
+   await page.locator('.solar-gateway .solar-actions').waitFor();
    if(connected && !await page.locator('.rk-account-menu').count()){
     await page.locator('header .rk-chip-connect').click();
     await page.locator('[data-wallet-picker] [data-wallet-id]').first().click();
@@ -220,24 +220,20 @@ async function walletDisclosureFits(page){
    check(prefix+' Home native surfaces',await nativeSurfaces(page,'html,body,header,.home-panel,.hero-account,.account-card,.model-card,.feature-card',theme));
    await whiteCanvas(page,'html,body,#root,main,.home-gateway',theme);
    await readableText(page,PUBLIC_TEXT,theme);
-   if(locale==='fa'&&width===1440&&!connected){
-    await page.locator('.technical-feature').first().focus();await page.keyboard.press('Enter');
-    const technical=page.locator('.technical-dialog[open]');await technical.waitFor();
-    check(prefix+' technical dialog native light',await nativeSurfaces(page,'.technical-dialog[open]',theme));
-    await page.keyboard.press('Escape');check(prefix+' technical dialog keyboard closes',await technical.count()===0);
-   }
-   check(prefix+' Home products',await page.locator('.home-panel').count()===2);
-   check(prefix+' Home navigation',await page.locator('header #navigation').count()===0);
+   check(prefix+' Home actions',await page.locator('.solar-actions .button').count()===2);
+   check(prefix+' Home navigation',await page.locator('header #navigation').count()===1);
+   check(prefix+' Home is one screen',await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+1&&document.documentElement.scrollWidth<=innerWidth+1));
    if(connected)check(prefix+' wallet dropdown actions fit and Escape closes',await walletDisclosureFits(page));
    check(prefix+' terminal entry',await page.locator('header .nav-cta').isVisible());
    if(width===1440 && !connected || width===390 && connected){const file=`home-${locale}-${theme}-${width}-${connected?'test-wallet':'disconnected'}.png`;await page.screenshot({animations:'disabled',path:path.join(OUT,file),fullPage:true});screenshots.push({file,fixture:connected?'connection-only test wallet':'none'})}
    await page.goto(BASE+`/${locale}/faq`);await page.waitForTimeout(300);await page.locator('#navigation').waitFor({state:'attached'});
    const expectedNavigation = {
-    primary: ['markets', 'rulebook'],
+    /* the Openfund gateway leads the header */
+    primary: ['home', 'markets', 'rulebook'],
     /* Trading challenges is a mega-menu group (item C of the second batch) */
-    challenges: ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'rulebook'],
+    challenges: ['challenges', 'checkout', 'trading-objectives', 'labs', 'migrate', 'tournament', 'airdrop', 'rulebook'],
     economy: ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'],
-    resources: ['learn', 'learn/glossary', 'faq', 'apps', 'tools', 'roadmap', 'developers', 'about', 'contact', 'certificate-verification', 'bug-bounty'],
+    resources: ['learn', 'learn/glossary', 'faq', 'apps', 'tools', 'roadmap', 'developers', 'about', 'contact', 'certificate-verification', 'bug-bounty', 'smart-contracts'],
    };
    for (const [group, routes] of Object.entries(expectedNavigation)) {
     /* mega menu: destination tiles in section order; the featured banner is checked separately */
@@ -357,7 +353,7 @@ async function walletDisclosureFits(page){
   }
   await page.goto(BASE+'/en/home');await page.locator('.of-language-select').first().waitFor({ state: 'attached' });await page.waitForTimeout(1800);
   await toggleLanguage(page);await page.waitForURL('**/fa/home');
-  await page.locator('.home-products').waitFor();await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.home-products').waitFor();
+  await page.locator('.solar-gateway').waitFor();await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.solar-gateway').waitFor();
   check('EN Home language switch returns to FA two-product Home',true);
   await toggleLanguage(page);await page.waitForURL('**/en/home');await page.locator('.home-gateway').waitFor();
   await page.waitForFunction(()=>!window.__ofReloadLanding);await page.locator('.home-gateway').waitFor();
