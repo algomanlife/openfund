@@ -6760,7 +6760,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 61,
+          "line": 75,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7612,7 +7612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 385,
+          "line": 389,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -11451,7 +11451,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 377,
+          "line": 381,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -12386,7 +12386,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 399,
+          "line": 403,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -12934,7 +12934,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 394,
+          "line": 398,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -21073,7 +21073,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 291,
+          "line": 301,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25655,7 +25655,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 255,
+          "line": 265,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27750,7 +27750,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 272,
+          "line": 282,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35025,14 +35025,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 240,
+          "line": 250,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 241,
+          "line": 251,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -39529,7 +39529,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 251,
+          "line": 261,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40904,7 +40904,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 255,
+          "line": 265,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40938,7 +40938,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 396,
+          "line": 400,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -43188,14 +43188,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 259,
+          "line": 269,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 260,
+          "line": 270,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43557,7 +43557,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 276,
+          "line": 286,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -46713,7 +46713,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 389,
+          "line": 393,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -50717,7 +50717,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 242,
+          "line": 252,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52406,7 +52406,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 264,
+          "line": 274,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52922,7 +52922,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 416,
+          "line": 420,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -55183,7 +55183,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 247,
+          "line": 257,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56298,7 +56298,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 61,
+          "line": 75,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -58438,7 +58438,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 376,
+          "line": 380,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -64037,7 +64037,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 233,
+          "line": 243,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64144,7 +64144,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 378,
+          "line": 382,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -66195,7 +66195,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 374,
+          "line": 378,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -68467,7 +68467,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 279,
+          "line": 289,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73954,7 +73954,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 375,
+          "line": 379,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -79525,7 +79525,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 402,
+          "line": 406,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -81975,7 +81975,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 284,
+          "line": 288,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -83054,7 +83054,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 252,
+          "line": 262,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86873,7 +86873,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 398,
+          "line": 402,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -88064,7 +88064,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 262,
+          "line": 272,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90927,7 +90927,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 400,
+          "line": 404,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -94684,7 +94684,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 397,
+          "line": 401,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -101771,7 +101771,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 401,
+          "line": 405,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -103154,7 +103154,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 383,
+          "line": 387,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -106342,7 +106342,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 268,
+          "line": 278,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -108073,7 +108073,7 @@
     },
     {
       "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-      "line": 60,
+      "line": 74,
       "page": "global",
       "route": "/:locale/*",
       "reason": "helper-wrapper-definition",

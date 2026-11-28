@@ -8,6 +8,7 @@
 - **Gateway actions keep their labels.** The two home buttons size to the text, so Persian labels are not clipped on a wide screen, and they wrap on a narrow phone.
 - **Header and terminal navigation stay usable when labels are long.** The public terminal entry stays on the header as an icon button when the row is tight, instead of disappearing. Terminal tabs that no longer fit the row fold into the existing menu.
 - **Market pulse never waits forever.** An empty Open Oracle catalog now falls back to the venue feed (website table and shared market adapter), and a catalog that does not arrive within 20 seconds shows the retry state instead of an endless "loading markets". In the shared market adapter only an origin without the Open Oracle routes switches a session to the venue feed; a busy, timed-out or empty reply falls back for that read only, so candles keep coming from Open Oracle (the desktop app cannot read the venue directly).
+- **Mobile layout tidied.** Terminal view tabs sit on one scrollable line with short labels (chart views, then book, order and activity); the site and terminal drawers use compact two-column tiles and take the full width on phones; the wallet picker no longer overflows and uses the site faces; the RainbowKit modal uses Ubuntu (Dastkhat first in Persian) and Persian text follows the reading direction; footer links sit in even columns; on phones the wallet showcase shows whole cards without the scanner beam or drifting figures.
 
 ## v0.9.1 — 2026-11-28
 

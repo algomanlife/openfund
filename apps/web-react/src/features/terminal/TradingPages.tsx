@@ -203,10 +203,14 @@ function workspaceMarkup(locale: AppLocale) {
   const compact = document.createElement("nav");
   compact.className = "workspace-views";
   compact.setAttribute("aria-label", pick(locale, 'نمایش‌های محیط کار', 'Workspace views'));
+  /* two groups on one line: the chart's views, then the trading views
+     (book, order, account activity); short labels so nothing wraps */
+  const view = ([id, fa, en]: string[]) => `<button type="button" data-workspace-view="${id}" aria-pressed="${id === "chart"}" data-fa="${fa}" data-en="${en}">${en}</button>`;
   compact.innerHTML = [
-    ["chart", "نمودار", "Chart"], ["funding", "فاندینگ", "Funding"], ["details", "جزئیات", "Details"], ["news", "اخبار و اطلاعات", "News"], ["book", "دفتر مجازی", "Book"],
-    ["trade", "سفارش", "Order"], ["activity", "فعالیت حساب", "Activity"],
-  ].map(([id, fa, en]) => `<button type="button" data-workspace-view="${id}" aria-pressed="${id === "chart"}" data-fa="${fa}" data-en="${en}">${en}</button>`).join("");
+    ["chart", "نمودار", "Chart"], ["funding", "فاندینگ", "Funding"], ["details", "جزئیات", "Details"], ["news", "اخبار", "News"],
+  ].map(view).join("") + '<span class="workspace-views-sep" aria-hidden="true"></span>' + [
+    ["book", "دفتر", "Book"], ["trade", "سفارش", "Order"], ["activity", "فعالیت", "Activity"],
+  ].map(view).join("");
   template.content.querySelector(".workspace")?.before(compact);
   const marketDetails = document.createElement("details");
   marketDetails.className = "market-details";

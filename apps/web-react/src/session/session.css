@@ -151,7 +151,7 @@ html[data-theme='light'] .openfund-header .of-session-error { background:#fff; c
 .of-session-neutral { border-color: #82e7bd55 !important }
 .of-session-dismiss { margin-inline-start: 8px; background: none; border: 0; color: inherit; cursor: pointer; font-size: 14px; line-height: 1 }
 .of-wallet-picker-backdrop { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); background: #000b; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); overscroll-behavior: contain }
-.of-wallet-picker { width: min(26rem, 100%); max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain; outline: none; text-align: start; font-family: inherit; padding: 18px; border-radius: 10px; background: #0d1511; color: #e6eee9; border: 1px solid #ffffff25; box-shadow: 0 24px 60px #0008; font-size: 14px }
+.of-wallet-picker { box-sizing: border-box; width: min(26rem, 100%); max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain; outline: none; text-align: start; font-family: inherit; padding: 18px; border-radius: 10px; background: #0d1511; color: #e6eee9; border: 1px solid #ffffff25; box-shadow: 0 24px 60px #0008; font-size: 14px }
 html[data-theme='light'] .of-wallet-picker { background: #fff; color: #16281e; border-color: #0a120d28 }
 .of-wallet-picker header { display: flex; align-items: center; justify-content: space-between; gap: 12px }
 .of-wallet-picker h2 { margin: 0; font-size: 17px; line-height: 1.4 }
@@ -181,3 +181,15 @@ html[data-theme='light'] .of-wallet-status-error { color: #a33a22 }
 @media (max-width:700px) {
   .nav-actions .rk-account-menu > summary.rk-chip { max-width:124px; padding-inline:8px; gap:6px; }
 }
+/* the picker is portalled to <body>: it carries the site's faces itself */
+.of-wallet-picker, .of-wallet-picker button { font-family: var(--ds-font-latin, 'Ubuntu', 'Dastkhat', system-ui, sans-serif) }
+.of-wallet-picker:is([lang=fa]), .of-wallet-picker:is([lang=fa]) button { font-family: var(--ds-font-persian, 'Dastkhat', 'Ubuntu', system-ui, sans-serif) }
+.of-wallet-picker:is([lang=ar]), .of-wallet-picker:is([lang=ar]) button { font-family: var(--ds-font-arabic, 'Ubuntu', 'Dastkhat', system-ui, sans-serif) }
+.of-wallet-picker:is([lang=zh-CN]), .of-wallet-picker:is([lang=zh-CN]) button { font-family: var(--ds-font-cjk, 'Ubuntu', system-ui, sans-serif) }
+.of-wallet-picker * { box-sizing: border-box }
+
+/* RainbowKit's reset left-aligns every node; in the Persian (dir=rtl) modal the
+   text follows the reading direction instead of hugging the wrong edge.
+   Wallet names and addresses stay isolated by RainbowKit's own markup. */
+[data-rk] [role=dialog][dir=rtl] * { text-align: start; }
+[data-rk] [role=dialog][dir=rtl] input { direction: ltr; text-align: left; }
