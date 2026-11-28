@@ -161,8 +161,8 @@ evidence. A merge is not production until `/version` reports it.
 
 **Current status** (verified 2026-11-28; canonical: [docs/status](docs/status/README.md)):
 
-- Latest official release: **v0.9.1** (`7e81324`, 2026-11-28).
-- GLOBAL (Render) Web/API runs v0.9.1 `7e81324`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
+- Latest official release: **v0.9.2** (`9f64a3d`, 2026-11-28).
+- GLOBAL (Render) Web/API runs v0.9.2 `9f64a3d`; IRAN (Liara) web runs v0.6.5 `a87804a` (built as unofficial).
 - Purchases: enabled in GLOBAL, disabled in IRAN; owner purchase acceptance open (see the purchases row in docs/status).
 - Live execution: disabled (Approved signer/custody design, supported testnet contracts, simulation, security review and management activation).
 - Desktop: Open Trade 0.0.4 published as the GitHub pre-release open-trade-v0.0.4 (unsigned experimental beta): macOS arm64 and x64 .dmg, Windows x64 .exe, Linux x64 AppImage and .deb from Open Trade desktop run 44895436607 on main 935d06f. All five files downloaded on 2026-11-21; each SHA-256 recomputed and matched GitHub's asset digest, sizes match. The attached SHA256SUMS.txt lists only the Windows installer. Not signed or notarized; not executed on a clean machine in this verification.
@@ -409,12 +409,14 @@ Backend suites need a disposable database. Guides:
 
 ## <img src="docs/assets/readme/icons/tag.svg" width="30" height="30" alt="tag icon" /> Versioning and releases
 
-The current official platform release is **v0.9.1** (2026-11-28): the final
-leverage of every account, the request-based 14-day Free Trial, on-chain
-certificates and trade records on Arbitrum Sepolia, Open Oracle prices across
-the site and Vela 0.10.19 charts, on top of the previous release's Open
-Oracle pricing service, named admin operators with access levels, shared
-persistent rate limits and the
+The current official platform release is **v0.9.2** (2026-11-28): Terms of
+Use and Privacy Policy pages, no KYC, the airdrop for challenge buyers,
+automatic payment reconciliation, Openfund contract specifications with exact
+lots or quantity orders, the redesigned one-screen gateway with its hero line
+and Start trading, a grouped footer and a tidier mobile layout, on top of
+the previous release's final account leverage, request-based 14-day Free Trial, on-chain
+certificates and trade records on Arbitrum Sepolia, Open Oracle prices and
+Vela 0.10.19 charts, and the
 [27 November security assessment](docs/security/SECURITY-ASSESSMENT-2026-11-27.md).
 Tags are `vMAJOR.MINOR.PATCH`, allocated from Conventional Commits; Open Trade
 has its own `open-trade-vX.Y.Z` line. `/version` returns the deployed version,
