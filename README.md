@@ -44,9 +44,11 @@ can be checked. Start with the [documentation index](docs/README.md).
   fresh prices whose sources agree; the website and terminal read prices,
   the market catalog, candles and the virtual order book from their own
   origin ([ADR 0059](docs/decisions/0059-open-oracle-pricing-service.md)).
-- **Wallet identity.** One explicit wallet picker for browser wallets and,
-  with WalletConnect, mobile wallets by QR code; sign-in is a single signed
-  message, never a transaction.
+- **Wallet identity, no KYC.** One explicit wallet picker for browser wallets
+  and, with WalletConnect, mobile wallets by QR code; sign-in is a single
+  signed message, never a transaction. The wallet owner is the account owner:
+  Openfund asks for no identity documents
+  ([ADR 0065](docs/decisions/0065-no-kyc-terms-and-privacy.md)).
 - **Read-only market intelligence.** Trade Radar, the Market Heatmap and Hybrid
   Footprint read public market data and never touch orders or accounts.
 - **Transparency.** Rules, prices, the revenue model, partner commissions and
@@ -465,9 +467,10 @@ summary: [ROADMAP.md](ROADMAP.md); milestones and acceptance gates:
 | Browser | Strict Content Security Policy |
 | Scanning | Semgrep, Trivy, OSV-Scanner, OWASP ZAP baseline, gitleaks and dependency review in CI |
 
-The November 2026 [self-assessment](docs/security/SECURITY-AUDIT-2026-11.md) was
-written by the project's coding agent and is not an independent audit; open
-findings and their states are in the
+The November 2026 [self-assessment](docs/security/SECURITY-AUDIT-2026-11.md) and
+the [27 November assessment](docs/security/SECURITY-ASSESSMENT-2026-11-27.md)
+are internal assessments, not independent audits (no third party has
+audited Openfund); open findings and their states are in the
 [remediation report](docs/security/SECURITY-REMEDIATION-2026-11.md).
 Report vulnerabilities privately through [SECURITY.md](SECURITY.md).
 

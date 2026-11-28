@@ -135,7 +135,7 @@
         "Pay with Wallet and manual transfer",
         "On-chain verification of token, amount and finality",
         "Ledger with partial payments and refunds",
-        "Exactly-once challenge activation"
+        "Exactly-once challenge activation; stranded payments reconciled automatically"
       ]
     },
     {
@@ -170,7 +170,7 @@
       "icon": "route",
       "href": "docs/decisions/0051-migration-to-openfund.md",
       "items": [
-        "Proof of payouts reviewed with KYC",
+        "Proof of funded account and payouts reviewed, with no identity step (no KYC)",
         "Single-use pass: normal price, funded-stage start",
         "Private, encrypted evidence storage with retention",
         "Editable firm list and rules"
@@ -246,7 +246,7 @@
         "One composite price per market from Gains, Hyperliquid and GMX",
         "Price-confirmed cross-provider equivalences, never ticker guesses",
         "Demo engine executes only on fresh, agreeing composites",
-        "Public REST and SSE API; live acceptance passed, release pending"
+        "Public REST and SSE API, live on GLOBAL since v0.9.0"
       ]
     }
   ]
