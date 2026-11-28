@@ -6,8 +6,8 @@
  * click and a route change (tile link or Back) close an open panel. Narrow layouts use the drawer: an
  * accordion per group, two-column icon tiles of at least 44 px, a compact
  * banner. The terminal menu uses the same tiles.
- * Trading challenges (items C, L, M): a group with seven tiles (compare, buy, objectives, labs,
- * migration, the tournament with a New badge and countdown, rules) and the
+ * Trading challenges (items C, L, M): a group with eight tiles (compare, buy, objectives, labs,
+ * migration, the tournament with a New badge and countdown, airdrop, rules) and the
  * flamingo migration banner, animated only while the panel is open and static
  * under reduced motion; the drawer shows a compact card with fewer birds.
  * Economy (owner fix 1): the council and whitepaper banners sit side by side
@@ -101,7 +101,7 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
           described: (banner?.querySelector('.mega-sr')?.textContent || '').length > 40, inView: r.left >= 0 && r.right <= innerWidth, active: document.querySelector('.resources-toggle[aria-controls="website-challenges"]').getAttribute('aria-expanded') }
       })
       const open = await state()
-      ok(`${loc}: Trading challenges opens a group of seven tiles (compare, buy, objectives, labs, migration, tournament, rules)`, c.active === 'true' && c.tiles.join() === 'challenges,checkout,trading-objectives,labs,migrate,tournament,rulebook' && c.icons && c.inView, JSON.stringify(c))
+      ok(`${loc}: Trading challenges opens a group of eight tiles (compare, buy, objectives, labs, migration, tournament, airdrop, rules)`, c.active === 'true' && c.tiles.join() === 'challenges,checkout,trading-objectives,labs,migrate,tournament,airdrop,rulebook' && c.icons && c.inView, JSON.stringify(c))
       ok(`${loc}: the tournament tile has a New badge and a compact countdown`, !!c.badge && (Date.now() >= Date.parse('2027-01-04T00:00:00Z') || !!c.countdown), JSON.stringify(c))
       ok(`${loc}: the flamingo banner links to migration with 7 birds, no mark or reflection (owner update), and a hidden description`, c.banner === `/${loc}/migrate` && c.birds === 7 && !c.mark && !c.reflection && c.described, JSON.stringify(c))
       if (motion === 'reduce') ok(`${loc}: reduced motion shows a static frame`, open.name === 'none', JSON.stringify(open))

@@ -84,6 +84,43 @@ export default function TerminalShell({ product }: { product: Product }) {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     return () => observer.disconnect();
   }, []);
+  /* Inline tabs stay while they fit. When a long locale (or the gateway
+     link) overflows the row, fold them into the existing menu trigger. */
+  useEffect(() => {
+    const root = document.querySelector<HTMLElement>(".of-terminal-compact");
+    const top = root?.querySelector<HTMLElement>(".of-terminal-top");
+    if (!root || !top) return;
+    let frame = 0;
+    const shown = (el: Element) => {
+      const style = getComputedStyle(el);
+      return style.display !== "none" && style.position !== "absolute" && style.position !== "fixed";
+    };
+    const contentWidth = (el: Element) => {
+      if (!shown(el)) return 0;
+      if (el.id === "terminal-navigation") {
+        const kids = [...el.children].filter(shown);
+        const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+        return kids.reduce((sum, kid) => sum + kid.getBoundingClientRect().width, 0) + gap * Math.max(0, kids.length - 1);
+      }
+      return el.getBoundingClientRect().width;
+    };
+    const measure = () => {
+      frame = 0;
+      root.classList.remove("of-nav-collapsed");
+      const style = getComputedStyle(top);
+      const pad = (parseFloat(style.paddingInlineStart) || 0) + (parseFloat(style.paddingInlineEnd) || 0);
+      const gap = parseFloat(style.columnGap) || 0;
+      const items = [...top.children].filter(shown);
+      const needed = items.reduce((sum, el) => sum + contentWidth(el), 0) + gap * Math.max(0, items.length - 1);
+      if (needed > top.clientWidth - pad + 1) root.classList.add("of-nav-collapsed");
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
+    const resize = new ResizeObserver(schedule);
+    resize.observe(top);
+    void document.fonts?.ready.then(schedule);
+    schedule();
+    return () => { cancelAnimationFrame(frame); resize.disconnect(); };
+  }, [locale, pathname, messages]);
   useEffect(() => {
     let active = true;
     const load = () =>
