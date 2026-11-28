@@ -19,6 +19,20 @@ import { closeOthers, registerPopover, type Popover } from '../features/terminal
 /* RainbowKit theme follows the app theme (html[data-theme=light]) with the
    Openfund mint accent. The provider wraps ONLY this button — its data-rk
    wrapper must never enclose the app (locale.js skips [data-rk] subtrees). */
+/* The modal is portalled to <body>, outside the page's font rules: it gets the
+   site's faces through the theme (Ubuntu for every language, Dastkhat first
+   for Persian), never RainbowKit's system/rounded stack. */
+const RK_FONT: Record<string, string> = {
+  fa: "'Dastkhat', 'Ubuntu', system-ui, sans-serif",
+}
+const RK_FONT_DEFAULT = "'Ubuntu', 'Dastkhat', system-ui, sans-serif"
+function rkTheme(mode: 'dark' | 'light', locale: string) {
+  const base = mode === 'dark'
+    ? darkTheme({ accentColor: '#82e7bd', accentColorForeground: '#08130d' })
+    : lightTheme({ accentColor: '#12965D', accentColorForeground: '#ffffff' })
+  return { ...base, fonts: { ...base.fonts, body: RK_FONT[locale] ?? RK_FONT_DEFAULT } }
+}
+
 function useAppTheme(): 'dark' | 'light' {
   const [theme, setTheme] = useState<'dark' | 'light'>(() =>
     document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
@@ -188,11 +202,7 @@ export function RainbowConnect() {
 
   return (
     <RainbowKitProvider
-      theme={
-        theme === 'dark'
-          ? darkTheme({ accentColor: '#82e7bd', accentColorForeground: '#08130d' })
-          : lightTheme({ accentColor: '#12965D', accentColorForeground: '#ffffff' })
-      }
+      theme={rkTheme(theme, locale)}
       appInfo={{ appName: 'Openfund', learnMoreUrl: 'https://gains.trade' }}
       locale={RAINBOW_LOCALE[locale]}
     >

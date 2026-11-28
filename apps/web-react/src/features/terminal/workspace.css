@@ -227,8 +227,12 @@ html[dir="rtl"] .panel-tabs, html[dir="rtl"] .book-controls { direction: rtl; }
    scrolling page. At short desktop heights it uses a horizontal form layout. */
 @media (max-width: 1100px), (max-height: 635px) {
   body, html[dir="rtl"] body { grid-template-rows: 34px 32px minmax(0, 1fr) 24px; }
-  .workspace-views { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--line); direction: ltr; }
-  .workspace-views button { flex: 1; font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent; }
+  /* one line in the page direction; scrolls sideways when the screen is narrower than the labels */
+  .workspace-views { display: flex; align-items: stretch; gap: 0; background: var(--surface); border-bottom: 1px solid var(--line);
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .workspace-views::-webkit-scrollbar { display: none; }
+  .workspace-views button { flex: 1 0 auto; padding-inline: 10px; font-size: 13px; line-height: 1; white-space: nowrap; color: var(--muted); border-bottom: 2px solid transparent; }
+  .workspace-views-sep { flex: 0 0 1px; align-self: center; height: 16px; margin-inline: 2px; background: var(--line); }
   .workspace-views button[aria-pressed="true"] { color: var(--mint); border-color: var(--mint); }
   .workspace { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); overflow: visible; }
   .workspace > * { grid-area: 1 / 1; display: none; height: auto; max-height: none; }

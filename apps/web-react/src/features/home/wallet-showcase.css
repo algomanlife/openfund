@@ -116,11 +116,13 @@
   .ws-head h2 { font-size: 25px; }
   .ws-list > li:nth-child(n) { transform: none; }
 }
-/* below 768 px: no data layer, the whole strip moves under the beam glow */
+/* below 768 px: a plain moving strip of whole cards. The scanner beam and
+   the drifting figures crossed the cards on phones and read as clutter. */
 @media (max-width: 767.98px) {
-  .ws-layer-data { display: none; }
+  .ws-layer-data, .ws-beam, .ws-figures { display: none; }
   .ws-layer-cards, .ws-section[data-flow=ltr] .ws-layer-cards { clip-path: none; }
-  .ws-beam { box-shadow: 0 0 10px 1px #82e7bd66, 0 0 28px 4px #82e7bd22; opacity: .8; }
+  .ws-viewport { -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+                         mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ws-track, .ws-running .ws-track, .ws-running .ws-figures span, .ws-running .ws-glow { animation: none !important; }

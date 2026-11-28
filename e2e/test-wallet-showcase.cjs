@@ -174,8 +174,8 @@ const translateX = page => page.evaluate(() => new DOMMatrixReadOnly(getComputed
       const d1 = await translateX(page); await page.waitForTimeout(900); const d2 = await translateX(page)
       const layers = await page.evaluate(() => ({ data: getComputedStyle(document.querySelector('.ws-layer-data')).display, beam: getComputedStyle(document.querySelector('.ws-beam')).display, cards: getComputedStyle(document.querySelector('.ws-layer-cards')).clipPath }))
       const narrow = (opts.width ?? 1440) < 768
-      ok(`${shot}: ${rtl ? 'enters from the right (moves left)' : 'enters from the left (moves right)'}; ${narrow ? 'no data layer, beam glow only' : 'data layer on the exit side'}`,
-        (rtl ? d2 < d1 : d2 > d1) && layers.beam !== 'none' && (narrow ? layers.data === 'none' && layers.cards === 'none' : layers.data !== 'none' && (rtl ? /inset\(-40px 0px -40px 50%/ : /inset\(-40px 50% -40px 0/).test(layers.cards)), JSON.stringify({ d1, d2, ...layers }))
+      ok(`${shot}: ${rtl ? 'enters from the right (moves left)' : 'enters from the left (moves right)'}; ${narrow ? 'phones: whole cards only, no beam or data layer' : 'data layer on the exit side'}`,
+        (rtl ? d2 < d1 : d2 > d1) && (narrow ? layers.data === 'none' && layers.cards === 'none' && layers.beam === 'none' : layers.beam !== 'none' && layers.data !== 'none' && (rtl ? /inset\(-40px 0px -40px 50%/ : /inset\(-40px 50% -40px 0/).test(layers.cards)), JSON.stringify({ d1, d2, ...layers }))
       await page.screenshot({ path: path.join(OUT, shot + '.png'), clip: await page.locator('.ws-section').boundingBox() })
       await context.close()
     }
