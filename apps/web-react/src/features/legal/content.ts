@@ -126,7 +126,7 @@ export const privacy: LegalDocument = {
         'برای اداره کردن حساب و چلنج‌های شما، پردازش پرداخت، پاداش و بازپرداخت، جلوگیری از تقلب و سوءاستفاده، حفظ امنیت سرویس، پاسخ به پیام‌ها و انجام تعهدات قانونی. آمار کلی و غیرقابل‌شناسایی هم به بهبود محصول کمک می‌کند.'),
     ] },
     { id: 'sharing', heading: text('5. Who receives data', '۵. چه کسانی داده را دریافت می‌کنند'), paragraphs: [
-      text('Hosting providers that run Openfund’s servers, the email delivery provider for messages you asked for, the payment widget and blockchain networks used for a payment, and authorities where the law requires it. Each provider receives only what its task needs.',
+      text('Service providers that run Openfund’s servers, the email delivery provider for messages you asked for, the payment widget and blockchain networks used for a payment, and authorities where the law requires it. Each provider receives only what its task needs.',
         'میزبان‌هایی که سرورهای اوپن‌فاند را اجرا می‌کنند، سرویس ارسال ایمیل برای پیام‌هایی که خودتان خواسته‌اید، ابزار پرداخت و شبکه‌های بلاک‌چینی که در پرداخت به کار می‌روند، و مراجع رسمی آنجا که قانون الزام کند. هر ارائه‌دهنده فقط همان داده‌ای را می‌گیرد که کارش به آن نیاز دارد.'),
       text('Public by design: leaderboards show your chosen nickname or a shortened wallet address, and a certificate you share can be verified publicly with its result and display name.',
         'عمومی به‌اقتضای طراحی: جدول‌های رتبه‌بندی نام مستعار انتخابی شما یا نشانی کوتاه‌شدهٔ کیف پول را نشان می‌دهند و گواهی‌ای که به اشتراک می‌گذارید با نتیجه و نام نمایشی‌اش به‌صورت عمومی قابل تأیید است.'),
@@ -148,8 +148,8 @@ export const privacy: LegalDocument = {
         'اوپن‌فاند فقط از کوکی‌های ضروری سرویس استفاده می‌کند (نشست ورود و محافظت از آن). ترجیحاتی مانند زبان، تم و چیدمان نمودار در حافظهٔ مرورگر خودتان می‌ماند. هیچ کوکی ردیابی وجود ندارد.'),
     ] },
     { id: 'transfers', heading: text('10. Where data is processed', '۱۰. محل پردازش داده'), paragraphs: [
-      text('Data is processed in the countries where Openfund’s hosting providers run its servers, which may differ from your own. Openfund applies this policy wherever the data is.',
-        'داده در کشورهایی پردازش می‌شود که میزبان‌های اوپن‌فاند سرورهای آن را اجرا می‌کنند و ممکن است با کشور شما متفاوت باشد. اوپن‌فاند این سیاست را در هر جایی که داده باشد اعمال می‌کند.'),
+      text('Data is processed in the countries where Openfund’s servers run, which may differ from your own. Openfund applies this policy wherever the data is.',
+        'داده در کشورهایی پردازش می‌شود که سرورهای اوپن‌فاند در آن‌ها کار می‌کنند و ممکن است با کشور شما متفاوت باشد. اوپن‌فاند این سیاست را در هر جایی که داده باشد اعمال می‌کند.'),
     ] },
     { id: 'minors', heading: text('11. Under 18', '۱۱. افراد زیر ۱۸ سال'), paragraphs: [
       text('Openfund is not for anyone under 18 and does not knowingly process their data.',

@@ -8630,6 +8630,26 @@
       ]
     },
     {
+      "key": "react.127e259a7fdde6b8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "داده در کشورهایی پردازش می‌شود که سرورهای اوپن‌فاند در آن‌ها کار می‌کنند و ممکن است با کشور شما متفاوت باشد. اوپن‌فاند این سیاست را در هر جایی که داده باشد اعمال می‌کند.",
+      "en": "Data is processed in the countries where Openfund’s servers run, which may differ from your own. Openfund applies this policy wherever the data is.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/legal/content.ts",
+          "line": 151,
+          "page": "legal",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1292fd50458685a6",
       "namespace": "react",
       "area": "Global Content",
@@ -41295,6 +41315,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
           "line": 200,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.5de829c91b814c4d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "میزبان‌هایی که سرورهای اوپن‌فاند را اجرا می‌کنند، سرویس ارسال ایمیل برای پیام‌هایی که خودتان خواسته‌اید، ابزار پرداخت و شبکه‌های بلاک‌چینی که در پرداخت به کار می‌روند، و مراجع رسمی آنجا که قانون الزام کند. هر ارائه‌دهنده فقط همان داده‌ای را می‌گیرد که کارش به آن نیاز دارد.",
+      "en": "Service providers that run Openfund’s servers, the email delivery provider for messages you asked for, the payment widget and blockchain networks used for a payment, and authorities where the law requires it. Each provider receives only what its task needs.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/legal/content.ts",
+          "line": 129,
+          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -103558,26 +103598,6 @@
       ]
     },
     {
-      "key": "react.f4bbc69884a2e930",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "داده در کشورهایی پردازش می‌شود که میزبان‌های اوپن‌فاند سرورهای آن را اجرا می‌کنند و ممکن است با کشور شما متفاوت باشد. اوپن‌فاند این سیاست را در هر جایی که داده باشد اعمال می‌کند.",
-      "en": "Data is processed in the countries where Openfund’s hosting providers run its servers, which may differ from your own. Openfund applies this policy wherever the data is.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 151,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.f4c394f4be763824",
       "namespace": "react",
       "area": "Global Content",
@@ -104862,26 +104882,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.f8896cc88df0f3b0",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "میزبان‌هایی که سرورهای اوپن‌فاند را اجرا می‌کنند، سرویس ارسال ایمیل برای پیام‌هایی که خودتان خواسته‌اید، ابزار پرداخت و شبکه‌های بلاک‌چینی که در پرداخت به کار می‌روند، و مراجع رسمی آنجا که قانون الزام کند. هر ارائه‌دهنده فقط همان داده‌ای را می‌گیرد که کارش به آن نیاز دارد.",
-      "en": "Hosting providers that run Openfund’s servers, the email delivery provider for messages you asked for, the payment widget and blockchain networks used for a payment, and authorities where the law requires it. Each provider receives only what its task needs.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 129,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
