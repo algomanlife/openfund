@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 5115,
-    "mappedCalls": 2382,
+    "uniqueRecords": 5121,
+    "mappedCalls": 2386,
     "exceptions": 64,
     "validationFindings": 0,
     "reviewedExclusions": 51
@@ -3209,6 +3209,13 @@
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 23,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -4665,6 +4672,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.07ab356937c00df3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "داستان معامله‌گری تو از اینجا شروع خواهد شد…",
+      "en": "Your trading story starts here…",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/Home.tsx",
+          "line": 96,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -9016,14 +9043,14 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 27,
+          "line": 34,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 34,
+          "line": 41,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -20079,7 +20106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 96,
+          "line": 100,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -24632,9 +24659,29 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 42,
+          "line": 49,
           "page": "information",
           "route": "/:locale/:page",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.35aabe76bcb38d38",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همهٔ بازارها در کنار تمام ابزارها",
+      "en": "Every market alongside every tool",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/Home.tsx",
+          "line": 97,
+          "page": "home",
+          "route": "/:locale/home",
           "method": "pick-pipeline"
         }
       ]
@@ -34691,7 +34738,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 98,
+          "line": 105,
           "page": "information",
           "route": "/:locale/:page",
           "method": "pick-pipeline"
@@ -34834,6 +34881,26 @@
           "line": 78,
           "page": "bounty",
           "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.4de000d123ae9b4f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چلنج‌های معاملاتی",
+      "en": "Trading challenges",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 21,
+          "page": "information",
+          "route": "/:locale/:page",
           "method": "bilingual-record"
         }
       ]
@@ -43151,7 +43218,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 31,
+          "line": 38,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -47847,15 +47914,15 @@
           "method": "pick-pipeline"
         },
         {
-          "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 95,
-          "page": "home",
-          "route": "/:locale/home",
-          "method": "pick-pipeline"
-        },
-        {
           "component": "apps/web-react/src/features/information/content.ts",
           "line": 19,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 24,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -53316,14 +53383,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 101,
+          "line": 108,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 37,
+          "line": 44,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -53608,6 +53675,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7afe2d4b347662ef",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "شروع معاملات",
+      "en": "Start trading",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/Home.tsx",
+          "line": 102,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -55709,7 +55796,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 30,
+          "line": 37,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -73371,6 +73458,26 @@
       ]
     },
     {
+      "key": "react.aa2db2e669dbbbbe",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازارها و اقتصاد",
+      "en": "Markets and economy",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/information/navigation.ts",
+          "line": 22,
+          "page": "information",
+          "route": "/:locale/:page",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.aa31c0a39ee4bd59",
       "namespace": "react",
       "area": "Website",
@@ -75011,14 +75118,14 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 27,
+          "line": 34,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 35,
+          "line": 42,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -75943,7 +76050,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 40,
+          "line": 47,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -76990,7 +77097,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 98,
+          "line": 105,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -78862,7 +78969,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 32,
+          "line": 39,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -81451,7 +81558,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 36,
+          "line": 43,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -85073,7 +85180,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 22,
+          "line": 29,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -89535,14 +89642,14 @@
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 27,
+          "line": 34,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 33,
+          "line": 40,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -94954,7 +95061,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/navigation.ts",
-          "line": 26,
+          "line": 33,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -105502,6 +105609,26 @@
       ]
     },
     {
+      "key": "react.f711f5e4207202d6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "همه و همه در یک پلتفرم",
+      "en": "All of it on one platform",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/Home.tsx",
+          "line": 98,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.f73185d057ec465e",
       "namespace": "react",
       "area": "User Dashboard",
@@ -109685,7 +109812,7 @@
     },
     {
       "component": "apps/web-react/src/features/information/navigation.ts",
-      "line": 84,
+      "line": 91,
       "page": "information",
       "route": "/:locale/:page",
       "reason": "dynamic-pair",

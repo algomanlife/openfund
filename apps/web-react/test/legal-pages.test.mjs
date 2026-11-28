@@ -41,5 +41,5 @@ test('routes are registered in the router, the editorial registry, the SEO head,
     assert.ok(read('../backend/seo.js').includes(`'${route}'`), route)
   }
   assert.match(read('src/features/loading/seoHead.ts'), /\|terms\|privacy/)
-  assert.match(read('src/features/information/navigation.ts'), /'terms' as const, 'privacy' as const/)
+  assert.match(read('src/features/information/navigation.ts'), /\['company', text\('Openfund', 'اوپن‌فاند'\), \['about', 'contact', 'terms', 'privacy'\]\]/)
 })

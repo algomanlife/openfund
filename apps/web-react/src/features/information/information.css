@@ -252,10 +252,34 @@ html[lang=en] .information-page .info-hero h1{font-size:58px;letter-spacing:-2px
 .openfund-header .nav-actions .nav-cta { display:inline-flex; }
 /* Animated landing artwork stays within the existing content viewport. */
 body:has(.openfund-header) main { overflow-x:clip; }
-/* footer destinations in even columns (the list is long; a ragged wrap read as clutter on phones) */
-.openfund-header ~ footer #footer-links, footer #footer-links { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(150px, 100%), 1fr)); min-width:0; gap:12px 18px; }
-.openfund-header ~ footer #footer-links a, footer #footer-links a { min-width:0; overflow-wrap:anywhere; }
-@media(max-width:420px) { .openfund-header ~ footer #footer-links, footer #footer-links { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+/* Footer: the brand and tagline on one row, then the destinations in grouped
+   columns under headings (four columns, two on tablets and phones). A light
+   sweep runs along the top edge and a slow orbit circles the mark. */
+.openfund-header ~ footer, .information-page footer { position:relative; overflow:hidden; }
+.openfund-header ~ footer::before, .information-page footer::before { content:""; position:absolute; left:0; top:-1px; width:40%; height:1px; pointer-events:none;
+  background:linear-gradient(90deg, transparent, var(--green,#82e7bd) 45%, #f2c14e 55%, transparent); animation:of-footer-sweep 9s linear infinite; opacity:.8; will-change:transform; }
+.openfund-header ~ footer .footer-top, .information-page footer .footer-top { display:grid !important; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:28px 24px; }
+.openfund-header ~ footer .footer-top>.brand, .information-page footer .footer-top>.brand { position:relative; isolation:isolate; }
+.openfund-header ~ footer .footer-top>.brand::after, .information-page footer .footer-top>.brand::after { content:""; position:absolute; z-index:-1; inset-block-start:50%; inset-inline-start:15px; width:64px; height:64px; margin:-32px 0 0 -32px;
+  border-radius:50%; border:1px dashed color-mix(in srgb, var(--green,#82e7bd) 45%, transparent); animation:of-footer-orbit 18s linear infinite; }
+.openfund-header ~ footer .footer-top>p, .information-page footer .footer-top>p { margin:0; justify-self:start; }
+.openfund-header ~ footer #footer-links, footer #footer-links { grid-column:1 / -1; display:grid !important; grid-template-columns:repeat(4, minmax(0,1fr)); gap:28px 24px; width:auto; min-width:0; }
+footer #footer-links .of-footer-col { display:grid; align-content:start; gap:10px; min-width:0; animation:of-footer-rise .7s ease-out both; }
+footer #footer-links .of-footer-col:nth-child(2) { animation-delay:.08s } footer #footer-links .of-footer-col:nth-child(3) { animation-delay:.16s } footer #footer-links .of-footer-col:nth-child(4) { animation-delay:.24s }
+footer #footer-links .of-footer-col > b { font-size:13px; color:var(--text,#e8f1ec); margin-block-end:4px; padding-block-end:8px; border-bottom:1px solid var(--line,#ffffff1a); }
+footer #footer-links .of-footer-col a { min-width:0; overflow-wrap:anywhere; font-size:13px; line-height:1.6; color:var(--muted,#8aa292); text-decoration:none; transition:color .2s, transform .2s; justify-self:start; }
+footer #footer-links .of-footer-col a:hover, footer #footer-links .of-footer-col a:focus-visible { color:var(--green,#82e7bd); transform:translateX(3px); }
+[dir=rtl] footer #footer-links .of-footer-col a:hover, [dir=rtl] footer #footer-links .of-footer-col a:focus-visible { transform:translateX(-3px); }
+footer #footer-links .of-footer-col a[aria-current=page] { color:var(--green,#82e7bd); }
+@media(max-width:900px) { .openfund-header ~ footer #footer-links, footer #footer-links { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+@media(max-width:420px) { .openfund-header ~ footer .footer-top, .information-page footer .footer-top { grid-template-columns:minmax(0,1fr); } }
+@keyframes of-footer-sweep { from { transform:translateX(-100%) } to { transform:translateX(250%) } }
+@keyframes of-footer-orbit { to { transform:rotate(360deg) } }
+@keyframes of-footer-rise { from { transform:translateY(10px) } to { transform:none } }
+html[data-theme=light] footer #footer-links .of-footer-col > b { color:#0d1f16; border-bottom-color:#0d1f161f; }
+html[data-theme=light] footer #footer-links .of-footer-col a { color:#3d5247; }
+html[data-theme=light] footer #footer-links .of-footer-col a:hover, html[data-theme=light] footer #footer-links .of-footer-col a:focus-visible, html[data-theme=light] footer #footer-links .of-footer-col a[aria-current=page] { color:#065f3a; }
+@media(prefers-reduced-motion:reduce) { .openfund-header ~ footer::before, .information-page footer::before, footer .footer-top>.brand::after, footer #footer-links .of-footer-col { animation:none !important; } }
 @media(max-width:600px) {
   .openfund-header .rk-chip-connect .rk-connect-label { display:none; }
   .openfund-header .rk-chip-connect { width:32px; min-width:32px; padding:0; justify-content:center; flex-shrink:0; }

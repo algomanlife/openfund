@@ -92,8 +92,15 @@ function SolarGateway({ locale }: { locale: Locale }) {
     {/* miniature look: the near and far parts of the scene fall out of focus */}
     <div className="solar-focus solar-focus-top" aria-hidden="true" />
     <div className="solar-focus solar-focus-bottom" aria-hidden="true" />
-    <h1 className="visually-hidden">{pick(locale, 'اوپن‌فاند', 'Openfund')}</h1>
+    <div className="solar-hero">
+      <h1>{pick(locale, 'داستان معامله‌گری تو از اینجا شروع خواهد شد…', 'Your trading story starts here…')}</h1>
+      <p><span>{pick(locale, 'همهٔ بازارها در کنار تمام ابزارها', 'Every market alongside every tool')}</span>
+        <span>{pick(locale, 'همه و همه در یک پلتفرم', 'All of it on one platform')}</span></p>
+    </div>
     <nav className="solar-actions" aria-label={pick(locale, 'شروع', 'Get started')}>
+      <Link className="button solar-trade" to={`/${locale}/prop/trade`} data-cta="home-start-trading">
+        {pick(locale, 'شروع معاملات', 'Start trading')}
+      </Link>
       <Link className="button solar-buy" to={CHECKOUT_HREF(locale)} data-cta="home-quick-buy">
         {pick(locale, 'خرید سریع چلنج', 'Buy a challenge')}
       </Link>

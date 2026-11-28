@@ -502,6 +502,9 @@ test('both locales expose the full website navigation with partial CMS data and 
     assert.equal(footer.filter(href => href.includes('/challenges')).length, 1)
     assert.equal(footer.filter(href => href === `/${locale}/faq`).length, 1)
     assert.ok(footer.every(href => href.startsWith(`/${locale}/`)))
+    /* grouped columns: challenges, markets and economy, resources, Openfund (with the legal pages) */
+    assert.deepEqual([...document.querySelectorAll('#footer-links .of-footer-col')].map(c => c.dataset.footerColumn), ['challenges', 'markets', 'resources', 'company'])
+    assert.ok(footer.includes(`/${locale}/terms`) && footer.includes(`/${locale}/privacy`))
     dom.window.close()
   }
 })

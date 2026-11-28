@@ -28,23 +28,24 @@ interface Planet {
 }
 
 /* angles: 0 is "toward the right of the screen" in the disc plane; a positive
-   angle moves toward the viewer. Planets start loosely lined up, like a
-   portrait of the system, and drift apart with their own periods. */
+   angle moves toward the viewer. Planets start scattered around their orbits
+   (owner request 2026-11-28: never in one row) and pass at their own pace. */
 /* The sun sits on the screen edge, so half of every orbit is off screen.
-   Orbits are slow and only gently faster inside (ω ∝ r^-½ instead of
-   Kepler's r^-1.5) so the line-up holds for minutes and planets drift
-   through the visible half calmly. Radians per second at orbit radius 1. */
-const ORBIT_SPEED = .004
+   Inner orbits are faster (ω ∝ r^-½, gentler than Kepler's r^-1.5) so
+   planets keep crossing the visible half. Radians per second at radius 1. */
+const ORBIT_SPEED = .025
+/* rocks stream visibly faster than the planets around them */
+const ROCK_SPEED = 2.6
 
 const PLANETS: Planet[] = [
-  { orbit: .19, size: .0075, phase: -.3, colors: ['#d9d2c6', '#9a9085', '#3b352f'] },
-  { orbit: .245, size: .0115, phase: .2, colors: ['#fff0c8', '#e0b878', '#6d4f25'] },
-  { orbit: .305, size: .0125, phase: .42, colors: ['#bfe8ff', '#3f8fd0', '#123257'], spots: '#5fae6a' },
-  { orbit: .365, size: .0095, phase: -.1, colors: ['#ffc7a3', '#c8643a', '#4f1e10'] },
-  { orbit: .55, size: .042, phase: .02, colors: ['#fff1dc', '#d9b48c', '#5b3d22'], bands: ['#b5835a', '#efd8b8', '#a06f48', '#f4e2c6', '#c79a72'] },
-  { orbit: .69, size: .034, phase: .03, colors: ['#fff3d6', '#dcbf8a', '#5e4624'], bands: ['#c9a46c', '#f1deb4', '#b8915c'], ring: true },
-  { orbit: .83, size: .019, phase: .04, colors: ['#e6fbff', '#8fd3df', '#24545e'] },
-  { orbit: .955, size: .0185, phase: .05, colors: ['#cfe3ff', '#3f6fd6', '#13255c'] },
+  { orbit: .19, size: .0075, phase: 2.4, colors: ['#d9d2c6', '#9a9085', '#3b352f'] },
+  { orbit: .245, size: .0115, phase: -1.1, colors: ['#fff0c8', '#e0b878', '#6d4f25'] },
+  { orbit: .305, size: .0125, phase: .7, colors: ['#bfe8ff', '#3f8fd0', '#123257'], spots: '#5fae6a' },
+  { orbit: .365, size: .0095, phase: 3.9, colors: ['#ffc7a3', '#c8643a', '#4f1e10'] },
+  { orbit: .55, size: .042, phase: -.45, colors: ['#fff1dc', '#d9b48c', '#5b3d22'], bands: ['#b5835a', '#efd8b8', '#a06f48', '#f4e2c6', '#c79a72'] },
+  { orbit: .69, size: .034, phase: 1.35, colors: ['#fff3d6', '#dcbf8a', '#5e4624'], bands: ['#c9a46c', '#f1deb4', '#b8915c'], ring: true },
+  { orbit: .83, size: .019, phase: -2.2, colors: ['#e6fbff', '#8fd3df', '#24545e'] },
+  { orbit: .955, size: .0185, phase: .15, colors: ['#cfe3ff', '#3f6fd6', '#13255c'] },
 ]
 
 /* mulberry32: deterministic noise so every visit draws the same disc */
@@ -71,6 +72,8 @@ interface Palette {
   glow: GlobalCompositeOperation      // how the sun's light is added
   corona: [number, string][]
   vignette: string
+  atmosphere: string                  // planet halo (rgb triplet)
+  depthHaze: string                   // colour far planets fade into (rgb triplet)
 }
 const PALETTES: Record<'dark' | 'light', Palette> = {
   dark: {
@@ -81,6 +84,7 @@ const PALETTES: Record<'dark' | 'light', Palette> = {
     haze: .045, stars: 1, shade: '1,8,5', shadeAlpha: 1, glow: 'lighter',
     corona: [[0, 'rgba(255,196,110,.5)'], [.12, 'rgba(255,160,70,.24)'], [.35, 'rgba(200,170,110,.08)'], [.7, 'rgba(130,231,189,.025)'], [1, 'rgba(130,231,189,0)']],
     vignette: 'rgba(2,8,5,.5)',
+    atmosphere: '130,231,189', depthHaze: '8,34,24',
   },
   light: {
     warm: [176, 132, 74], sage: [74, 140, 110], grain: [40, 110, 80],
@@ -90,6 +94,7 @@ const PALETTES: Record<'dark' | 'light', Palette> = {
     haze: .05, stars: 0, shade: '28,64,48', shadeAlpha: .55, glow: 'source-over',
     corona: [[0, 'rgba(255,200,120,.55)'], [.15, 'rgba(255,190,110,.25)'], [.4, 'rgba(255,214,160,.08)'], [1, 'rgba(255,230,190,0)']],
     vignette: 'rgba(196,224,210,.45)',
+    atmosphere: '255,255,255', depthHaze: '214,236,224',
   },
 }
 
@@ -168,7 +173,7 @@ function makeRocks(): Rock[] {
       const pts = 6 + Math.floor(rand() * 4), shape: number[] = []
       for (let k = 0; k < pts; k++) shape.push(.65 + rand() * .45)
       const r = rMin + rand() * (rMax - rMin)
-      rocks.push({ r, a: rand() * Math.PI * 2, size: sMin + rand() * (sMax - sMin), shape, tone: rand(), speed: .9 + rand() * .2 })
+      rocks.push({ r, a: rand() * Math.PI * 2, size: sMin + rand() * (sMax - sMin), shape, tone: rand(), speed: .6 + rand() * 1.1 })
     }
   }
   add(.41, .49, 130, .0018, .0055)  // the belt between Mars and Jupiter
@@ -260,7 +265,7 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
 
     /* rocks on the disc, with short shadows */
     for (const rock of rocks) {
-      const a = rock.a + simTime * ORBIT_SPEED * .8 * rock.speed / Math.sqrt(rock.r)
+      const a = rock.a + simTime * ORBIT_SPEED * ROCK_SPEED * rock.speed / Math.sqrt(rock.r)
       const p = project(R * rock.r, a)
       if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) continue
       const s = P * rock.size * (1 + p.depth * .25)
@@ -279,21 +284,21 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
     const placed = PLANETS.map(pl => {
       const a = pl.phase + simTime * ORBIT_SPEED / Math.sqrt(pl.orbit)
       const p = project(R * pl.orbit, a)
-      return { pl, ...p, s: P * pl.size * (1 + p.depth * .22) }
+      return { pl, ...p, s: P * pl.size * (1 + p.depth * .32) }
     }).sort((a, b) => a.depth - b.depth)
 
-    const drawPlanet = ({ pl, x, y, s }: typeof placed[number]) => {
+    const drawPlanet = ({ pl, x, y, s, depth }: typeof placed[number]) => {
       if (x < -s * 4 || x > W + s * 4) return
       const dx = x - sx, dy = y - sy, d = Math.hypot(dx, dy) || 1
       const ux = dx / d, uy = dy / d
-      const lift = s * 1.15  // the planet floats above the disc
+      const lift = s * .6  // the planet rides just above the dust
       /* shadow cast across the disc, away from the sun */
-      const len = s * (4.5 + pl.orbit * 4)
+      const len = s * (2.6 + pl.orbit * 2.2)
       g.save()
       g.translate(x + ux * s * .6, y + lift * .9)
       g.rotate(Math.atan2(uy * k * 1.6, ux))
       const sh = g.createLinearGradient(0, 0, len, 0)
-      sh.addColorStop(0, shade(.5)); sh.addColorStop(.5, shade(.2)); sh.addColorStop(1, shade(0))
+      sh.addColorStop(0, shade(.32)); sh.addColorStop(.5, shade(.12)); sh.addColorStop(1, shade(0))
       g.fillStyle = sh
       g.beginPath(); g.ellipse(len * .45, 0, len * .55, s * .36, 0, 0, Math.PI * 2); g.fill()
       g.restore()
@@ -313,6 +318,11 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
         g.restore()
       }
       ring(false)
+      /* atmosphere: a soft halo in the scene's own light, so the planet sits in the space */
+      const halo = g.createRadialGradient(x, cy, s * .85, x, cy, s * 2.1)
+      halo.addColorStop(0, `rgba(${pal.atmosphere},.28)`); halo.addColorStop(1, `rgba(${pal.atmosphere},0)`)
+      g.fillStyle = halo
+      g.beginPath(); g.arc(x, cy, s * 2.1, 0, Math.PI * 2); g.fill()
       /* sphere lit from the sun */
       const body = g.createRadialGradient(x - ux * s * .45, cy - uy * s * .25 - s * .25, s * .1, x, cy, s * 1.05)
       body.addColorStop(0, pl.colors[0]); body.addColorStop(.45, pl.colors[1]); body.addColorStop(1, pl.colors[2])
@@ -342,6 +352,10 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
       /* thin atmosphere rim on the lit side */
       g.strokeStyle = 'rgba(255,248,230,.25)'; g.lineWidth = Math.max(.6, s * .06)
       g.beginPath(); g.arc(x, cy, s * .98, Math.atan2(-uy, -ux) - 1, Math.atan2(-uy, -ux) + 1); g.stroke()
+      /* depth haze: farther planets take on the colour of the space around them */
+      const far = (1 - depth) / 2
+      g.fillStyle = `rgba(${pal.depthHaze},${(.1 + far * .32).toFixed(3)})`
+      g.beginPath(); g.arc(x, cy, s * 1.01, 0, Math.PI * 2); g.fill()
       ring(true)
     }
 
@@ -398,7 +412,7 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
 
     /* near debris: below the disc, closer to the viewer */
     for (const d of debris) {
-      const x = ((d.x + d.drift * simTime * .2) % 1 + 1) % 1 * W
+      const x = ((d.x + d.drift * simTime * 2.2) % 1 + 1) % 1 * W
       const y = d.y * H + Math.sin(d.phase + time * .0004) * 3
       const s = P * d.size
       const tone = Math.round(60 + d.tone * 60)

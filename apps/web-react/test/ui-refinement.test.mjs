@@ -286,11 +286,17 @@ test('the public header measures real widths instead of a fixed English-length b
   assert.match(src('styles/header-controls.css'), /--hc-h: 36px/)
 })
 
-test('Home is the one-screen solar gateway with two actions', () => {
+test('Home is the one-screen solar gateway with the hero line and three actions', () => {
   const home = src('features/home/Home.tsx'), css = src('features/home/home.css')
   assert.match(home, /startSolarScene\(element, \{ still: reduced\.matches, theme: current \}\)/)
   assert.match(home, /pick\(locale, 'خرید سریع چلنج', 'Buy a challenge'\)/)
   assert.match(home, /pick\(locale, 'قوانین معاملاتی', 'Trading rules'\)/)
+  assert.match(home, /pick\(locale, 'شروع معاملات', 'Start trading'\)/)
+  assert.match(home, /to=\{`\/\$\{locale\}\/prop\/trade`\}/)
+  assert.match(home, /داستان معامله‌گری تو از اینجا شروع خواهد شد…/)
+  /* the hero text sits on the scene itself: no site-header element, no band */
+  assert.doesNotMatch(home, /<header className="solar-hero"/)
+  assert.doesNotMatch(css, /\.solar-hero \{[^}]*background/)
   assert.match(css, /\.home-gateway\.solar-gateway \{\n  position: fixed;/)
   assert.match(css, /top: var\(--gateway-top, 72px\); bottom: var\(--gateway-bottom, 0px\);/)
 })

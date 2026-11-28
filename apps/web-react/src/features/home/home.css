@@ -60,7 +60,31 @@ html.of-gateway-locked.has-bitpin-ticker body { padding-bottom: 0; }
 .solar-gateway .solar-actions .solar-rules:hover { background: color-mix(in srgb, var(--mint, #82e7bd) 14%, #06110c); }
 html:is([lang=fa], [lang=ar]) .solar-gateway .solar-actions .button { font-family: var(--ds-font-persian, 'Dastkhat', 'Ubuntu', sans-serif); }
 
-/* small phones: the two buttons share the row */
+/* hero copy above the scene (owner text, 2026-11-28) */
+.solar-gateway .solar-hero {
+  position: absolute; z-index: 2; inset-inline: 0; top: clamp(14px, 7vh, 72px);
+  padding-inline: max(20px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  text-align: center; pointer-events: none; color: #f3fff9;
+  text-shadow: 0 2px 18px rgba(2, 10, 6, .65), 0 0 2px rgba(2, 10, 6, .5);
+  animation: solar-hero-in 1.1s cubic-bezier(.2, .7, .2, 1) both;
+}
+.solar-gateway .solar-hero h1 { margin: 0; font-size: clamp(22px, 4.2vw, 54px); line-height: 1.35; font-weight: 700; letter-spacing: -.01em; }
+.solar-gateway .solar-hero p { margin: clamp(6px, 1.4vh, 14px) 0 0; display: grid; gap: 2px; font-size: clamp(14px, 1.7vw, 21px); line-height: 1.7; color: #c9f5df; }
+.solar-gateway .solar-hero p span:last-child { color: var(--mint, #82e7bd); font-weight: 600; }
+html:is([lang=fa], [lang=ar]) .solar-gateway .solar-hero { font-family: var(--ds-font-persian, 'Dastkhat', 'Ubuntu', sans-serif); }
+html[data-theme=light] .solar-gateway .solar-hero { color: #0b3d27; text-shadow: 0 1px 14px rgba(255, 255, 255, .85); }
+html[data-theme=light] .solar-gateway .solar-hero p { color: #1c5a40; }
+html[data-theme=light] .solar-gateway .solar-hero p span:last-child { color: #12965d; }
+@keyframes solar-hero-in { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+@media (max-height: 520px) { .solar-gateway .solar-hero p { display: none; } .solar-gateway .solar-hero h1 { font-size: clamp(18px, 3vw, 26px); } }
+/* start trading: the primary path straight into the terminal */
+.solar-gateway .solar-actions .solar-trade {
+  background: linear-gradient(135deg, #82e7bd, #12965d); color: #04140c; border: 0;
+  box-shadow: 0 8px 30px -10px rgba(130, 231, 189, .7);
+}
+.solar-gateway .solar-actions .solar-trade:hover { filter: brightness(1.06); }
+
+/* small phones: the buttons share the rows */
 @media (max-width: 420px) {
   .solar-gateway .solar-actions { gap: 10px; }
   .solar-gateway .solar-actions .button { flex: 1 1 auto; width: auto; white-space: normal; overflow-wrap: anywhere; padding-inline: 10px; font-size: 14px; }
@@ -81,4 +105,5 @@ html[data-theme=light] .solar-gateway .solar-actions .solar-rules {
 html[data-theme=light] .solar-gateway .solar-actions .solar-rules:hover { background: #fff; }
 @media (prefers-reduced-motion: reduce) {
   .solar-gateway .solar-actions .button { transition: none; }
+  .solar-gateway .solar-hero { animation: none; }
 }
