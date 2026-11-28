@@ -39,10 +39,12 @@ html.of-gateway-locked { overscroll-behavior: none; }
   padding-inline: max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
 }
 .solar-gateway .solar-actions .button {
-  min-height: 48px; flex: 0 0 auto; width: max-content; max-width: 100%;
-  justify-content: center; text-align: center; white-space: nowrap;
+  min-height: 48px; flex: 0 0 auto; width: max-content; min-width: max-content; max-width: none;
+  justify-content: center; text-align: center; white-space: nowrap; overflow: visible;
   padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
 }
+/* the shared button sheen is translated outside the box and inflates scrollWidth */
+.solar-gateway .solar-actions .button::before { content: none; display: none; }
 .solar-gateway .solar-actions .solar-rules {
   background: color-mix(in srgb, #06110c 55%, transparent);
   border: 1px solid color-mix(in srgb, var(--mint, #82e7bd) 55%, transparent);
