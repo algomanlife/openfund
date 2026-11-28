@@ -39,7 +39,7 @@ html.of-gateway-locked { overscroll-behavior: none; }
   padding-inline: max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
 }
 .solar-gateway .solar-actions .button {
-  min-height: 48px; min-width: 0; flex: 0 1 220px;
+  min-height: 48px; flex: 0 0 auto; width: max-content; max-width: 100%;
   justify-content: center; text-align: center; white-space: nowrap;
   padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
 }
@@ -55,7 +55,7 @@ html:is([lang=fa], [lang=ar]) .solar-gateway .solar-actions .button { font-famil
 /* small phones: the two buttons share the row */
 @media (max-width: 420px) {
   .solar-gateway .solar-actions { gap: 10px; }
-  .solar-gateway .solar-actions .button { flex: 1 1 0; padding-inline: 12px; font-size: 14px; }
+  .solar-gateway .solar-actions .button { flex: 1 1 auto; width: auto; white-space: normal; overflow-wrap: anywhere; padding-inline: 10px; font-size: 14px; }
 }
 /* short landscape screens: keep the buttons clear of the planets */
 @media (max-height: 460px) and (orientation: landscape) {
