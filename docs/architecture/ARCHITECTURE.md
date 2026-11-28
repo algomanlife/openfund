@@ -69,8 +69,8 @@ See [Render operations](../deployment/RENDER.md), [Database](../deployment/DATAB
 
 Public footer markup remains in `apps/web-react/src/pages/landing-body.html`;
 `InformationShell.tsx` extracts it for editorial routes, and `Landing.tsx` hosts
-the existing challenge runtime. Persian gateway `Home.tsx` explicitly disables its
-footer; English Home uses the shared landing and retains its footer. PR #42's reusable Telegram presentation
+the existing challenge runtime. The Openfund gateway `Home.tsx` is one fixed
+screen in every locale: the shared header and menus, no footer. PR #42's reusable Telegram presentation
 is mounted only by public layouts; TerminalShell and authenticated workspaces
 retain their own navigation. The addendum's shared provider-configured Telegram/Discord
 controls are locally captured and UNRELEASED: public Heroes/Footers only, with provider-specific

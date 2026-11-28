@@ -37,6 +37,8 @@ export const EDITORIAL_ROUTES: readonly EditorialRoute[] = [
   { path: '/:locale/trading-objectives', view: 'trading-objectives', collections: site },
   { path: '/:locale/labs', view: 'labs', collections: site },
   { path: '/:locale/bug-bounty', view: 'bug-bounty', collections: site },
+  { path: '/:locale/airdrop', view: 'airdrop', collections: site },
+  { path: '/:locale/smart-contracts', view: 'smart-contracts', collections: site },
   { path: '/:locale/tournament/terms', view: 'tournament', collections: ['legal_documents', ...site] },
   { path: '/:locale/migrate', view: 'migrate', collections: site },
   { path: '/:locale/search', view: 'search', collections: ['search_suggestions', 'search_synonyms', ...site] },

@@ -80,10 +80,20 @@ export function useGainsMarkets(): MarketsState {
       }, 900)
     }
 
+    /* never stay on "loading": no catalog within 20 s shows the retry state */
+    const watchdog = window.setTimeout(() => { if (active) setFailed(true) }, 20000)
+    unsubs.push(() => clearTimeout(watchdog))
     void ensureGainsAdapter().then(G => {
       if (!active) return
       void G.marketList(true)
-        .then(list => { if (active) { setMarkets([...list.values()].filter(isValidMarket)); setLoaded(true) } })
+        .then(list => {
+          if (!active) return
+          clearTimeout(watchdog)
+          const valid = [...list.values()].filter(isValidMarket)
+          setMarkets(valid); setLoaded(true)
+          /* an empty catalog is a failed read, not a market list */
+          if (!valid.length) setFailed(true)
+        })
         .catch(() => { if (active) setFailed(true) })
       void G.priceSnapshot()
         .then(snapshot => {

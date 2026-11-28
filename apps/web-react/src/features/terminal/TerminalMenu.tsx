@@ -51,6 +51,7 @@ function TerminalMenu({ locale, product, page, accountsHref, accountsSection, pa
       </Link>}>
       <nav id="terminal-navigation-drawer" className="of-drawer-nav" aria-label={t('ناوبری ترمینال', 'Terminal navigation')}>
         <ul className="mega-tiles is-drawer">
+          {item('home', `/${locale}/home`, t('اوپن‌فاند', 'Openfund'), false)}
           {primary[product].map(([id, fa, en]) => item(id, route(locale, product, id), id === 'trade' ? t('معاملات', 'Trading') : t(fa, en), current(id)))}
           {item('journal', route(locale, product, 'journal'), t('ژورنال', 'Journal'), current('journal'))}
           {item('accounts', accountsHref, t('حساب‌ها', 'Accounts'), accountsSection)}

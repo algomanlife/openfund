@@ -36,6 +36,11 @@ export const MEGA_ICONS: Record<string, string> = {
   about: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 11v6M12 7.5v.1',
   contact: 'M4 6h16v12H4zM4 7l8 6 8-6',
   'bug-bounty': 'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9.5 11.5h5M10 9l-1.5-1.5M14 9l1.5-1.5M12 9.5v6',
+  /* a parachute dropping a parcel */
+  airdrop: 'M4 10a8 6 0 0 1 16 0M4 10c1.5-1 3-1 4 0 1-1 2.6-1 4 0 1.4-1 3-1 4 0 1-1 2.5-1 4 0M4 10l7 8M20 10l-7 8M12 10v8M9.5 18h5v3h-5z',
+  /* a contract page with a chain link */
+  'smart-contracts': 'M6 3h9l4 4v6M15 3v4h4M6 3v18h6M9 8h4M9 11h6M15.5 16.5l-1 1a2 2 0 0 0 2.8 2.8l1-1M18.5 18.5l1-1a2 2 0 0 0-2.8-2.8l-1 1M16 19l3-3',
+  home: 'M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10',
   /* terminal destinations */
   dashboard: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z',
   trade: 'M7 4v16M17 4v16M4 8h6M14 15h6M4 15h6M14 8h6',
@@ -81,6 +86,8 @@ export const MEGA_DESCRIPTIONS: Record<string, { en: string; fa: string }> = {
   about: text('Who we are and how we work.', 'ما که هستیم و چگونه کار می‌کنیم.'),
   contact: text('Reach support, legal and technical teams.', 'تماس با پشتیبانی، واحد حقوقی و فنی.'),
   'bug-bounty': text('Report a vulnerability and get rewarded.', 'آسیب‌پذیری را گزارش کن و جایزه بگیر.'),
+  airdrop: text('Openfund airdrop: details coming soon.', 'ایردراپ اوپن‌فاند؛ جزئیات به‌زودی.'),
+  'smart-contracts': text('Our contracts on Arbitrum Sepolia, open to verify.', 'قراردادهای ما روی Arbitrum Sepolia، قابل بررسی برای همه.'),
 }
 
 /** Resources sub-groups (routes must also be in the Resources list) */
@@ -88,7 +95,7 @@ export const RESOURCE_SECTIONS: { id: string; label: { en: string; fa: string };
   { id: 'learn', label: text('Learn', 'یادگیری'), routes: ['learn', 'glossary', 'faq'] },
   { id: 'product', label: text('Product', 'محصول'), routes: ['apps', 'tools', 'roadmap', 'developers'] },
   { id: 'company', label: text('Company', 'شرکت'), routes: ['about', 'contact', 'certificate-verification'] },
-  { id: 'security', label: text('Security', 'امنیت'), routes: ['bug-bounty'] },
+  { id: 'security', label: text('Security', 'امنیت'), routes: ['bug-bounty', 'smart-contracts'] },
 ]
 
 export type MegaBannerKind = 'council' | 'desktop' | 'flamingo' | 'whitepaper'

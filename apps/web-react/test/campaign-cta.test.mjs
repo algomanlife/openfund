@@ -67,10 +67,9 @@ test('campaign attribution keeps only safe utm_* values and never personal data'
   assert.doesNotMatch(code(tracking), /walletAddress|email|orderId|fetch\(/)
 })
 
-test('landing CTA 1: the prop card keeps its button and adds "Buy Challenge" straight to the shared checkout', () => {
-  assert.match(home, /c\.propCtaDestination === 'terminal' \? `\/\$\{locale\}\/prop\/trade` : CTA_HREF\.challenges\(locale\)/)
-  assert.match(home, /<Link className="button button-secondary home-buy-cta" to=\{CHECKOUT_HREF\(locale\)\}/)
-  assert.match(home, /pick\(locale, 'خرید سریع چالش', 'Buy Challenge'\)/)
+test('landing CTA 1: the gateway sends "Buy a challenge" straight to the shared checkout', () => {
+  assert.match(home, /<Link className="button solar-buy" to=\{CHECKOUT_HREF\(locale\)\} data-cta="home-quick-buy">/)
+  assert.match(home, /pick\(locale, 'خرید سریع چلنج', 'Buy a challenge'\)/)
   assert.match(home, /export const CHECKOUT_HREF = \(locale: string\) => `\/\$\{locale\}\/checkout`/)
 })
 

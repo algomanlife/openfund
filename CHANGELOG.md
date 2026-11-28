@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Openfund gateway redesigned.** `/:locale/home` is now one fixed screen that never scrolls on any display: an animated miniature solar system (original canvas drawing in the Openfund green palette, with a light-theme variant and a still frame under reduced motion) and two actions, Buy a challenge and Trading rules. The site menus are back on this page, it is named "Openfund", and the logo leads to it everywhere. The previous two product cards, technical-features strip and pointer-parallax background are retired.
+- **Navigation.** An "Openfund" entry leads the header menu, the site drawer and the terminal menus. The Challenges menu adds Airdrop (a reserved page, empty until the owner publishes its content); Resources › Security adds Smart contracts, a page listing the certificate and trade-ledger contracts with their Arbiscan links, source code and audit status ("not deployed yet" until the owner deploys them).
+- **Market pulse never waits forever.** An empty Open Oracle catalog now falls back to the venue feed (website table and shared market adapter), and a catalog that does not arrive within 20 seconds shows the retry state instead of an endless "loading markets".
+
+## v0.9.1 — 2026-11-28
+
 - **Charts: Vela 0.10.19 and Vela Pine addon 0.3.5.** The vendored Vela source and the npm packages move from 0.10.6 / 0.3.4 to the latest releases (29 more built-in indicators, now 106, including Ichimoku Cloud, MA/EMA crosses, Chop Zone and volatility studies; comparison symbols, percentage-scale toggle, indicator labels on the price scale, tick timeframes, full screen and other upstream fixes). Openfund's picker order patch (OF-VELA-003) was ported to the new upstream picker API; the no-badge patch, the Pine worker wrapper, Openfund's indicators, themes, locales and terminal integration are unchanged. PineTS stays at 0.13.1 because 0.14.0 is not yet published to npm.
 
 - **Footer: Arbitrum Sepolia.** The public footer credits gain a ninth card, Arbitrum Sepolia, "Blockchain and distributed ledger of records", with the official full-colour Arbitrum logomark (unchanged Offchain Labs SVG, provenance in `assets/notices/Public-brand-assets.txt`), linked to the network explorer. The credit grid shows nine columns on desktop and three below 1200 px, so no card is left alone on a row.

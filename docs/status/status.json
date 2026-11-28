@@ -1,21 +1,21 @@
 {
   "$comment": "Canonical Openfund status (docs/status/README.md is generated from this file by `node scripts/docs/status.mjs`; `npm run docs:check` validates both). Every state is recorded per environment. Source states come from Git; runtime states (deployed, enabled, verified, accepted) are valid only with `verifiedAt` and `evidence`. CI never probes production: a stale or wrong runtime claim must be corrected by re-verifying, not by editing the date.",
   "schemaVersion": 1,
-  "updatedAt": "2026-11-27",
+  "updatedAt": "2026-11-28",
   "release": {
     "latestOfficial": {
-      "version": "0.9.0",
-      "tag": "v0.9.0",
-      "commit": "ae7c17dbf70c78747128ec4aeab04ae193165ff1",
-      "publishedAt": "2026-11-27",
-      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.9.0"
+      "version": "0.9.1",
+      "tag": "v0.9.1",
+      "commit": "7e813248baedee029ef68c72f22ed52baa15523f",
+      "publishedAt": "2026-11-28",
+      "evidence": "https://github.com/algomanlife/openfund/releases/tag/v0.9.1"
     },
     "next": {
       "version": null,
       "candidateCommit": null,
       "state": "planned",
-      "note": "No next version is allocated yet. Open items after v0.9.0 are listed in the 2026-11-27 security assessment (wallet SDK upgrade to wagmi 3, payment review outcome for invalid passes, fee-refund payout verification).",
-      "evidence": "https://github.com/algomanlife/openfund/compare/v0.9.0...main"
+      "note": "No next version is allocated yet. Open after v0.9.1: the owner fix batch of 2026-11-28 (gateway, navigation, lot sizing, mobile layout) and the items of the 2026-11-27 security assessment.",
+      "evidence": "https://github.com/algomanlife/openfund/compare/v0.9.1...main"
     }
   },
   "environments": {
@@ -27,24 +27,24 @@
           "role": "Web/API",
           "provider": "render",
           "resource": "srv-dbnfjajrjlhs738m4020",
-          "version": "0.9.0",
-          "commit": "ae7c17dbf70c78747128ec4aeab04ae193165ff1",
+          "version": "0.9.1",
+          "commit": "7e813248baedee029ef68c72f22ed52baa15523f",
           "official": true,
-          "verifiedAt": "2026-11-27T14:25:00Z",
-          "evidence": "https://github.com/algomanlife/openfund/actions/runs/46005804268",
-          "note": "The release workflow's chained deploy built the exact v0.9.0 commit on Render and its identity report read version 0.9.0 at ae7c17d from GLOBAL /version; the live SIWE gate passed."
+          "verifiedAt": "2026-11-28T05:04:07Z",
+          "evidence": "https://github.com/algomanlife/openfund/actions/runs/46086722197",
+          "note": "The release workflow's chained deploy built the exact v0.9.1 commit on Render and its identity report read version 0.9.1 at 7e81324 from GLOBAL /version; the live SIWE gate passed."
         },
         {
           "id": "openfund-backstage",
           "role": "Backstage",
           "provider": "render",
           "resource": "srv-dbsum1u7bikc73chqlfg",
-          "version": "0.9.0",
-          "commit": "ae7c17dbf70c78747128ec4aeab04ae193165ff1",
+          "version": "0.9.1",
+          "commit": "7e813248baedee029ef68c72f22ed52baa15523f",
           "official": true,
-          "note": "The release identity report read commit ae7c17d from Backstage /health after the v0.9.0 deploy.",
-          "verifiedAt": "2026-11-27T14:25:00Z",
-          "evidence": "https://github.com/algomanlife/openfund/actions/runs/46005804268"
+          "note": "The release identity report read commit 7e81324 from Backstage /health after the v0.9.1 deploy.",
+          "verifiedAt": "2026-11-28T05:04:07Z",
+          "evidence": "https://github.com/algomanlife/openfund/actions/runs/46086722197"
         },
         {
           "id": "openfund-cms",

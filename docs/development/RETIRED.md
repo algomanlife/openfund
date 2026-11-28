@@ -2,7 +2,7 @@
 
 <!-- Generated from docs/development/RETIRED.json by `node scripts/docs/check-retired.mjs --write`; edit the JSON, not this page. -->
 
-Registry updated **2026-11-27**. Status meanings:
+Registry updated **2026-11-28**. Status meanings:
 
 - **retired** — Removed. Zero active references allowed; history may still name it.
 - **legacy-only pending removal** — Still shipped for compatibility; no new work; replacement named; remaining references are counted, not gated.
@@ -20,6 +20,7 @@ Registry updated **2026-11-27**. Status meanings:
 | Tracked `dist/` classic static snapshot (frozen classic site, asset mirror and script copies) | code | retired | 2026-11-27 | `apps/web-react/public/` (served assets and the legacy runtime), written by `npm run build:charts` | 0 |
 | Openfund Protocol (dormant import of mux-protocol, `packages/openfund-protocol/`) | code | dormant | — | None — not retired; not built, shipped or operated ([provenance](../../packages/openfund-protocol/PROVENANCE.md)) | 126 files |
 | Automatic free demo account (`demo_accounts.account_type = 'free_demo'`, 100,000 virtual USD created at sign-in) | code | legacy-only pending removal | 2026-11-27 | Request-based 14-day Free Trial on the `free-trial` plan ([ADR 0062](../decisions/0062-request-based-free-trial.md)); existing rows are deleted by `npm --prefix apps/backend run retire-free-demo` | 0 files |
+| Two-card product gateway on /:locale/home (Prop and Perpetual product cards with terminal illustrations, the pointer-parallax network background and the perpetual technical-features strip) | code | retired | 2026-11-28 | One-screen Openfund gateway: an animated solar-system scene with two actions, Buy a challenge and Trading rules (`apps/web-react/src/features/home/solarScene.ts`) | 0 |
 
 `Remaining refs` for a `retired` item counts active references and must be 0 (CI fails otherwise);
 for other statuses it counts the files still in the tree.
@@ -32,6 +33,7 @@ for other statuses it counts the files still in the tree.
 - **superseded-releases** — Runtime facts (for example a region still running v0.6.5) stay in the generated status block; release notes keep their history.
 - **dist-snapshot** — Never served by the backend; most files were byte-identical copies. Removed by owner decision together with its build-charts, upstream-guard and test references.
 - **free-demo-account** — Sign-in no longer creates the account outside test mode. The engine keeps the account type as the fixture the backend and browser suites trade on (`SIM_TEST_MODE`); no product surface offers it.
+- **home-product-gateway** — Owner decision. The Home content row in Directus keeps only its SEO title and description in use; the product-card fields are no longer rendered.
 
 ## Historical paths
 
