@@ -7538,6 +7538,32 @@
       "capturedAt": "2026-11-20T06:34:53.050316+00:00",
       "state": "AFTER: Persian trading terminal at 390 px: compact header, wordmark visually hidden but still the brand link name.",
       "sha256": "28dc30ddc0faf21a65c704e54225b63a626b303f95163ef9fdc068c2313d6553"
+    },
+    {
+      "file": "gateway/2026-11-28/gateway-fa-dark-1440.png",
+      "route": "/fa/home",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "session": "no wallet; dark theme; local static react/ build of main 8a5dff9 (PR #252 merged); Openfund backend and CMS not running (static server, prices unavailable); scene animating, captured after 2.5 s",
+      "sourceSha": "8a5dff9b8cafded885092f40d709d9bcc27680ab",
+      "capturedAt": "2026-11-28T18:41:30.455827+00:00",
+      "state": "Persian gateway: hero line, solar system with the black hole between the hero and the actions, spacecraft and the round sound toggle beside the three actions.",
+      "sha256": "7845cca9cfa36db87f8ed3da247a034ea369129b47b21d9dd6a8d3067f0c5eff"
+    },
+    {
+      "file": "gateway/2026-11-28/gateway-en-dark-390.png",
+      "route": "/en/home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "session": "no wallet; dark theme; local static react/ build of main 8a5dff9 (PR #252 merged); Openfund backend and CMS not running (static server, prices unavailable); scene animating, captured after 2.5 s",
+      "sourceSha": "8a5dff9b8cafded885092f40d709d9bcc27680ab",
+      "capturedAt": "2026-11-28T18:41:30.455827+00:00",
+      "state": "English gateway on a phone: hero line, black hole in the system plane, three actions and the sound toggle.",
+      "sha256": "a5af2f366d97cb95dce754bfe8a60fe2e18cd183f4435e5b035f1cff350c6f09"
     }
   ],
   "finalIntegration": {
