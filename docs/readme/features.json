@@ -12,7 +12,7 @@
         "Request-based 14-day Free Trial (One-phase or Two-phase) with trial and phase-pass certificates",
         "Market, limit and stop orders with risk preview",
         "Chart protection: SL/TP handles and P/L zones",
-        "Collateral, quantity and lot sizing conventions",
+        "Lots, symbol size or collateral; lot and size orders filled exactly, Openfund lot for every market",
         "Funding and Details tabs with our own hourly funding history",
         "Terminal guide with recorded walkthroughs"
       ]

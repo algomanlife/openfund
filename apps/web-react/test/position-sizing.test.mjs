@@ -43,58 +43,47 @@ test('quantity precision grid', () => {
   assert.equal(PS.quantityOnGrid('10', 0), true)
 })
 
-test('lotage is unavailable where no industry-standard lot exists (Gains itself has no lots)', () => {
-  /* the verified Gains metadata carries no lot fields; crypto, stocks, indices and
-     non-standard commodities get an explained "unavailable", never a guessed size */
-  for (const [meta, reason] of [
-    [{ symbol: 'BTC/USD', base: 'BTC', quote: 'USD', group: 'crypto', sizePrecision: 5 }, 'no_lot_standard_crypto'],
-    [{ symbol: 'AAPL/USD', base: 'AAPL', quote: 'USD', group: 'stocks', sizePrecision: 3 }, 'no_lot_standard_stocks'],
-    [{ symbol: 'SPY/USD', base: 'SPY', quote: 'USD', group: 'indices', sizePrecision: 3 }, 'no_lot_standard_indices'],
-    [{ symbol: 'XPT/USD', base: 'XPT', quote: 'USD', group: 'commodities', sizePrecision: 3 }, 'no_lot_standard_commodity'],
-    [{ symbol: 'HG/USD', base: 'HG', quote: 'USD', group: 'commodities', sizePrecision: 3 }, 'no_lot_standard_commodity'],
-  ]) {
-    const spec = PS.lotSpec(meta, meta.symbol)
-    assert.equal(spec.available, false, meta.symbol)
-    assert.equal(spec.reason, reason, meta.symbol)
-    assert.deepEqual(PS.quantityFromLots('1', spec), { ok: false, reason: 'no_approved_contract_spec' })
-    assert.equal(PS.lotsFromQuantity('100', spec), null)
+test('every USD-quoted market has an Openfund lot; other quotes have none', () => {
+  const spec = meta => PS.lotSpec(meta, meta.symbol)
+  const rows = [
+    [{ symbol: 'BTC/USD', base: 'BTC', quote: 'USD', group: 'crypto', pricePrecision: 1, sizePrecision: 5 }, '1', 'BTC', '0.01'],
+    [{ symbol: 'DOGE/USD', base: 'DOGE', quote: 'USD', group: 'crypto', pricePrecision: 6, sizePrecision: 0 }, '100', 'DOGE', '0.01'],
+    [{ symbol: 'PEPE/USD', base: 'PEPE', quote: 'USD', group: 'crypto', pricePrecision: 10, sizePrecision: 0 }, '1000000', 'PEPE', '0.01'],
+    [{ symbol: 'AAPL/USD', base: 'AAPL', quote: 'USD', group: 'stocks', sizePrecision: 0 }, '100', 'AAPL', '0.01'],
+    [{ symbol: 'SPY/USD', base: 'SPY', quote: 'USD', group: 'indices', sizePrecision: 0 }, '1', 'SPY', '1'],
+    [{ symbol: 'SPX/USD', base: 'SPX', quote: 'USD', group: 'indices', sizePrecision: 2 }, '1', 'SPX', '0.01'],
+    [{ symbol: 'EUR/USD', base: 'EUR', quote: 'USD', group: 'forex', sizePrecision: 0 }, '100000', 'EUR', '0.01'],
+    [{ symbol: 'XAU/USD', base: 'XAU', quote: 'USD', group: 'commodities', sizePrecision: 3 }, '100', 'troy oz', '0.01'],
+    [{ symbol: 'XAG/USD', base: 'XAG', quote: 'USD', group: 'commodities', sizePrecision: 2 }, '5000', 'troy oz', '0.01'],
+    [{ symbol: 'XPT/USD', base: 'XPT', quote: 'USD', group: 'commodities', sizePrecision: 2 }, '50', 'troy oz', '0.01'],
+    [{ symbol: 'WTI/USD', base: 'WTI', quote: 'USD', group: 'commodities', sizePrecision: 2 }, '1000', 'barrels', '0.01'],
+    [{ symbol: 'HG/USD', base: 'HG', quote: 'USD', group: 'commodities', sizePrecision: 0 }, '25000', 'lb', '0.01'],
+    [{ symbol: 'CORN/USD', base: 'CORN', quote: 'USD', group: 'commodities', sizePrecision: 1 }, '1', 'CORN', '0.1'],
+  ]
+  for (const [meta, size, unit, step] of rows) {
+    const s = spec(meta)
+    assert.deepEqual([s.available, s.contractSize, s.baseUnit, s.lotMin, s.lotStep, s.lotMax], [true, size, unit, step, step, null], meta.symbol)
   }
-  assert.deepEqual(Object.keys(PS.APPROVED_LOT_SPECS), [])
-  /* unapproved contract metadata is ignored */
-  assert.equal(PS.lotSpec({ base: 'BTC', group: 'crypto', contractSpec: { contractSize: 100, lotStep: '0.01', lotMin: '0.01' } }, 'BTC/USD').available, false)
+  assert.deepEqual(spec({ symbol: 'USD/JPY', base: 'USD', quote: 'JPY', group: 'forex', sizePrecision: 3 }), { available: false, reason: 'non_usd_quote' })
+  assert.deepEqual(spec({ symbol: 'X/USD', base: 'X', quote: 'USD', group: 'bonds' }), { available: false, reason: 'unsupported_instrument' })
+  assert.deepEqual(PS.quantityFromLots('1', spec({ symbol: 'USD/JPY', base: 'USD', quote: 'JPY', group: 'forex' })), { ok: false, reason: 'non_usd_quote' })
 })
 
-test('lotage conventions: FX standard lot and the CME contract units for gold, silver and WTI', () => {
-  const fx = PS.lotSpec({ symbol: 'EUR/USD', base: 'EUR', quote: 'USD', group: 'forex', sizePrecision: 0 }, 'EUR/USD')
-  assert.deepEqual([fx.available, fx.contractSize, fx.baseUnit, fx.lotMin, fx.lotStep], [true, '100000', 'EUR', '0.01', '0.01'])
-  assert.equal(PS.lotSpec({ symbol: 'GBP/USD', base: 'GBP', quote: 'USD', group: 'forex-minor' }, 'GBP/USD').baseUnit, 'GBP')
-  /* the engine values positions in USD only: non-USD quotes get no lotage */
-  assert.deepEqual(PS.lotSpec({ symbol: 'USD/JPY', base: 'USD', quote: 'JPY', group: 'forex', sizePrecision: 3 }, 'USD/JPY'), { available: false, reason: 'non_usd_quote' })
-  const unit = (base) => PS.lotSpec({ symbol: base + '/USD', base, quote: 'USD', group: 'commodities', sizePrecision: 3 }, base + '/USD')
-  assert.deepEqual([unit('XAU').contractSize, unit('XAU').baseUnit], ['100', 'troy oz'])
-  assert.deepEqual([unit('XAG').contractSize, unit('XAG').baseUnit], ['5000', 'troy oz'])
-  assert.deepEqual([unit('WTI').contractSize, unit('WTI').baseUnit], ['1000', 'barrels'])
-  /* an explicitly approved per-market specification wins over the convention */
-  assert.equal(PS.lotSpec({ base: 'XAU', group: 'commodities', contractSpec: { approved: true, contractSize: '10', lotStep: '0.1', lotMin: '0.1' } }, 'XAU/USD').contractSize, '10')
-})
-
-test('lotage round trip keeps the economic size: lots → quantity → collateral → engine quantity → lots', () => {
+test('lots → exact quantity, and back', () => {
   const fx = PS.lotSpec({ symbol: 'EUR/USD', base: 'EUR', quote: 'USD', group: 'forex' }, 'EUR/USD')
-  const q = PS.quantityFromLots('0.25', fx)
-  assert.deepEqual(q, { ok: true, quantity: '25000' })                       /* 0.25 × 100,000 EUR */
-  const coll = PS.collateralFromQuantity({ quantity: q.quantity, leverage: 100, price: '1.08345' })
-  assert.equal(coll, '270.87')                                               /* 25,000 × 1.08345 / 100, rounded UP to cents */
-  const engineQty = PS.quantityFromCollateral({ collateral: coll, leverage: 100, price: '1.08345', quantityPrecision: 0 })
-  assert.ok(Number(engineQty) >= 25000 && Number(engineQty) < 25001, engineQty)  /* never smaller than requested */
-  assert.equal(PS.lotsFloor(engineQty, fx), '0.25')
-  /* gold: 0.1 lot = 10 oz; the notional is quantity × price exactly */
+  assert.deepEqual(PS.quantityFromLots('0.25', fx), { ok: true, quantity: '25000' })   /* 0.25 × 100,000 EUR */
   const xau = PS.lotSpec({ symbol: 'XAU/USD', base: 'XAU', quote: 'USD', group: 'commodities' }, 'XAU/USD')
-  assert.deepEqual(PS.quantityFromLots('0.1', xau), { ok: true, quantity: '10' })
-  assert.equal(PS.collateralFromQuantity({ quantity: '10', leverage: 50, price: '2411.37' }), '482.28')
-  /* budget buttons round DOWN to the lot step */
+  assert.deepEqual(PS.quantityFromLots('0.1', xau), { ok: true, quantity: '10' })      /* 0.1 lot gold = 10 oz */
+  const btc = PS.lotSpec({ symbol: 'BTC/USD', base: 'BTC', quote: 'USD', group: 'crypto', pricePrecision: 1, sizePrecision: 5 }, 'BTC/USD')
+  assert.deepEqual(PS.quantityFromLots('0.37', btc), { ok: true, quantity: '0.37' })
+  const aapl = PS.lotSpec({ symbol: 'AAPL/USD', base: 'AAPL', quote: 'USD', group: 'stocks', sizePrecision: 0 }, 'AAPL/USD')
+  assert.deepEqual(PS.quantityFromLots('0.05', aapl), { ok: true, quantity: '5' })     /* 5 shares */
+  assert.equal(PS.lotsFromQuantity('30000', fx), '0.3')
   assert.equal(PS.lotsFloor('26999', fx), '0.26')
   assert.equal(PS.lotsFloor('999', fx), '0')
   assert.equal(PS.lotsFloor('12.349', xau), '0.12')
+  /* the collateral estimate covers the exact quantity at the shown price */
+  assert.equal(PS.collateralFromQuantity({ quantity: '10', leverage: 50, price: '2411.37' }), '482.28')
 })
 
 test('lotage limits: minimum, step and precision are enforced; no float drift', () => {
@@ -103,18 +92,9 @@ test('lotage limits: minimum, step and precision are enforced; no float drift', 
   assert.equal(PS.quantityFromLots('0.015', fx).reason, 'off_lot_step')
   assert.equal(PS.quantityFromLots('0', fx).reason, 'invalid_lots')
   assert.deepEqual(PS.quantityFromLots('0.3', fx), { ok: true, quantity: '30000' })  /* 0.1 + 0.2 style drift impossible */
-  assert.equal(PS.lotsFromQuantity('30000', fx), '0.3')
+  const spy = PS.lotSpec({ symbol: 'SPY/USD', base: 'SPY', quote: 'USD', group: 'indices', sizePrecision: 0 }, 'SPY/USD')
+  assert.equal(PS.quantityFromLots('0.5', spy).reason, 'below_lot_min')            /* whole index units only */
+  assert.deepEqual(PS.quantityFromLots('3', spy), { ok: true, quantity: '3' })
   assert.equal(PS.quantityOnGrid('30000', 0), true)
   assert.equal(PS.quantityOnGrid('30000.5', 0), false)
-})
-
-test('lot conversion with an approved specification (illustrative XAU 100 oz)', () => {
-  const spec = PS.lotSpec({ base: 'XAU', contractSpec: { approved: true, contractSize: '100', lotStep: '0.01', lotMin: '0.01', lotMax: '50', baseUnit: 'oz' } }, 'XAU/USD')
-  assert.equal(spec.available, true)
-  assert.deepEqual(PS.quantityFromLots('1', spec), { ok: true, quantity: '100' })
-  assert.deepEqual(PS.quantityFromLots('0.25', spec), { ok: true, quantity: '25' })
-  assert.equal(PS.quantityFromLots('0.005', spec).reason, 'below_lot_min')
-  assert.equal(PS.quantityFromLots('0.015', spec).reason, 'off_lot_step')
-  assert.equal(PS.quantityFromLots('51', spec).reason, 'above_lot_max')
-  assert.equal(PS.lotsFromQuantity('250', spec), '2.5')
 })
