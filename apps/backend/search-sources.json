@@ -382,11 +382,11 @@
         "zh-CN": "空投"
       },
       "description": {
-        "fa": "ایردراپ اوپن‌فاند؛ جزئیات به‌زودی.",
-        "en": "Openfund airdrop: details coming soon.",
-        "ar": "الإسقاط الجوي من Openfund: التفاصيل قريبًا.",
-        "ru": "Аирдроп Openfund: подробности скоро.",
-        "zh-CN": "Openfund 空投：详情即将公布。"
+        "fa": "جایزهٔ نقدی ۱٬۰۰۰ تا ۵٬۰۰۰ دلاری برای خریداران چلنج.",
+        "en": "Cash rewards of $1,000 to $5,000 for challenge buyers.",
+        "ar": "مكافآت نقدية من 1,000 إلى 5,000 دولار لمشتري التحديات.",
+        "ru": "Денежные награды от $1,000 до $5,000 для покупателей челленджей.",
+        "zh-CN": "为挑战购买者提供 1,000 至 5,000 美元的现金奖励。"
       }
     },
     {
@@ -407,32 +407,6 @@
         "ru": "Наши контракты в Arbitrum Sepolia, открытые для проверки.",
         "zh-CN": "我们在 Arbitrum Sepolia 上的合约，人人可验证。"
       }
-    },
-    {
-      "path": "terms",
-      "view": "terms",
-      "icon": null,
-      "title": {
-        "fa": "شرایط استفاده",
-        "en": "Terms of Use",
-        "ar": "شروط الاستخدام",
-        "ru": "Условия использования",
-        "zh-CN": "使用条款"
-      },
-      "description": null
-    },
-    {
-      "path": "privacy",
-      "view": "privacy",
-      "icon": null,
-      "title": {
-        "fa": "سیاست حریم خصوصی",
-        "en": "Privacy Policy",
-        "ar": "سياسة الخصوصية",
-        "ru": "Политика конфиденциальности",
-        "zh-CN": "隐私政策"
-      },
-      "description": null
     },
     {
       "path": "migrate",
@@ -694,8 +668,8 @@
         "fa": "تغییرات برای توسعه‌دهندگان"
       },
       "text": {
-        "en": "2026 11 28 — Terms of Use, Privacy Policy and no KYC (ADR 0065, ADR 0066) New public routes /:locale/terms and /:locale/privacy (features/legal/), in the sitemap (apps/backend/seo.js), the editorial route registry and every footer. A published legal documents row with doc type terms or privacy replaces the built in copy. Migration review has no identity step: POST /migration/requests/:id/evidence/upload no longer accepts kind=identity (invalid kind), the checklist has no identity item, and POST /admin/migration/requests/:id/decide approves with the checklist, approvedMaxSizeUsd and reason only",
-        "fa": "۱۴۰۵/۰۹/۰۷ — شرایط استفاده، سیاست حریم خصوصی و حذف KYC (ADR 0065 و ADR 0066) مسیرهای عمومی تازه /:locale/terms و /:locale/privacy (features/legal/)، در نقشهٔ سایت (apps/backend/seo.js)، فهرست مسیرهای محتوایی و فوتر همهٔ صفحه‌ها. ردیف منتشرشدهٔ legal documents با doc type برابر terms یا privacy جای متن داخلی را می‌گیرد. بازبینی مهاجرت مرحلهٔ هویتی ندارد: POST /migration/requests/:id/evidence/upload دیگر kind=identity را نمی‌پذیرد (invalid kind)، فهرست بررسی مورد identity ندارد و POST /admin/migration/requests/:id/decide فقط با فهرست کامل، approvedMaxSizeUsd و reason تأیید می‌کند (kycVerified، n"
+        "en": "2026 11 28 — Airdrop page and contracts motion /:locale/airdrop now renders the airdrop programme (features/airdrop/: AirdropPage.tsx, BalloonDrop.tsx); /:locale/smart contracts gets the ChainMint.tsx hero. Both heroes are SVG with CSS motion that stops under reduced motion. npm prefix apps/web react run test:information also runs test/airdrop page.test.mjs. 2026 11 28 — Openfund gateway, navigation and new pages New public routes /:locale/airdrop (reserved, no content yet) and /:locale/smart contracts (contract addresses from GET /chain/status, Arbiscan and source links); both are in the site",
+        "fa": "۱۴۰۵/۰۹/۰۷ — صفحهٔ ایردراپ و موشن صفحهٔ قراردادها /:locale/airdrop اکنون برنامهٔ ایردراپ را نمایش می‌دهد (features/airdrop/: AirdropPage.tsx و BalloonDrop.tsx) و /:locale/smart contracts سرصفحهٔ ChainMint.tsx را گرفته است. هر دو SVG با موشن CSS هستند که در حالت کاهش حرکت متوقف می‌شود. npm prefix apps/web react run test:information آزمون test/airdrop page.test.mjs را هم اجرا می‌کند. ۱۴۰۵/۰۹/۰۷ — صفحهٔ اوپن‌فاند، ناوبری و صفحه‌های تازه مسیرهای عمومی تازه: /:locale/airdrop (رزروشده، فعلاً بدون محتوا) و /:locale/smart contracts (آدرس قراردادها از GET /chain/status، با پیوند Arbiscan و کد منبع). هر"
       }
     }
   ]

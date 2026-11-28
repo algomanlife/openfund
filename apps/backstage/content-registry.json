@@ -2,7 +2,7 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 5061,
+    "uniqueRecords": 5030,
     "mappedCalls": 2375,
     "exceptions": 64,
     "validationFindings": 0,
@@ -635,34 +635,6 @@
         ]
       },
       {
-        "path": "/:locale/terms",
-        "view": "terms",
-        "collections": [
-          "ui_messages",
-          "pages",
-          "navigation_items",
-          "footer_links",
-          "legal_documents"
-        ],
-        "areas": [
-          "legal"
-        ]
-      },
-      {
-        "path": "/:locale/privacy",
-        "view": "privacy",
-        "collections": [
-          "ui_messages",
-          "pages",
-          "navigation_items",
-          "footer_links",
-          "legal_documents"
-        ],
-        "areas": [
-          "legal"
-        ]
-      },
-      {
         "path": "/:locale/tournament/terms",
         "view": "tournament",
         "collections": [
@@ -1209,26 +1181,6 @@
       ]
     },
     {
-      "key": "react.002a0c482b5afd8e",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "این سیاست توضیح می‌دهد اوپن‌فاند هنگام استفاده از وب‌سایت، ترمینال معاملاتی و اپلیکیشن دسکتاپ چه داده‌هایی را پردازش می‌کند، چرا، و شما چه درخواست‌هایی می‌توانید داشته باشید. اوپن‌فاند فقط همان مقداری داده جمع می‌کند که خدمت به آن نیاز دارد.",
-      "en": "This policy explains which data Openfund processes when you use the website, the trading terminal and the desktop app, why it does so and what you can ask for. Openfund collects as little as the service needs.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 100,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.007add1d3dea9d45",
       "namespace": "react",
       "area": "Global Content",
@@ -1457,26 +1409,6 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 282,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.00d05a6e3ed24200",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۲. داده‌هایی که پردازش می‌شود",
-      "en": "2. What Openfund processes",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 108,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -1863,7 +1795,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 73,
+          "line": 74,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -1883,7 +1815,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 19,
+          "line": 20,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -1963,7 +1895,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 168,
+          "line": 167,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -2114,26 +2046,6 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.01c69a9c6d5c5a64",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "ایردراپ اوپن‌فاند؛ جزئیات به‌زودی.",
-      "en": "Openfund airdrop: details coming soon.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
-          "line": 89,
-          "page": "navigation",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -2484,7 +2396,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 64,
+          "line": 65,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -2884,7 +2796,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 105,
+          "line": 104,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3064,7 +2976,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 86,
+          "line": 87,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3218,7 +3130,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 54,
+          "line": 52,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -3240,6 +3152,26 @@
           "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
           "line": 39,
           "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.04478c06b729d830",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جوایز نقدی پس از احراز هویت برندگان (KYC) و مطابق قانون و تحریم‌ها پرداخت می‌شود.",
+      "en": "Cash prizes are paid after winner identity checks (KYC), subject to law and sanctions.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
+          "line": 30,
+          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -3409,6 +3341,26 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.04e6b052c3aefb4e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مأموریت را انجام بده",
+      "en": "Complete a mission",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 51,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -3599,7 +3551,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 54,
+          "line": 55,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -3683,6 +3635,26 @@
           "page": "economy",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.057d9897b4813ec9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هر مأموریت برای هر کیف پول یک بار پرداخت می‌شود. اوپن‌فاند همهٔ درخواست‌ها را بررسی می‌کند و دلیل رد را اعلام می‌کند. شرایط استفاده برقرار است.",
+      "en": "Each mission pays once per wallet. Openfund reviews every claim and gives the reason for a refusal. The Terms of Use apply.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 61,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -4319,7 +4291,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 48,
+          "line": 49,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4367,6 +4339,26 @@
       ]
     },
     {
+      "key": "react.07704f9c248a15be",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ده گواهی برداشتی را که به کیف پولت صادر شده به اشتراک بگذار.",
+      "en": "Share ten payout certificates issued to your wallet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 46,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0771dd66f097a648",
       "namespace": "react",
       "area": "Website",
@@ -4399,7 +4391,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 110,
+          "line": 109,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4493,7 +4485,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 75,
+          "line": 76,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -4917,7 +4909,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 61,
+          "line": 62,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -5206,6 +5198,26 @@
           "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
           "line": 68,
           "page": "bounty",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.092def20e1048510",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایزهٔ نقدی برای خریداران چلنج",
+      "en": "Cash rewards for challenge buyers",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 14,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -5766,26 +5778,6 @@
       ]
     },
     {
-      "key": "react.0a7f1dfeef7cad40",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "ترافیک رمزنگاری می‌شود، کدهای یک‌بارمصرف فقط به‌صورت هش ذخیره می‌شوند، دسترسی پایگاه داده به نقش‌هایی با کمترین سطح دسترسی لازم تقسیم شده و هر اقدام مدیریتی در گزارش ممیزی ثبت می‌شود.",
-      "en": "Traffic is encrypted, one-time codes are stored only as hashes, database access is split into least-privilege roles and every administrative action is recorded in an audit log.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 143,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.0a7f862c6ee2d12c",
       "namespace": "react",
       "area": "Website",
@@ -5818,7 +5810,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 154,
+          "line": 153,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -6582,6 +6574,26 @@
       ]
     },
     {
+      "key": "react.0ce8ec6623f54424",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ایردراپ اوپن‌فاند: جایزهٔ نقدی ۱٬۰۰۰ تا ۵٬۰۰۰ دلاری برای خریداران چلنج که مأموریت‌ها را انجام می‌دهند و گواهی‌هایشان را به اشتراک می‌گذارند.",
+      "en": "The Openfund airdrop: cash rewards from $1,000 to $5,000 for challenge buyers who complete missions and share their certificates.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 17,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.0ced30f183d9e3f3",
       "namespace": "react",
       "area": "Global Content",
@@ -7299,7 +7311,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 56,
+          "line": 55,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -7871,20 +7883,6 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/information/content.ts",
-          "line": 52,
-          "page": "information",
-          "route": "/:locale/:page",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 99,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -7945,26 +7943,6 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.108ddedec31abe4e",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "عمومی به‌اقتضای طراحی: جدول‌های رتبه‌بندی نام مستعار انتخابی شما یا نشانی کوتاه‌شدهٔ کیف پول را نشان می‌دهند و گواهی‌ای که به اشتراک می‌گذارید با نتیجه و نام نمایشی‌اش به‌صورت عمومی قابل تأیید است.",
-      "en": "Public by design: leaderboards show your chosen nickname or a shortened wallet address, and a certificate you share can be verified publicly with its result and display name.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 131,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -8630,26 +8608,6 @@
       ]
     },
     {
-      "key": "react.127e259a7fdde6b8",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "داده در کشورهایی پردازش می‌شود که سرورهای اوپن‌فاند در آن‌ها کار می‌کنند و ممکن است با کشور شما متفاوت باشد. اوپن‌فاند این سیاست را در هر جایی که داده باشد اعمال می‌کند.",
-      "en": "Data is processed in the countries where Openfund’s servers run, which may differ from your own. Openfund applies this policy wherever the data is.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 151,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.1292fd50458685a6",
       "namespace": "react",
       "area": "Global Content",
@@ -8664,26 +8622,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 185,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.129d2e454d275843",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "بدون احراز هویت: جایزهٔ نقدی فقط به کیف پول برنده و در چارچوب قانون پرداخت می‌شود.",
-      "en": "No KYC: cash prizes are paid only to the winning wallet, within the law.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/tournament/TournamentPage.tsx",
-          "line": 30,
-          "page": "tournament",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -9099,7 +9037,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 125,
+          "line": 124,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -9446,7 +9384,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 88,
+          "line": 89,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -9860,7 +9798,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 59,
+          "line": 57,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -10397,46 +10335,6 @@
       ]
     },
     {
-      "key": "react.160bc9176e3594b1",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۷. اختیارات و حقوق شما",
-      "en": "7. Your choices and rights",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 138,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.161f731795abb8fd",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "کیف پول و ورود: نشانی کیف پول و شبکهٔ آن، پیام امضاشدهٔ ورود و یک رکورد نشست که در یک کوکی امن نگه داشته می‌شود.",
-      "en": "Wallet and sign-in: your wallet address and network, the signed sign-in message and a session record held in a secure cookie.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 109,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.162a63f7abae791d",
       "namespace": "react",
       "area": "Website",
@@ -10453,26 +10351,6 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.1650bd388cdc471e",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "این شرایط، استفادهٔ شما از وب‌سایت، ترمینال معاملاتی، اپلیکیشن دسکتاپ و خدمات مرتبط اوپن‌فاند (روی‌هم «اوپن‌فاند») را تعیین می‌کند. با اتصال کیف پول، ورود یا خرید چلنج، این شرایط را می‌پذیرید. اگر آن را نمی‌پذیرید، از اوپن‌فاند استفاده نکنید.",
-      "en": "These terms govern your use of the Openfund website, trading terminal, desktop app and related services (together, “Openfund”). By connecting a wallet, signing in or buying a challenge you accept them. If you do not accept them, do not use Openfund.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 18,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -11353,7 +11231,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 56,
+          "line": 57,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12248,8 +12126,28 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 52,
+          "line": 53,
           "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1a91e4e74f1329d7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی‌ها را به‌صورت عمومی در شبکه‌های اجتماعی منتشر کن و پست‌ها را نگه دار.",
+      "en": "Post the certificates publicly on social media and keep the posts up.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 52,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -12576,6 +12474,26 @@
       ]
     },
     {
+      "key": "react.1b8a0ae45a651dd4",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "دریافت کن",
+      "en": "Claim",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 53,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.1ba8f912dab9b11a",
       "namespace": "react",
       "area": "Website",
@@ -12608,7 +12526,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 172,
+          "line": 171,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -12889,28 +12807,8 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 70,
+          "line": 71,
           "page": "migration",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.1c94135d30e5d2c7",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "پس از ارزیابی موفق، علاوه بر این شرایط، توافق‌نامهٔ معامله‌گر فاندد که پیش از نخستین معاملهٔ فاندد نمایش داده می‌شود اعمال می‌شود. پاداش طبق همان توافق‌نامه و قوانین معاملاتی محاسبه و به کیف پول حساب پرداخت می‌شود. اوپن‌فاند می‌تواند پاداشی را که از نقض قوانین یا این شرایط به دست آمده نگه دارد و دلیل آن را اعلام می‌کند.",
-      "en": "After a successful evaluation, the funded-trader agreement shown before your first funded trade applies in addition to these terms. Rewards are calculated as that agreement and the trading rules describe and are paid to the account wallet. Openfund may withhold a reward that results from a breach of the rules or of these terms and will tell you why.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 57,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -13098,6 +12996,26 @@
           "component": "apps/web-react/src/cms/seed/toolsCopy.ts",
           "line": 19,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1ce35604b9ab87a2",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چطور کار می‌کند",
+      "en": "How it works",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 25,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -13705,7 +13623,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 60,
+          "line": 61,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14045,7 +13963,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 83,
+          "line": 84,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14106,6 +14024,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 171,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.1f393170aceb9b60",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "۱۰. پرداخت و احراز هویت. جوایز نقدی و فیزیکی پس از احراز هویت (KYC) و بررسی تحریم‌ها و در چارچوب قانون تحویل می‌شوند. اگر ارسال یا پرداخت ممکن نباشد، اوپن‌فاند می‌تواند معادل نقدی پیشنهاد کند. مالیات بر عهدهٔ برنده است.",
+      "en": "10. Payment and identity. Cash and physical prizes are delivered after the winner passes identity verification (KYC) and sanctions screening, and within the law. Where delivery or payment is not possible, Openfund may offer a cash equivalent. Taxes are the winner’s responsibility.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
+          "line": 22,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -14561,6 +14499,26 @@
       ]
     },
     {
+      "key": "react.207ffa0de08b2f7d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پاس کن و به اشتراک بگذار",
+      "en": "Pass and share",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 36,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.20875c8905a4c937",
       "namespace": "react",
       "area": "Global Content",
@@ -14953,7 +14911,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 17,
+          "line": 18,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -15173,7 +15131,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 134,
+          "line": 133,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -15500,7 +15458,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 107,
+          "line": 106,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -15524,6 +15482,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.22cf78a402fd8e56",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "یک چلنج بخر و گواهی خرید و تصویر خرید را در شبکه‌های اجتماعی به اشتراک بگذار.",
+      "en": "Buy a challenge and share your purchase certificate and a screenshot of the purchase on social media.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 34,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -15660,7 +15638,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 59,
+          "line": 58,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -16080,7 +16058,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 58,
+          "line": 57,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -17357,26 +17335,6 @@
       ]
     },
     {
-      "key": "react.273cf1ca7633c8dc",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند ارزیابی‌های معاملاتی (چلنج) را روی حساب‌های دمو و در محیط معاملاتی شبیه‌سازی‌شده اجرا می‌کند. موجودی حساب دمو ارزش نقدی ندارد و برداشت‌شدنی نیست. هیچ معامله‌ای روی حساب دمو به بازار مالی واقعی نمی‌رسد.",
-      "en": "Openfund runs trading evaluations (challenges) on demo accounts in a simulated trading environment. Demo balances have no cash value and cannot be withdrawn. No trade placed on a demo account reaches a live financial market.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 23,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.274dcda38c4c5c31",
       "namespace": "react",
       "area": "Trading Terminal",
@@ -17433,26 +17391,6 @@
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.276909c83f47a0cc",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند کارگزار، صرافی، بانک، امانت‌دار یا مشاور سرمایه‌گذاری نیست؛ سپرده نمی‌پذیرد و پول کسی را برای سرمایه‌گذاری مدیریت نمی‌کند. هیچ محتوایی در اوپن‌فاند توصیهٔ سرمایه‌گذاری، مالی، حقوقی یا مالیاتی نیست.",
-      "en": "Openfund is not a broker, exchange, bank, custodian or investment adviser. It does not take deposits and does not manage anyone’s money for investment. Nothing on Openfund is investment, financial, legal or tax advice.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 25,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -17809,7 +17747,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 46,
+          "line": 47,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -17869,7 +17807,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 84,
+          "line": 85,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -17913,26 +17851,6 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.2860a902ea79740e",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۲. تغییرات و تماس",
-      "en": "12. Changes and contact",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 158,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -18089,7 +18007,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 66,
+          "line": 65,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -18582,13 +18500,6 @@
           "method": "bilingual-record"
         },
         {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 166,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
-        {
           "component": "apps/web-react/src/features/tournament/TournamentTermsPage.tsx",
           "line": 15,
           "page": "tournament",
@@ -18677,7 +18588,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 92,
+          "line": 91,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -18791,7 +18702,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 57,
+          "line": 58,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -19680,6 +19591,26 @@
       ]
     },
     {
+      "key": "react.2c88a46f41c7ac29",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "اثبات ${n} برداشت در ${m} ماه و احراز هویت",
+      "en": "Proof of ${n} payouts in ${m} months and identity checks",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 26,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.2ca43fc5d5c544bb",
       "namespace": "react",
       "area": "Website",
@@ -19954,7 +19885,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 67,
+          "line": 68,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -20514,7 +20445,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 35,
+          "line": 36,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -21138,7 +21069,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 58,
+          "line": 57,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -21809,7 +21740,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 53,
+          "line": 52,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -22487,6 +22418,26 @@
       ]
     },
     {
+      "key": "react.3212bbe7c746c057",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "به اشتراک بگذار",
+      "en": "Share it",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 52,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3217285c551ecabc",
       "namespace": "react",
       "area": "Global Content",
@@ -22606,7 +22557,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 48,
+          "line": 49,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -22934,7 +22885,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 39,
+          "line": 40,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -23549,7 +23500,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 95,
+          "line": 94,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -24833,6 +24784,26 @@
       ]
     },
     {
+      "key": "react.3727d0e348402e6d",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سه خرید و یک قبولی",
+      "en": "Three purchases and a pass",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 42,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.372d762a4410af08",
       "namespace": "react",
       "area": "Global Content",
@@ -25011,26 +24982,6 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.37a69e6b039fbc1b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۲. تعلیق و پایان",
-      "en": "12. Suspension and ending",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 80,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -25248,26 +25199,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.37fd77e7084051c1",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۳. کیف پول شما، حساب شماست",
-      "en": "3. Your wallet is your account",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 32,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -26052,26 +25983,6 @@
       ]
     },
     {
-      "key": "react.3a178c3f32f47dfd",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "هر جا سند ساکت است، این مسیر همان را می‌گوید. هیچ‌چیز اینجا قرارداد نیست: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. هویت یعنی یک کیف پول و یک هویت، و یک کیف پول می‌تواند چند سابقهٔ چلنج داشته باشد؛ اوپن‌فاند احرازِ هویت (KYC) ندارد.",
-      "en": "Where the document is silent, this path says so. Nothing here is a contract: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. Identity is one wallet to one identity, and a wallet can hold more than one challenge record; Openfund runs no KYC.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 322,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.3a216e954c9ca62d",
       "namespace": "react",
       "area": "Website",
@@ -26426,7 +26337,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 55,
+          "line": 56,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -27353,26 +27264,6 @@
       ]
     },
     {
-      "key": "react.3d70b6db6aee02a5",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۳. کارهایی که اوپن‌فاند انجام نمی‌دهد",
-      "en": "3. What Openfund does not do",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 120,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.3d7d5b952d71d9a9",
       "namespace": "react",
       "area": "Global Content",
@@ -27659,7 +27550,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 76,
+          "line": 77,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -28027,26 +27918,6 @@
       ]
     },
     {
-      "key": "react.3f3e089f4371cc57",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "سوءاستفاده از خطا یا تأخیر قیمت، هماهنگی یا کپی معاملات میان حساب‌ها برای دور زدن قوانین، استفاده از چند کیف پول برای دور زدن محدودیت‌ها، اجرای خودکارسازی‌ای که به پلتفرم آسیب بزند، حمله یا ایجاد بار بیش از حد روی سرویس و هر استفادهٔ غیرقانونی از اوپن‌فاند مجاز نیست. ایرادهای امنیتی را به‌جای سوءاستفاده، از طریق باگ بانتی گزارش کنید.",
-      "en": "You may not exploit price-feed errors or latency, coordinate or copy trades between accounts to get around the rules, use several wallets to get around limits, run automation that abuses the platform, attack or overload the service, or use Openfund for anything unlawful. Report security issues through the bug bounty instead of exploiting them.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 61,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.3f3ed96d427ead0f",
       "namespace": "react",
       "area": "Global Content",
@@ -28160,7 +28031,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 43,
+          "line": 44,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -28395,6 +28266,26 @@
       ]
     },
     {
+      "key": "react.3ff3365ce8741838",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ایردراپ اوپن‌فاند",
+      "en": "Openfund Airdrop",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 13,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.3ff459b3f86be467",
       "namespace": "react",
       "area": "Website",
@@ -28407,7 +28298,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 60,
+          "line": 58,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -28674,7 +28565,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 34,
+          "line": 33,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -28948,7 +28839,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 147,
+          "line": 146,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -29132,26 +29023,6 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.418f097fd3550467",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۱. افراد زیر ۱۸ سال",
-      "en": "11. Under 18",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 154,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -29876,7 +29747,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 57,
+          "line": 55,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -29976,7 +29847,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 129,
+          "line": 128,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30650,7 +30521,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 54,
+          "line": 53,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -30694,26 +30565,6 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.45b3ca37e93ce48d",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "آنچه خودتان می‌فرستید: پیام‌های تماس و پشتیبانی همراه نشانی ایمیلی که وارد می‌کنید، ایمیل ثبت‌نام در لیگ برتر، درخواست‌های همکاری و، برای درخواست مهاجرت، نام روی حساب شما در آن شرکت و مدارک برداشتی که بارگذاری می‌کنید.",
-      "en": "What you send: contact and support messages with the email address you give, a Premium League registration email, partner applications, and, for a migration request, the name on your account at the other firm and the payout proofs you upload.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 115,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -30794,26 +30645,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.45ef7330dff147b6",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "دادهٔ فنی: نشانی IP و جزئیات درخواست‌ها در گزارش‌های امنیتی و محدودیت نرخ درخواست، و ترجیحات شما (زبان، تم، چیدمان نمودار) که در مرورگر خودتان ذخیره می‌شود.",
-      "en": "Technical data: the IP address and request details in security logs and rate limits, and your preferences (language, theme, chart layout) stored in your own browser.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 117,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -31142,6 +30973,13 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 26,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
         {
           "component": "apps/web-react/src/features/bounty/BugBountyPage.tsx",
           "line": 49,
@@ -31626,26 +31464,6 @@
       ]
     },
     {
-      "key": "react.47b611b2344ce2ea",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۵. چه کسانی داده را دریافت می‌کنند",
-      "en": "5. Who receives data",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 128,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.47c2c14a95b3fa02",
       "namespace": "react",
       "area": "Global Content",
@@ -31814,6 +31632,26 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 145,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.481c89e52f79c76b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بالن‌هایی که بالای صفحه پرواز می‌کنند و پول نقد، سکه و جعبهٔ هدیه می‌ریزند.",
+      "en": "Balloons flying over the page and dropping cash, coins and gift boxes.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 18,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -32252,7 +32090,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 23,
+          "line": 24,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -32392,7 +32230,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 106,
+          "line": 105,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -33093,7 +32931,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 62,
+          "line": 60,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -33389,26 +33227,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 440,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.4bb35605d3d90d8f",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "پاداش، جایزه و بازپرداخت فقط به کیف پولی پرداخت می‌شود که حساب به آن تعلق دارد. اوپن‌فاند می‌تواند هر جا قانون الزام کند، از پرداخت به کیف پولی که در فهرست‌های عمومی تحریم آمده خودداری کند.",
-      "en": "Rewards, prizes and refunds are paid only to the wallet that holds the account. Openfund may refuse a payment to a wallet that appears on a public sanctions list where the law requires it.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 41,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -34893,7 +34711,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 85,
+          "line": 86,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -35175,26 +34993,6 @@
       ]
     },
     {
-      "key": "react.4fc2e6776aae1635",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند فقط از کوکی‌های ضروری سرویس استفاده می‌کند (نشست ورود و محافظت از آن). ترجیحاتی مانند زبان، تم و چیدمان نمودار در حافظهٔ مرورگر خودتان می‌ماند. هیچ کوکی ردیابی وجود ندارد.",
-      "en": "Openfund uses only the cookies the service needs (the sign-in session and its protection). Preferences such as language, theme and chart layout stay in your browser storage. There are no tracking cookies.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 147,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.4fd3de487e969f04",
       "namespace": "react",
       "area": "Website",
@@ -35389,26 +35187,6 @@
           "component": "apps/web-react/src/cms/seed/learning/glossary.ts",
           "line": 29,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.50327f709cb1da06",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۳. تغییر این شرایط",
-      "en": "13. Changes to these terms",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 84,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -35973,26 +35751,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.5154419d5bf0f7af",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "نام، لوگو و برند اوپن‌فاند مشمول مجوز متن‌باز نیست و نباید برای القای اینکه چیزی از سوی اوپن‌فاند یا مورد تأیید آن است به کار رود. اجزای شخص ثالث مجوزهای خود را دارند که در مخزن فهرست شده است.",
-      "en": "The Openfund name, logo and brand are not covered by the open-source licence and may not be used to suggest that something comes from or is endorsed by Openfund. Third-party components keep their own licences, listed in the repository.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 67,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -36653,26 +36411,6 @@
           "component": "apps/web-react/src/cms/seed/toolsCopy.ts",
           "line": 97,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.52aa6fc0190e1742",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند همان‌گونه که هست و در حد دسترس‌پذیری ارائه می‌شود و ممکن است برای نگهداری قطع شود یا به‌مرور تغییر کند. تا جایی که قانون اجازه می‌دهد، اوپن‌فاند هیچ ضمانتی نمی‌دهد و مسئول زیان غیرمستقیم یا تبعی، سود ازدست‌رفته یا نتیجهٔ تصمیم‌های معاملاتی شما نیست.",
-      "en": "Openfund is provided as it is and as available. It may be interrupted for maintenance or change over time. To the extent the law allows, Openfund gives no warranties and is not liable for indirect or consequential loss, lost profit or the result of your trading decisions.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 75,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -37607,7 +37345,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 95,
+          "line": 94,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -37787,7 +37525,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 77,
+          "line": 78,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -38919,7 +38657,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 117,
+          "line": 116,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -39213,7 +38951,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 144,
+          "line": 143,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -39401,7 +39139,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 24,
+          "line": 23,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -39441,7 +39179,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 33,
+          "line": 32,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -39976,7 +39714,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 20,
+          "line": 21,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40098,7 +39836,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 71,
+          "line": 72,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40245,7 +39983,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 81,
+          "line": 82,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40492,7 +40230,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 133,
+          "line": 132,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40514,26 +40252,6 @@
           "component": "apps/web-react/src/features/tournament/TournamentTermsPage.tsx",
           "line": 16,
           "page": "tournament",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.5be2e1ba5538c29e",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۹. متن‌باز بودن و مالکیت",
-      "en": "9. Open source and ownership",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 64,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -40639,7 +40357,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 30,
+          "line": 31,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -40650,26 +40368,6 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.5c3581c263f0a4c6",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۲. شرایط استفاده‌کننده",
-      "en": "2. Eligibility",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 28,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -41315,26 +41013,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathD.ts",
           "line": 200,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.5de829c91b814c4d",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "میزبان‌هایی که سرورهای اوپن‌فاند را اجرا می‌کنند، سرویس ارسال ایمیل برای پیام‌هایی که خودتان خواسته‌اید، ابزار پرداخت و شبکه‌های بلاک‌چینی که در پرداخت به کار می‌روند، و مراجع رسمی آنجا که قانون الزام کند. هر ارائه‌دهنده فقط همان داده‌ای را می‌گیرد که کارش به آن نیاز دارد.",
-      "en": "Service providers that run Openfund’s servers, the email delivery provider for messages you asked for, the payment widget and blockchain networks used for a payment, and authorities where the law requires it. Each provider receives only what its task needs.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 129,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -42471,26 +42149,6 @@
       ]
     },
     {
-      "key": "react.605412fdb17b38ef",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اثبات ${n} برداشت در ${m} ماه و اثبات حساب فاندشده",
-      "en": "Proof of ${n} payouts in ${m} months and of the funded account",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 26,
-          "page": "migration",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.6062baa8e6bb31a0",
       "namespace": "react",
       "area": "Global Content",
@@ -42551,26 +42209,6 @@
       ]
     },
     {
-      "key": "react.60837f54e2c28aae",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۶. مدت نگهداری",
-      "en": "6. How long",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 134,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.60959c1c2a51838a",
       "namespace": "react",
       "area": "Global Content",
@@ -42602,6 +42240,13 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 19,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
           "component": "apps/web-react/src/features/information/navigation.ts",
           "line": 31,
           "page": "information",
@@ -42624,6 +42269,26 @@
         {
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 525,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.60a6632ef7035832",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "دسترسی با اتصالِ کیف پول و امضای EIP-4361 شروع می‌شود که یک نشستِ first-party می‌سازد. هر کیف پول به یک هویت نگارش می‌شود، ولی یک کیف پول می‌تواند بیش از یک سابقهٔ چلنج داشته باشد. امضای پیامِ ورود انتقالِ دارایی نیست و هرگز به اجازهٔ برداشتِ توکن نیاز ندارد؛ احرازِ هویت با مدرکِ شناسایی هم نیست. الزامات KYC، حداقلِ سن و شرایط جغرافیایی در این نسخه نهایی نشده‌اند، پس نباید هیچ بخشی از دسترسی را به معنایِ واجدِ شرایط بودن برای مرحلهٔ فاندشده خواند.",
+      "en": "Access starts with a wallet connection and an EIP-4361 signature that creates a first-party session. One wallet maps to one identity, while a single wallet can hold more than one challenge record. Signing a login message is not a transfer and never requires a token approval; it is also not identity-document verification. KYC, minimum age and geographic eligibility are not finalized in this release, so nothing about access should be read as a statement that you qualify for a funded stage.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 99,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -42750,7 +42415,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 53,
+          "line": 51,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -43457,7 +43122,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 84,
+          "line": 85,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -43497,7 +43162,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 44,
+          "line": 43,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -43717,7 +43382,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 69,
+          "line": 70,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -43904,7 +43569,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 47,
+          "line": 48,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44548,7 +44213,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 181,
+          "line": 180,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44808,7 +44473,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 107,
+          "line": 106,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44868,7 +44533,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 55,
+          "line": 56,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -44992,6 +44657,26 @@
           "page": "governance",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.66fc3be3c13353c7",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "لینک پست‌ها را با همان کیف پول ارسال کن. پس از بررسی، جایزه به همان کیف پول پرداخت می‌شود.",
+      "en": "Send the post links from the same wallet. After review the reward is paid to that wallet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 53,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -45564,6 +45249,26 @@
       ]
     },
     {
+      "key": "react.689e8baef5c82430",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برداشت بزن و به اشتراک بگذار",
+      "en": "Get paid and share",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 39,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.68a0c4f760ac22a3",
       "namespace": "react",
       "area": "Website",
@@ -45730,7 +45435,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 84,
+          "line": 83,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -45750,7 +45455,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 109,
+          "line": 108,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46392,26 +46097,6 @@
       ]
     },
     {
-      "key": "react.6aa2e8eaed48eec2",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند احراز هویت (KYC) ندارد و هرگز مدرک هویتی نمی‌خواهد: کیف پولی که با آن وارد می‌شوی مالک حساب است و پاداش فقط به همان کیف پول می‌رود. حداقل سن (۱۸ سال) و قوانین کشور تو همچنان طبق شرایط استفاده برقرار است. مدرک هویتی را برای هیچ‌کسی که خود را اوپن‌فاند معرفی می‌کند نفرست.",
-      "en": "Openfund runs no KYC and never asks for identity documents: the wallet that signs in owns the account, and rewards go only to that wallet. The age limit (18+) and the laws of your country still apply, as the Terms of Use describe. Never send identity documents to anyone claiming to be Openfund.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "mapped",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/rulebook/content.ts",
-          "line": 137,
-          "page": "rulebook",
-          "route": "/:locale/rulebook",
-          "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
       "key": "react.6aa6c36aef0b843e",
       "namespace": "react",
       "area": "Global Content",
@@ -46464,7 +46149,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 115,
+          "line": 114,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -46800,26 +46485,6 @@
       ]
     },
     {
-      "key": "react.6b3872affebfc419",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۹. کوکی و حافظهٔ مرورگر",
-      "en": "9. Cookies and browser storage",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 146,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.6b3f9df87c39828a",
       "namespace": "react",
       "area": "Website",
@@ -46852,7 +46517,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 42,
+          "line": 43,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -47023,26 +46688,6 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.6bf34571f86fb7f1",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "هزینهٔ چلنج بهای یک خدمت ارزیابی است؛ سپرده، وام یا سرمایه‌گذاری نیست و سود یا بازدهی ندارد. قیمت، اندازهٔ حساب، قوانین و مراحل پیش از پرداخت نمایش داده می‌شود.",
-      "en": "A challenge fee pays for an evaluation service. It is not a deposit, a loan or an investment and earns no interest or return. The price, account size, rules and phases are shown before you pay.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 45,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -48887,7 +48532,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 64,
+          "line": 65,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49192,6 +48837,26 @@
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.714cddf49443bb56",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پست‌ها باید عمومی باشند و تا پرداخت جایزه باقی بمانند. پست حذف‌شده، دست‌کاری‌شده یا کپی‌شده و گواهی‌ای که مال تو نیست، درخواست را باطل می‌کند.",
+      "en": "Posts must be public and stay online until the reward is paid. Deleted, edited or copied posts and certificates that are not yours void the claim.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 60,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -49969,14 +49634,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 45,
+          "line": 46,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 88,
+          "line": 89,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -49996,7 +49661,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 170,
+          "line": 169,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -50056,7 +49721,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 16,
+          "line": 17,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -50498,6 +50163,26 @@
       ]
     },
     {
+      "key": "react.75ebc1a45d999f5e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فرم دریافت جایزه به‌زودی باز می‌شود؛ مأموریت‌هایی که از حالا انجام بدهی حساب می‌شود.",
+      "en": "The claim form opens soon; missions you complete now count.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 21,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.760b3dff73e4761b",
       "namespace": "react",
       "area": "Global Content",
@@ -50645,26 +50330,6 @@
       ]
     },
     {
-      "key": "react.765a1fc88f838ce0",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند دادهٔ شخصی نمی‌فروشد، از ردیاب تبلیغاتی یا ابزار تحلیل شخص ثالث استفاده نمی‌کند و هرگز کلید خصوصی یا عبارت بازیابی را درخواست یا ذخیره نمی‌کند.",
-      "en": "Openfund does not sell personal data, does not use advertising trackers or third-party analytics, and never asks for or stores private keys or recovery phrases.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 121,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.7668c7b198355735",
       "namespace": "react",
       "area": "User Dashboard",
@@ -50697,7 +50362,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 21,
+          "line": 22,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51246,7 +50911,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 56,
+          "line": 57,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51326,7 +50991,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 110,
+          "line": 109,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51414,6 +51079,26 @@
       ]
     },
     {
+      "key": "react.77ee7a1d0bf2fed9",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مأموریت‌ها و جایزه‌ها",
+      "en": "Missions and rewards",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 22,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.77f1453fe3ae54d1",
       "namespace": "react",
       "area": "Website",
@@ -51425,16 +51110,9 @@
       "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/information/content.ts",
-          "line": 51,
-          "page": "information",
-          "route": "/:locale/:page",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 17,
-          "page": "legal",
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 27,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -51540,7 +51218,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 41,
+          "line": 42,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -51948,26 +51626,6 @@
       ]
     },
     {
-      "key": "react.78e6ade7cd695261",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "تاریخ اجرا",
-      "en": "Effective",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 167,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.78f99360727742ea",
       "namespace": "react",
       "area": "Global Content",
@@ -52064,26 +51722,6 @@
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.793bced13f06c0e1",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند نام کاربری و رمز عبور ندارد. ورود با امضای یک پیام با کیف پول شما انجام می‌شود (Sign-In with Ethereum، استاندارد EIP-4361). هر کس کیف پول را در اختیار دارد، حساب را در اختیار دارد: مالک کیف پول، مالک حساب و چلنج‌ها، گواهی‌ها و پاداش‌های آن است.",
-      "en": "Openfund has no usernames or passwords. You sign in by signing a message with your wallet (Sign-In with Ethereum, EIP-4361). Whoever controls the wallet controls the account: the owner of the wallet is the owner of the account, its challenges, certificates and rewards.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 33,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -52260,7 +51898,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 140,
+          "line": 139,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -52707,13 +52345,6 @@
           "method": "bilingual-record"
         },
         {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 170,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
-        {
           "component": "apps/web-react/src/features/rulebook/Rulebook.tsx",
           "line": 100,
           "page": "rulebook",
@@ -53117,26 +52748,6 @@
       ]
     },
     {
-      "key": "react.7b1d36134eb732bf",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۷. مرحلهٔ فاندد و پاداش",
-      "en": "7. Funded stage and rewards",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 56,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.7b25b324c1edbcfc",
       "namespace": "react",
       "area": "Global Content",
@@ -53464,7 +53075,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 74,
+          "line": 75,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -53825,7 +53436,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 32,
+          "line": 33,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54007,26 +53618,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 43,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.7d6343ffc75232ef",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۰. محل پردازش داده",
-      "en": "10. Where data is processed",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 150,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -54359,7 +53950,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 64,
+          "line": 63,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54573,7 +54164,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 109,
+          "line": 108,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -54842,6 +54433,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 180,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.7ff77b4568f203a3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چلنج بخر، یک مأموریت را انجام بده و گواهی‌های اوپن‌فاندت را در شبکه‌های اجتماعی به اشتراک بگذار. هر مأموریت یک جایزهٔ نقدی از ۱٬۰۰۰ تا ۵٬۰۰۰ دلار به کیف پولی می‌دهد که چلنج را خریده است. توکن نیست، قرعه‌کشی نیست و ربطی به لیگ برتر ندارد.",
+      "en": "Buy a challenge, complete a mission and share your Openfund certificates on social media. Each mission pays a cash reward from $1,000 to $5,000 to the wallet that bought the challenge. No token, no lottery ticket and nothing to do with the Premium League.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 15,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -55365,26 +54976,6 @@
           "page": "campaign",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.81554cdc4537dc7c",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند می‌تواند حسابی را که این شرایط یا قوانین معاملاتی را نقض کند، سرویس یا دیگر کاربران را به خطر بیندازد یا قانون الزام کند تعلیق کند و دلیل آن را اعلام می‌کند، مگر قانون مانع شود. شما هر زمان می‌توانید استفاده از اوپن‌فاند را متوقف کنید.",
-      "en": "Openfund may suspend an account that breaches these terms or the trading rules, that puts the service or other users at risk, or where the law requires it, and will give the reason unless the law prevents it. You can stop using Openfund at any time.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 81,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -56134,20 +55725,27 @@
       ]
     },
     {
-      "key": "react.833a58dca8e39a8c",
+      "key": "react.832c4db71b4555a1",
       "namespace": "react",
       "area": "Website",
       "owner": "Content editor",
-      "fa": "اوپن‌فاند هر نسخهٔ تازهٔ این سیاست را با تاریخ آن در همین صفحه منتشر می‌کند. پرسش‌ها و درخواست‌ها از طریق صفحهٔ تماس ارسال می‌شوند.",
-      "en": "Openfund publishes every new version of this policy on this page with its date. Questions and requests go through the contact page.",
+      "fa": "مدرک هویتی",
+      "en": "Identity document",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 159,
-          "page": "legal",
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 53,
+          "page": "migration",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        },
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 56,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -56440,7 +56038,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 173,
+          "line": 172,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -56907,7 +56505,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 58,
+          "line": 56,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -57234,7 +56832,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 108,
+          "line": 107,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57641,7 +57239,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 127,
+          "line": 126,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -57741,7 +57339,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 57,
+          "line": 56,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58115,7 +57713,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 128,
+          "line": 127,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58162,7 +57760,7 @@
         },
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 55,
+          "line": 53,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -58269,7 +57867,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 50,
+          "line": 51,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58538,26 +58136,6 @@
       ]
     },
     {
-      "key": "react.89d71ad957a5a00b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۶. قوانین معاملاتی",
-      "en": "6. Trading rules",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 52,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.89da6c6876f7246e",
       "namespace": "react",
       "area": "Global Content",
@@ -58617,7 +58195,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 66,
+          "line": 67,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58637,7 +58215,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 81,
+          "line": 82,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -58934,7 +58512,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 56,
+          "line": 57,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59241,7 +58819,7 @@
         },
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 28,
+          "line": 29,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59351,26 +58929,6 @@
       ]
     },
     {
-      "key": "react.8b848152df0a56c6",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۴. تماس، اختلاف و زبان",
-      "en": "14. Contact, disputes and language",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 88,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.8b86499d430ee1fd",
       "namespace": "react",
       "area": "Website",
@@ -59390,7 +58948,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 82,
+          "line": 83,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -59621,6 +59179,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.8bf70028928dc15e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایزهٔ نقدی ۱٬۰۰۰ تا ۵٬۰۰۰ دلاری برای خریداران چلنج.",
+      "en": "Cash rewards of $1,000 to $5,000 for challenge buyers.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/navigation/megaMenu.ts",
+          "line": 89,
+          "page": "navigation",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -60286,7 +59864,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 76,
+          "line": 77,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -60800,7 +60378,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 180,
+          "line": 179,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -60980,7 +60558,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 160,
+          "line": 159,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61436,26 +61014,6 @@
       ]
     },
     {
-      "key": "react.8fd224086d8ef43e",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۸. استفادهٔ مجاز",
-      "en": "8. Acceptable use",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 60,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.8fd241ec2228617e",
       "namespace": "react",
       "area": "Website",
@@ -61638,26 +61196,6 @@
           "line": 47,
           "page": "tools",
           "route": "/:locale/tools",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.900083206c12414a",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "مسئولیت کل اوپن‌فاند در برابر هر ادعا به مبلغ هزینه‌هایی محدود است که در ۱۲ ماه پیش از ادعا به اوپن‌فاند پرداخته‌اید. هیچ بندی از این شرایط مسئولیتی را که قانون محدودکردنش را مجاز نمی‌داند محدود نمی‌کند.",
-      "en": "Openfund’s total liability for any claim is limited to the fees you paid Openfund in the 12 months before the claim. Nothing in these terms limits a liability that the law does not allow to be limited.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 77,
-          "page": "legal",
-          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -61849,7 +61387,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 138,
+          "line": 137,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -61889,7 +61427,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 76,
+          "line": 75,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -62111,6 +61649,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 444,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.910fb711d99a94e3",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "نام کامل مطابق مدرک هویتی",
+      "en": "Full name as on your identity document",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 50,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -62517,7 +62075,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 23,
+          "line": 22,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -62624,7 +62182,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 148,
+          "line": 147,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63251,7 +62809,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 69,
+          "line": 70,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63571,7 +63129,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 75,
+          "line": 74,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -63978,7 +63536,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 87,
+          "line": 88,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -64459,7 +64017,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 41,
+          "line": 40,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65168,7 +64726,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 72,
+          "line": 73,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -65430,26 +64988,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 105,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.997417278744b1a3",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند احراز هویت (KYC) انجام نمی‌دهد و برای استفاده از پلتفرم هرگز نام، مدرک هویتی، عکس یا نشانی منزل شما را نمی‌خواهد. نشانی کیف پول شما شناسهٔ حساب شماست.",
-      "en": "Openfund does not run KYC. It never asks for your name, an identity document, a photo or your home address to use the platform. Your wallet address is your account identifier.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 105,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -65779,6 +65317,26 @@
           "page": "rulebook",
           "route": "/:locale/rulebook",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.9a70d9d0beb77516",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فقط کیف پول متصلی که چلنج را خریده می‌تواند جایزه بگیرد و جایزه فقط به همان کیف پول پرداخت می‌شود. احراز هویت (KYC) لازم نیست.",
+      "en": "Only the connected wallet that bought the challenge can claim, and the reward is paid only to that wallet. No KYC.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 58,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -66223,7 +65781,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 90,
+          "line": 89,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66503,7 +66061,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 175,
+          "line": 174,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66563,7 +66121,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 161,
+          "line": 160,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -66808,6 +66366,26 @@
           "page": "purchase",
           "route": "/:locale/checkout; /:locale/:product/purchases",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.9dad6660119f7eba",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ایردراپ پول نقد یا جایزه‌های دیگر است و هرگز توکن نیست. از لیگ برتر اوپن‌فاند جداست.",
+      "en": "The airdrop is cash or other prizes, never a token. It is separate from the Openfund Premium League.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 57,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -67125,7 +66703,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 25,
+          "line": 26,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -67582,26 +67160,6 @@
           "component": "apps/web-react/src/cms/seed/referralContent.ts",
           "line": 29,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.9f4be53908b0acf9",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۴. چرا",
-      "en": "4. Why",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 124,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -69211,6 +68769,26 @@
       ]
     },
     {
+      "key": "react.a256dcc2ba20eff6",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "سه گواهی خرید و گواهی قبولی یک چلنج را به اشتراک بگذار؛ برداشت لازم نیست.",
+      "en": "Share three purchase certificates and the pass certificate of a challenge, no payout needed.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 43,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a25a65ffda780db5",
       "namespace": "react",
       "area": "Website",
@@ -69283,28 +68861,8 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 77,
+          "line": 78,
           "page": "migration",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.a2846083a748418d",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "کلیدهای خصوصی و عبارت بازیابی خود را امن نگه دارید. اوپن‌فاند هرگز آن‌ها را درخواست نمی‌کند. اگر دسترسی به کیف پول را از دست بدهید، اوپن‌فاند نمی‌تواند کیف پول را بازیابی کند، امضا یا تراکنشی را برگرداند یا حساب را به کیف پول دیگری منتقل کند.",
-      "en": "Keep your private keys and recovery phrase safe. Openfund never asks for them. Openfund cannot recover a wallet, reverse a signature or transaction, or move an account to another wallet if you lose access.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 35,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -69407,26 +68965,6 @@
           "page": "navigation",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.a2f483dafbc9e9ec",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۰. خدمات شخص ثالث و دادهٔ بازار",
-      "en": "10. Third-party services and market data",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 70,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -69598,6 +69136,26 @@
       ]
     },
     {
+      "key": "react.a33bb0c87b147030",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بخر و به اشتراک بگذار",
+      "en": "Buy and share",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 33,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a35d90dee982a29c",
       "namespace": "react",
       "area": "Website",
@@ -69630,7 +69188,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 68,
+          "line": 69,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -70012,6 +69570,26 @@
       ]
     },
     {
+      "key": "react.a3d2b4baadcf8134",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "برداشت بگیر و گواهی خرید، قبولی و برداشت را به اشتراک بگذار.",
+      "en": "Receive a payout and share the purchase, pass and payout certificates.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 40,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.a3dac48582fa8949",
       "namespace": "react",
       "area": "Global Content",
@@ -70124,7 +69702,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 61,
+          "line": 59,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -70721,7 +70299,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 86,
+          "line": 87,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -71161,7 +70739,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/information/content.ts",
-          "line": 56,
+          "line": 54,
           "page": "information",
           "route": "/:locale/:page",
           "method": "bilingual-record"
@@ -71638,26 +71216,6 @@
       ]
     },
     {
-      "key": "react.a7d45f6c28e87dc6",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "قوانین معاملاتیِ منتشرشده بخشی از همین شرایط است و هدف سود، حد ضرر، قواعد ثبات، راهبردهای ممنوع و پیامد نقض قوانین را تعیین می‌کند. موتور معاملات همان قوانینی را اعمال می‌کند که هنگام خرید چلنج منتشر بوده است. نقض قوانین، چلنج را بدون بازپرداخت پایان می‌دهد.",
-      "en": "The published trading rules are part of these terms. They set the profit targets, loss limits, consistency rules, prohibited strategies and what happens on a breach. The trading engine applies the rules published when you bought the challenge. A breach ends the challenge without a refund.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 53,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.a7e333275d2409b5",
       "namespace": "react",
       "area": "Global Content",
@@ -71947,26 +71505,6 @@
       ]
     },
     {
-      "key": "react.a88f58dd68b141ff",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "پرداخت به‌صورت آن‌چین و با توکن‌ها و شبکه‌هایی انجام می‌شود که در صفحهٔ خرید آمده‌اند و کارمزد شبکه با شماست. پرداخت وقتی معتبر است که روی بلاک‌چین تأیید و با سفارش شما تطبیق داده شود. اگر پرداخت تأییدشده‌ای چلنج خریداری‌شده را فعال نکند، اوپن‌فاند یا آن را فعال می‌کند یا مبلغ پرداختی را به همان کیف پول پرداخت‌کننده برمی‌گرداند.",
-      "en": "Payments are made on-chain in the tokens and networks listed at checkout, and you pay the network fees. A payment counts once it is confirmed on-chain and matched to your order. If a confirmed payment does not start the challenge you bought, Openfund either starts it or refunds the amount paid to the paying wallet.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 47,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.a8901d0a3fefcc24",
       "namespace": "react",
       "area": "Global Content",
@@ -72039,7 +71577,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 174,
+          "line": 173,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72293,7 +71831,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 139,
+          "line": 138,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -72695,7 +72233,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 130,
+          "line": 129,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -73390,7 +72928,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 59,
+          "line": 58,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -73412,6 +72950,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 164,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.ac4680564a67095c",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چلنج بخر",
+      "en": "Buy a challenge",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 50,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -73660,7 +73218,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 179,
+          "line": 178,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -73941,7 +73499,7 @@
         },
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 26,
+          "line": 27,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74343,7 +73901,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 82,
+          "line": 83,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -74407,6 +73965,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.ae374db6dd6e5624",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "هر جا سند ساکت است، این مسیر همان را می‌گوید. هیچ‌چیز اینجا قرارداد نیست: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. هویت یعنی یک کیف پول و یک هویت، و یک کیف پول می‌تواند چند سابقهٔ چلنج داشته باشد؛ الزاماتِ KYC، سن و شرایطِ جغرافیایی نهایی نشده‌اند.",
+      "en": "Where the document is silent, this path says so. Nothing here is a contract: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. Identity is one wallet to one identity, and a wallet can hold more than one challenge record; KYC, age and geographic eligibility are not finalized.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
+          "line": 322,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -74958,7 +74536,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 94,
+          "line": 93,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -75287,7 +74865,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 53,
+          "line": 54,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -75327,7 +74905,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 30,
+          "line": 29,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76014,7 +75592,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 31,
+          "line": 30,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -76421,7 +75999,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 75,
+          "line": 76,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77124,26 +76702,6 @@
       ]
     },
     {
-      "key": "react.b4b5d52fe35cf331",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "۱۰. پرداخت و تحویل. اوپن‌فاند احراز هویت (KYC) ندارد: کیف پولی که شرکت‌کننده با آن ثبت‌نام کرده مالک آن است. جایزهٔ نقدی فقط به همان کیف پول پرداخت می‌شود و جایزهٔ فیزیکی به نشانی‌ای ارسال می‌شود که برنده فقط برای تحویل اعلام می‌کند. اوپن‌فاند می‌تواند هر جا قانون الزام کند، از پرداخت به کیف پولی که در فهرست‌های عمومی تحریم آمده خودداری کند. اگر ارسال یا پرداخت ممکن نباشد، اوپن‌فاند می‌تواند معادل نقدی پیشنهاد کند. مالیات بر عهدهٔ برنده است.",
-      "en": "10. Payment and delivery. Openfund runs no KYC: the wallet that holds the entry owns it. Cash prizes are paid only to that wallet; a physical prize is shipped to the address the winner gives for delivery, used for nothing else. Openfund may refuse a payment to a wallet on a public sanctions list where the law requires it. Where delivery or payment is not possible, Openfund may offer a cash equivalent. Taxes are the winner’s responsibility.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/tournamentTerms.ts",
-          "line": 22,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.b4c0375ae4524ee2",
       "namespace": "react",
       "area": "Website",
@@ -77236,7 +76794,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 34,
+          "line": 35,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -77646,6 +77204,26 @@
       ]
     },
     {
+      "key": "react.b63ed40fc166591b",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "الزامات احراز هویت، ارائه‌دهنده، مدارک پذیرفته‌شده، سن، جغرافیا، مهلت و مسیر اعتراض نهایی نشده‌اند. مدارک هویتی را به مسیر اعلام‌نشده نفرست و از دسترسی دمو، واجدشرایط‌بودن را نتیجه نگیر.",
+      "en": "KYC requirements, provider, accepted documents, age, geography, deadlines and appeal paths have not been finalized. Do not send identity documents to an unannounced channel or infer eligibility from demo access.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/rulebook/content.ts",
+          "line": 137,
+          "page": "rulebook",
+          "route": "/:locale/rulebook",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b6503ee1c26e19dd",
       "namespace": "react",
       "area": "User Dashboard",
@@ -77867,13 +77445,6 @@
           "component": "apps/web-react/src/features/learn/LessonPage.tsx",
           "line": 73,
           "page": "learn",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 168,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         },
@@ -78153,7 +77724,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 108,
+          "line": 107,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78649,7 +78220,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 42,
+          "line": 41,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78757,7 +78328,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 171,
+          "line": 170,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -78924,7 +78495,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 93,
+          "line": 92,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79104,7 +78675,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 29,
+          "line": 30,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79285,7 +78856,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 149,
+          "line": 148,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79466,7 +79037,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 120,
+          "line": 119,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -79666,7 +79237,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 41,
+          "line": 42,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80006,7 +79577,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 99,
+          "line": 98,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80213,7 +79784,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 146,
+          "line": 145,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80448,7 +80019,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 35,
+          "line": 36,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80526,13 +80097,6 @@
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
-        {
-          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
-          "line": 8,
-          "page": "airdrop",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
         {
           "component": "apps/web-react/src/features/information/content.ts",
           "line": 49,
@@ -80622,7 +80186,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 78,
+          "line": 79,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -80883,7 +80447,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 31,
+          "line": 32,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81132,6 +80696,26 @@
           "component": "apps/web-react/src/cms/seed/learning/pathA.ts",
           "line": 36,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.becd06cd676f8c0f",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "بازبین همهٔ موارد و هویت تو را بررسی می‌کند.",
+      "en": "A reviewer checks every item and your identity.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 31,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -81670,7 +81254,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 18,
+          "line": 19,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -81750,7 +81334,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 169,
+          "line": 168,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82451,7 +82035,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 152,
+          "line": 151,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82885,7 +82469,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 89,
+          "line": 88,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -82985,7 +82569,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 33,
+          "line": 34,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -83977,7 +83561,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 87,
+          "line": 88,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84458,7 +84042,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 83,
+          "line": 82,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -84638,7 +84222,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 24,
+          "line": 25,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85320,7 +84904,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 159,
+          "line": 158,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85468,6 +85052,26 @@
       ]
     },
     {
+      "key": "react.ca35284797d8c7cf",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "هر مأموریت با گواهی‌هایی که به کیف پول تو صادر شده و پست‌هایی که به‌صورت عمومی منتشر می‌کنی انجام می‌شود. هر مأموریت برای هر کیف پول یک بار پرداخت می‌شود.",
+      "en": "Every mission is completed with certificates issued to your wallet and posts you share publicly. Each mission pays once per wallet.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 23,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.ca3a521d8f64557b",
       "namespace": "react",
       "area": "Website",
@@ -85494,7 +85098,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 47,
+          "line": 48,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85549,7 +85153,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 92,
+          "line": 91,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85658,26 +85262,6 @@
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
           "line": 33,
           "page": "migration",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.ca789ff29e54ff4e",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "نشست‌ها خودبه‌خود منقضی می‌شوند. گزارش‌های امنیتی برای مدت کوتاهی نگه داشته می‌شوند. سوابق حساب، معاملات و پرداخت تا زمانی که حساب وجود دارد و پس از آن تا جایی که حسابداری و قانون الزام کند نگه داشته می‌شود. پیام‌ها تا رسیدگی و مدتی معقول پس از آن نگه داشته می‌شوند.",
-      "en": "Sessions expire on their own. Security logs are kept for a short period. Account, trading and payment records are kept while the account exists and afterwards for as long as accounting and the law require. Messages are kept until they are resolved and for a reasonable period after.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 135,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -85803,7 +85387,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 56,
+          "line": 55,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -85902,26 +85486,6 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.cb03ae011284f747",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱۱. دسترس‌پذیری و مسئولیت",
-      "en": "11. Availability and liability",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 74,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -86089,26 +85653,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.cbf717456a571e97",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "فعالیت معاملاتی: سفارش‌ها، پوزیشن‌ها، اکوئیتی، نتیجهٔ چلنج‌ها و گواهی‌های حساب‌های دموی شما، همراه نام نمایشی‌ای که در صورت تمایل برای گواهی انتخاب می‌کنید.",
-      "en": "Trading activity: orders, positions, equity, challenge results and certificates of your demo accounts, with the display name you choose for a certificate, if any.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 111,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -86515,26 +86059,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathB.ts",
           "line": 293,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.ccc6db4a22f67d32",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند هر نسخهٔ تازه را با تاریخ آن در همین صفحه منتشر می‌کند. استفاده از اوپن‌فاند پس از آن تاریخ به معنای پذیرش نسخهٔ تازه است. هیچ تغییری به‌صورت عطف به ماسبق بر چلنجی که در جریان است اعمال نمی‌شود.",
-      "en": "Openfund publishes every new version on this page with its date. Using Openfund after that date means you accept the new version. A change never applies retroactively to a challenge that is already running.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 85,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -87117,26 +86641,6 @@
       ]
     },
     {
-      "key": "react.ce20f2f3ea573a35",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱. اوپن‌فاند چیست",
-      "en": "1. What Openfund is",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 22,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.ce24885e1d335168",
       "namespace": "react",
       "area": "Global Content",
@@ -87589,7 +87093,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 51,
+          "line": 52,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -87700,26 +87204,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.cf8f69520379198c",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "پس از شروع چلنج، هزینهٔ آن بازگشت‌پذیر نیست؛ مگر طبق قوانین معاملاتی (مثلاً بازپرداخت هزینه همراه یکی از برداشت‌های بعدی) یا آنجا که قانون الزام کند.",
-      "en": "Once a challenge has started its fee is not refundable, except as the trading rules provide (for example the fee refund with a later reward) or as the law requires.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 49,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -88855,26 +88339,6 @@
       ]
     },
     {
-      "key": "react.d18d941787a6f9a3",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "برای اداره کردن حساب و چلنج‌های شما، پردازش پرداخت، پاداش و بازپرداخت، جلوگیری از تقلب و سوءاستفاده، حفظ امنیت سرویس، پاسخ به پیام‌ها و انجام تعهدات قانونی. آمار کلی و غیرقابل‌شناسایی هم به بهبود محصول کمک می‌کند.",
-      "en": "To run your account and challenges, process payments, rewards and refunds, prevent fraud and abuse, keep the service secure, answer your messages and meet legal obligations. Aggregate, non-identifying figures help improve the product.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 125,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.d190239dd3479a8f",
       "namespace": "react",
       "area": "Website",
@@ -88927,7 +88391,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 44,
+          "line": 45,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89321,7 +88785,7 @@
         },
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 22,
+          "line": 23,
           "page": "contracts",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89441,7 +88905,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 63,
+          "line": 64,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -89503,26 +88967,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
           "line": 397,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.d3705cc541ef29ef",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۴. بدون احراز هویت (KYC)",
-      "en": "4. No identity verification (KYC)",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 38,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -90309,26 +89753,6 @@
       ]
     },
     {
-      "key": "react.d52645ac55ae3f98",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "ایردراپ اوپن‌فاند.",
-      "en": "Openfund airdrop.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
-          "line": 9,
-          "page": "airdrop",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.d53a2670fba6bd98",
       "namespace": "react",
       "area": "User Dashboard",
@@ -90512,26 +89936,6 @@
         {
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 242,
-          "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.d5992e6c67ad96ee",
-      "namespace": "react",
-      "area": "Global Content",
-      "owner": "Content editor",
-      "fa": "دسترسی با اتصالِ کیف پول و امضای EIP-4361 شروع می‌شود که یک نشستِ first-party می‌سازد. هر کیف پول به یک هویت نگارش می‌شود، ولی یک کیف پول می‌تواند بیش از یک سابقهٔ چلنج داشته باشد. امضای پیامِ ورود انتقالِ دارایی نیست و هرگز به اجازهٔ برداشتِ توکن نیاز ندارد؛ اوپن‌فاند احرازِ هویت (KYC) ندارد: مالکِ کیف پول، مالکِ حساب است و پاداش فقط به همان کیف پول می‌رود. دسترسی به حسابِ دمو به‌تنهایی به معنایِ واجدِ شرایط بودن برای مرحلهٔ فاندشده نیست؛ این را قوانینِ معاملاتی تعیین می‌کند.",
-      "en": "Access starts with a wallet connection and an EIP-4361 signature that creates a first-party session. One wallet maps to one identity, while a single wallet can hold more than one challenge record. Signing a login message is not a transfer and never requires a token approval. Openfund runs no KYC: the wallet owner is the account owner, and rewards go only to that wallet. Access to a demo account is not by itself a statement that you qualify for a funded stage; the trading rules decide that.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/cms/seed/learning/pathC.ts",
-          "line": 99,
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92321,7 +91725,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 47,
+          "line": 46,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92361,7 +91765,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 100,
+          "line": 99,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92415,7 +91819,7 @@
         },
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 145,
+          "line": 144,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -92582,7 +91986,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 57,
+          "line": 56,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93110,7 +92514,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 114,
+          "line": 113,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93250,7 +92654,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 63,
+          "line": 64,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93537,7 +92941,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 105,
+          "line": 104,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93686,26 +93090,6 @@
       ]
     },
     {
-      "key": "react.dcc85b35ea769c7b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "نام روی حساب تو در آن شرکت",
-      "en": "Name on your account at the firm",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 49,
-          "page": "migration",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.dccec88814aae1d2",
       "namespace": "react",
       "area": "Website",
@@ -93740,6 +93124,26 @@
           "component": "apps/web-react/src/cms/seed/legalContent.ts",
           "line": 26,
           "page": "global",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.dce03e290fdce701",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "تأیید گواهی",
+      "en": "Verify a certificate",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 20,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -93878,7 +93282,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 143,
+          "line": 142,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93918,7 +93322,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 94,
+          "line": 93,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -93958,7 +93362,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 58,
+          "line": 59,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -94821,26 +94225,6 @@
       ]
     },
     {
-      "key": "react.dfafa1902dee8684",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "پرداخت: سفارش، کیف پول پرداخت‌کننده، مبلغ، توکن و تراکنش آن‌چین. دادهٔ آن‌چین به‌طور ذاتی روی بلاک‌چین عمومی است.",
-      "en": "Payments: the order, the paying wallet, the amount, the token and the on-chain transaction. On-chain data is public by the nature of the blockchain.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 113,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.dfc56b124c99f034",
       "namespace": "react",
       "area": "Global Content",
@@ -95140,7 +94524,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 124,
+          "line": 123,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -95547,7 +94931,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 62,
+          "line": 63,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -95689,26 +95073,6 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 276,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.e2232cdbfe85c0ed",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "باید دست‌کم ۱۸ سال داشته باشید و قوانین محل زندگی‌تان استفاده از اوپن‌فاند را مجاز بداند. بررسی این قوانین بر عهدهٔ خود شماست. اوپن‌فاند هر جا که این خدمت ممنوع باشد می‌تواند آن را ارائه ندهد یا متوقف کند.",
-      "en": "You must be at least 18 years old and allowed by the laws of the place where you live to use Openfund. Checking those laws is your responsibility. Openfund may refuse or end the service where it is prohibited.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 29,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -96047,7 +95411,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 82,
+          "line": 83,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -96130,6 +95494,26 @@
           "line": 131,
           "page": "tools",
           "route": "/:locale/tools",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e30b6e166ed2eb38",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "گواهی‌ها باید از سوی اوپن‌فاند به همان کیف پول صادر شده باشند؛ هر کسی می‌تواند آن‌ها را در صفحهٔ تأیید گواهی بررسی کند.",
+      "en": "Certificates must be issued by Openfund to that wallet; anyone can check them on the certificate verification page.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 59,
+          "page": "airdrop",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -96841,7 +96225,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 153,
+          "line": 152,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -97688,7 +97072,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 61,
+          "line": 62,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -97832,13 +97216,6 @@
           "page": "faq",
           "route": "/:locale/*",
           "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 169,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -97923,26 +97300,6 @@
       ]
     },
     {
-      "key": "react.e701a14d2bea046d",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "کیف پول‌ها، بلاک‌چین‌ها، منابع دادهٔ بازار و ابزارهای پرداخت را دیگران اداره می‌کنند. اوپن‌فاند بر آن‌ها کنترلی ندارد و مسئول قطعی، کارمزد یا خطای آن‌ها نیست. قیمت‌ها ممکن است با تأخیر یا نادرست باشند؛ اوپن‌فاند می‌تواند معامله‌ای را که با قیمتی آشکارا نادرست پر شده اصلاح یا لغو کند و این را در تاریخچهٔ حساب ثبت می‌کند.",
-      "en": "Wallets, blockchains, market-data sources and payment widgets are run by others. Openfund does not control them and is not responsible for their outages, fees or errors. Prices can be delayed or wrong; Openfund may correct or cancel a trade filled at a clearly erroneous price and will say so in the account history.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 71,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.e704a7fa35668a60",
       "namespace": "react",
       "area": "Global Content",
@@ -98019,26 +97376,6 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.e71bcf5468ff6038",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "از صفحهٔ تماس و با همان کیف پولی که حساب به آن تعلق دارد، می‌توانید نسخه‌ای از داده‌هایتان، اصلاح یا حذف آن را بخواهید یا به نوعی استفاده از آن اعتراض کنید. سوابق روی بلاک‌چین را هیچ‌کس نمی‌تواند پاک کند و سوابق پرداخت ممکن است باید تا مدتی که قانون تعیین می‌کند نگه داشته شود.",
-      "en": "You can ask for a copy of your data, its correction or deletion, or object to a use of it, from the contact page using the wallet that holds the account. Records on a blockchain cannot be erased by anyone, and payment records may have to be kept for the periods the law sets.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 139,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -98436,8 +97773,28 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-          "line": 27,
+          "line": 28,
           "page": "contracts",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.e8226edcc3977f3e",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مدرک هویتی با نامی مطابق مدارک شرکت (KYC)",
+      "en": "An identity document whose name matches the firm’s documents (KYC)",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
+          "line": 39,
+          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -98683,7 +98040,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 54,
+          "line": 55,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -99060,6 +98417,26 @@
       ]
     },
     {
+      "key": "react.e99ea308040499e0",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "جایزهٔ نقدی",
+      "en": "Cash reward",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 24,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.e9a8cb41ae2471c9",
       "namespace": "react",
       "area": "Global Content",
@@ -99096,6 +98473,26 @@
           "page": "transparency",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.e9c1eb5bc6422063",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "فقط کیف پولی که چلنج خریده در ایردراپ شرکت می‌کند.",
+      "en": "Only a wallet that has bought a challenge takes part.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 50,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -99216,26 +98613,6 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
-        }
-      ]
-    },
-    {
-      "key": "react.ea34bdcac3a1325a",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند احراز هویت (KYC) انجام نمی‌دهد. نام، مدرک هویتی، عکس یا نشانی منزل را درخواست، جمع‌آوری یا بررسی نمی‌کند و در برابر هیچ‌کس تعهدی به احراز هویت ندارد. امضای کیف پول تنها دلیل مالکیت حساب است.",
-      "en": "Openfund does not run KYC. It does not ask for, collect or verify names, identity documents, photos or home addresses, and it makes no identity-verification commitment to anyone. The wallet signature is the only proof of account ownership.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 39,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
         }
       ]
     },
@@ -99899,7 +99276,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 63,
+          "line": 62,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -100066,7 +99443,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 61,
+          "line": 62,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -100355,26 +99732,6 @@
       ]
     },
     {
-      "key": "react.ece5d9de7a716cda",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۱. بدون مدرک هویتی",
-      "en": "1. No identity documents",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 104,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.ece77e96eb6f8606",
       "namespace": "react",
       "area": "Global Content",
@@ -100407,7 +99764,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 93,
+          "line": 92,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -101030,7 +100387,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 65,
+          "line": 66,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -101293,7 +100650,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 62,
+          "line": 63,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -101460,7 +100817,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 82,
+          "line": 81,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -101840,7 +101197,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 106,
+          "line": 105,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -102582,26 +101939,6 @@
       ]
     },
     {
-      "key": "react.f2232ca706ea985b",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۸. امنیت",
-      "en": "8. Security",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 142,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
       "key": "react.f2330f7f94718f23",
       "namespace": "react",
       "area": "Website",
@@ -102736,13 +102073,6 @@
           "component": "apps/web-react/src/features/company/contactContent.ts",
           "line": 11,
           "page": "company",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        },
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 171,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -103363,7 +102693,7 @@
         },
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 59,
+          "line": 60,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -103423,7 +102753,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 32,
+          "line": 31,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -103454,6 +102784,26 @@
           "page": "whitepaper",
           "route": "/:locale/*",
           "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.f4626da8ec3ed3e8",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "مهر گواهی که رکوردها را به زنجیرهٔ در حال حرکت بلاک‌ها می‌فرستد و دفتر معاملات زیر آن پر می‌شود.",
+      "en": "A certificate seal sending records into a moving chain of blocks, with the trade ledger filling below.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
+          "line": 37,
+          "page": "contracts",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
         }
       ]
     },
@@ -104112,20 +103462,20 @@
       ]
     },
     {
-      "key": "react.f614d1f6b00e7f9e",
+      "key": "react.f60188f8006f24f4",
       "namespace": "react",
       "area": "Website",
       "owner": "Content editor",
-      "fa": "برای هر موضوعی ابتدا از صفحهٔ تماس با اوپن‌فاند در ارتباط باشید؛ اوپن‌فاند می‌کوشد هر اختلافی را به‌صورت دوستانه حل کند. حمایت‌های الزامی از مصرف‌کننده در کشور شما همچنان برقرار است. این شرایط به زبان‌های فارسی، انگلیسی، عربی، روسی و چینی منتشر می‌شود و در صورت تفاوت، نسخهٔ انگلیسی ملاک است.",
-      "en": "Contact Openfund through the contact page first; Openfund will try to resolve any dispute informally. Mandatory consumer protection in your country still applies. These terms are published in Persian, English, Arabic, Russian and Chinese; if the versions differ, the English version prevails.",
+      "fa": "معامله کن، پاس کن و برداشت بزن: هر مرحله یک گواهی اوپن‌فاند به کیف پولت صادر می‌کند.",
+      "en": "Trade, pass and get paid: each step issues an Openfund certificate to your wallet.",
       "editing": "Directus ui_messages / translations",
       "publication": "Published-only; browser reload; bundled fallback on failure",
       "validation": "requires-render-path-verification",
       "locations": [
         {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 89,
-          "page": "legal",
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 51,
+          "page": "airdrop",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -104146,26 +103496,6 @@
           "component": "apps/web-react/src/cms/seed/toolsCopy.ts",
           "line": 77,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.f62dfa415171e3d5",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "بازبین همهٔ موارد را بررسی می‌کند. مدرک هویتی لازم نیست: کیف پول تو، حساب توست.",
-      "en": "A reviewer checks every item. No identity documents: your wallet is your account.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 31,
-          "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -104274,6 +103604,26 @@
           "line": 38,
           "page": "applications",
           "route": "/:locale/apps",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.f6b00180d35da322",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "ده برداشت",
+      "en": "Ten payouts",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 45,
+          "page": "airdrop",
+          "route": "/:locale/*",
           "method": "bilingual-record"
         }
       ]
@@ -104838,7 +104188,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 69,
+          "line": 68,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -104960,26 +104310,6 @@
           "component": "apps/web-react/src/cms/seed/learning/pathE.ts",
           "line": 162,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.f8e4b453e899aa99",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "اوپن‌فاند برای افراد زیر ۱۸ سال نیست و آگاهانه داده‌های آنان را پردازش نمی‌کند.",
-      "en": "Openfund is not for anyone under 18 and does not knowingly process their data.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 155,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -105478,7 +104808,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 101,
+          "line": 100,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -106605,6 +105935,26 @@
       ]
     },
     {
+      "key": "react.fbf493facec5248a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "چلنجت را پاس کن و گواهی قبولی را همراه گواهی خرید به اشتراک بگذار.",
+      "en": "Pass your challenge and share the pass certificate together with your purchase certificate.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "requires-render-path-verification",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/airdrop/AirdropPage.tsx",
+          "line": 37,
+          "page": "airdrop",
+          "route": "/:locale/*",
+          "method": "bilingual-record"
+        }
+      ]
+    },
+    {
       "key": "react.fbf84fa91c4f43e7",
       "namespace": "react",
       "area": "Global Content",
@@ -106719,46 +106069,6 @@
           "component": "apps/web-react/src/cms/seed/faqSiteContent.ts",
           "line": 99,
           "page": "global",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.fc21aa9d1554a233",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "۵. چلنج، هزینه و پرداخت",
-      "en": "5. Challenges, fees and payments",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 44,
-          "page": "legal",
-          "route": "/:locale/*",
-          "method": "bilingual-record"
-        }
-      ]
-    },
-    {
-      "key": "react.fc42193dea433bd9",
-      "namespace": "react",
-      "area": "Website",
-      "owner": "Content editor",
-      "fa": "کد منبع و مستندات اوپن‌فاند با مجوز Apache 2.0 متن‌باز است. سه اندیکاتور اختصاصی نمودار اوپن‌فاند (Open Algo V5، Price Action Concepts و Smart Money Concepts) و کتابخانه‌های آن‌ها متعلق به اوپن‌فاند است و با مجوزی که در مخزن آمده متن‌باز منتشر شده است.",
-      "en": "Openfund’s source code and documentation are open source under the Apache License 2.0. The three Openfund chart indicators (Open Algo V5, Price Action Concepts and Smart Money Concepts) and their libraries are owned by Openfund and published as open source under the licence stated in the repository.",
-      "editing": "Directus ui_messages / translations",
-      "publication": "Published-only; browser reload; bundled fallback on failure",
-      "validation": "requires-render-path-verification",
-      "locations": [
-        {
-          "component": "apps/web-react/src/features/legal/content.ts",
-          "line": 65,
-          "page": "legal",
           "route": "/:locale/*",
           "method": "bilingual-record"
         }
@@ -107492,7 +106802,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 83,
+          "line": 84,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -108080,7 +107390,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 41,
+          "line": 42,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -108120,7 +107430,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/company/aboutContent.ts",
-          "line": 77,
+          "line": 76,
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -108240,7 +107550,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 40,
+          "line": 41,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -108320,7 +107630,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-          "line": 57,
+          "line": 58,
           "page": "migration",
           "route": "/:locale/*",
           "method": "bilingual-record"
@@ -108495,7 +107805,7 @@
     },
     {
       "component": "apps/web-react/src/features/contracts/SmartContractsPage.tsx",
-      "line": 57,
+      "line": 59,
       "page": "contracts",
       "route": "/:locale/*",
       "reason": "literal-jsx-review",
@@ -108559,7 +107869,7 @@
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 121,
+      "line": 122,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
@@ -108567,7 +107877,7 @@
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 137,
+      "line": 138,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
@@ -108575,7 +107885,7 @@
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 229,
+      "line": 230,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
@@ -108583,7 +107893,7 @@
     },
     {
       "component": "apps/web-react/src/features/migration/MigratePage.tsx",
-      "line": 259,
+      "line": 261,
       "page": "migration",
       "route": "/:locale/*",
       "reason": "dynamic-pair",
