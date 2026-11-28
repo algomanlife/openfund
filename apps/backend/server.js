@@ -33,7 +33,7 @@ import { Engine } from './engine.js'
 import { Portfolio } from './portfolio.js'
 import { productRoutes } from './products.js'
 import { accountDirectory } from './accounts.js'
-import { purchaseRoutes, cfg as purchaseConfig, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, paymentReadinessReport, paymentChains, chainReady, watcherSettle, DEPAY_SIGNED_PATHS } from './purchases.js'
+import { purchaseRoutes, cfg as purchaseConfig, confirmPurchase, defaultPaymentVerifier, recoverPendingPayments, reconcileStrandedPayments, paymentReadinessReport, paymentChains, chainReady, watcherSettle, DEPAY_SIGNED_PATHS } from './purchases.js'
 import { createPaymentWatcher, escalatePendingPayments, reviewOverduePartialOrders, watcherSettings } from './payment-watcher.js'
 import { backstageReads } from './backstage-reads.js'
 import { adminRoutes } from './admin.js'
@@ -1150,6 +1150,11 @@ const paymentRecoveryTimer = hasRole(region, 'payment-recovery') ? setInterval((
   } })
     .then(r => { recordSuccess('payment_recovery'); if (r.recovered) console.log('[payments] recovered ' + r.recovered + ' order(s)') })
     .catch(e => { recordFailure('payment_recovery_failure', { action: 'sweep', error: e }); console.error('[payments] recovery sweep failed', e.message) })
+  /* v0.7.0 underpayments and retryables past the 24-hour window (incident
+     2026-11-18): re-verified once into the ledger, never force-confirmed */
+  reconcileStrandedPayments({ pool, log: (order, err) => console.log('[payments] reconcile', order, err) })
+    .then(r => { if (r.reconciled) console.log('[payments] reconciled ' + r.reconciled + ' stranded payment(s)') })
+    .catch(e => recordFailure('payment_recovery_failure', { action: 'reconcile_stranded', error: e }))
   /* the 15/20-minute status promise and partial-balance deadlines */
   escalatePendingPayments(pool)
     .then(r => { if (r.escalated) console.log('[payments] ' + r.escalated + ' payment(s) escalated to review after 20 minutes') })

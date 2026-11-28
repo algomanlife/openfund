@@ -17,7 +17,7 @@ import express from 'express'
 import pg from 'pg'
 import { createRpcVerifier, TRANSFER_TOPIC, SOLANA_CHAIN_ID } from '../payment-verification.js'
 import { createSolanaVerifier } from '../solana-verification.js'
-import { verifyAndConfirm, purchaseRoutes, watcherSettle, confirmPurchase } from '../purchases.js'
+import { verifyAndConfirm, purchaseRoutes, watcherSettle, confirmPurchase, reconcileStrandedPayments } from '../purchases.js'
 import { paymentAdminRoutes } from '../payments-admin.js'
 import { createPaymentWatcher, escalatePendingPayments, reviewOverduePartialOrders, paymentMetrics } from '../payment-watcher.js'
 import { derivePaymentStatus, PAYMENT_STATUS_CODES } from '../payment-status.js'
@@ -402,6 +402,42 @@ test('P22 manual Solana payment: the order Memo attributes it; no EVM sender rul
   assert.equal(r.outcome, 'provisioned')
   const o2 = await order(c)
   assert.equal(await code(pay(c, o2, solTransfer({ memo: null, units: 10_800_000n }), SOLANA_CHAIN_ID)), 'memo_missing')
+})
+
+test('P03r the 2026-11-18 incident: a v0.7.0 insufficient_amount rejection is reconciled once into a partial payment', async () => {
+  const c = await customer(), o = await order(c)
+  const tx = BASE.transfer({ from: c.wallet, units: 10_638_000n })
+  /* the row v0.7.0 left behind: rejected, no ledger entry, order still payable */
+  await pool.query(`INSERT INTO payment_attempts (purchase_order_id, user_id, chain_id, tx_hash, status, error_code, classification, review_status, first_seen_at, last_attempt_at)
+    VALUES ($1,$2,8453,$3,'rejected','insufficient_amount','underpayment','open', now() - interval '10 days', now() - interval '10 days')`, [o.id, c.userId, tx])
+  const r = await reconcileStrandedPayments({ pool, verifier })
+  assert.ok(r.reconciled >= 1)
+  const a = await one(`SELECT status, error_code, detail FROM payment_attempts WHERE purchase_order_id=$1 AND tx_hash=$2`, [o.id, tx])
+  assert.deepEqual([a.status, a.error_code, a.detail.outcome, a.detail.remainingUsd, a.detail.reconciledStranded], ['confirmed', null, 'partially_paid', '0.162', true])
+  assert.equal((await orderRow(o.id)).lifecycle_state, 'partially_paid')
+  assert.equal(await challenges(o.id), 0, 'never force-confirmed')
+  /* the transaction is now in the ledger: a second sweep leaves it alone */
+  const again = await reconcileStrandedPayments({ pool, verifier })
+  assert.equal(await n(`SELECT count(*) n FROM payment_allocations WHERE purchase_order_id=$1`, [o.id]), 1)
+  assert.ok(again.checked >= 0)
+  /* the customer completes the 0.162 balance: activated once */
+  const done = await pay(c, o, BASE.transfer({ from: c.wallet, units: 162_000n }), 8453)
+  assert.equal(done.outcome, 'provisioned'); assert.equal(await challenges(o.id), 1)
+})
+
+test('P03s a stranded rejection that fails again for a final reason is marked and not retried', async () => {
+  const c = await customer(), o = await order(c)
+  const wrong = BASE.transfer({ from: c.wallet, units: 10_638_000n, tok: addr() })      // a token Openfund does not accept
+  await pool.query(`INSERT INTO payment_attempts (purchase_order_id, user_id, chain_id, tx_hash, status, error_code, first_seen_at, last_attempt_at)
+    VALUES ($1,$2,8453,$3,'rejected','insufficient_amount', now() - interval '2 days', now() - interval '2 days')`, [o.id, c.userId, wrong])
+  await reconcileStrandedPayments({ pool, verifier })
+  const a = await one(`SELECT status, error_code, detail FROM payment_attempts WHERE purchase_order_id=$1 AND tx_hash=$2`, [o.id, wrong])
+  assert.equal(a.status, 'rejected'); assert.notEqual(a.error_code, 'insufficient_amount'); assert.equal(a.detail.reconciledStranded, true)
+  await pool.query(`UPDATE payment_attempts SET last_attempt_at = now() - interval '1 hour' WHERE purchase_order_id=$1`, [o.id])
+  const before = (await one(`SELECT attempts, last_attempt_at FROM payment_attempts WHERE purchase_order_id=$1 AND tx_hash=$2`, [o.id, wrong])).last_attempt_at
+  await reconcileStrandedPayments({ pool, verifier })
+  const after = (await one(`SELECT last_attempt_at FROM payment_attempts WHERE purchase_order_id=$1 AND tx_hash=$2`, [o.id, wrong])).last_attempt_at
+  assert.equal(String(after), String(before), 're-verified exactly once')
 })
 
 test('P23 DePay disabled: no new configuration, legacy attested recovery still settles', async () => {

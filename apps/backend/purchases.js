@@ -705,6 +705,53 @@ export async function recoverPendingPayments({ pool, verifier = defaultPaymentVe
   return { checked: rows.length, recovered }
 }
 
+/**
+ * Anomalies left by the v0.7.0 payment path (incident 2026-11-18):
+ *  - an attempt rejected as `insufficient_amount` before Openfund Pay
+ *    (v0.8.0) never reached the ledger, because partial payments did not
+ *    exist, so the customer's money is on chain but invisible;
+ *  - a retryable attempt older than the 24-hour recovery window is never
+ *    re-run by recoverPendingPayments.
+ * Each is re-verified once, on chain, through the same path as the
+ * operator's "Reverify": a short payment is recorded as a partial payment, a
+ * payment for an expired order as reviewable late evidence, and anything else
+ * keeps the precise reason an operator acts on. Nothing is force-confirmed,
+ * and a transaction already in the ledger is never touched again.
+ */
+export async function reconcileStrandedPayments({ pool, verifier = defaultPaymentVerifier(), limit = 20, log = () => {} }) {
+  const { rows } = await pool.query(
+    `SELECT a.tx_hash, a.chain_id, a.attested, a.reported, o.id AS order_id, o.price_usd, o.created_at, o.user_id, u.wallet_address
+       FROM payment_attempts a
+       JOIN purchase_orders o ON o.id = a.purchase_order_id
+       JOIN openfund_users u ON u.id = a.user_id
+      WHERE ((a.status='rejected' AND a.error_code='insufficient_amount')
+          OR (a.status='pending' AND a.retryable AND a.first_seen_at <= now() - interval '24 hours'))
+        AND o.status IN ('pending','expired') AND o.payment_required
+        AND NOT EXISTS (SELECT 1 FROM payment_transactions t WHERE t.chain_id=a.chain_id AND t.tx_hash=a.tx_hash)
+        AND a.last_attempt_at < now() - interval '5 minutes'
+        AND NOT (a.detail ? 'reconciledStranded')
+      ORDER BY a.first_seen_at LIMIT $1`, [limit])
+  /* a final outcome (recorded, or a non-retryable reason) is marked so the
+     attempt is re-verified once; a retryable failure (RPC down, not final)
+     is tried again on a later sweep */
+  const mark = r => pool.query(`UPDATE payment_attempts SET detail = detail || '{"reconciledStranded":true}'::jsonb
+    WHERE purchase_order_id=$1 AND chain_id=$2 AND tx_hash=$3`, [r.order_id, r.chain_id, r.tx_hash])
+  let reconciled = 0
+  for (const r of rows) {
+    try {
+      await verifyAndConfirm({ pool, verifier, order: { id: r.order_id, price_usd: r.price_usd, created_at: r.created_at },
+        userId: r.user_id, walletAddress: r.wallet_address, txHash: r.tx_hash, source: 'recovery',
+        chainId: r.chain_id, attested: r.attested, reported: r.reported })
+      reconciled++
+      await mark(r)
+    } catch (e) {
+      log(r.order_id, e.message)
+      if (!e.retryable && !RETRYABLE.has(e.message)) await mark(r).catch(() => {})
+    }
+  }
+  return { checked: rows.length, reconciled }
+}
+
 /* ---------- DePay endpoint paths ----------
    The canonical paths are /purchases/depay/*. The /api/payments/depay/*
    aliases are the names from the original integration brief, which is what
