@@ -125,6 +125,9 @@ export {
     registerLegendCallout,
     unregisterLegendCallout,
     legendCallouts,
+    registerDrawingAction,
+    unregisterDrawingAction,
+    drawingActions,
     registerDefaultEngine,
     unregisterDefaultEngine,
     resolveEngines,
@@ -146,6 +149,8 @@ export {
     type LegendCalloutContent,
     type LegendCalloutItem,
     type LegendIndicatorInfo,
+    type DrawingActionDescriptor,
+    type DrawingActionSurface,
     type WidgetActionDescriptor,
     type WidgetActionTarget,
     type WidgetAttachment,
@@ -162,6 +167,7 @@ export {
     type DockStripOptions,
     type DockedStrip,
     type SidebarControl,
+    type FullscreenControl,
 } from './widget/contributions';
 export { composeSidebar, SIDEBAR_DEFAULT_TOP, SIDEBAR_DEFAULT_BOTTOM, type SidebarComposition } from './widget/sidebar-composition';
 // Where the built-in right-click rows sit in the sort `context:*` actions share with them.
@@ -174,6 +180,15 @@ export { registerIcon, iconMarkup } from '@luxalgo/vela-ui/icons';
 export type { KeyBindingDescriptor, ResolvedBinding } from './ui/keymap';
 export type { PriceStyle } from './core/options';
 export type { DataProvider, ProviderInfo, ProviderCapabilities, SymbolDescriptor } from './core/ports/DataProvider';
+export {
+    registerSeriesAdapter,
+    unregisterSeriesAdapter,
+    seriesAdapters,
+    type SeriesAdapter,
+    type SeriesAdapterContext,
+} from './data/series-adapters';
+export { timeframeToMs, parseTickTimeframe, isTickTimeframe, isVariableDurationTimeframe } from './data/timeframe';
+export { isSameBar, isNewerBar } from './core/model/ohlcv';
 // A provider's PERMANENT refusal of a series (a timeframe finer than the series' own): throw
 // it from `getBars`; engines detect it on a rejected `fetchSeries` with the guard, which reads
 // the name, never the class (a provider may bundle its own copy of Vela).

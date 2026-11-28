@@ -10,8 +10,8 @@ The process for changing any of these is in [Dependency governance](../developme
 
 | Dependency | Version | License | Runtime | Primary location |
 | --- | --- | --- | --- | --- |
-| LuxAlgo Vela (charting core) | 0.10.6 | Apache-2.0 plus a NOTICE attribution requirement | yes | vendor/vela |
-| Vela Pine addon (@luxalgo/vela-pinets) | 0.3.4 | AGPL-3.0-only | yes | apps/web-react node_modules/@luxalgo/vela-pinets |
+| LuxAlgo Vela (charting core) | 0.10.19 | Apache-2.0 plus a NOTICE attribution requirement | yes | vendor/vela |
+| Vela Pine addon (@luxalgo/vela-pinets) | 0.3.5 | AGPL-3.0-only | yes | apps/web-react node_modules/@luxalgo/vela-pinets |
 | PineTS (Pine Script runtime) | 0.13.1 | AGPL-3.0-only | yes | apps/web-react node_modules/pinets |
 | Gains Network SDK (@gainsnetwork/sdk) | 1.8.10 | MIT | no | vendor/gains-sdk |
 | Gains Network public APIs (market data) | unversioned external service (path /v1) | Service terms of the provider | yes | apps/backend/market-data.js |
@@ -32,9 +32,9 @@ The process for changing any of these is in [Dependency governance](../developme
 
 - **Upstream:** https://github.com/LuxAlgo/Vela
 - **License:** Apache-2.0 plus a NOTICE attribution requirement (vendor/vela/NOTICE: visible Vela attribution wherever a Vela chart is displayed)
-- **Pinned version:** 0.10.6
-- **Source commit:** f6769868c5c0e78ba7977a5c89640df896a8f2f3 (upstream tag v0.10.6). Written by the controlled update tool; byte-identical to the tag except the two registered patches
-- **Where:** vendor/vela (source, Apache-2.0); apps/web-react node_modules/@luxalgo/vela (npm 0.10.6, with @luxalgo/vela-ui 0.4.1); packages/openfund-charts (Openfund bridge); apps/web-react/public/assets/vela-workspace.global.min.js (built bundle, mirrored to dist/ and react/)
+- **Pinned version:** 0.10.19
+- **Source commit:** 6a691039b66d98269e952a1e110935f8dc3af233 (upstream tag v0.10.19). Written by the controlled update tool; byte-identical to the tag except the two registered patches
+- **Where:** vendor/vela (source, Apache-2.0); apps/web-react node_modules/@luxalgo/vela (npm 0.10.19, with @luxalgo/vela-ui 0.4.5); packages/openfund-charts (Openfund bridge); apps/web-react/public/assets/vela-workspace.global.min.js (built bundle, mirrored to dist/ and react/)
 - **Vendoring method:** Two sources: the npm package is the runtime dependency; vendor/vela is a source copy used by scripts/build-charts.mjs through an esbuild alias for `@luxalgo/vela/plugin` only. Output is bundled by `npm run build:charts`.
 - **Local Openfund modifications:** Yes, exactly two files, registered as reversible patches OF-VELA-002 (no picker badge) and OF-VELA-003 (proprietary studies first) in infra/upstream/patches.json. OF-VELA-001 (menu z-index) was retired with 0.10.6, which keeps menus above the chart upstream. Every vendored file is checksummed in infra/upstream/vendor-manifest.json.
 - **Used by the running application:** yes
@@ -46,7 +46,7 @@ The process for changing any of these is in [Dependency governance](../developme
 
 - **Upstream:** https://github.com/LuxAlgo/Vela-pinets
 - **License:** AGPL-3.0-only (npm metadata)
-- **Pinned version:** 0.3.4
+- **Pinned version:** 0.3.5
 - **Where:** apps/web-react node_modules/@luxalgo/vela-pinets (npm); apps/web-react/public/assets/openfund-pine-worker.min.js (worker extracted and patched by scripts/build-charts.mjs)
 - **Vendoring method:** npm dependency. scripts/build-charts.mjs extracts the embedded worker from dist/index.js and inserts packages/openfund-charts/src/pine-compatibility.mjs; it locates the worker entry and the indicator class structurally (minified names change between releases) and throws unless each matches exactly once.
 - **Local Openfund modifications:** Build-time wrapper OF-BUILD-001 (Pine worker compatibility), registered in infra/upstream/patches.json. No forked source.

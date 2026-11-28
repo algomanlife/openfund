@@ -189,7 +189,13 @@ reading that instance's own data channel (the channel is stamped on the model as
 pane and stacking. Nothing changes for the layer code: `args.data` is still "my payload".
 Every running instance also knows its own id (`ctx.id` — the same id its handle and
 `inspect()` report), so an instance can name itself to host code and tell itself apart
-from its siblings.
+from its siblings. Set `catalog: false` on a descriptor whose entry point lives outside
+the generic indicator picker (such as the built-in `'compare'` symbol comparison): it
+stays excluded from `chart.availableNativeIndicators()` while remaining addable through
+`chart.addNativeIndicator(type, { inputs })`. An emitted `NativeIndicatorOutput` can also
+override the instance's `title`, `shortTitle`, `paneHint`, and `ownScale`, opt into
+independent visible-bar normalization in percent/indexed mode (`percentBaseline: 'own'`),
+and request a colored last-value + name chip on the price axis (`priceAxisLabel: true`).
 
 A [bar replay](../user/api-reference.md#chartreplay--the-bar-replay-control-surface)
 restarts every native when it starts and when it ends, the way a market switch does. While
@@ -337,11 +343,13 @@ registerWidgetAttachment({
 });
 ```
 
-The ids are the built-in composition ids: `'symbol'`, `'timeframes'`, `'style'`,
-`'layout'`, `'indicators'`, `'undo-redo'`, `'alerts'`, `'panels'` and `'screenshot'`.
+The ids are the built-in composition ids: `'symbol'`, `'compare'`, `'timeframes'`, `'style'`,
+`'layout'`, `'indicators'`, `'undo-redo'`, `'alerts'`, `'panels'`, `'screenshot'` and
+`'fullscreen'`.
 Runtime visibility narrows the host's `topbar` composition and follows its rule: hiding an
 item removes its other entry points with it — its row in the mobile three-dots menu, its
-bottom-bar stop, its keyboard chord (`mod+alt+S` for `'screenshot'`). Hiding `'panels'`
+bottom-bar stop, its keyboard chord (`mod+alt+S` for `'screenshot'`, `alt+Enter` for
+`'fullscreen'`). Hiding `'panels'`
 also removes the panel rows from the mobile menu, so a plugin that moves the panel toggles
 elsewhere on the desktop keeps them reachable on a phone by hiding `'panels'` only on the
 desktop layout. `ctx.topbar.isVisible(id)` reads the result. It never shows an item the
@@ -453,16 +461,16 @@ comes from `ctx`, never from module state.
 
 The topbar's built-in entries are named SLOTS (see [Composing the
 topbar](../user/workspace.md#composing-the-topbar)). The simple-button slots —
-**`'indicators'`** and **`'screenshot'`** — can be TAKEN OVER by a plugin: register an
+**`'indicators'`**, **`'screenshot'`**, and **`'compare'`** — can be TAKEN OVER by a plugin: register an
 action under the built-in id, and the override owns the slot's **whole surface**:
 
 - the desktop button renders your action at the slot's position (native button gone);
 - the slot's mobile counterpart (the mobile-bar Indicators stop, the more-drawer
-  Screenshot button) routes to your `run(ctx)`;
+  Screenshot button or Compare symbol row) routes to your `run(ctx)`;
 - the slot's keyboard chord (`/` for indicators, `mod+alt+S` for screenshot) routes to
   your `run(ctx)` too — don't bind your own;
 - the native machinery behind the slot is not constructed (the built-in indicator
-  picker dialog, for `'indicators'`).
+  picker dialog for `'indicators'`, or the comparison picker dialog for `'compare'`).
 
 The composite slots (`symbol`, `timeframes`, `style`, `layout`, `undo-redo`, `alerts`,
 `panels`) are stateful controls the shell pushes state into — a `{label, icon, run}`
@@ -749,6 +757,38 @@ registerLegendCallout({
 - The seam degrades gracefully: a custom renderer without `setLegendCallouts` simply
   never shows contributed callouts.
 
+## Drawing actions — `registerDrawingAction`
+
+A button for one **drawing**: an icon on the toolbar that floats by a selected drawing (just
+before its settings wheel) and a labelled button at the start of the drawing's settings dialog
+footer. The classic use: put an alert, a note or a share link on the drawing the user is
+looking at, where they look for it.
+
+```ts
+import { msg, registerDrawingAction } from '@luxalgo/vela/plugin';
+
+registerDrawingAction({
+    id: 'mytool.drawing-alert',
+    icon: 'bell',                                       // vela/ui icon registry
+    label: msg('mytool.drawing-alert', 'Add alert'),    // toolbar tooltip + dialog button text
+    when: (d) => d.type === 'hline' || d.type === 'trendline', // per-drawing gate
+    run: (ctx, d) => myAlerts.open({ symbol: ctx.symbol, anchors: d.anchors }),
+});
+```
+
+- `d` is the drawing's `SerializedDrawing` — the shape `chart.drawings.all()` returns: `id`,
+  `type`, `anchors`, `style`, `props`. `when` sees it as the toolbar opens; `run` reads it
+  again at click time, so a drag since then shows through.
+- `surfaces: ['toolbar']` or `['settings']` limits it to one of the two places (default: both).
+  `order` sorts the contributed group (ascending; default 0).
+- It acts on one drawing, so the toolbar of a **multi-selection** leaves it out.
+- `run` receives a fresh `WidgetContext` per click. In a workspace, the click's own press made
+  the drawing's chart the active one, so `ctx.chart` is the chart the drawing is on.
+- Register at import time; after a late registration call `refreshActions()`. An open toolbar
+  keeps its buttons; the next one shows the new set.
+- The seam degrades gracefully: a custom renderer without `setDrawingActions` simply never
+  shows contributed drawing actions.
+
 ## Side panels — `registerSidePanel`
 
 A **side panel** is a docked column on the chart's right edge — the object tree and the data
@@ -874,6 +914,35 @@ registerWidgetAttachment({
 
 A shell that uses none of these keeps its plain column layout; the first one in use switches
 the shell to a grid with these regions for the rest of its life.
+
+### Full screen — `ctx.fullscreen`
+
+[Full screen](../user/workspace.md#full-screen) leaves only the charts. The shell hides what
+is its own: the topbar, the drawing toolbar, the bottom bar and the right edge (the sidebar,
+and anything docked with `ctx.dockEdge`), and it closes the open side panel. **A docked strip
+stays**, because only its owner knows whether it belongs with the charts (the controls of a
+replay under way) or around them (a panel of orders). A plugin that steps aside follows
+`ctx.fullscreen`:
+
+```ts
+registerWidgetAttachment({
+    id: 'mytool.orders',
+    mount: (ctx) => {
+        const dock = ctx.dockStrip(ordersPanel, { position: 'below-bottombar' });
+        const show = (): void => { ordersPanel.hidden = ctx.fullscreen.isOn(); };
+        const off = ctx.fullscreen.onDidChange(show);
+        show(); // the shell may already be in full screen when this mounts
+        return () => { off(); dock(); };
+    },
+});
+```
+
+- **`isOn()`** reads the state, **`onDidChange(cb)`** follows it whichever way it changed (the
+  key, the topbar button, Esc, code) and returns the unsubscribe.
+- **`set(on)`** enters and leaves, for a plugin that offers its own way in. Entering is
+  ignored on the mobile layout.
+- Hide, rather than undock or close: what you hid then comes back exactly as it was, and
+  nothing in the saved layout changes.
 
 ## The sidebar
 

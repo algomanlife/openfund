@@ -6,7 +6,7 @@ import type { SeriesSpec, LineLikeSeries, CandleSeries, LineStyle, CandleBarColo
 import { isLineLikeSeries, seriesShownOn } from '../../../core/model/series';
 import type { CoordinateSystem } from '../core/CoordinateSystem';
 import type { SceneGraph, PaneNode } from '../core/SceneGraph';
-import { candleTier, wickWidth, candleGeometry, snapY, aggregateCandleColumns } from './candle-lod';
+import { candleTier, wickWidth, candleGeometry, snapY, aggregateCandleColumns, candleStickExtent, candleStickColor } from './candle-lod';
 import { BASELINE_TOP_LINE, BASELINE_BOTTOM_LINE, BASELINE_FILL_ALPHA, BASELINE_FILL_ALPHA_FAR, COLUMNS_FILL_ALPHA, withAlpha as cssWithAlpha, effectiveCandlePaint } from '../core/chartConfig';
 import { lineMarkerRadius, lineMarkersVisible, columnIsUp, columnGeometry, snapStroke, closeRuns, stepVertices } from './close-styles';
 import type { IRenderBackend } from './IRenderBackend';
@@ -574,20 +574,22 @@ export class WebGL2Backend implements IRenderBackend {
     /** The "neon" elements that glow: line/area/step lines + point markers (not candles/fills/bars).
      *  Routing mirrors the main pass: own series per pane, force_overlay series on the price pane. */
     private emitGlowSources(b: Batch, scene: SceneGraph, pane: PaneNode, coords: CoordinateSystem, i0: number, i1: number): void {
-        const emitOne = (s: SeriesSpec, off: number): void => {
+        const emitOne = (s: SeriesSpec, mp: PaneNode, off: number): void => {
             if (!isLineLikeSeries(s) || !seriesShownOn(s, 'pane')) return;
             if (s.kind === 'histogram' || s.kind === 'columns') return;
-            if (s.kind === 'circles' || s.kind === 'cross') this.emitPointMarkers(b, s, pane, coords, i0, i1, off);
-            else this.emitPolyline(b, s, pane, coords, i0, i1, s.kind === 'step', off);
+            if (s.kind === 'circles' || s.kind === 'cross') this.emitPointMarkers(b, s, mp, coords, i0, i1, off);
+            else this.emitPolyline(b, s, mp, coords, i0, i1, s.kind === 'step', off);
         };
         for (const m of scene.indicatorsForPane(pane.id)) {
             const off = scene.offsetOf(m.id);
-            for (const s of m.series) if (s.overlay !== true) emitOne(s, off);
+            const sc = scene.scaleFor(m, pane);
+            const mp = sc === pane.scale ? pane : { ...pane, scale: sc };
+            for (const s of m.series) if (s.overlay !== true) emitOne(s, mp, off);
         }
         if (pane.kind === 'price') {
             for (const m of scene.indicators.values()) {
                 const off = scene.offsetOf(m.id);
-                for (const s of m.series) if (s.overlay === true) emitOne(s, off);
+                for (const s of m.series) if (s.overlay === true) emitOne(s, pane, off);
             }
         }
     }
@@ -648,6 +650,9 @@ export class WebGL2Backend implements IRenderBackend {
             const tCur = coords.priceToY(a1.value, pane.scale, pane.bounds);
             const bCur = coords.priceToY(b1.value, pane.scale, pane.bounds);
             // Style by the LEFT/head column (matches FillPrimitive's run-head convention).
+            const dPrev = tPrev - bPrev;
+            const dCur = tCur - bCur;
+            const crosses = dPrev * dCur < 0;
             const grad = fill.gradient?.[i - 1 - off];
             if (grad) {
                 const yTop = coords.priceToY(grad.topValue, pane.scale, pane.bounds);
@@ -657,12 +662,31 @@ export class WebGL2Backend implements IRenderBackend {
                 const bc = parseColor(grad.bottomColor);
                 const span = yBot - yTop;
                 const at = (y: number): RGBA => lerpColor(tc, bc, clamp01((y - yTop) / span));
-                // quad corners: TL(xPrev,tPrev) TR(xCur,tCur) BR(xCur,bCur) BL(xPrev,bPrev)
-                b.quad4(xPrev, tPrev, at(tPrev), xCur, tCur, at(tCur), xCur, bCur, at(bCur), xPrev, bPrev, at(bPrev));
+                if (crosses) {
+                    const frac = dPrev / (dPrev - dCur);
+                    const xCross = xPrev + frac * (xCur - xPrev);
+                    const yCross = tPrev + frac * (tCur - tPrev);
+                    const cCross = at(yCross);
+                    b.tri(xPrev, tPrev, at(tPrev), xCross, yCross, cCross, xPrev, bPrev, at(bPrev));
+                    b.tri(xCross, yCross, cCross, xCur, tCur, at(tCur), xCur, bCur, at(bCur));
+                } else {
+                    // quad corners: TL(xPrev,tPrev) TR(xCur,tCur) BR(xCur,bCur) BL(xPrev,bPrev)
+                    b.quad4(xPrev, tPrev, at(tPrev), xCur, tCur, at(tCur), xCur, bCur, at(bCur), xPrev, bPrev, at(bPrev));
+                }
             } else {
                 const color = fill.colors ? fill.colors[i - 1 - off] : fill.color;
                 if (!color) continue;
-                b.quad(xPrev, tPrev, xCur, tCur, xCur, bCur, xPrev, bPrev, parseColor(color));
+                const c = parseColor(color);
+                if (crosses) {
+                    // Split crossing ribbons at their intersection so neither triangle overlaps (no bow-tie).
+                    const frac = dPrev / (dPrev - dCur);
+                    const xCross = xPrev + frac * (xCur - xPrev);
+                    const yCross = tPrev + frac * (tCur - tPrev);
+                    b.tri(xPrev, tPrev, c, xCross, yCross, c, xPrev, bPrev, c);
+                    b.tri(xCross, yCross, c, xCur, tCur, c, xCur, bCur, c);
+                } else {
+                    b.quad(xPrev, tPrev, xCur, tCur, xCur, bCur, xPrev, bPrev, c);
+                }
             }
         }
     }
@@ -948,16 +972,22 @@ export class WebGL2Backend implements IRenderBackend {
         const up = paint.up;
         const down = paint.down;
         const cs = paint.candle;
+        // Too thin for a body, the stick IS the candle: it spans whatever part is still
+        // visible, so hiding the wick alone never empties the pane at these zooms.
+        const stick = candleStickExtent(cs);
+        if (stick === 'none') return; // every part hidden: nothing to paint at any zoom
+        // A body stick stands for the body (or for its border when the body is hidden).
+        const bodyStickAlpha = cs.bodyVisible ? this.candleBodyAlpha : this.candleStructureAlpha;
         if (tier === 'aggregate') {
-            // The stick IS the candle, so a bar's paint resolves as in the stick-only tier
-            // below: the wick color setting wins, then barcolor(), then the direction color.
+            if (stick === 'body') b.alpha = bodyStickAlpha;
             this.emitCandlesAggregated(b, bars, i0, i1, coords, pane, (bar) => {
                 const isUp = bar.close >= bar.open;
-                return (isUp ? cs.wickUpColor : cs.wickDownColor) ?? barColors.get(bar.time) ?? (isUp ? up : down);
-            });
+                return candleStickColor(cs, stick, isUp, barColors.get(bar.time) ?? (isUp ? up : down));
+            }, stick);
             return;
         }
         const drawBody = tier === 'full';
+        const bodyStick = !drawBody && stick === 'body';
         // When a fading style drops the body below the structure, draw a body outline even
         // if no border is configured — so the candle keeps a visible (hollow) skeleton.
         const fading = this.candleStructureAlpha > this.candleBodyAlpha + 0.001;
@@ -975,7 +1005,7 @@ export class WebGL2Backend implements IRenderBackend {
             // Body geometry up front so the wick can be clipped to it when the body is hollow.
             let bodyTop = 0;
             let bodyH = 0;
-            if (drawBody) {
+            if (drawBody || bodyStick) {
                 const oY = coords.priceToY(bar.open, pane.scale, pane.bounds);
                 const cY = coords.priceToY(bar.close, pane.scale, pane.bounds);
                 // Both edges snapped to the device grid so the horizontal edges rasterize
@@ -983,7 +1013,10 @@ export class WebGL2Backend implements IRenderBackend {
                 bodyTop = snapY(Math.min(oY, cY), coords.dpr);
                 bodyH = Math.max(1 / coords.dpr, snapY(Math.max(oY, cY), coords.dpr) - bodyTop);
             }
-            if (cs.wickVisible) {
+            if (bodyStick) {
+                b.alpha = bodyStickAlpha;
+                b.rect(g.wickX, bodyTop, g.wickW, bodyH, parseColor(candleStickColor(cs, 'body', isUp, bodyColorStr)));
+            } else if (cs.wickVisible) {
                 const hY = snapY(coords.priceToY(bar.high, pane.scale, pane.bounds), coords.dpr);
                 const lY = snapY(coords.priceToY(bar.low, pane.scale, pane.bounds), coords.dpr);
                 b.alpha = this.candleStructureAlpha;
@@ -1024,18 +1057,21 @@ export class WebGL2Backend implements IRenderBackend {
 
     /**
      * Sub-pixel LOD (mirrors Canvas2dBackend.drawCandlesAggregated): bars sharing a
-     * rounded pixel column collapse into high-low sticks — one per contiguous
-     * SAME-COLOR coverage run (see {@link aggregateCandleColumns}), so a price gap
-     * inside the column stays a void and every bar's extent keeps its own color. Draw
-     * cost stays bounded by screen width, not bar count. `colorOf` is the calling
-     * style's per-bar paint rule (candles and OHLC bars resolve theirs differently).
+     * rounded pixel column collapse into sticks — one per contiguous SAME-COLOR
+     * coverage run (see {@link aggregateCandleColumns}), so a price gap inside the
+     * column stays a void and every bar's extent keeps its own color. Draw cost stays
+     * bounded by screen width, not bar count. `colorOf` is the calling style's per-bar
+     * paint rule (candles and OHLC bars resolve theirs differently); `extent` is what
+     * each bar covers — high to low, or open to close for candles whose wick is hidden.
      */
-    private emitCandlesAggregated(b: Batch, bars: OHLCV[], i0: number, i1: number, coords: CoordinateSystem, pane: PaneNode, colorOf: (bar: OHLCV) => string): void {
+    private emitCandlesAggregated(b: Batch, bars: OHLCV[], i0: number, i1: number, coords: CoordinateSystem, pane: PaneNode, colorOf: (bar: OHLCV) => string, extent: 'range' | 'body' = 'range'): void {
         const yOf = (price: number): number => coords.priceToY(price, pane.scale, pane.bounds);
-        for (const s of aggregateCandleColumns(bars, i0, i1, (i) => coords.logicalToX(i), yOf, colorOf)) {
+        // A body can be flat (a doji): it keeps one device pixel, as a wide candle's does.
+        const minH = extent === 'body' ? 1 / coords.dpr : 0;
+        for (const s of aggregateCandleColumns(bars, i0, i1, (i) => coords.logicalToX(i), yOf, colorOf, extent)) {
             const c = parseColor(s.color);
             const hY = yOf(s.hi);
-            b.rect(s.x - 0.5, hY, 1, yOf(s.lo) - hY, c);
+            b.rect(s.x - 0.5, hY, 1, Math.max(minH, yOf(s.lo) - hY), c);
         }
     }
 

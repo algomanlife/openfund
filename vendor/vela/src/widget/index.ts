@@ -72,8 +72,9 @@ export {
     type SidePanelHandle,
     type SidePanelButton,
     type SidebarControl,
+    type FullscreenControl,
 } from './contributions';
-export { parseTimeframe, timeframeMs, timeframeLabel, type ParsedTimeframe } from './timeframe';
+export { parseTimeframe, timeframeMs, timeframeLabel, chartTimeframeOf, type ParsedTimeframe } from './timeframe';
 export { TIMEZONES, normalizeTimezone, tzOffset, tzMenuLabel, tzButtonLabel, type TimezoneEntry } from './timezones';
 export { decimalsFor, fmtPrice, fmtChange } from './format';
 export {

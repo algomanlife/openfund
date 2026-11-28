@@ -4,7 +4,9 @@ export type { VelaDeps, RunIndicatorResult } from './Vela';
 export { RendererControl } from './core/RendererControl';
 // The second pulse behind time displays — share one between a host clock and
 // `chart.renderer.setWallClock` so the countdown chip never reads a different second.
-export { SecondClock, type WallClock } from './core/util/wall-clock';
+// A host clock display reads `clockCorrection.now()`, the time the chips use: this
+// device's clock corrected by what live candles prove about it.
+export { SecondClock, ClockCorrection, clockCorrection, type WallClock } from './core/util/wall-clock';
 export { NativeRenderer } from './renderers/native/NativeRenderer';
 // The drawing-toolbar VIEW as a standalone component — a workspace shell mounts ONE
 // shared bar (dock:'static') and routes it to the active chart's `chart.drawings`.
@@ -13,7 +15,14 @@ export type { ChartConfig, ChartStyle } from './renderers/native/core/chartConfi
 export { MultiProviderFeed } from './data/MultiProviderFeed';
 export { CachingDataFeed } from './data/CachingDataFeed';
 export { BarStore, sharedBarStore } from './data/BarStore';
-export { timeframeToMs } from './data/timeframe';
+export { timeframeToMs, parseTickTimeframe, isTickTimeframe, isVariableDurationTimeframe } from './data/timeframe';
+export {
+    registerSeriesAdapter,
+    unregisterSeriesAdapter,
+    seriesAdapters,
+    type SeriesAdapter,
+    type SeriesAdapterContext,
+} from './data/series-adapters';
 export { DataControl } from './core/DataControl';
 export { DrawingsControl } from './core/DrawingsControl';
 export { MarksControl } from './core/MarksControl';
@@ -122,6 +131,7 @@ export type {
     VisibleRange,
     VisibleRangeOptions,
     DataWindowReadout,
+    DrawingActionView,
     DataWindowGroup,
     DataWindowRow,
     DataWindowOHLC,

@@ -3,7 +3,8 @@
 // chrome — topbar buttons, context-menu items — so any future view layer (React) can
 // project the same descriptors. Register at import time, before widgets are constructed.
 import type { Vela } from '../Vela';
-import type { LegendActionView, LegendCalloutView } from '../core/ports/IChartRenderer';
+import type { DrawingActionView, LegendActionView, LegendCalloutView } from '../core/ports/IChartRenderer';
+import type { SerializedDrawing } from '../core/drawings';
 import type { ScriptingEngine } from '../core/ports/ScriptingEngine';
 import type { SymbolDescriptor } from '../core/ports/DataProvider';
 import type { InputValue } from '../core/model/inputs';
@@ -62,7 +63,7 @@ export interface WidgetContext {
     addIndicator(entry: ExternalIndicatorEntry): void;
     /** Add a native (core-computed) indicator to the active chart through the shell —
      *  recorded in the undo/redo timeline, unlike the raw `chart.addNativeIndicator`. */
-    addNativeIndicator(type: string): void;
+    addNativeIndicator(type: string, options?: { inputs?: Record<string, InputValue> }): void;
     /** Tell the shell some PERSISTABLE third-party state changed (a debounced
      *  `state:changed` + storage write follows). Only needed for state with no shell
      *  event of its own — indicator adds/removals already trigger the save cycle. */
@@ -78,9 +79,29 @@ export interface WidgetContext {
      *  entries hidden or shown at runtime, and a redraw after a sidebar action's `active` or
      *  `when` changed. See {@link SidebarControl}. */
     sidebar: SidebarControl;
+    /** The shell's full screen: whether it is on, entering and leaving it, and a change
+     *  event — for a plugin that docked something around the charts and steps aside with
+     *  the shell's bars. See {@link FullscreenControl}. */
+    fullscreen: FullscreenControl;
     /** Where the right-click that opened a context menu landed. Set on the context handed
      *  to `context:*` actions (`when` and `run`); absent everywhere else. */
     pointer?: ContextMenuPointer;
+}
+
+/**
+ * The shell's full screen ({@link WidgetContext.fullscreen}): the charts alone, the shell's
+ * bars hidden and its open side panel closed. The shell hides only what is its own. What a
+ * plugin docked around the charts (a strip, an edge element) stays until the plugin that
+ * owns it steps aside, which this is for.
+ */
+export interface FullscreenControl {
+    /** Whether the shell is in full screen right now. */
+    isOn(): boolean;
+    /** Enter (`true`) or leave (`false`). Entering is ignored on the mobile layout. */
+    set(on: boolean): void;
+    /** Called after the shell enters or leaves full screen, by any path: its key, its topbar
+     *  button, Esc, code. Returns the unsubscribe. */
+    onDidChange(cb: (on: boolean) => void): () => void;
 }
 
 /**
@@ -401,7 +422,7 @@ export function sidePanels(): SidePanelDescriptor[] {
  *  their id — the "simple button" slots. The composites (symbol, timeframes, style,
  *  layout, undo-redo, alerts, panels) are stateful controls the shell pushes state
  *  into; a plain `{label, icon, run}` descriptor cannot stand in for them. */
-export const OVERRIDABLE_TOPBAR_IDS = ['indicators', 'screenshot'] as const;
+export const OVERRIDABLE_TOPBAR_IDS = ['indicators', 'screenshot', 'compare'] as const;
 
 const overridableSet = new Set<string>(OVERRIDABLE_TOPBAR_IDS);
 const builtinTopbarSet = new Set<string>(TOPBAR_BUILTIN_IDS);
@@ -653,6 +674,83 @@ export function legendCalloutsProviderFor(chart: Vela, context: () => WidgetCont
     };
 }
 
+// ── Drawing actions ────────────────────────────────────────────────────────────────
+
+/** Where a contributed drawing action shows: the selection toolbar that floats by a
+ *  selected drawing, and the drawing's settings dialog. */
+export type DrawingActionSurface = 'toolbar' | 'settings';
+
+/**
+ * A contributed DRAWING action: an icon button on the toolbar that floats by a selected
+ * drawing, placed before its settings wheel, and a labelled button at the start of the
+ * drawing's settings dialog footer. It acts on one drawing, so a multi-selection's toolbar
+ * leaves it out. `when` gates per drawing (its type, its anchors); `run` receives the
+ * shell's {@link WidgetContext} and the drawing as it is at click time.
+ */
+export interface DrawingActionDescriptor {
+    /** Stable id — re-registering an id replaces it. */
+    id: string;
+    /** Icon id from the `vela/ui` icon registry (register yours with `registerIcon`). */
+    icon: string;
+    /** The toolbar button's tooltip and accessible name, and the settings dialog button's
+     *  text. A message (`msg(id, 'English')`) follows the chart's language. */
+    label: MessageLike;
+    /** Sort key within the contributed group (ascending; default 0; ties keep registration order). */
+    order?: number;
+    /** Where the action shows (default: both). */
+    surfaces?: readonly DrawingActionSurface[];
+    /** Per-drawing gate — omitted ⇒ shown on every drawing. */
+    when?: (drawing: SerializedDrawing) => boolean;
+    run(ctx: WidgetContext, drawing: SerializedDrawing): void;
+}
+
+const drawingActionRegistry = new Map<string, DrawingActionDescriptor>();
+
+/** Register (or replace) a drawing action. Returns an unregister disposer. */
+export function registerDrawingAction(desc: DrawingActionDescriptor): () => void {
+    drawingActionRegistry.set(desc.id, desc);
+    return () => {
+        if (drawingActionRegistry.get(desc.id) === desc) drawingActionRegistry.delete(desc.id);
+    };
+}
+
+export function unregisterDrawingAction(id: string): void {
+    drawingActionRegistry.delete(id);
+}
+
+/** Every registered drawing action, `order`-sorted (registration order breaks ties). */
+export function drawingActions(): DrawingActionDescriptor[] {
+    return [...drawingActionRegistry.values()].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
+/**
+ * The provider a shell hands to `chart.renderer.setDrawingActions` — resolves the drawing
+ * on THAT chart, gates each descriptor, and binds `run` to a fresh context per click (never
+ * a cached one; the widget context rule). Both shells wire exactly this.
+ */
+export function drawingActionsProviderFor(chart: Vela, context: () => WidgetContext): (drawingId: string) => DrawingActionView[] {
+    return (drawingId) => {
+        if (!chart.drawings.supported) return [];
+        const find = (): SerializedDrawing | undefined => chart.drawings.all().find((d) => d.id === drawingId);
+        const drawing = find();
+        if (!drawing) return [];
+        return drawingActions()
+            .filter((d) => !d.when || d.when(drawing))
+            .map((d) => {
+                const on = d.surfaces ?? ['toolbar', 'settings'];
+                return {
+                    id: d.id,
+                    icon: d.icon,
+                    label: textOf(chart.i18n, d.label),
+                    toolbar: on.includes('toolbar'),
+                    settings: on.includes('settings'),
+                    // Read the drawing AGAIN at click time: the toolbar outlives drags and edits.
+                    run: () => d.run(context(), find() ?? drawing),
+                };
+            });
+    };
+}
+
 // ── State persistence (the `ext` seam) ─────────────────────────────────────────────
 
 /**
@@ -671,7 +769,7 @@ export interface CellStateContext {
     /** Add a script indicator to THIS cell through the shell (see {@link WidgetContext.addIndicator}). */
     addIndicator(entry: ExternalIndicatorEntry): void;
     /** Add a native indicator to THIS cell through the shell. */
-    addNativeIndicator(type: string): void;
+    addNativeIndicator(type: string, options?: { inputs?: Record<string, InputValue> }): void;
 }
 
 /**

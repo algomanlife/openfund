@@ -26,6 +26,7 @@ import { registerBuiltinChartTypes } from './chart-types/builtins';
 import { registerVolume } from './core/native-indicators/volume';
 import { registerVpvr } from './core/native-indicators/vpvr';
 import { registerClassicIndicators } from './core/native-indicators/classics';
+import { registerCompare } from './core/native-indicators/compare';
 import { LocaleState, pickLocalization } from './core/i18n/translator';
 import type { LocalizationOptions, Translator } from './core/i18n/types';
 
@@ -76,6 +77,7 @@ export class Vela {
         registerVolume(); // register the built-in native indicators (idempotent)
         registerVpvr();
         registerClassicIndicators();
+        registerCompare();
         const element = resolveElement(container);
         const theme = resolveTheme(options.theme);
         const display = {
@@ -237,10 +239,9 @@ export class Vela {
 
     /**
      * The facts the chart applies about its symbol, from its data source's `SymbolInfo`:
-     * `ohlc: false` for one value per bar, `volume: false` for no volume. `null` while
-     * unknown (the info has not landed, or the source states none); `{}` when it landed
-     * without either. They decide which price styles can draw the symbol — test one with
-     * `priceStyleApplies(id, chart.symbolFacts())` — and change with `symbol:facts`.
+     * `ohlc: false` for one value per bar, `volume: false` for no volume, and `mintick`
+     * for price precision. Returns `null` while info is unknown, or `{}` when the info
+     * has no display facts. Changes fire `symbol:facts`.
      */
     symbolFacts(): SymbolFacts | null {
         return this.orchestrator.symbolFacts();

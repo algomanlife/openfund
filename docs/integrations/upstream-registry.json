@@ -10,21 +10,21 @@
       "category": "charting",
       "upstream": "https://github.com/LuxAlgo/Vela",
       "license": "Apache-2.0 plus a NOTICE attribution requirement (vendor/vela/NOTICE: visible Vela attribution wherever a Vela chart is displayed)",
-      "version": "0.10.6",
-      "commit": "f6769868c5c0e78ba7977a5c89640df896a8f2f3 (upstream tag v0.10.6). Written by the controlled update tool; byte-identical to the tag except the two registered patches",
+      "version": "0.10.19",
+      "commit": "6a691039b66d98269e952a1e110935f8dc3af233 (upstream tag v0.10.19). Written by the controlled update tool; byte-identical to the tag except the two registered patches",
       "pins": [
         {
           "file": "apps/web-react/package.json",
-          "pattern": "\"@luxalgo/vela\": \"(0\\.10\\.6)\""
+          "pattern": "\"@luxalgo/vela\": \"(0\\.10\\.19)\""
         },
         {
           "file": "vendor/vela/package.json",
-          "pattern": "\"version\": \"(0\\.10\\.6)\""
+          "pattern": "\"version\": \"(0\\.10\\.19)\""
         }
       ],
       "locations": [
         "vendor/vela (source, Apache-2.0)",
-        "apps/web-react node_modules/@luxalgo/vela (npm 0.10.6, with @luxalgo/vela-ui 0.4.1)",
+        "apps/web-react node_modules/@luxalgo/vela (npm 0.10.19, with @luxalgo/vela-ui 0.4.5)",
         "packages/openfund-charts (Openfund bridge)",
         "apps/web-react/public/assets/vela-workspace.global.min.js (built bundle, mirrored to dist/ and react/)"
       ],
@@ -51,12 +51,12 @@
       "category": "charting",
       "upstream": "https://github.com/LuxAlgo/Vela-pinets",
       "license": "AGPL-3.0-only (npm metadata)",
-      "version": "0.3.4",
+      "version": "0.3.5",
       "commit": null,
       "pins": [
         {
           "file": "apps/web-react/package.json",
-          "pattern": "\"@luxalgo/vela-pinets\": \"(0\\.3\\.4)\""
+          "pattern": "\"@luxalgo/vela-pinets\": \"(0\\.3\\.5)\""
         }
       ],
       "locations": [

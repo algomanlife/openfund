@@ -1,8 +1,8 @@
 diff --git a/src/workspace/ChartCell.ts b/src/workspace/ChartCell.ts
-index cd2598e..3f1b215 100644
+index 7e3cc40..12b6832 100644
 --- a/src/workspace/ChartCell.ts
 +++ b/src/workspace/ChartCell.ts
-@@ -1357,10 +1357,11 @@ export class ChartCell {
+@@ -1453,10 +1453,11 @@ export class ChartCell {
          return this.nativeCatalog.filter((n) => n.supported).sort((a, b) => collator.compare(a.title, b.title));
      }
  
@@ -16,7 +16,7 @@ index cd2598e..3f1b215 100644
              ...this.supportedNatives().map((n) => ({
                  name: n.title,
                  ...nativeAliases(n.type, this.inner?.i18n),
-@@ -1369,7 +1370,6 @@ export class ChartCell {
+@@ -1465,7 +1466,6 @@ export class ChartCell {
                  nativeType: n.type,
                  beta: n.beta,
              })),
@@ -24,26 +24,31 @@ index cd2598e..3f1b215 100644
          ];
      }
  
-@@ -1381,13 +1381,14 @@ export class ChartCell {
+@@ -1477,15 +1477,18 @@ export class ChartCell {
          ];
      }
  
--    /** Add by picker LIBRARY index (natives precede the manifest — mirrors libraryRows). */
-+    /** Add by picker LIBRARY index (manifest precedes natives — mirrors libraryRows). */
-     addFromLibrary(index: number): void {
+-    /** Add by picker LIBRARY index (natives precede the manifest — mirrors libraryRows).
++    /** Add by picker LIBRARY index (manifest precedes natives — mirrors libraryRows).
+      *  Returns `true` when the added study needs user input configuration (and opened its
+      *  settings dialog), so the caller can close the library picker cleanly. */
+     addFromLibrary(index: number): boolean {
          const natives = this.supportedNatives();
--        if (index < natives.length) this.addNative(natives[index]!.type);
-+        if (index < 0 || !Number.isInteger(index)) return;
-+        if (index < this.manifest.length) this.addManifestInstance(this.manifest[index]!);
-         else {
--            const entry = this.manifest[index - natives.length];
--            if (entry) this.addManifestInstance(entry);
-+            const native = natives[index - this.manifest.length];
-+            if (native) this.addNative(native.type);
-         }
+-        if (index < natives.length) return this.addNative(natives[index]!.type, { confirmInputs: true });
+-        const entry = this.manifest[index - natives.length];
+-        if (entry) this.addManifestInstance(entry);
+-        return false;
++        if (index < 0 || !Number.isInteger(index)) return false;
++        if (index < this.manifest.length) {
++            this.addManifestInstance(this.manifest[index]!);
++            return false;
++        }
++        const native = natives[index - this.manifest.length];
++        return native ? this.addNative(native.type, { confirmInputs: true }) : false;
      }
  
-@@ -1558,6 +1559,7 @@ export class ChartCell {
+     /** Remove by picker ON-CHART index (native instances precede script instances — mirrors onChartRows). */
+@@ -1749,6 +1752,7 @@ export class ChartCell {
          try {
              return (
                  this.inner?.addIndicator(entry.script, {

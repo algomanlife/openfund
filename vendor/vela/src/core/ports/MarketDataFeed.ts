@@ -43,6 +43,8 @@ export interface SymbolInfo {
         default?: string;
         /** When present, the EXHAUSTIVE list of timeframes served. */
         list?: readonly string[];
+        /** True when the source serves tick-based timeframes (`nT`) for this symbol. */
+        ticks?: boolean;
     };
     /**
      * `false` when the source has no volume data for this symbol: the chart then does not
@@ -63,12 +65,12 @@ export interface SymbolInfo {
 }
 
 /**
- * The facts about the chart's symbol that decide which price styles can draw it: the
- * neutral subset of {@link SymbolInfo} the chart applies once the symbol's info lands
- * (`chart.symbolFacts()`) and hands to a chart type's `supports` predicate. Each key
- * mirrors the `SymbolInfo` field of the same name; an absent key means the usual.
+ * The subset of {@link SymbolInfo} that controls chart display once the symbol's info
+ * lands (`chart.symbolFacts()`) and that chart types can read in their `supports` predicate.
  */
 export interface SymbolFacts {
+    /** Smallest price increment, when the source provides it. */
+    mintick?: number;
     /** `false`: one value per bar — open, high and low carry no information. */
     ohlc?: boolean;
     /** `false`: the source has no volume for this symbol. */

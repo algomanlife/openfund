@@ -62,9 +62,9 @@ equity or sum incompatible collateral currencies.
 
 ### Vela charts and Pine execution
 
-The chart workspace uses Vela 0.10.6, the official Vela Pine addon 0.3.4 and
+The chart workspace uses Vela 0.10.19, the official Vela Pine addon 0.3.5 and
 PineTS 0.13.1. The catalog contains the three Openfund Pine indicators ahead
-of the existing 77 built-ins. Original Pine sources run in a worker; the
+of the existing 106 built-ins. Original Pine sources run in a worker; the
 integration resolves two repository-local libraries and rejects unknown
 imports. Chart settings are scoped by product and wallet.
 

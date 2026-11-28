@@ -59,14 +59,14 @@ try {
     const rows = frame.locator('[data-library] .vela-ip-name');
     assert.deepEqual((await rows.allTextContents()).slice(0,3), names);
     /* the server's FOOTPRINT_ENABLED flag adds exactly one library row, the
-       Footprint overlay; the 80 catalog rows are unchanged either way */
+       Footprint overlay; the 109 catalog rows (3 Openfund studies, 106 Vela built-ins) are unchanged either way */
     const footprintOn = await page.evaluate(() => !!(window.__OPENFUND_RUNTIME_CONFIG__ || {}).footprint);
     const rowNames = await rows.allTextContents();
     if (product === 'prop') /* English page; the Persian page localizes the label */
       assert.equal(rowNames.filter(n => n === 'Footprint (Order Flow Overlay)').length, footprintOn ? 1 : 0);
-    assert.equal(rowNames.length, 80 + (footprintOn ? 1 : 0));
+    assert.equal(rowNames.length, 109 + (footprintOn ? 1 : 0));
     await checkBranding(frame);
-    record(`${product}: exact catalog order, 77 built-ins and branding`);
+    record(`${product}: exact catalog order, 106 built-ins and branding`);
     if (live) await page.screenshot({ path: path.join(output, `${product}-catalog.png`) });
     // The manifest offset must not change which built-in a picker index adds.
     await frame.locator('[data-library="3"]').click();

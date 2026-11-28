@@ -3,7 +3,7 @@
 // the contribution system anticipated), plus additive multi-chart extensions. Existing
 // plugins keep working unchanged; grid-aware ones narrow to WorkspaceWidgetContext.
 import type { Vela } from '../Vela';
-import type { DockedStrip, DockStripOptions, PanelDockView, SidebarControl, TopbarItems, WidgetContext } from '../widget/contributions';
+import type { DockedStrip, DockStripOptions, FullscreenControl, PanelDockView, SidebarControl, TopbarItems, WidgetContext } from '../widget/contributions';
 import type { ChartCell } from './ChartCell';
 import type { WorkspaceReplay } from './WorkspaceReplay';
 import type { Translator } from '../core/i18n/types';
@@ -43,6 +43,7 @@ export interface ContextHost {
     /** The dock's view — a function: the context is built before the dock exists. */
     panels(): PanelDockView;
     sidebar: SidebarControl;
+    fullscreen: FullscreenControl;
 }
 
 /** Build a fresh context bound to the CURRENT active cell. EVERY read resolves live —
@@ -80,7 +81,7 @@ export function buildContext(host: ContextHost): WorkspaceWidgetContext {
         i18n: host.i18n,
         toast: (message, kind) => host.toast(message, kind),
         addIndicator: (entry) => host.active()?.addExternalIndicator(entry),
-        addNativeIndicator: (type) => host.active()?.addNative(type),
+        addNativeIndicator: (type, options) => host.active()?.addNative(type, options),
         stateChanged: () => host.stateDirty(),
         get cells() {
             return host.cells().map((c) => ({ id: c.id, chart: c.chart, symbol: c.symbol, timeframe: c.timeframe }));
@@ -95,5 +96,6 @@ export function buildContext(host: ContextHost): WorkspaceWidgetContext {
             return host.panels();
         },
         sidebar: host.sidebar,
+        fullscreen: host.fullscreen,
     };
 }

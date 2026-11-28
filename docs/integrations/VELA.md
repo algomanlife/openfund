@@ -4,11 +4,11 @@
 
 ## Shared workspace
 
-The classic terminal and shared React product frame mount the full **Vela 0.10.6 workspace**: native timeframe/style/indicator controls, drawing toolbar, status line, bottom bar, settings, popovers and keyboard interactions. It remains the existing chart foundation. [build-charts.mjs](../../scripts/build-charts.mjs) builds the vendored sources, the host Pine addon and the source manifest into `window.VelaWorkspace`.
+The classic terminal and shared React product frame mount the full **Vela 0.10.19 workspace**: native timeframe/style/indicator controls, drawing toolbar, status line, bottom bar, settings, popovers and keyboard interactions. It remains the existing chart foundation. [build-charts.mjs](../../scripts/build-charts.mjs) builds the vendored sources, the host Pine addon and the source manifest into `window.VelaWorkspace`.
 
-The host installs **@luxalgo/vela-pinets 0.3.4** and **pinets 0.13.1**. Its hosted worker, local-library resolver and original-source manifest serve both Prop and Perpetual. The core remains free of Pine runtime imports. A narrow PAC compatibility adapter uses full secondary execution to avoid an upstream nested-request slice bug. Original algorithms and all five supplied source files remain unchanged.
+The host installs **@luxalgo/vela-pinets 0.3.5** and **pinets 0.13.1**. Its hosted worker, local-library resolver and original-source manifest serve both Prop and Perpetual. The core remains free of Pine runtime imports. A narrow PAC compatibility adapter uses full secondary execution to avoid an upstream nested-request slice bug. Original algorithms and all five supplied source files remain unchanged.
 
-Open Algo V5, Price Action Concepts and Smart Money Concepts precede all 77 built-ins. Input schemas, settings edits, scene conversion, historical evaluation and live sessions use the official addon and Vela's existing orchestration. See [Pine architecture](../trading/PINE_SCRIPT.md) for the export inventory, exact import transformation, supported constructs and limits.
+Open Algo V5, Price Action Concepts and Smart Money Concepts precede all 106 built-ins. Input schemas, settings edits, scene conversion, historical evaluation and live sessions use the official addon and Vela's existing orchestration. See [Pine architecture](../trading/PINE_SCRIPT.md) for the export inventory, exact import transformation, supported constructs and limits.
 
 ## Chart UI language: English only, LTR always
 

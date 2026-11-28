@@ -11,15 +11,15 @@
       "official_source": "https://github.com/LuxAlgo/Vela",
       "license": "Apache-2.0 with NOTICE attribution requirement",
       "installed": {
-        "version": "0.10.6",
-        "ref": "f6769868c5c0e78ba7977a5c89640df896a8f2f3",
+        "version": "0.10.19",
+        "ref": "6a691039b66d98269e952a1e110935f8dc3af233",
         "path": "vendor/vela",
         "manifest": "vendor/vela/package.json"
       },
       "latest_observed": {
-        "version": "0.10.6",
-        "date": "2026-11-12",
-        "reviewed": true
+        "version": "0.10.19",
+        "date": "2026-11-28",
+        "reviewed": false
       },
       "integration_path": [
         "packages/openfund-charts",
@@ -37,10 +37,10 @@
         "never_auto_merge": true
       },
       "compatibility": {
-        "status": "pinned-and-verified",
-        "evidence": "npm run test:charts (9 tests), patch guards, build reproducibility; browser charts 17/17, footprint 26/26, risk 51/51 and 53/53 with footprint (PR #92); merged at owner request 2026-11-12"
+        "status": "candidate-unreviewed",
+        "evidence": "update-vendor --apply (0.10.15 -> 0.10.19, 2 patches clean); bundles rebuilt by the upstream-update-candidate workflow; browser regression and owner review pending in the pull request"
       },
-      "last_upgrade": "2026-11-12 (vendored 0.10.6 at tag v0.10.6)",
+      "last_upgrade": "2026-11-28 (0.10.19 via 0.10.15; OF-VELA-003 ported by hand)",
       "tests": [
         "npm run test:upstream",
         "npm run test:charts",
@@ -65,7 +65,7 @@
       "official_source": "https://www.npmjs.com/package/@luxalgo/vela-pinets",
       "license": "AGPL-3.0",
       "installed": {
-        "version": "0.3.4",
+        "version": "0.3.5",
         "lockfile": "apps/web-react/package-lock.json",
         "package": "@luxalgo/vela-pinets"
       },

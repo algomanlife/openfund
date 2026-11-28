@@ -6,7 +6,7 @@
    powered by the Open Oracle provider (catalog, candles and prices from /api/oracle).
 
    Bundle: apps/web-react/public/assets/vela-workspace.global.min.js
-           (esbuild IIFE of the vendored @luxalgo/vela 0.10.6 workspace)
+           (esbuild IIFE of the vendored @luxalgo/vela 0.10.19 workspace)
    Contract (packages/openfund-charts):
      OpenfundCharts.mount(container, opts) → controller
      controller.setSymbol(symbol)      in-place market switch
