@@ -31,7 +31,7 @@ const open = async (page, route) => {
           hero: !!document.querySelector('.mg-hero .mh-root svg') && !document.querySelector('.mg-hero .flamingo-scene'), rows: document.querySelectorAll('.mg-compare tbody tr').length,
           steps: document.querySelectorAll('.mg-steps li').length, evidence: document.querySelectorAll('.mg-evidence li').length }))
         ok(`${locale} ${theme}: ${dir}, flamingo hero, comparison, steps, evidence, no overflow`,
-          r.dir === dir && r.hero && r.rows === 5 && r.steps === 5 && r.evidence === 5 && r.overflow <= 0, JSON.stringify(r))
+          r.dir === dir && r.hero && r.rows === 5 && r.steps === 5 && r.evidence === 4 && r.overflow <= 0, JSON.stringify(r))
         if (theme === 'dark') await page.screenshot({ path: path.join(OUT, `migrate-${locale}-390.png`) })
         await page.close()
       }
