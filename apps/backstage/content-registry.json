@@ -2556,7 +2556,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 260,
+          "line": 297,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -10542,7 +10542,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 117,
+          "line": 154,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -15618,7 +15618,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 259,
+          "line": 296,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -17207,7 +17207,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 133,
+          "line": 170,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -30568,7 +30568,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 236,
+          "line": 273,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -32711,7 +32711,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 174,
+          "line": 211,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -35794,14 +35794,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 129,
+          "line": 166,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 140,
+          "line": 177,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -44607,7 +44607,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 224,
+          "line": 261,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -46645,14 +46645,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 119,
+          "line": 156,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 138,
+          "line": 175,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -54558,7 +54558,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 268,
+          "line": 305,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -61594,14 +61594,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 190,
+          "line": 227,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 192,
+          "line": 229,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -62048,7 +62048,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 266,
+          "line": 303,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -65894,7 +65894,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 123,
+          "line": 160,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -70707,7 +70707,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 315,
+          "line": 352,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -74028,14 +74028,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 127,
+          "line": 164,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 139,
+          "line": 176,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -77686,7 +77686,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 144,
+          "line": 181,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -91439,7 +91439,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 341,
+          "line": 378,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -92040,14 +92040,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 216,
+          "line": 253,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 217,
+          "line": 254,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -95491,7 +95491,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 328,
+          "line": 365,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -96305,7 +96305,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 257,
+          "line": 294,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -98936,7 +98936,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 256,
+          "line": 293,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -107646,7 +107646,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 123,
+      "line": 160,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -107654,7 +107654,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 137,
+      "line": 174,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -107662,7 +107662,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 314,
+      "line": 351,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -107977,7 +107977,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 208,
+      "line": 245,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -107985,7 +107985,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 209,
+      "line": 246,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -107993,7 +107993,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 310,
+      "line": 347,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
