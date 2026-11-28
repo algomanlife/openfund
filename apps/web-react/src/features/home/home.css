@@ -5,8 +5,9 @@
    at runtime by Home.tsx. The canvas draws the solar system (solarScene.ts);
    the focus bands give the miniature (tilt-shift) look.
    ========================================================================== */
-html.of-gateway-locked, html.of-gateway-locked body { overflow: hidden; overscroll-behavior: none; }
-html.of-gateway-locked body { padding-bottom: 0 !important; }
+/* the stage is fixed and the header is the only flowing content, so the
+   page has nothing to scroll; dialogs keep their own scroll locking */
+html.of-gateway-locked { overscroll-behavior: none; }
 
 .home-gateway.solar-gateway {
   position: fixed; inset-inline: 0;
