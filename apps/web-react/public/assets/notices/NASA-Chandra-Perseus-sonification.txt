@@ -1,0 +1,16 @@
+Black hole sound on the Openfund gateway (/:locale/home)
+
+Work: Sonification of the black hole at the centre of the Perseus galaxy
+cluster (X-ray data), from "A Universe of Sound".
+Credit: NASA/CXC/SAO/K. Arcand, SYSTEM Sounds (M. Russo, A. Santaguida).
+Source: https://chandra.si.edu/sound/perseus.html
+
+Terms: The Chandra X-ray Center states that Chandra content was produced
+for NASA at the Smithsonian Astrophysical Observatory, that no claim to
+copyright is asserted for it, and that it may be used in accordance with
+NASA guidelines with appropriate acknowledgement. Its availability does not
+imply endorsement by NASA, SAO or the Smithsonian; NASA, SAO and Smithsonian
+logos are not used. Policy: https://chandra.harvard.edu/photo/image_use.html
+
+Openfund changes: the audio track was extracted from the published file and
+made into a seamless loop; it plays only when the visitor turns it on.
