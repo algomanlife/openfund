@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Airdrop page.** `/:locale/airdrop` explains the Openfund airdrop for challenge buyers: cash or other prizes, never a token, separate from the Premium League. Five missions (buy and share, pass and share, payout and share, three purchases and a pass, ten payouts) pay $1,000 to $5,000 to the wallet that bought the challenge. An animated hero shows balloons dropping cash, coins and gift boxes; the claim form follows.
+- **Smart contracts page motion.** The hero shows a certificate seal minting records into a moving chain of blocks above a filling trade ledger; contract addresses appear once deployed.
 - **Openfund gateway redesigned.** `/:locale/home` is now one fixed screen that never scrolls on any display: an animated miniature solar system (original canvas drawing in the Openfund green palette, with a light-theme variant and a still frame under reduced motion) and two actions, Buy a challenge and Trading rules. The site menus are back on this page, it is named "Openfund", and the logo leads to it everywhere. The previous two product cards, technical-features strip and pointer-parallax background are retired.
 - **Navigation.** An "Openfund" entry leads the header menu, the site drawer and the terminal menus. The Challenges menu adds Airdrop (a reserved page, empty until the owner publishes its content); Resources › Security adds Smart contracts, a page listing the certificate and trade-ledger contracts with their Arbiscan links, source code and audit status ("not deployed yet" until the owner deploys them).
 - **Gateway actions keep their labels.** The two home buttons size to the text, so Persian labels are not clipped on a wide screen, and they wrap on a narrow phone.
