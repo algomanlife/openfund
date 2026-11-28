@@ -50,9 +50,18 @@ const apart = (a, b) => a.r <= b.x || b.r <= a.x || a.b <= b.y || b.b <= a.y
       for (const loc of ['fa', 'en']) {
         for (const theme of ['dark', 'light']) {
           const page = await browser.newPage({ viewport: { width: w, height: h }, colorScheme: theme }); page.on('pageerror', e => errors.push(String(e)))
-          await open(page, loc)
-          const m = await page.evaluate(measure)
+          await page.goto(`${BASE}/${loc}/rulebook`, { waitUntil: 'load' }); await page.waitForTimeout(1200)
+          const resources = page.locator('.openfund-header .resources-toggle[aria-controls="website-resources"]')
           const tag = `${loc} ${theme} ${w}`
+          /* English at 1280 no longer fits the new Openfund link, so the header
+             uses the menu and this desktop card is not on screen. */
+          if (!(await resources.isVisible())) {
+            ok(`${tag}: the header uses the menu when the labels do not fit`, await page.locator('.openfund-header.nav-overflow .menu').isVisible())
+            await page.close()
+            continue
+          }
+          await resources.click(); await page.waitForTimeout(450)
+          const m = await page.evaluate(measure)
           ok(`${tag}: the download button sits outside the window and its chart`, apart(m.button, m.window) && apart(m.button, m.chart), JSON.stringify({ b: m.button, w: m.window, c: m.chart }))
           ok(`${tag}: five badges in one row, none clipped, at least 44 px tall`, m.badges.length === 5 && new Set(m.badges.map(b => b.y)).size === 1 && m.badges.every(b => !b.clipped && b.h >= 44), JSON.stringify(m.badges))
           const [mac, win, linux, android, ios] = m.badges
