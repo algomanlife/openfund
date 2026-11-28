@@ -30,6 +30,12 @@ interface Planet {
 /* angles: 0 is "toward the right of the screen" in the disc plane; a positive
    angle moves toward the viewer. Planets start loosely lined up, like a
    portrait of the system, and drift apart with their own periods. */
+/* The sun sits on the screen edge, so half of every orbit is off screen.
+   Orbits are slow and only gently faster inside (ω ∝ r^-½ instead of
+   Kepler's r^-1.5) so the line-up holds for minutes and planets drift
+   through the visible half calmly. Radians per second at orbit radius 1. */
+const ORBIT_SPEED = .004
+
 const PLANETS: Planet[] = [
   { orbit: .19, size: .0075, phase: -.3, colors: ['#d9d2c6', '#9a9085', '#3b352f'] },
   { orbit: .245, size: .0115, phase: .2, colors: ['#fff0c8', '#e0b878', '#6d4f25'] },
@@ -243,10 +249,10 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
 
     /* the disc: rotate in its own plane, then project */
     g.save()
-    g.translate(sx, sy); g.rotate(phi); g.scale(1, k); g.rotate(simTime * .006)
+    g.translate(sx, sy); g.rotate(phi); g.scale(1, k); g.rotate(simTime * ORBIT_SPEED * .6)
     g.globalAlpha = .95
     g.drawImage(disc, -R, -R, R * 2, R * 2)
-    g.rotate(-simTime * .003) /* a second, slower pass: differential swirl */
+    g.rotate(-simTime * ORBIT_SPEED * .3) /* a second, slower pass: differential swirl */
     g.globalAlpha = .35
     g.drawImage(disc, -R * .62, -R * .62, R * 1.24, R * 1.24)
     g.restore()
@@ -254,7 +260,7 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
 
     /* rocks on the disc, with short shadows */
     for (const rock of rocks) {
-      const a = rock.a + simTime * .012 * rock.speed / Math.pow(rock.r, 1.5)
+      const a = rock.a + simTime * ORBIT_SPEED * .8 * rock.speed / Math.sqrt(rock.r)
       const p = project(R * rock.r, a)
       if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) continue
       const s = P * rock.size * (1 + p.depth * .25)
@@ -271,7 +277,7 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
 
     /* planets: back ones first, the sun, then the near ones */
     const placed = PLANETS.map(pl => {
-      const a = pl.phase + simTime * .016 / Math.pow(pl.orbit, 1.5)
+      const a = pl.phase + simTime * ORBIT_SPEED / Math.sqrt(pl.orbit)
       const p = project(R * pl.orbit, a)
       return { pl, ...p, s: P * pl.size * (1 + p.depth * .22) }
     }).sort((a, b) => a.depth - b.depth)
