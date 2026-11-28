@@ -99,7 +99,9 @@ function loadRest(oracleReply) {
   vm.runInNewContext(source, { window, fetch, AbortSignal, setTimeout, clearTimeout, console })
   return { G: window.OpenfundGains, fetched }
 }
-const venue = urls => urls.filter(u => u.startsWith('https://api.gains.trade'))
+/* Hostname equality: a prefix check would also match api.gains.trade.attacker.example. */
+const isVenueUrl = url => { try { return new URL(url).hostname === 'api.gains.trade' } catch { return false } }
+const venue = urls => urls.filter(isVenueUrl)
 const oracleCandles = { ok: true, status: 200, json: async () => ({ data: [{ time: 2, open: 2, high: 2, low: 2, close: 2 }] }) }
 
 test('a busy Open Oracle catalog falls back for that read only; candles stay on Open Oracle', async () => {
