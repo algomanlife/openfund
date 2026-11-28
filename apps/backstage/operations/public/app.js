@@ -126,6 +126,7 @@ const groups = [
   ['tournamentGroup', ['tournaments']],
   ['siteSearchGroup', ['siteSearch']],
   ['migrationGroup', ['migrations', 'migrationFirms']],
+  ['airdropGroup', ['airdrop']],
   ['paymentsGroup', ['paymentOverview', 'paymentSearch', 'payments', 'deposits', 'refunds', 'paymentSettings']],
   ['business', ['coupons', 'support', 'partners', 'commissions']],
   ['financeGroup', ['finance', 'expenses', 'reserves', 'obligations']],
@@ -596,6 +597,7 @@ async function directory(main, section, filter) {
   if (id && section === 'migrations') return migrationView(main, data)
   if (section === 'migrations') return migrationsView(main, data.rows ?? [])
   if (section === 'migrationFirms') return migrationFirmsView(main, data)
+  if (section === 'airdrop') return airdropView(main, data.rows ?? [])
   if (section === 'plans') return plansView(main, data.rows ?? [])
   if (section === 'entitlements') return entitlementsView(main, data.rows ?? [])
   if (section === 'coupons') main.append(el('div', { class: 'tools' }, button('createCoupon', () => { void couponWizard() }, 'primary')))
@@ -794,6 +796,20 @@ function tournamentView(main, data) {
 }
 
 /* ---------- Migration to Openfund: review queue, decision, pass, firms ---------- */
+function airdropView(main, rows) {
+  const reason = () => ['reason', areaInput({ required: '', minlength: '3' })]
+  const hash = () => ['txHash', textInput({ required: '', maxlength: '66', pattern: '0x[0-9a-fA-F]{64}', dir: 'ltr', spellcheck: 'false' }), undefined, 'paidTxHash']
+  main.append(el('p', { class: 'muted' }, t('airdropHint')),
+    el('div', { class: 'tools' }, ...['submitted', 'approved', 'rejected', 'paid'].map(s => link('airdrop', { status: s }, t(s)))),
+    table(null, [['wallet', r => wallet({ wallet_address: r.wallet })], ['mission', r => t('mission_' + r.mission)], ['amount', r => usd(r.rewardUsd)], ['status', status],
+      ['links', r => el('span', {}, ...(r.links ?? []).map((u, i) => el('a', { href: u, rel: 'noopener noreferrer', target: '_blank' }, `${t('openLink')} ${i + 1} `)))],
+      ['date', r => date(r.submittedAt)],
+      ['action', r => el('span', {},
+        r.status === 'submitted' ? button('approveAirdrop', () => operate('airdrop', r.id, 'approve', [reason()], 'approveAirdrop'), 'primary') : null,
+        ['submitted', 'approved'].includes(r.status) ? button('rejectAirdrop', () => operate('airdrop', r.id, 'reject', [reason()], 'rejectAirdrop'), 'danger') : null,
+        r.status === 'approved' ? button('paidAirdrop', () => operate('airdrop', r.id, 'paid', [hash(), reason()], 'paidAirdrop')) : null,
+        r.paidTxHash ? technical(r.paidTxHash.slice(0, 14) + '…') : null)]], rows))
+}
 function migrationsView(main, rows) {
   main.append(el('p', { class: 'muted' }, t('migrationHint')),
     table(null, [['identity', r => link('migrations', { id: r.id }, uid(r))], ['wallet', wallet], ['firm', r => r.firm], ['status', status],

@@ -409,6 +409,32 @@
       }
     },
     {
+      "path": "terms",
+      "view": "terms",
+      "icon": null,
+      "title": {
+        "fa": "شرایط استفاده",
+        "en": "Terms of Use",
+        "ar": "شروط الاستخدام",
+        "ru": "Условия использования",
+        "zh-CN": "使用条款"
+      },
+      "description": null
+    },
+    {
+      "path": "privacy",
+      "view": "privacy",
+      "icon": null,
+      "title": {
+        "fa": "سیاست حریم خصوصی",
+        "en": "Privacy Policy",
+        "ar": "سياسة الخصوصية",
+        "ru": "Политика конфиденциальности",
+        "zh-CN": "隐私政策"
+      },
+      "description": null
+    },
+    {
       "path": "migrate",
       "view": "migrate",
       "icon": "migrate",
@@ -668,8 +694,8 @@
         "fa": "تغییرات برای توسعه‌دهندگان"
       },
       "text": {
-        "en": "2026 11 28 — Airdrop page and contracts motion /:locale/airdrop now renders the airdrop programme (features/airdrop/: AirdropPage.tsx, BalloonDrop.tsx); /:locale/smart contracts gets the ChainMint.tsx hero. Both heroes are SVG with CSS motion that stops under reduced motion. npm prefix apps/web react run test:information also runs test/airdrop page.test.mjs. 2026 11 28 — Openfund gateway, navigation and new pages New public routes /:locale/airdrop (reserved, no content yet) and /:locale/smart contracts (contract addresses from GET /chain/status, Arbiscan and source links); both are in the site",
-        "fa": "۱۴۰۵/۰۹/۰۷ — صفحهٔ ایردراپ و موشن صفحهٔ قراردادها /:locale/airdrop اکنون برنامهٔ ایردراپ را نمایش می‌دهد (features/airdrop/: AirdropPage.tsx و BalloonDrop.tsx) و /:locale/smart contracts سرصفحهٔ ChainMint.tsx را گرفته است. هر دو SVG با موشن CSS هستند که در حالت کاهش حرکت متوقف می‌شود. npm prefix apps/web react run test:information آزمون test/airdrop page.test.mjs را هم اجرا می‌کند. ۱۴۰۵/۰۹/۰۷ — صفحهٔ اوپن‌فاند، ناوبری و صفحه‌های تازه مسیرهای عمومی تازه: /:locale/airdrop (رزروشده، فعلاً بدون محتوا) و /:locale/smart contracts (آدرس قراردادها از GET /chain/status، با پیوند Arbiscan و کد منبع). هر"
+        "en": "2026 11 28 — airdrop API (ADR 0067) GET /airdrop/missions (public), GET /airdrop/me and POST /airdrop/claims ({ mission, links }, signed in), admin GET /admin/airdrop/claims?status= and POST /admin/airdrop/claims/:id/decide (approve / reject / paid with txHash). New table airdrop claims in apps/backend/schema.sql; npm prefix apps/backend run test:airdrop. 2026 11 28 — Terms of Use, Privacy Policy and no KYC (ADR 0065, ADR 0066) New public routes /:locale/terms and /:locale/privacy (features/legal/), in the sitemap (apps/backend/seo.js), the editorial route registry and every footer. A publishe",
+        "fa": "۱۴۰۵/۰۹/۰۷ — رابط برنامه‌نویسی ایردراپ (ADR 0067) GET /airdrop/missions (عمومی)، GET /airdrop/me و POST /airdrop/claims ({ mission, links }، با ورود)، و برای مدیر GET /admin/airdrop/claims?status= و POST /admin/airdrop/claims/:id/decide (approve / reject / paid همراه txHash). جدول تازهٔ airdrop claims در apps/backend/schema.sql؛ npm prefix apps/backend run test:airdrop. ۱۴۰۵/۰۹/۰۷ — شرایط استفاده، سیاست حریم خصوصی و حذف KYC (ADR 0065 و ADR 0066) مسیرهای عمومی تازه /:locale/terms و /:locale/privacy (features/legal/)، در نقشهٔ سایت (apps/backend/seo.js)، فهرست مسیرهای محتوایی و فوتر همهٔ صفحه‌ها"
       }
     }
   ]

@@ -8,6 +8,13 @@ const BALLOONS: Balloon[] = [
   { x: 228, y: 64, r: 40, tone: 'gold', prize: 'gift', delay: 1.1 },
   { x: 340, y: 100, r: 32, tone: 'mint', prize: 'coin', delay: 2.2 },
   { x: 430, y: 72, r: 28, tone: 'coral', prize: 'cash', delay: 0.6 },
+  { x: 60, y: 150, r: 24, tone: 'gold', prize: 'coin', delay: 1.7 },
+  { x: 492, y: 160, r: 26, tone: 'green', prize: 'gift', delay: 2.8 },
+]
+/* confetti: [x, colour, delay s, duration s] */
+const CONFETTI: Array<[number, string, number, number]> = [
+  [40, '#82e7bd', 0, 5.2], [96, '#f2c14e', 1.3, 6], [150, '#f08a6c', 2.4, 5.6], [206, '#12965d', 0.7, 6.4], [262, '#f2c14e', 3.1, 5.4],
+  [318, '#82e7bd', 1.8, 6.2], [374, '#f08a6c', 0.4, 5.8], [430, '#12965d', 2.7, 6.6], [486, '#f2c14e', 1.1, 5.3], [520, '#82e7bd', 3.6, 6.1],
 ]
 
 function Prize({ kind }: { kind: Balloon['prize'] }) {
@@ -44,6 +51,9 @@ export default function BalloonDrop({ label }: { label: string }) {
       {[[70, 40], [500, 46], [30, 190], [512, 210], [286, 18], [168, 210]].map(([x, y], i) =>
         <path key={i} style={{ animationDelay: `${i * 0.7}s` }} d={`M${x} ${y - 6}v12M${x - 6} ${y}h12`} />)}
     </g>
+    <g className="bd-confetti" aria-hidden="true">{CONFETTI.map(([x, color, delay, dur], i) =>
+      <rect key={i} x={x} y={-12} width={i % 2 ? 6 : 9} height={i % 2 ? 10 : 5} rx="1.5" fill={color} style={{ animationDelay: `${delay}s`, animationDuration: `${dur}s` }} />)}</g>
+    <g className="bd-burst" aria-hidden="true"><circle cx="270" cy="392" r="34" /><circle cx="270" cy="392" r="60" /></g>
     {BALLOONS.map((b, i) => <g key={i} className="bd-flight" style={{ animationDelay: `${-b.delay}s` }}>
       <g className={`bd-balloon is-${b.tone}`}>
         <path className="bd-string" d={`M${b.x} ${b.y + b.r + 6}c-6 14 6 24 0 40`} />

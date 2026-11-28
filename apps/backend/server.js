@@ -42,6 +42,7 @@ import { fundedAgreementRoutes } from './funded-agreement.js'
 import { labRoutes } from './labs.js'
 import { verifyMessage as verifyMessageAction } from 'viem/actions'
 import { migrationRoutes, migrationAdminRoutes, purgeMigrationFiles } from './migration.js'
+import { airdropRoutes, airdropAdminRoutes } from './airdrop.js'
 import { createMigrationStorage } from './migration-storage.js'
 import { tournamentRoutes, tournamentAdminRoutes, ensureTournamentSeed, provisionAtStart, sampleEquity } from './tournament.js'
 import { createEmailSender } from './email.js'
@@ -936,6 +937,9 @@ app.use(fundedAgreementRoutes({ pool, requireAuth, limit, audit, verify: async (
 const migrationStorage = createMigrationStorage(process.env)
 app.use(migrationRoutes({ pool, requireAuth, limit, storage: migrationStorage, audit, raw: express.raw }))
 app.use('/admin/migration', migrationAdminRoutes({ pool, storage: migrationStorage, audit }))
+/* Openfund airdrop: certificate-based missions for challenge buyers, reviewed claims */
+app.use(airdropRoutes({ pool, requireAuth, limit, audit }))
+app.use('/admin/airdrop', airdropAdminRoutes({ pool, audit }))
 const migrationPurgeTimer = setInterval(() => { purgeMigrationFiles(pool, migrationStorage).catch(e => console.error('[migration] purge', e.message)) }, 3_600_000)
 migrationPurgeTimer.unref()
 /* Openfund Premium League (GLOBAL owns tournament accounts; IRAN answers 404) */

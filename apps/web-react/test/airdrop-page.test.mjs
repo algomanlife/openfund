@@ -6,9 +6,17 @@ import { readFileSync } from 'node:fs'
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const page = read('src/features/airdrop/AirdropPage.tsx')
 
-test('five missions pay $1,000 to $5,000; cash or prizes for challenge buyers, never a token', () => {
-  const amounts = [...page.matchAll(/usd: (\d+)/g)].map(m => Number(m[1]))
+const board = read('src/features/airdrop/Achievements.tsx')
+
+test('five achievements pay $1,000 to $5,000; cash or prizes for challenge buyers, never a token', () => {
+  const amounts = [...board.matchAll(/usd: (\d+)/g)].map(m => Number(m[1]))
   assert.deepEqual(amounts, [1000, 2000, 3000, 4000, 5000])
+  /* the same amounts as the backend that pays them */
+  const backend = read('../backend/airdrop.js')
+  assert.deepEqual([...backend.matchAll(/rewardUsd: (\d+)/g)].map(m => Number(m[1])), amounts)
+  assert.match(board, /apiFetch\('\/airdrop\/me'\)/)
+  assert.match(board, /apiFetch\('\/airdrop\/claims', \{ method: 'POST'/)
+  for (const id of ['buy-share', 'pass-share', 'payout-share', 'three-buys-pass', 'ten-payouts']) assert.ok(board.includes(`'${id}': 'M`), `badge glyph for ${id}`)
   assert.match(page, /never a token/)
   assert.match(page, /separate from the Openfund Premium League/)
   assert.match(page, /Only the connected wallet that bought the challenge can claim/)

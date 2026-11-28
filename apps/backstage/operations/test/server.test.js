@@ -307,6 +307,8 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
     [`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: 50000, reason: 'three payouts verified' }, `/admin/migration/requests/${migration}/decide`],
     [`/api/migrations/${migration}`, { action: 'reject', reason: 'statements do not match the firm' }, `/admin/migration/requests/${migration}/decide`],
     [`/api/migrationPasses/${migrationPass}`, { action: 'revoke', reason: 'issued in error' }, `/admin/migration/passes/${migrationPass}/revoke`],
+    [`/api/airdrop/${migration}`, { action: 'approve', reason: 'two public posts verified' }, `/admin/airdrop/claims/${migration}/decide`],
+    [`/api/airdrop/${migration}`, { action: 'paid', reason: 'sent from the Safe', txHash: '0x' + 'a'.repeat(64) }, `/admin/airdrop/claims/${migration}/decide`],
     ['/api/migrationFirms/new', { action: 'save', name: 'Example Firm', reason: 'owner request' }, '/admin/migration/firms'],
     ['/api/migrationFirms/new', { action: 'settings', minPayouts: 3, windowMonths: 12, reason: 'policy review' }, '/admin/migration/settings'],
   ]) {
@@ -316,6 +318,7 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
   }
   assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/decide')).body), { decision: 'approve', reason: 'three payouts verified', approvedMaxSizeUsd: 50000 })
   assert.equal((await call(`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: -1, reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/airdrop/${migration}`, { action: 'paid', reason: 'sent', password }, headers)).status, 400, 'paid needs the on-chain hash')
   assert.equal((await call(`/api/migrations/${migration}`, { action: 'autoApprove', reason: 'x', password }, headers)).status, 400, 'no other actions exist')
 })
 

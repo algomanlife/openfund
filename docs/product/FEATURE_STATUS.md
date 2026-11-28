@@ -160,7 +160,7 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
 | Openfund gateway (one-screen animated solar system, two actions) | In Progress (implemented; review and release pending) | `features/home` (`solarScene.ts`); fixed between header and price strip at every viewport; light theme and reduced motion covered by `e2e/test-landing-motion.cjs` |
 | Market discovery | Completed | `features/markets`; Open Oracle with venue fallback, including an empty catalog; instrument counts vary |
-| Airdrop page | In Progress (page and missions published; claim form not built) | `/:locale/airdrop`: animated balloon hero, five missions ($1,000 to $5,000) for wallets that bought a challenge, cash or prizes, never a token |
+| Airdrop | Completed (local verification; not deployed) | `/:locale/airdrop`: five achievements with badges from valid certificates, claims with public post links, Backstage review and payment record ([ADR 0067](../decisions/0067-airdrop-achievements.md)); cash or prizes, never a token |
 | Smart contracts page | In Progress (implemented; contracts not deployed) | `/:locale/smart-contracts`; addresses from `GET /chain/status` |
 | Terms of Use and Privacy Policy | Completed (local verification; not deployed) | `/:locale/terms`, `/:locale/privacy`, five locales, footer links, Directus override ([ADR 0065](../decisions/0065-no-kyc-terms-and-privacy.md)) |
 | No KYC | Completed (owner decision 2026-11-28) | Wallet owner is the account owner; migration review has no identity step ([ADR 0065](../decisions/0065-no-kyc-terms-and-privacy.md)) |

@@ -687,6 +687,13 @@ export const labels = {
   media_folder_missing: ["The media folder is missing; run the CMS bootstrap", "پوشهٔ رسانه وجود ندارد؛ راه‌اندازی CMS را اجرا کنید"],
   /* Migration to Openfund (2026-11-23) */
   migrationGroup: ['Migration', 'مهاجرت'],
+  airdropGroup: ['Airdrop', 'ایردراپ'], airdrop: ['Airdrop claims', 'درخواست‌های ایردراپ'],
+  airdropHint: ['Check that every link is public and shows certificates of this wallet. Approve, then record the payment with its on-chain transaction to the same wallet. Cash or prizes, never a token; no KYC.', 'بررسی کنید هر لینک عمومی است و گواهی‌های همین کیف پول را نشان می‌دهد. تأیید کنید، سپس پرداخت را با تراکنش آن‌چین به همان کیف پول ثبت کنید. پول نقد یا جایزه، هرگز توکن؛ بدون احراز هویت.'],
+  approveAirdrop: ['Approve', 'تأیید'], rejectAirdrop: ['Reject', 'رد'], paidAirdrop: ['Record payment', 'ثبت پرداخت'], paidTxHash: ['Payment transaction', 'تراکنش پرداخت'],
+  mission: ['Mission', 'مأموریت'], links: ['Posts', 'پست‌ها'],
+  'mission_buy-share': ['Buy and share', 'بخر و به اشتراک بگذار'], 'mission_pass-share': ['Pass and share', 'پاس کن و به اشتراک بگذار'],
+  'mission_payout-share': ['Get paid and share', 'برداشت بزن و به اشتراک بگذار'], 'mission_three-buys-pass': ['Three purchases and a pass', 'سه خرید و یک قبولی'],
+  'mission_ten-payouts': ['Ten payouts', 'ده برداشت'],
   migrations: ['Migration requests', 'درخواست‌های مهاجرت'],
   migrationFirms: ['Firms and rules', 'شرکت‌ها و قوانین'],
   migrationHint: ['Requests waiting for review (filter by status). Open one to see the checklist, the evidence and the audit trail.', 'درخواست‌های منتظر بازبینی (فیلتر بر اساس وضعیت). برای دیدن فهرست بررسی، مدارک و سابقه، یکی را باز کنید.'],

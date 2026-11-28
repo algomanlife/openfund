@@ -44,6 +44,12 @@
    "protected": true,
    "cms": "none"
   },
+  "airdrop_claims": {
+   "domain": "application",
+   "protected": true,
+   "cms": "none",
+   "reason": "Airdrop claims and payouts: backend admin API and Backstage only; no Directus access."
+  },
   "ambassador_attributions": {
    "domain": "rewards",
    "protected": true,

@@ -4593,5 +4593,18 @@
   "You may not exploit price-feed errors or latency, coordinate or copy trades between accounts to get around the rules, use several wallets to get around limits, run automation that abuses the platform, attack or overload the service, or use Openfund for anything unlawful. Report security issues through the bug bounty instead of exploiting them.": "لا يجوز لك استغلال أخطاء موجز الأسعار أو تأخره، أو تنسيق الصفقات أو نسخها بين الحسابات للالتفاف على القواعد، أو استخدام عدة محافظ للالتفاف على الحدود، أو تشغيل أتمتة تسيء استخدام المنصة، أو مهاجمة الخدمة أو إثقالها، أو استخدام Openfund لأي غرض غير قانوني. أبلِغ عن الثغرات الأمنية عبر برنامج مكافآت اكتشاف الثغرات بدلًا من استغلالها.",
   "You must be at least 18 years old and allowed by the laws of the place where you live to use Openfund. Checking those laws is your responsibility. Openfund may refuse or end the service where it is prohibited.": "يجب أن يكون عمرك 18 عامًا على الأقل وأن تسمح لك قوانين مكان إقامتك باستخدام Openfund. التحقق من تلك القوانين مسؤوليتك. ويجوز لـ Openfund رفض الخدمة أو إنهاؤها حيث تكون محظورة.",
   "Data is processed in the countries where Openfund’s servers run, which may differ from your own. Openfund applies this policy wherever the data is.": "تُعالج البيانات في الدول التي تعمل فيها خوادم Openfund، وقد تختلف عن بلدك. وتطبّق Openfund هذه السياسة أينما كانت البيانات.",
-  "Service providers that run Openfund’s servers, the email delivery provider for messages you asked for, the payment widget and blockchain networks used for a payment, and authorities where the law requires it. Each provider receives only what its task needs.": "مزوّدو الاستضافة الذين يشغّلون خوادم Openfund، ومزوّد إرسال البريد الإلكتروني للرسائل التي طلبتها، وأداة الدفع وشبكات البلوك تشين المستخدمة في الدفع، والجهات الرسمية حيث يقتضي القانون. ويتلقى كل مزوّد ما تحتاجه مهمته فقط."
+  "Service providers that run Openfund’s servers, the email delivery provider for messages you asked for, the payment widget and blockchain networks used for a payment, and authorities where the law requires it. Each provider receives only what its task needs.": "مزوّدو الاستضافة الذين يشغّلون خوادم Openfund، ومزوّد إرسال البريد الإلكتروني للرسائل التي طلبتها، وأداة الدفع وشبكات البلوك تشين المستخدمة في الدفع، والجهات الرسمية حيث يقتضي القانون. ويتلقى كل مزوّد ما تحتاجه مهمته فقط.",
+  "Connect your wallet to see your achievements": "اربط محفظتك لرؤية إنجازاتك",
+  "Each mission is an achievement. Its badge lights up as your wallet earns the certificates; a completed badge is claimed with the links of your public posts. Each pays once per wallet.": "كل مهمة إنجاز. تضيء شارته كلما حصلت محفظتك على الشهادات، ويُطالب بالشارة المكتملة بروابط منشوراتك العلنية. يُدفع كل منها مرة واحدة لكل محفظة.",
+  "Links to your public posts (one per line, up to five)": "روابط منشوراتك العلنية (رابط في كل سطر، حتى خمسة)",
+  "Locked": "مقفل",
+  "Not accepted: claim again": "لم يُقبل: قدّم المطالبة مجددًا",
+  "Pass certificates": "شهادات الاجتياز",
+  "Payout certificates": "شهادات السحب",
+  "Purchase certificates": "شهادات الشراء",
+  "Ready to claim": "جاهز للمطالبة",
+  "See your achievements and claim": "شاهد إنجازاتك واطلب مكافأتك",
+  "Send claim": "إرسال المطالبة",
+  "The claim could not be sent. Check the links and try again.": "تعذّر إرسال المطالبة. تحقق من الروابط وحاول مجددًا.",
+  "Your wallet has no challenge purchase yet. The airdrop is for wallets that bought a challenge.": "لم تشترِ محفظتك أي تحدٍّ بعد. الإيردروب للمحافظ التي اشترت تحديًا."
 }

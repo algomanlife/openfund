@@ -73,6 +73,8 @@ const routes = {
   /* Migration to Openfund (migration.js, ADR 0051) */
   migrations: ['/admin/migration/requests', 'requests', ['status']],
   migrationFirms: ['/admin/migration/firms'],
+  /* Openfund airdrop claims (apps/backend/airdrop.js) */
+  airdrop: ['/admin/airdrop/claims', 'claims', ['status']],
   /* site search analytics (site-search.js, ADR 0052); record 'export.csv' is the CSV */
   siteSearch: ['/admin/search/analytics', null, ['from', 'to', 'locale', 'q']],
 }
@@ -311,6 +313,20 @@ const operations = {
         Object.assign(out, { approvedMaxSizeUsd: size })
       }
       return [`/admin/migration/requests/${record}/decide`, out]
+    },
+  },
+  /* airdrop review: approve or reject with a reason; paid needs the on-chain
+     transaction of the payment to the claim's wallet */
+  airdrop: {
+    identifier: uuid,
+    actions: ['approve', 'reject', 'paid'],
+    request: (record, body) => {
+      const out = { decision: body.action, reason: textOf(body.reason, 1000) }
+      if (body.action === 'paid') {
+        if (!/^0x[0-9a-fA-F]{64}$/.test(String(body.txHash || ''))) throw fail(400, 'invalid_tx_hash')
+        out.txHash = body.txHash
+      }
+      return [`/admin/airdrop/claims/${record}/decide`, out]
     },
   },
   migrationPasses: {
