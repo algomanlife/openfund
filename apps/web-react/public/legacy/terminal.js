@@ -1286,21 +1286,17 @@ function renderSizingModes(){
   }
   $('qty-unit').textContent = meta()?.base || '';
 }
-/* Lotage texts. Gains has no lot concept: the definition shown is the
-   Openfund convention for the asset class (legacy/position-sizing.js). */
+/* Lotage texts. The lot is Openfund's own definition per market
+   (legacy/position-sizing.js = apps/backend/contract-specs.js, ADR 0064). */
 function lotUnavailableText(spec){
   const r = spec && spec.reason;
-  if (r === 'no_lot_standard_crypto') return L('برای رمزارزها لاتیج استاندارد وجود ندارد؛ اندازه را با وثیقه یا اندازهٔ نماد وارد کنید.', 'Crypto has no standard lot size — enter the size as collateral or symbol size.');
-  if (r === 'no_lot_standard_stocks') return L('برای سهام لاتیج استاندارد واحدی وجود ندارد؛ اندازه را با وثیقه یا اندازهٔ نماد وارد کنید.', 'Stocks have no single standard lot size — enter the size as collateral or symbol size.');
-  if (r === 'no_lot_standard_indices') return L('اندازهٔ قرارداد شاخص‌ها در بازارها متفاوت است؛ لاتیج برای این بازار تعریف نشده است.', 'Index contract sizes differ between venues — no lotage is defined for this market.');
-  if (r === 'non_usd_quote') return L('لاتیج فقط برای جفت‌ارزهای با ارز مظنهٔ دلار تعریف شده است.', 'Lotage is defined only for USD-quoted markets.');
-  if (r === 'no_lot_standard_commodity') return L('برای این کالا اندازهٔ قرارداد استاندارد تعریف نشده است.', 'No standard contract size is defined for this commodity.');
-  return L('برای این بازار مشخصات قرارداد تأییدشده‌ای برای لاتیج وجود ندارد.', 'No approved contract specification defines a lot for this market.');
+  if (r === 'non_usd_quote') return L('لاتیج فقط برای بازارهای با ارز مظنهٔ دلار تعریف شده است.', 'Lotage is defined only for USD-quoted markets.');
+  return L('برای این بازار لاتیج تعریف نشده است؛ اندازه را با کولترال یا اندازهٔ نماد وارد کنید.', 'No lot is defined for this market; enter the size as collateral or symbol size.');
 }
 function lotDefinitionText(spec){
   const unit = spec.baseUnit || meta()?.base || '';
   const size = Number(spec.contractSize).toLocaleString('en-US');
-  return `${L('هر ۱ لات =', '1 lot =')} ${size} ${unit} (${L('قرارداد اوپن‌فاند؛ Gains لات ندارد', 'Openfund convention (Gains itself has no lots)')}). ${L('حداقل و گام', 'minimum and step')}: ${spec.lotStep} ${L('لات', 'lot')}.`;
+  return `${L('هر ۱ لات =', '1 lot =')} ${size} ${unit} (${L('تعریف اوپن‌فاند', 'Openfund definition')}). ${L('حداقل و گام', 'minimum and step')}: ${spec.lotStep} ${L('لات', 'lot')}.`;
 }
 /* the same definition with the figures isolated for right-to-left text */
 function lotDefinitionHtml(spec){
@@ -1308,11 +1304,11 @@ function lotDefinitionHtml(spec){
   const size = Number(spec.contractSize).toLocaleString('en-US');
   const amount = `<bdi dir="ltr">${esc(size)} ${esc(unit)}</bdi>`, step = `<bdi dir="ltr">${esc(spec.lotStep)}</bdi>`;
   /* fixed phrases only, so L() can translate them for ar/ru/zh-CN */
-  return `${esc(L('هر ۱ لات =', '1 lot ='))} ${amount}<br>${esc(L('قرارداد اوپن‌فاند؛ Gains لات ندارد', 'Openfund convention (Gains itself has no lots)'))} · ${esc(L('حداقل و گام', 'minimum and step'))}: ${step} ${esc(L('لات', 'lot'))}`;
+  return `${esc(L('هر ۱ لات =', '1 lot ='))} ${amount}<br>${esc(L('تعریف اوپن‌فاند', 'Openfund definition'))} · ${esc(L('حداقل و گام', 'minimum and step'))}: ${step} ${esc(L('لات', 'lot'))}`;
 }
-/* lots mode: lots → quantity (lots × contract size) → collateral, the same
-   canonical path as the quantity mode; the engine still derives the final
-   quantity from collateral × leverage / entry and the market precision */
+/* lots mode: lots → quantity (lots × contract size). The order is sent as
+   lots and the engine fills that exact quantity; the collateral shown is the
+   estimate at the current price (ADR 0064) */
 function syncCollateralFromLots(){
   const spec = currentLotSpec();
   const lots = exactInput('of-lots');
@@ -1327,7 +1323,8 @@ function syncCollateralFromLots(){
   $('of-collateral').value = PSZ().collateralFromQuantity({ quantity: r.quantity, leverage: S.leverage, price }) || '';
   return null;
 }
-/* quantity mode: collateral follows the requested quantity (rounded UP to cents) */
+/* quantity mode: the engine fills the exact quantity; the collateral shown
+   is the estimate at the current price (rounded UP to cents) */
 function syncCollateralFromQuantity(){
   if (SZ.mode === 'lots' && PSZ()) return syncCollateralFromLots();
   if (SZ.mode !== 'quantity' || !PSZ()) return null;
@@ -1363,8 +1360,13 @@ $('of-qty')?.addEventListener('input', computeForm);
 $('of-lots')?.addEventListener('input', computeForm);
 
 function buildRequest(){
+  /* Prop: quantity and lots orders are sent as such and filled exactly */
+  const sizeMode = isPropTerminal() && PSZ() ? SZ.mode : 'collateral';
   return {
     market: S.marketId, side: S.side, type: S.otype, leverage: S.leverage,
+    sizeMode,
+    quantity: sizeMode === 'quantity' ? exactInput('of-qty') || null : null,
+    lots: sizeMode === 'lots' ? exactInput('of-lots') || null : null,
     collateral: normNum($('of-collateral').value) || 0,
     price: normNum($('of-price').value) || 0,
     sl: normNum($('of-sl').value) || null, tp: normNum($('of-tp').value) || null
@@ -1373,10 +1375,11 @@ function buildRequest(){
 
 $('submit-order').addEventListener('click', async () => {
   if (marketClosed()){ toast(t('mkt.closed'), 'neg'); return; }
+  /* quantity and lots first refresh the collateral estimate the request carries */
+  const sizingErr = syncCollateralFromQuantity();
   const req = buildRequest();
   const invalid = ['of-collateral', 'of-price', 'of-sl', 'of-tp'].some(id => !$(id).disabled && $(id).value.trim() && !Number.isFinite(normNum($(id).value)));
   const invalidProtection = ['of-sl', 'of-tp'].some(id => $(id).value.trim() && normNum($(id).value) <= 0);
-  const sizingErr = syncCollateralFromQuantity();
   const errs = sizingErr ? [sizingErr] : invalid || invalidProtection ? [L('مقدار عددی نامعتبر است.', 'Enter a valid number.')] : tp.validate(req);
   if (errs.length){ $('of-err').textContent = errs[0]; $('of-err').hidden = false; return; }
   const m = meta();

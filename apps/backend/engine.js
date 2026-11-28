@@ -23,6 +23,7 @@ import crypto from 'node:crypto'
 import { AsyncLocalStorage } from 'node:async_hooks'
 import {instrumentSpec} from './instruments.js'
 import { propMaxLeverage, planLeverageCap } from './prop-leverage.js'
+import { contractSpec, quantityFromLots, CONTRACT_SPEC_MODEL } from './contract-specs.js'
 import Decimal from 'decimal.js'
 
 import { D, SIM, feePct, withSpread, pnl, freshMark, positionMetrics, accountMetrics } from './trading-math.js'
@@ -33,7 +34,33 @@ export { SIM, feePct, spreadPct, withSpread } from './trading-math.js'
 
 /* ---------- per-account async mutex (safe concurrency) ---------- */
 const priceString = v => D(v).toFixed(Math.max(2,D(v).decimalPlaces()))
-const intent = r => JSON.stringify([r.market,r.side,r.order_type || 'market',String(r.margin),Number(r.leverage),r.target_price == null ? null : String(r.target_price),r.sl == null ? null : String(r.sl),r.tp == null ? null : String(r.tp)])
+/* an order states its size as collateral (margin), a base-asset quantity or
+   lots (ADR 0064); quantity and lots are filled exactly */
+const sizeMode = r => r.size_mode || (r.lots != null ? 'lots' : r.quantity != null ? 'quantity' : 'collateral')
+const sizeIntent = r => { const m = sizeMode(r); return m === 'collateral' ? [String(r.margin)] : [m, String(m === 'lots' ? r.lots : r.quantity)] }
+const intent = r => JSON.stringify([r.market,r.side,r.order_type || 'market',...sizeIntent(r),Number(r.leverage),r.target_price == null ? null : String(r.target_price),r.sl == null ? null : String(r.sl),r.tp == null ? null : String(r.tp)])
+const sizeError = reason => Object.assign(new Error(reason), { status: 400 })
+/** the requested base-asset quantity of a quantity or lots order (null for collateral orders) */
+function requestedSize(req, meta, market, precision) {
+  const mode = sizeMode(req)
+  if (mode === 'collateral') return null
+  if (mode !== 'quantity' && mode !== 'lots') throw sizeError('invalid_size_mode')
+  let quantity, lots = null, spec = null
+  if (mode === 'lots') {
+    spec = contractSpec(meta, market)
+    if (!spec.available) throw sizeError('lots_unavailable')
+    const r = quantityFromLots(String(req.lots ?? ''), spec)
+    if (!r.ok) throw sizeError(r.reason)
+    quantity = r.quantity; lots = String(req.lots)
+  } else quantity = String(req.quantity ?? '')
+  let q
+  try { q = D(quantity) } catch { throw sizeError('invalid_numeric_input') }
+  if (!q.isFinite() || q.lte(0) || q.gte('100000000000000')) throw sizeError('invalid_order_size')
+  if (q.decimalPlaces() > precision) throw sizeError('quantity_precision')
+  return { mode, quantity: q.toString(), lots, contractSize: spec?.contractSize ?? null, unit: spec?.unit ?? null, model: CONTRACT_SPEC_MODEL }
+}
+/** collateral that carries `quantity` at `price` and `leverage`, rounded up so the position is never under-margined */
+const marginFor = (quantity, price, leverage) => D(quantity).times(price).div(leverage).toDecimalPlaces(10, Decimal.ROUND_UP)
 const duplicate = (row, req, position) => {
   if (intent(row.request_meta.requested) !== intent(req)) throw Object.assign(new Error('idempotency_conflict'), {status:409})
   return {ok: row.status !== 'rejected',reason:row.reject_reason,duplicate:true,pending:row.status === 'pending',order:row,position}
@@ -668,9 +695,9 @@ export class Engine {
     const t = this.md.tradeable(req.market)
     if (!t.ok) fail(t.reason)
     let margin, leverage, target, sl, tp
-    try { margin=D(req.margin); leverage=D(req.leverage); target=req.target_price == null ? null : D(req.target_price); sl=req.sl == null ? null : D(req.sl); tp=req.tp == null ? null : D(req.tp) } catch { fail('invalid_numeric_input') }
+    try { margin=sizeMode(req) === 'collateral' ? D(req.margin) : null; leverage=D(req.leverage); target=req.target_price == null ? null : D(req.target_price); sl=req.sl == null ? null : D(req.sl); tp=req.tp == null ? null : D(req.tp) } catch { fail('invalid_numeric_input') }
     if (!['long','short'].includes(req.side) || !['market','limit','stop'].includes(req.order_type || 'market')) fail('invalid_order')
-    if (!margin.isFinite() || margin.lt(SIM.MIN_MARGIN) || margin.gt('100000000')) fail('invalid_order_size')
+    if (margin && (!margin.isFinite() || margin.lt(SIM.MIN_MARGIN) || margin.gt('100000000'))) fail('invalid_order_size')
     /* strictest of: market limit, Prop leverage policy, challenge plan limit */
     const maxLev = propMaxLeverage(t.meta, req.market, a.type === 'challenge' ? (a.risk_policy?.plan_leverage ?? 100) : null)
     if (!leverage.isInteger() || leverage.lt(1) || leverage.gt(maxLev)) fail('leverage_exceeded')
@@ -681,13 +708,15 @@ export class Engine {
     if (sl && (req.side === 'long' ? sl.gte(entry) : sl.lte(entry))) fail('invalid_sl')
     if (tp && (req.side === 'long' ? tp.lte(entry) : tp.gte(entry))) fail('invalid_tp')
     const spec=instrumentSpec(t.meta,req.market)
+    const size=requestedSize(req,t.meta,req.market,spec.quantityPrecision)
+    if (size) { margin=marginFor(size.quantity,entry,leverage); if (margin.lt(SIM.MIN_MARGIN)) fail('instrument_minimum_size'); if (margin.gt('100000000')) fail('invalid_order_size') }
     if(margin.lt(spec.minMargin) || margin.times(leverage).lt(spec.minNotional))fail('instrument_minimum_size')
     const notional=margin.times(leverage), fee=notional.times(feePct(t.meta,req.market)).div(100)
     if (a.free_margin === null || margin.plus(fee).gt(a.free_margin) || margin.plus(fee).gt(D(a.balance).minus(a.used_margin))) fail('insufficient_margin')
-    const quantity=notional.div(entry).toDecimalPlaces(spec.quantityPrecision,Decimal.ROUND_DOWN)
+    const quantity=size ? D(size.quantity) : notional.div(entry).toDecimalPlaces(spec.quantityPrecision,Decimal.ROUND_DOWN)
     if(quantity.lte(0))fail('instrument_minimum_size')
     const metrics=positionMetrics({market:req.market,side:req.side,margin:margin.toString(),leverage:leverage.toString(),quantity:quantity.toString(),entry_price:entry.toString()},this.md)
-    return {estimate:true,as_of:Date.now(),currency:a.currency,entry_price:entry.toString(),quantity:quantity.toString(),notional:notional.toString(),required_margin:margin.toString(),open_fee:fee.toString(),estimated_close_fee:fee.toString(),available_margin:a.free_margin,liquidation_price:metrics.liquidation,sl:sl?.toString() ?? null,tp:tp?.toString() ?? null,model:'Openfund linear USD simulation v1; no funding or market impact'}
+    return {estimate:true,as_of:Date.now(),currency:a.currency,entry_price:entry.toString(),quantity:quantity.toString(),notional:notional.toString(),required_margin:margin.toString(),open_fee:fee.toString(),estimated_close_fee:fee.toString(),available_margin:a.free_margin,liquidation_price:metrics.liquidation,sl:sl?.toString() ?? null,tp:tp?.toString() ?? null,size_mode:size?.mode ?? 'collateral',lots:size?.lots ?? null,contract_size:size?.contractSize ?? null,model:'Openfund linear USD simulation v1; no funding or market impact'}
   }
 
   async submitOrder(userId, req, idempotencyKey, accountId = null) {
@@ -750,7 +779,7 @@ export class Engine {
         market: String(req.market || ""),
         side: req.side,
         order_type: req.order_type || "market",
-        margin: D(req.margin || 0),
+        margin: sizeMode(req) === 'collateral' ? D(req.margin || 0) : D(0),
         leverage: Number(req.leverage),
         target_price: req.target_price != null ? D(req.target_price) : null,
         sl_price: req.sl != null ? D(req.sl) : null,
@@ -765,7 +794,7 @@ export class Engine {
     )
       throw Object.assign(new Error("invalid_order"), { status: 400 });
     if (
-      ![order.margin, order.target_price, order.sl_price, order.tp_price].every(
+      ![sizeMode(req) === 'collateral' ? order.margin : null, order.target_price, order.sl_price, order.tp_price].every(
         (v) =>
           v === null ||
           (v.isFinite() && v.gte("0.0000000001") && v.lte("1000000000000")),
@@ -817,6 +846,14 @@ export class Engine {
 
     const t = this.md.tradeable(order.market);
     if (!t.ok) return reject(t.reason);
+    /* quantity and lots orders: the collateral follows from the size at the
+       expected entry (market: mark with spread; pending: the target price) */
+    const size = requestedSize(req, t.meta, order.market, instrumentSpec(t.meta, order.market).quantityPrecision);
+    if (size) {
+      if (order.leverage < 1) return reject("leverage_exceeded");
+      if (order.order_type !== "market" && !order.target_price) return reject("target_price_required");
+      order.margin = marginFor(size.quantity, order.order_type === "market" ? withSpread(t.mark, order.side, "open", t.meta, order.market) : order.target_price, order.leverage);
+    }
     if (challenge && rules && Number(rules.rulesVersion) >= 3) {
       const blocked = await this.conduct.preTradeBlock(this.db, { rules, market: order.market })
       if (blocked) return reject(blocked);
@@ -947,7 +984,7 @@ export class Engine {
             order.target_price?.toFixed(10) || null,
             order.sl_price?.toFixed(10) || null,
             order.tp_price?.toFixed(10) || null,
-            JSON.stringify({ requested: req, mark: t.mark }),
+            JSON.stringify({ requested: req, mark: t.mark, size }),
           ],
         );
         const orow = orows[0];
@@ -1028,10 +1065,13 @@ export class Engine {
     /* market orders pay the fixed spread on top of the mark; limit/stop
        orders fill AT the trader's chosen target price (no extra spread) */
     const execPrice = applySpread ? withSpread(price, orow.side, 'open', meta, orow.market) : D(price)
-    const margin = D(orow.margin), lev = Number(orow.leverage)
+    const lev = Number(orow.leverage)
+    /* a quantity or lots order fills its exact size; the collateral follows the fill price */
+    const size = orow.request_meta?.size?.quantity ? orow.request_meta.size : null
+    const margin = size ? marginFor(size.quantity, execPrice, lev) : D(orow.margin)
     const notional = margin.times(lev)
     const spec=instrumentSpec(meta,orow.market)
-    const qty = notional.div(execPrice).toDecimalPlaces(spec.quantityPrecision,Decimal.ROUND_DOWN)
+    const qty = size ? D(size.quantity) : notional.div(execPrice).toDecimalPlaces(spec.quantityPrecision,Decimal.ROUND_DOWN)
     if (qty.lte(0) || qty.gte('100000000000000')) throw Object.assign(new Error('position_size_out_of_range'), {status:400})
     const fee = notional.times(D(feePct(meta, orow.market))).div(100)
     price = execPrice.toString()
@@ -1050,8 +1090,8 @@ export class Engine {
        margin.toFixed(10), lev, sl, tp, fee.toFixed(10)])
     const pos = prows[0]
 
-    await c.query('UPDATE trading_orders SET status=$1, filled_price=$2, position_id=$3, updated_at=now() WHERE id=$4',
-      ['filled', D(price).toFixed(10), pos.id, orow.id])
+    await c.query('UPDATE trading_orders SET status=$1, filled_price=$2, position_id=$3, margin=$5, updated_at=now() WHERE id=$4',
+      ['filled', D(price).toFixed(10), pos.id, orow.id, margin.toFixed(10)])
     await c.query(
       `INSERT INTO trading_ledger (account_id, user_id, event, position_id, amount, balance_after, meta)
        VALUES ($1,$2,'open_fee',$3,$4,$5,$6)`,
@@ -1323,7 +1363,8 @@ export class Engine {
       const open = (await c.query("SELECT * FROM trading_positions WHERE account_id=$1 AND status='open'", [acc.id])).rows
       const view = accountMetrics(acc, open, this.md)
       const free = Decimal.min(D(acc.balance).minus(acc.used_margin), D(view.free_margin ?? 0))
-      const margin = D(cur.margin)
+      const sized = cur.request_meta?.size?.quantity ? cur.request_meta.size : null
+      const margin = sized ? marginFor(sized.quantity, cur.target_price, Number(cur.leverage)) : D(cur.margin)
       const fee = margin.times(cur.leverage).times(feePct(this.md.marketMeta(cur.market), cur.market)).div(100)
       if (margin.plus(fee).gt(free)) {
         await c.query(`UPDATE trading_orders SET status='rejected', reject_reason='insufficient_margin', updated_at=now() WHERE id=$1`, [cur.id])

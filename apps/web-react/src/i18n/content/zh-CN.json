@@ -4483,5 +4483,12 @@
   "Source code": "源代码",
   "Test network: its ETH has no value.": "测试网络：其 ETH 没有价值。",
   "The status could not be loaded.": "无法加载状态。",
-  "Trade ledger": "交易账本"
+  "Trade ledger": "交易账本",
+  "Enter a valid lotage.": "请输入有效的手数。",
+  "Invalid order size.": "订单数量无效。",
+  "Lotage below the minimum.": "手数低于最小值。",
+  "Lotage must be a multiple of the lot step.": "手数必须是手数步长的整数倍。",
+  "No lot is defined for this market.": "此市场未定义手数。",
+  "The order is below this market's minimum size.": "订单低于该市场的最小数量。",
+  "The quantity has more decimals than this market allows.": "数量的小数位数超过了该市场允许的范围。"
 }

@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4995,
-    "mappedCalls": 2375,
+    "uniqueRecords": 5002,
+    "mappedCalls": 2382,
     "exceptions": 64,
     "validationFindings": 0,
     "reviewedExclusions": 51
@@ -1307,7 +1307,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 161,
+          "line": 175,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -2556,7 +2556,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 260,
+          "line": 297,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -6760,7 +6760,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 61,
+          "line": 75,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -7612,7 +7612,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 385,
+          "line": 389,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -10275,6 +10275,26 @@
       ]
     },
     {
+      "key": "react.1672d2fbbd694b61",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "لاتیج باید مضربی از گام لات باشد.",
+      "en": "Lotage must be a multiple of the lot step.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 157,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.1675f45e2cc533ee",
       "namespace": "react",
       "area": "Website",
@@ -10522,7 +10542,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 117,
+          "line": 154,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -11431,7 +11451,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 377,
+          "line": 381,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -12366,7 +12386,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 399,
+          "line": 403,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -12914,7 +12934,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 394,
+          "line": 398,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -13743,7 +13763,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 162,
+          "line": 176,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -15598,7 +15618,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 259,
+          "line": 296,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -16238,7 +16258,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 144,
+          "line": 151,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16282,6 +16302,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2522c1e7db2a1e1d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "اندازهٔ سفارش نامعتبر است.",
+      "en": "Invalid order size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 160,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -17167,7 +17207,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 133,
+          "line": 170,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -21033,7 +21073,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 291,
+          "line": 301,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -25615,7 +25655,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 255,
+          "line": 265,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27510,7 +27550,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 138,
+          "line": 145,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -27710,7 +27750,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 272,
+          "line": 282,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29139,7 +29179,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 110,
+          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29934,7 +29974,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 143,
+          "line": 150,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -30528,7 +30568,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 236,
+          "line": 273,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -32671,7 +32711,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 174,
+          "line": 211,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -34985,14 +35025,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 240,
+          "line": 250,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 241,
+          "line": 251,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35480,7 +35520,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 139,
+          "line": 146,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35754,14 +35794,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 129,
+          "line": 166,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 140,
+          "line": 177,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -39489,7 +39529,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 251,
+          "line": 261,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40864,7 +40904,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 255,
+          "line": 265,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -40898,7 +40938,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 396,
+          "line": 400,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -43148,14 +43188,14 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 259,
+          "line": 269,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 260,
+          "line": 270,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -43517,7 +43557,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 276,
+          "line": 286,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -44567,7 +44607,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 224,
+          "line": 261,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -46605,14 +46645,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 119,
+          "line": 156,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 138,
+          "line": 175,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -46673,7 +46713,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 389,
+          "line": 393,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -50517,7 +50557,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 137,
+          "line": 144,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50677,7 +50717,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 242,
+          "line": 252,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51564,7 +51604,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 141,
+          "line": 148,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52366,7 +52406,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 264,
+          "line": 274,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -52882,7 +52922,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 416,
+          "line": 420,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -54518,7 +54558,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 268,
+          "line": 305,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -55143,7 +55183,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 247,
+          "line": 257,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -56258,7 +56298,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 61,
+          "line": 75,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57259,7 +57299,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 146,
+          "line": 153,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57303,6 +57343,26 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.88e02fc6fb6697a0",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "اندازهٔ نماد بیش از دقت مجاز رقم اعشار دارد.",
+      "en": "The quantity has more decimals than this market allows.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 159,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -58378,7 +58438,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 376,
+          "line": 380,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -60266,6 +60326,26 @@
       ]
     },
     {
+      "key": "react.8f3b60b7354ac30d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "برای این بازار لاتیج تعریف نشده است.",
+      "en": "No lot is defined for this market.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 155,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.8f51fd199f1562a5",
       "namespace": "react",
       "area": "Website",
@@ -61514,14 +61594,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 190,
+          "line": 227,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 192,
+          "line": 229,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -61968,7 +62048,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 266,
+          "line": 303,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -63957,7 +64037,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 233,
+          "line": 243,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -64064,7 +64144,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 378,
+          "line": 382,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -64312,7 +64392,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 113,
+          "line": 120,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -65814,7 +65894,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 123,
+          "line": 160,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -66115,7 +66195,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 374,
+          "line": 378,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -68387,7 +68467,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 279,
+          "line": 289,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69985,7 +70065,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 109,
+          "line": 116,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -70627,7 +70707,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 315,
+          "line": 352,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -71257,7 +71337,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 160,
+          "line": 174,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71599,7 +71679,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 115,
+          "line": 122,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72569,7 +72649,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 159,
+          "line": 173,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72818,7 +72898,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 140,
+          "line": 147,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -73874,7 +73954,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 375,
+          "line": 379,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -73948,14 +74028,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 127,
+          "line": 164,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 139,
+          "line": 176,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -75721,6 +75801,26 @@
       ]
     },
     {
+      "key": "react.b3bc87ddcb652135",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "اندازهٔ سفارش کمتر از حداقل این بازار است.",
+      "en": "The order is below this market's minimum size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 161,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b3bcd2aeefe67e9e",
       "namespace": "react",
       "area": "Website",
@@ -76200,7 +76300,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 112,
+          "line": 119,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76495,6 +76595,26 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 118,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b5df9acb9bfbbaf1",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "لاتیج کمتر از حداقل است.",
+      "en": "Lotage below the minimum.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 156,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76936,7 +77056,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 147,
+          "line": 154,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -77566,7 +77686,7 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 144,
+          "line": 181,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -78763,7 +78883,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 148,
+          "line": 162,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -79405,7 +79525,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 402,
+          "line": 406,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -81855,7 +81975,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 284,
+          "line": 288,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -82934,7 +83054,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 252,
+          "line": 262,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -86254,6 +86374,26 @@
       ]
     },
     {
+      "key": "react.ce8407e537b3e93d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "لاتیج نامعتبر است.",
+      "en": "Enter a valid lotage.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 158,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.cea1513eafe8deea",
       "namespace": "react",
       "area": "Website",
@@ -86733,7 +86873,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 398,
+          "line": 402,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -87924,7 +88064,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 262,
+          "line": 272,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -89482,7 +89622,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 114,
+          "line": 121,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -90787,7 +90927,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 400,
+          "line": 404,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -91299,7 +91439,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 341,
+          "line": 378,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -91900,14 +92040,14 @@
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 216,
+          "line": 253,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
         },
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 217,
+          "line": 254,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -94344,7 +94484,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 145,
+          "line": 152,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -94544,7 +94684,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 397,
+          "line": 401,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -95351,7 +95491,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 328,
+          "line": 365,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -96165,7 +96305,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 257,
+          "line": 294,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -98629,7 +98769,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 150,
+          "line": 164,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -98796,7 +98936,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-          "line": 256,
+          "line": 293,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "pick-pipeline"
@@ -99337,7 +99477,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 142,
+          "line": 149,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -101631,7 +101771,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 401,
+          "line": 405,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -103014,7 +103154,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/terminal/TradingPages.tsx",
-          "line": 383,
+          "line": 387,
           "page": "terminal",
           "route": "/:locale/:product/*",
           "method": "bilingual-record"
@@ -106202,7 +106342,7 @@
         },
         {
           "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-          "line": 268,
+          "line": 278,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -107506,7 +107646,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 123,
+      "line": 160,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -107514,7 +107654,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 137,
+      "line": 174,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -107522,7 +107662,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 314,
+      "line": 351,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "dynamic-pair",
@@ -107837,7 +107977,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 208,
+      "line": 245,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -107845,7 +107985,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 209,
+      "line": 246,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -107853,7 +107993,7 @@
     },
     {
       "component": "apps/web-react/src/features/terminal/TerminalShell.tsx",
-      "line": 310,
+      "line": 347,
       "page": "terminal",
       "route": "/:locale/:product/*",
       "reason": "language-neutral-brand-or-identifier",
@@ -107917,7 +108057,7 @@
     },
     {
       "component": "apps/web-react/src/trading/TradingBridge.tsx",
-      "line": 38,
+      "line": 45,
       "page": "global",
       "route": "/:locale/*",
       "reason": "helper-wrapper-definition",
@@ -107933,7 +108073,7 @@
     },
     {
       "component": "apps/web-react/src/wallet/RainbowConnect.tsx",
-      "line": 60,
+      "line": 74,
       "page": "global",
       "route": "/:locale/*",
       "reason": "helper-wrapper-definition",

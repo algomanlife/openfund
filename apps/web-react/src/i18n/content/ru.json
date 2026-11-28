@@ -4483,5 +4483,12 @@
   "Source code": "Исходный код",
   "Test network: its ETH has no value.": "Тестовая сеть: её ETH не имеет ценности.",
   "The status could not be loaded.": "Не удалось загрузить статус.",
-  "Trade ledger": "Журнал сделок"
+  "Trade ledger": "Журнал сделок",
+  "Enter a valid lotage.": "Введите корректное количество лотов.",
+  "Invalid order size.": "Недопустимый размер ордера.",
+  "Lotage below the minimum.": "Количество лотов меньше минимума.",
+  "Lotage must be a multiple of the lot step.": "Количество лотов должно быть кратно шагу лота.",
+  "No lot is defined for this market.": "Для этого рынка лот не определён.",
+  "The order is below this market's minimum size.": "Ордер меньше минимального размера для этого рынка.",
+  "The quantity has more decimals than this market allows.": "В размере больше знаков после запятой, чем допускает этот рынок."
 }
