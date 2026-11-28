@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 5121,
-    "mappedCalls": 2386,
+    "uniqueRecords": 5123,
+    "mappedCalls": 2388,
     "exceptions": 64,
     "validationFindings": 0,
     "reviewedExclusions": 51
@@ -4688,7 +4688,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 96,
+          "line": 106,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -20106,7 +20106,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 100,
+          "line": 110,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -24679,7 +24679,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 97,
+          "line": 107,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -41615,6 +41615,26 @@
       ]
     },
     {
+      "key": "react.5cfdd2a0319bc0cc",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "پخش صدای سیاه‌چاله",
+      "en": "Play the sound of the black hole",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/Home.tsx",
+          "line": 182,
+          "page": "home",
+          "route": "/:locale/home",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.5d01cafa71d314a6",
       "namespace": "react",
       "area": "Global Content",
@@ -53383,7 +53403,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 108,
+          "line": 118,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -53691,7 +53711,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 102,
+          "line": 112,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -77097,7 +77117,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 105,
+          "line": 115,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"
@@ -79615,6 +79635,26 @@
           "line": 35,
           "page": "partners",
           "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b87ddba48f3e1f7a",
+      "namespace": "react",
+      "area": "Website",
+      "owner": "Content editor",
+      "fa": "قطع صدای سیاه‌چاله",
+      "en": "Mute the black hole",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/features/home/Home.tsx",
+          "line": 181,
+          "page": "home",
+          "route": "/:locale/home",
           "method": "pick-pipeline"
         }
       ]
@@ -105621,7 +105661,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/features/home/Home.tsx",
-          "line": 98,
+          "line": 108,
           "page": "home",
           "route": "/:locale/home",
           "method": "pick-pipeline"

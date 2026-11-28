@@ -288,7 +288,7 @@ test('the public header measures real widths instead of a fixed English-length b
 
 test('Home is the one-screen solar gateway with the hero line and three actions', () => {
   const home = src('features/home/Home.tsx'), css = src('features/home/home.css')
-  assert.match(home, /startSolarScene\(element, \{ still: reduced\.matches, theme: current \}\)/)
+  assert.match(home, /startSolarScene\(element, \{ still: reduced\.matches, theme: current, anchor, logoSrc \}\)/)
   assert.match(home, /pick\(locale, 'خرید سریع چلنج', 'Buy a challenge'\)/)
   assert.match(home, /pick\(locale, 'قوانین معاملاتی', 'Trading rules'\)/)
   assert.match(home, /pick\(locale, 'شروع معاملات', 'Start trading'\)/)
@@ -299,6 +299,22 @@ test('Home is the one-screen solar gateway with the hero line and three actions'
   assert.doesNotMatch(css, /\.solar-hero \{[^}]*background/)
   assert.match(css, /\.home-gateway\.solar-gateway \{\n  position: fixed;/)
   assert.match(css, /top: var\(--gateway-top, 72px\); bottom: var\(--gateway-bottom, 0px\);/)
+})
+
+test('the gateway black hole lies in the system plane and its sound is opt-in on this page only', () => {
+  const home = src('features/home/Home.tsx'), scene = src('features/home/solarScene.ts'), hole = src('features/home/blackHole.ts')
+  /* same roll and viewing angle as the orbits; planets bend around it */
+  assert.match(scene, /const kd = k\n/)
+  assert.match(scene, /const hl: BlackHoleLayout = \{ x: hx, y: hy, rh, roll: phi, k: kd \}/)
+  assert.match(scene, /planet paths bend around it/)
+  /* no per-frame canvas filters (slow without a GPU) */
+  assert.doesNotMatch(hole.replace(/mg\.filter[^\n]*/g, ''), /\.filter = `blur/)
+  /* sound: off by default, a real toggle, credited, stopped when the page goes */
+  assert.match(home, /useState\(false\)/)
+  assert.match(home, /aria-pressed=\{on\}/)
+  assert.match(home, /NASA\/CXC\/SAO/)
+  assert.match(home, /engine\.current\?\.ctx\.close\(\)/)
+  assert.match(home, /source\.loop = true/)
 })
 
 test('the terminal status bar has no Vela label while the website keeps its Vela credit', () => {

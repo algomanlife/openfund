@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Black hole on the gateway.** A fixed black hole sits between the hero line and the actions, its accretion disc in the plane of the solar system (same roll, viewing angle and turning direction as the orbits), with the lensed arc over the shadow, a photon ring, the brighter approaching side and a throat that fades into depth with the Openfund mark dimly at its bottom. Rocks, pebbles and spacecraft that stray within reach leave their orbits, spiral in faster, stretch and heat up, then return later elsewhere; planets never fall in, their paths bend around it. Spacecraft cross the system at its scale (outbound deep-space probes, transfer ships, satellites and a station around planets), and rocks on crossing paths now and then collide and break into pebbles. An opt-in round sound button beside the actions plays NASA's Perseus black hole sonification on this page only (credited in THIRD_PARTY_NOTICES.md).
+
+## v0.9.2 — 2026-11-28
+
 - **Gateway hero and Start trading.** The Openfund gateway shows the hero line "Your trading story starts here…" with "Every market alongside every tool / All of it on one platform" directly on the scene, and a third action, Start trading, opens the terminal. Planets start scattered (never in one row), orbit about six times faster, rocks stream faster still, and planets carry a soft halo and depth haze so they sit in the scene.
 - **Mega menu placement on wide screens.** The panel was measured before it was shown, so on wide screens it opened right of the header (most visible on the gateway); it is now centred after it opens.
 - **Footer in grouped columns.** Destinations sit under four headings (Trading challenges, Markets and economy, Resources, Openfund with Terms and Privacy) instead of one long list; a light sweep runs along the top edge and a slow orbit circles the mark.

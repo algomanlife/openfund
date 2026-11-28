@@ -6,7 +6,16 @@
  * the planets are shaded spheres with shadows cast across the disc, and the
  * miniature (tilt-shift) look comes from CSS blur bands over the canvas.
  * Canvas 2D only; no dependencies. Pauses while the tab is hidden; a single
- * still frame under prefers-reduced-motion. */
+ * still frame under prefers-reduced-motion.
+ *
+ * A fixed black hole sits between the hero copy and the actions (blackHole.ts).
+ * Rocks and spacecraft that stray within its reach leave their orbits, spiral
+ * in faster and faster, stretch along their path, heat up and fade into the
+ * throat; they return later elsewhere on their orbits. Planets never fall in:
+ * their paths bend around it. */
+
+import { BlackHole, type BlackHoleLayout } from './blackHole'
+import { drawCraft, type CraftKind } from './spacecraft'
 
 export interface SolarSceneOptions {
   /** draw one frame and stop (reduced motion) */
@@ -15,6 +24,10 @@ export interface SolarSceneOptions {
   theme?: 'dark' | 'light'
   /** seconds of simulated time before the first frame (positions planets) */
   startAt?: number
+  /** where the black hole sits (canvas CSS px) and the free height around it */
+  anchor?: () => { x: number; y: number; room: number } | null
+  /** the Openfund mark at the bottom of the black hole */
+  logoSrc?: string
 }
 
 interface Planet {
@@ -165,7 +178,7 @@ function paintDisc(size: number, pal: Palette): HTMLCanvasElement {
   return c
 }
 
-interface Rock { r: number; a: number; size: number; shape: number[]; tone: number; speed: number }
+interface Rock { r: number; a: number; size: number; base: number; shape: number[]; tone: number; speed: number; born: number }
 function makeRocks(): Rock[] {
   const rand = rng(77), rocks: Rock[] = []
   const add = (rMin: number, rMax: number, n: number, sMin: number, sMax: number) => {
@@ -173,7 +186,8 @@ function makeRocks(): Rock[] {
       const pts = 6 + Math.floor(rand() * 4), shape: number[] = []
       for (let k = 0; k < pts; k++) shape.push(.65 + rand() * .45)
       const r = rMin + rand() * (rMax - rMin)
-      rocks.push({ r, a: rand() * Math.PI * 2, size: sMin + rand() * (sMax - sMin), shape, tone: rand(), speed: .6 + rand() * 1.1 })
+      const size = sMin + rand() * (sMax - sMin)
+      rocks.push({ r, a: rand() * Math.PI * 2, size, base: size, shape, tone: rand(), speed: .6 + rand() * 1.1, born: -1e9 })
     }
   }
   add(.41, .49, 130, .0018, .0055)  // the belt between Mars and Jupiter
@@ -192,6 +206,43 @@ function makeDebris(): Debris[] {
   }
   return out
 }
+
+/* Spacecraft crossing the system in the disc plane: probes drift outward
+   toward interstellar space, transfer ships run between the inner orbits.
+   r and a as for the planets; vr in disc radii and va in radians per second. */
+interface Craft { kind: CraftKind; r: number; a: number; vr: number; va: number; size: number; born: number }
+function makeCrafts(): Craft[] {
+  return [
+    { kind: 'probe', r: .36, a: .55, vr: .0042, va: .004, size: .0058, born: -1e9 },
+    { kind: 'probe', r: .8, a: -.75, vr: .0035, va: -.002, size: .0052, born: -1e9 },
+    { kind: 'ship', r: .27, a: -.35, vr: .006, va: .03, size: .006, born: -1e9 },
+    { kind: 'ship', r: .62, a: 1.05, vr: -.0048, va: .022, size: .0054, born: -1e9 },
+  ]
+}
+function respawnCraft(c: Craft, now: number) {
+  const out = c.kind === 'probe'
+  c.r = out ? .2 + Math.random() * .12 : .26 + Math.random() * .45
+  c.a = (Math.random() - .5) * 1.8
+  c.vr = out ? .0032 + Math.random() * .0016 : (Math.random() < .5 ? 1 : -1) * (.004 + Math.random() * .003)
+  c.born = now
+}
+
+/* satellites and a station circling planets (planet index, orbit in planet radii) */
+const ORBITERS: { planet: number; d: number; w: number; ph: number; kind: CraftKind; size: number }[] = [
+  { planet: 2, d: 2.1, w: .55, ph: 0, kind: 'satellite', size: .0036 },
+  { planet: 2, d: 3.1, w: -.3, ph: 2.2, kind: 'station', size: .0052 },
+  { planet: 4, d: 1.85, w: .2, ph: 1, kind: 'satellite', size: .0042 },
+  { planet: 5, d: 2.9, w: .14, ph: 4, kind: 'probe', size: .004 },
+]
+
+/* a pebble broken off in a collision: it keeps the parent's orbit plus the
+   kick of the impact, which drag in the dust slowly takes away */
+interface Shard { r: number; a: number; vr: number; va: number; size: number; shape: number[]; tone: number; spin: number; born: number; life: number; speed: number }
+/* the flash and dust puff of an impact, in disc coordinates */
+interface Impact { r: number; a: number; speed: number; born: number; size: number }
+
+/** an object the black hole has caught: its place on the spiral, in shadow radii */
+interface Capture { r: number; th: number; t: number; trail: { x: number; y: number }[] }
 
 function rockPath(g: CanvasRenderingContext2D, x: number, y: number, s: number, shape: number[], rot: number) {
   g.beginPath()
@@ -213,14 +264,23 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
   const rocks = makeRocks(), debris = makeDebris()
   const stars = (() => { const rand = rng(9); return Array.from({ length: 140 }, () => ({ x: rand(), y: rand(), s: rand(), t: rand() * 6.28 })) })()
 
+  const crafts = makeCrafts()
+  const hole = new BlackHole(pal.glow, options.logoSrc)
+  const caught = new Map<object, Capture>()
+  let shards: Shard[] = []
+  let impacts: Impact[] = []
+  let nextImpact = (options.startAt ?? 0) + 3
+
   let W = 0, H = 0, dpr = 1, frame = 0, last = 0, running = true
-  let simTime = options.startAt ?? 0
+  let simTime = options.startAt ?? 0, lastSim = simTime
+  let anchor: { x: number; y: number; room: number } | null = null, anchorAt = -1e9
 
   const resize = () => {
     const rect = canvas.getBoundingClientRect()
     dpr = Math.min(window.devicePixelRatio || 1, small ? 1.75 : 2)
     W = Math.max(1, rect.width); H = Math.max(1, rect.height)
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr)
+    anchor = options.anchor?.() ?? null; anchorAt = performance.now()
   }
 
   const draw = (time: number) => {
@@ -237,6 +297,86 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
     const project = (r: number, a: number) => {
       const u = r * Math.cos(a), v = r * Math.sin(a)
       return { x: sx + u * cosP - v * k * sinP, y: sy + u * sinP + v * k * cosP, depth: Math.sin(a) }
+    }
+
+    /* the black hole: fixed between the hero copy and the actions */
+    if (options.anchor && time - anchorAt > 1000) { anchor = options.anchor() ?? anchor; anchorAt = time }
+    const hx = anchor?.x ?? W * .5, hy = anchor?.y ?? H * (portrait ? .5 : .56)
+    const room = anchor?.room || H * .45
+    const rh = Math.max(16, Math.min(room * .15, W * (portrait ? .075 : .042), 64))
+    /* the hole's disc lies in the plane of the system: same roll, same viewing angle */
+    const kd = k
+    const hl: BlackHoleLayout = { x: hx, y: hy, rh, roll: phi, k: kd }
+    const dt = options.still ? 0 : Math.max(0, Math.min(.05, simTime - lastSim)); lastSim = simTime
+    /* positions around the hole, in shadow radii on its own (tilted) disc */
+    const toHole = (x: number, y: number) => {
+      const dx = x - hx, dy = y - hy
+      const u = dx * cosP + dy * sinP, v = (-dx * sinP + dy * cosP) / kd
+      return { r: Math.hypot(u, v) / rh, th: Math.atan2(v, u) }
+    }
+    const fromHole = (r: number, th: number) => {
+      const u = Math.cos(th) * r * rh, v = Math.sin(th) * r * rh * kd
+      return { x: hx + u * cosP - v * sinP, y: hy + u * sinP + v * cosP }
+    }
+    const REACH = 6.2
+    const smooth = (t: number) => t * t * (3 - 2 * t)
+    interface Caught { x: number; y: number; r: number; th: number; ang: number; trail: { x: number; y: number }[]; size: number; body: () => void; alpha: number }
+    const caughtNow: Caught[] = []
+    /** follow an object into the hole once it strays within reach; returns
+     *  false when it has crossed the horizon (the caller respawns it) */
+    const fall = (key: object, x: number, y: number, size: number, alpha: number, body: () => void): boolean | 'free' => {
+      let c = caught.get(key)
+      if (!c) {
+        if (options.still) return 'free'
+        const h = toHole(x, y)
+        if (h.r > REACH) return 'free'
+        c = { r: h.r, th: h.th, t: 0, trail: [] }
+        caught.set(key, c)
+      }
+      /* inflow quickens and the orbit tightens as it nears the horizon */
+      c.t += dt
+      c.r -= dt * (.34 + 1.7 / (c.r * c.r))
+      c.th += dt * .32 * Math.pow(REACH / Math.max(c.r, .9), 1.5)
+      if (c.r <= 1) { caught.delete(key); return false }
+      const sp = fromHole(c.r, c.th), w = smooth(Math.min(1, c.t / 1.8))
+      const px = x + (sp.x - x) * w, py = y + (sp.y - y) * w
+      const ahead = fromHole(c.r, c.th + .02)
+      c.trail.push({ x: px, y: py }); if (c.trail.length > 26) c.trail.shift()
+      caughtNow.push({ x: px, y: py, r: c.r, th: c.th, ang: Math.atan2(ahead.y - sp.y, ahead.x - sp.x), trail: c.trail, size, body, alpha })
+      return true
+    }
+    const drawCaught = (it: Caught) => {
+      const near = Math.max(0, Math.min(1, (3.6 - it.r) / 2.4))
+      const fade = Math.max(0, Math.min(1, (it.r - 1) / .75)) * it.alpha
+      /* tidal stream: a warm trail along the path */
+      if (it.trail.length > 2) {
+        g.save()
+        g.globalCompositeOperation = pal.glow
+        g.lineCap = 'butt'; g.lineJoin = 'round'
+        for (let i = 1; i < it.trail.length; i++) {
+          const t = i / it.trail.length
+          g.strokeStyle = `rgba(255,${(200 - near * 60) | 0},${(140 - near * 70) | 0},${(t * (.12 + near * .35) * fade).toFixed(3)})`
+          g.lineWidth = Math.max(.6, it.size * (.4 + t * .9))
+          g.beginPath(); g.moveTo(it.trail[i - 1].x, it.trail[i - 1].y); g.lineTo(it.trail[i].x, it.trail[i].y); g.stroke()
+        }
+        g.restore()
+      }
+      /* spaghettification: longer and thinner along the path near the hole */
+      const st = 1 + 2.8 * near * near
+      g.save()
+      g.globalAlpha = fade * (1 - near * .75)
+      g.translate(it.x, it.y); g.rotate(it.ang); g.scale(st, 1 / Math.sqrt(st))
+      it.body()
+      g.restore()
+      if (near > 0) {
+        g.save()
+        g.globalCompositeOperation = pal.glow
+        const heat = g.createRadialGradient(it.x, it.y, 0, it.x, it.y, it.size * (2 + near * 3))
+        heat.addColorStop(0, `rgba(255,214,160,${(.55 * near * fade).toFixed(3)})`); heat.addColorStop(1, 'rgba(255,150,80,0)')
+        g.fillStyle = heat
+        g.beginPath(); g.arc(it.x, it.y, it.size * (2 + near * 3), 0, Math.PI * 2); g.fill()
+        g.restore()
+      }
     }
 
     /* space: deep Openfund green, warmer toward the sun */
@@ -264,30 +404,171 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
     g.globalAlpha = 1
 
     /* rocks on the disc, with short shadows */
-    for (const rock of rocks) {
-      const a = rock.a + simTime * ORBIT_SPEED * ROCK_SPEED * rock.speed / Math.sqrt(rock.r)
-      const p = project(R * rock.r, a)
-      if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) continue
-      const s = P * rock.size * (1 + p.depth * .25)
-      const dx = p.x - sx, dy = p.y - sy, d = Math.hypot(dx, dy) || 1
-      g.fillStyle = shade(.35)
-      g.beginPath(); g.ellipse(p.x + dx / d * s * 2.2, p.y + s * .7 + dy / d * s * .5, s * 2.6, s * .55, Math.atan2(dy * .4, dx), 0, Math.PI * 2); g.fill()
+    const rockBody = (rock: Rock, s: number, ux: number, uy: number) => {
       const tone = Math.round(70 + rock.tone * 70)
-      const lit = g.createLinearGradient(p.x - dx / d * s, p.y - dy / d * s, p.x + dx / d * s, p.y + dy / d * s)
+      const lit = g.createLinearGradient(-ux * s, -uy * s, ux * s, uy * s)
       lit.addColorStop(0, `rgb(${tone + 90},${tone + 70},${tone + 40})`); lit.addColorStop(1, `rgb(${tone * .35 | 0},${tone * .35 | 0},${tone * .3 | 0})`)
       g.fillStyle = lit
-      rockPath(g, p.x, p.y - s * .4, s, rock.shape, rock.a)
+      rockPath(g, 0, 0, s, rock.shape, rock.a)
       g.fill()
+    }
+    const rockRate = (r: number, speed: number) => ORBIT_SPEED * ROCK_SPEED * speed / Math.sqrt(r)
+    const free: { rock: Rock; a: number; x: number; y: number }[] = []
+    for (const rock of rocks) {
+      const a = rock.a + simTime * rockRate(rock.r, rock.speed)
+      const p = project(R * rock.r, a)
+      const caughtAlready = caught.has(rock)
+      if (!caughtAlready && (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20)) continue
+      const s = P * rock.size * (1 + p.depth * .25)
+      const dx = p.x - sx, dy = p.y - sy, d = Math.hypot(dx, dy) || 1
+      const alpha = Math.min(1, (simTime - rock.born) / 2.5)
+      const state = fall(rock, p.x, p.y - s * .4, s, alpha, () => rockBody(rock, s, -1, 0))
+      if (state === false) { rock.a += Math.PI * (.7 + Math.random() * .6); rock.born = simTime; rock.size = rock.base; continue }
+      if (state === true) continue
+      if (alpha <= 0) continue
+      if (alpha >= 1) free.push({ rock, a, x: p.x, y: p.y })
+      g.globalAlpha = alpha
+      g.fillStyle = shade(.35)
+      g.beginPath(); g.ellipse(p.x + dx / d * s * 2.2, p.y + s * .7 + dy / d * s * .5, s * 2.6, s * .55, Math.atan2(dy * .4, dx), 0, Math.PI * 2); g.fill()
+      g.save(); g.translate(p.x, p.y - s * .4); rockBody(rock, s, dx / d, dy / d); g.restore()
+      g.globalAlpha = 1
+    }
+
+    /* now and then two rocks on crossing paths collide: the smaller one
+       breaks into pebbles, the larger one loses a piece */
+    if (!options.still && simTime > nextImpact) {
+      let best: [typeof free[number], typeof free[number]] | null = null
+      for (let i = 0; i < free.length && !best; i++) for (let j = i + 1; j < free.length; j++) {
+        const A = free[i], B = free[j]
+        if (Math.abs(A.rock.r - B.rock.r) > .02) continue
+        const du = A.rock.r * Math.cos(A.a) - B.rock.r * Math.cos(B.a), dv = A.rock.r * Math.sin(A.a) - B.rock.r * Math.sin(B.a)
+        if (Math.hypot(du, dv) * R < (A.rock.size + B.rock.size) * P * 1.1 && toHole(A.x, A.y).r > REACH * 1.3) { best = [A, B]; break }
+      }
+      if (best) {
+        const [A, B] = best
+        const big = A.rock.size >= B.rock.size ? A : B, small = big === A ? B : A
+        const r = (A.rock.r + B.rock.r) / 2, a = (A.a + B.a) / 2, speed = (A.rock.speed + B.rock.speed) / 2
+        impacts.push({ r, a, speed, born: simTime, size: small.rock.size + big.rock.size })
+        const n = 5 + Math.floor(Math.random() * 5)
+        for (let i = 0; i < n; i++) {
+          const dir = Math.random() * Math.PI * 2, kick = .004 + Math.random() * .012
+          const shape: number[] = []
+          for (let q = 0; q < 6; q++) shape.push(.55 + Math.random() * .5)
+          shards.push({ r, a, vr: Math.cos(dir) * kick, va: Math.sin(dir) * kick / r, size: small.rock.size * (.22 + Math.random() * .3),
+            shape, tone: small.rock.tone, spin: (Math.random() - .5) * 6, born: simTime, life: 7 + Math.random() * 6, speed })
+        }
+        /* the broken rock reappears much later elsewhere on its orbit */
+        small.rock.a += Math.PI * (.6 + Math.random() * .8); small.rock.born = simTime + 10 + Math.random() * 10
+        big.rock.size = Math.max(big.rock.base * .55, big.rock.size * .8)
+        nextImpact = simTime + 6 + Math.random() * 8
+      } else nextImpact = simTime + .5
+    }
+    shards = shards.filter(sh => {
+      const age = simTime - sh.born
+      if (age > sh.life) return false
+      const drag = Math.exp(-dt * .35)
+      sh.vr *= drag; sh.va *= drag
+      sh.r += sh.vr * dt; sh.a += (rockRate(sh.r, sh.speed) + sh.va) * dt
+      const p = project(R * sh.r, sh.a)
+      const s = P * sh.size * (1 + p.depth * .25)
+      const alpha = Math.min(1, age * 4) * Math.min(1, (sh.life - age) / 2.5)
+      const body = () => {
+        const tone = Math.round(80 + sh.tone * 70)
+        g.fillStyle = `rgb(${tone + 70},${tone + 52},${tone + 30})`
+        rockPath(g, 0, 0, s, sh.shape, sh.spin * age)
+        g.fill()
+      }
+      const state = fall(sh, p.x, p.y - s * .4, s, alpha, body)
+      if (state === false) return false
+      if (state === true) return true
+      if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) return true
+      g.globalAlpha = alpha
+      g.fillStyle = shade(.3)
+      g.beginPath(); g.ellipse(p.x + s * 1.6, p.y + s * .6, s * 2, s * .45, .1, 0, Math.PI * 2); g.fill()
+      g.save(); g.translate(p.x, p.y - s * .4); body(); g.restore()
+      g.globalAlpha = 1
+      return true
+    })
+    impacts = impacts.filter(im => {
+      const age = simTime - im.born
+      if (age > 3.5) return false
+      const p = project(R * im.r, im.a + (simTime - im.born) * rockRate(im.r, im.speed))
+      const s = P * im.size
+      g.save()
+      g.globalCompositeOperation = pal.glow
+      /* a brief flash, then an expanding, thinning puff of dust */
+      if (age < .5) {
+        const f = 1 - age / .5
+        const flash = g.createRadialGradient(p.x, p.y, 0, p.x, p.y, s * (3 + age * 8))
+        flash.addColorStop(0, `rgba(255,244,214,${(.9 * f).toFixed(3)})`); flash.addColorStop(.4, `rgba(255,190,120,${(.4 * f).toFixed(3)})`); flash.addColorStop(1, 'rgba(255,170,90,0)')
+        g.fillStyle = flash
+        g.beginPath(); g.arc(p.x, p.y, s * (3 + age * 8), 0, Math.PI * 2); g.fill()
+      }
+      g.restore()
+      const spread = s * (1.5 + age * 5), fade = Math.max(0, 1 - age / 3.5)
+      const puff = g.createRadialGradient(p.x, p.y, 0, p.x, p.y, spread)
+      puff.addColorStop(0, `rgba(${pal.warm.join(',')},${(.32 * fade).toFixed(3)})`); puff.addColorStop(1, `rgba(${pal.warm.join(',')},0)`)
+      g.fillStyle = puff
+      g.beginPath(); g.ellipse(p.x, p.y, spread, spread * k * 1.6, phi, 0, Math.PI * 2); g.fill()
+      return true
+    })
+
+    /* spacecraft crossing the system */
+    for (const c of crafts) {
+      c.r += c.vr * dt; c.a += c.va * dt
+      if (c.r > 1.08 || c.r < .17) respawnCraft(c, simTime)
+      const p = project(R * c.r, c.a)
+      if (!caught.has(c) && (p.x < -30 || p.x > W + 30 || p.y < -30 || p.y > H + 30)) continue
+      const S = P * c.size * (1 + p.depth * .25)
+      const next = project(R * (c.r + c.vr * 4), c.a + c.va * 4)
+      const heading = c.kind === 'ship' ? Math.atan2(next.y - p.y, next.x - p.x) : Math.atan2(sy - p.y, sx - p.x)
+      const sunIn = Math.atan2(sy - p.y, sx - p.x) - heading
+      const alpha = Math.min(1, (simTime - c.born) / 3)
+      const body = () => { g.scale(S, S); drawCraft(g, c.kind, sunIn, c.kind === 'ship' ? .75 : 0) }
+      const state = fall(c, p.x, p.y - S * .7, S, alpha, () => { g.save(); body(); g.restore() })
+      if (state === false) { respawnCraft(c, simTime); continue }
+      if (state === true) continue
+      const dx = p.x - sx, dy = p.y - sy, d = Math.hypot(dx, dy) || 1
+      g.globalAlpha = alpha
+      g.fillStyle = shade(.3)
+      g.beginPath(); g.ellipse(p.x + dx / d * S * 1.8, p.y + S * .6, S * 2, S * .4, Math.atan2(dy * .4, dx), 0, Math.PI * 2); g.fill()
+      g.save(); g.translate(p.x, p.y - S * .7); g.rotate(heading); body(); g.restore()
+      g.globalAlpha = 1
     }
 
     /* planets: back ones first, the sun, then the near ones */
-    const placed = PLANETS.map(pl => {
+    /* the hole's place on the scene's disc; planet paths bend around it */
+    const hdx = hx - sx, hdy = hy - sy
+    const hu = hdx * cosP + hdy * sinP, hv = (-hdx * sinP + hdy * cosP) / k
+    const rB = Math.hypot(hu, hv) / R, aB = Math.atan2(hv, hu)
+    const radialPx = R * Math.hypot(Math.cos(aB), k * Math.sin(aB))
+    const tangentPx = R * rB * Math.hypot(Math.sin(aB), k * Math.cos(aB))
+    const placed = PLANETS.map((pl, index) => {
       const a = pl.phase + simTime * ORBIT_SPEED / Math.sqrt(pl.orbit)
-      const p = project(R * pl.orbit, a)
-      return { pl, ...p, s: P * pl.size * (1 + p.depth * .32) }
+      const s0 = P * pl.size
+      const clear = rh * 5.6 + s0 * 2.6
+      const gap = clear / radialPx, width = clear * 1.8 / Math.max(1, tangentPx)
+      const da = Math.atan2(Math.sin(a - aB), Math.cos(a - aB))
+      const sep = pl.orbit - rB, need = gap - Math.abs(sep)
+      const r = need > 0 ? pl.orbit + (sep >= 0 ? 1 : -1) * need * Math.exp(-((da / width) ** 2)) : pl.orbit
+      const p = project(R * r, a)
+      return { pl, index, ...p, s: P * pl.size * (1 + p.depth * .32) }
     }).sort((a, b) => a.depth - b.depth)
 
-    const drawPlanet = ({ pl, x, y, s, depth }: typeof placed[number]) => {
+    const orbiters = (index: number, x: number, cy: number, s: number, front: boolean) => {
+      for (const o of ORBITERS) {
+        if (o.planet !== index) continue
+        const th = o.ph + simTime * o.w
+        if ((Math.sin(th) >= 0) !== front) continue
+        const ox = Math.cos(th) * o.d * s, oy = Math.sin(th) * o.d * s * .32
+        const px = x + ox * Math.cos(-.22) - oy * Math.sin(-.22), py = cy + ox * Math.sin(-.22) + oy * Math.cos(-.22)
+        const S = P * o.size, heading = Math.atan2(sy - py, sx - px)
+        g.save(); g.translate(px, py); g.rotate(o.kind === 'probe' ? heading : th * .2); g.scale(S, S)
+        drawCraft(g, o.kind, o.kind === 'probe' ? 0 : heading - th * .2)
+        g.restore()
+      }
+    }
+    const drawPlanet = ({ pl, index, x, y, s, depth }: typeof placed[number]) => {
       if (x < -s * 4 || x > W + s * 4) return
       const dx = x - sx, dy = y - sy, d = Math.hypot(dx, dy) || 1
       const ux = dx / d, uy = dy / d
@@ -323,6 +604,7 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
       halo.addColorStop(0, `rgba(${pal.atmosphere},.28)`); halo.addColorStop(1, `rgba(${pal.atmosphere},0)`)
       g.fillStyle = halo
       g.beginPath(); g.arc(x, cy, s * 2.1, 0, Math.PI * 2); g.fill()
+      orbiters(index, x, cy, s, false)
       /* sphere lit from the sun */
       const body = g.createRadialGradient(x - ux * s * .45, cy - uy * s * .25 - s * .25, s * .1, x, cy, s * 1.05)
       body.addColorStop(0, pl.colors[0]); body.addColorStop(.45, pl.colors[1]); body.addColorStop(1, pl.colors[2])
@@ -357,6 +639,7 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
       g.fillStyle = `rgba(${pal.depthHaze},${(.1 + far * .32).toFixed(3)})`
       g.beginPath(); g.arc(x, cy, s * 1.01, 0, Math.PI * 2); g.fill()
       ring(true)
+      orbiters(index, x, cy, s, true)
     }
 
     for (const p of placed) if (p.depth < 0) drawPlanet(p)
@@ -407,6 +690,12 @@ export function startSolarScene(canvas: HTMLCanvasElement, options: SolarSceneOp
     g.fillStyle = streak
     g.beginPath(); g.arc(0, 0, R * .6, 0, 6.28); g.fill()
     g.restore()
+
+    /* the black hole, with whatever it has caught on either side of it */
+    hole.drawBack(g, hl, time, dpr)
+    for (const it of caughtNow) if (Math.sin(it.th) < 0) drawCaught(it)
+    hole.drawFront(g, hl, time, dpr, options.still)
+    for (const it of caughtNow) if (Math.sin(it.th) >= 0) drawCaught(it)
 
     for (const p of placed) if (p.depth >= 0) drawPlanet(p)
 

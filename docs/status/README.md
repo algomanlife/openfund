@@ -8,15 +8,15 @@ documentation are historical unless they match this page.
 
 ## Release
 
-- **Latest official release:** [v0.9.1](https://github.com/algomanlife/openfund/releases/tag/v0.9.1) — commit `7e813248baedee029ef68c72f22ed52baa15523f`, published 2026-11-28.
-- **Next release:** version not yet allocated — planned; candidate commit not yet tagged. No next version is allocated yet. Open after v0.9.1: the owner fix batch of 2026-11-28 (gateway, navigation, lot sizing, mobile layout) and the items of the 2026-11-27 security assessment. ([evidence](https://github.com/algomanlife/openfund/compare/v0.9.1...main))
+- **Latest official release:** [v0.9.2](https://github.com/algomanlife/openfund/releases/tag/v0.9.2) — commit `9f64a3de13afff346e81aad0482f5f3d157df9a0`, published 2026-11-28.
+- **Next release:** version not yet allocated — planned; candidate commit not yet tagged. No next version is allocated yet. Open after v0.9.2: the gateway black hole, spacecraft and black hole sound (PR #252) and the items of the 2026-11-27 security assessment. ([evidence](https://github.com/algomanlife/openfund/compare/v0.9.2...main))
 
 ## Services
 
 | Environment | Service | Role | Version | Commit | Official | Verified | Evidence | Note |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| GLOBAL — Render | `openfund` | Web/API | 0.9.1 | `7e81324` | yes | 2026-11-28 05:04 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46086722197) | The release workflow's chained deploy built the exact v0.9.1 commit on Render and its identity report read version 0.9.1 at 7e81324 from GLOBAL /version; the live SIWE gate passed. |
-| GLOBAL — Render | `openfund-backstage` | Backstage | 0.9.1 | `7e81324` | yes | 2026-11-28 05:04 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46086722197) | The release identity report read commit 7e81324 from Backstage /health after the v0.9.1 deploy. |
+| GLOBAL — Render | `openfund` | Web/API | 0.9.2 | `9f64a3d` | yes | 2026-11-28 17:12 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46162134809) | The release workflow's chained deploy built the exact v0.9.2 commit on Render and its identity report read version 0.9.2 at 9f64a3d from GLOBAL /version; the live SIWE gate passed. |
+| GLOBAL — Render | `openfund-backstage` | Backstage | 0.9.2 | `9f64a3d` | yes | 2026-11-28 17:12 UTC | [evidence](https://github.com/algomanlife/openfund/actions/runs/46162134809) | The release identity report read commit 9f64a3d from Backstage /health after the v0.9.2 deploy. |
 | GLOBAL — Render | `openfund-cms` | Directus CMS | directus/directus:11.17.4 | — | — | 2026-11-18 07:40 UTC | [evidence](https://cms.openfi.cloud/server/health) | Independent image identity; health verified, image digest not re-verified on this date. |
 | IRAN — Liara | `openfund-iran` | Web/API | 0.6.5 | `a87804a` | no | 2026-11-20 10:24 UTC | [evidence](https://openfi.live/version) | Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). |
 | IRAN — Liara | `openfund-iran-worker` | Worker | — | — | — | 2026-11-18 07:40 UTC | Liara API GET /v1/projects/openfund-iran-worker | Running (Liara status ACTIVE, defaultSubdomain false). Its commit is not independently attributable: the worker exposes no public route and Liara's release listing was unavailable through the API on this date. |
