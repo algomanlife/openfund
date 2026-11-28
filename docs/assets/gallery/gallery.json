@@ -3,6 +3,13 @@
   "schemaVersion": 1,
   "rows": [
     {
+      "surface": "Website — gateway",
+      "items": [
+        { "label": "Persian desktop", "path": "docs/assets/screenshots/gateway/2026-11-28/gateway-fa-dark-1440.png", "alt": "Persian Openfund gateway with the black hole, spacecraft and three actions (local build of main 8a5dff9, recorded 2026-11-28)" },
+        { "label": "English phone", "path": "docs/assets/screenshots/gateway/2026-11-28/gateway-en-dark-390.png", "alt": "English Openfund gateway on a 390 px phone with the black hole and the sound toggle (local build of main 8a5dff9, recorded 2026-11-28)" }
+      ]
+    },
+    {
       "surface": "Website",
       "items": [
         { "label": "Persian (Dastkhat)", "path": "docs/assets/screenshots/typography/typography-site-fa.png", "alt": "Persian challenges page rendered in Dastkhat (local build, recorded 2026-11-20)" },

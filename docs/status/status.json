@@ -71,7 +71,7 @@
           "version": "0.6.5",
           "commit": "a87804a69b27cafa3063807f33f1f7d9d93470dc",
           "official": false,
-          "note": "Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks).",
+          "note": "Built without RELEASE_OFFICIAL (reports official: false). Runs OPENFUND_ROLES=http, so it holds no market data (execution suspended_no_authoritative_marks). On 2026-11-28 the v0.9.2 deploy's two-region identity report got HTTP 502 from IRAN /version (release run 46162134809), so the state above is the last verified one.",
           "verifiedAt": "2026-11-20T10:24:00Z",
           "evidence": "https://openfi.live/version"
         },
