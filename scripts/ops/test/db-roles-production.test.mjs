@@ -23,7 +23,7 @@ test('every credential is masked before use, and the workflow gates apply behind
   const src = fs.readFileSync(new URL('../db-roles-production.mjs', import.meta.url), 'utf8')
   assert.match(src, /::add-mask::/)
   assert.ok(src.indexOf('mask(password)') < src.indexOf("rolesScript('apply'"))
-  assert.ok(!/console\.log\([^)]*password/i.test(src.replace(/::add-mask::/g, '')), 'no password is logged')
+  assert.ok(!/console\.(log|error)\([^)]*(password|owner|previous|next)\b/i.test(src), 'no credential is logged')
   const wf = fs.readFileSync(new URL('../../../.github/workflows/db-roles-production.yml', import.meta.url), 'utf8')
   assert.match(wf, /environment: production/)
   assert.match(wf, /switch openfund-cms to openfund_directus/)

@@ -29,7 +29,11 @@ const CMS_NAME = process.env.RENDER_CMS_SERVICE_NAME || 'openfund-cms';
 const CMS_ROLE = process.env.DB_ROLE_CMS || 'openfund_directus';
 const KEY = 'DB_CONNECTION_STRING';
 
-const mask = value => { if (value) for (const part of new Set([value, encodeURIComponent(value)])) console.log(`::add-mask::${part}`); };
+/* GitHub Actions masking: the runner consumes "::add-mask::" lines and
+   replaces the value with *** everywhere in the job log, and never displays
+   the command itself. Written to the runner's stdout descriptor directly;
+   nothing here logs a credential. */
+const mask = value => { if (value) for (const part of new Set([value, encodeURIComponent(value)])) fs.writeSync(1, '::add-mask::' + part + '\n'); };
 const summary = lines => { if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n'); };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
