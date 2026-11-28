@@ -4,7 +4,7 @@
 
 - **Openfund gateway redesigned.** `/:locale/home` is now one fixed screen that never scrolls on any display: an animated miniature solar system (original canvas drawing in the Openfund green palette, with a light-theme variant and a still frame under reduced motion) and two actions, Buy a challenge and Trading rules. The site menus are back on this page, it is named "Openfund", and the logo leads to it everywhere. The previous two product cards, technical-features strip and pointer-parallax background are retired.
 - **Navigation.** An "Openfund" entry leads the header menu, the site drawer and the terminal menus. The Challenges menu adds Airdrop (a reserved page, empty until the owner publishes its content); Resources › Security adds Smart contracts, a page listing the certificate and trade-ledger contracts with their Arbiscan links, source code and audit status ("not deployed yet" until the owner deploys them).
-- **Market pulse never waits forever.** An empty Open Oracle catalog now falls back to the venue feed (website table and shared market adapter), and a catalog that does not arrive within 20 seconds shows the retry state instead of an endless "loading markets".
+- **Market pulse never waits forever.** An empty Open Oracle catalog now falls back to the venue feed (website table and shared market adapter), and a catalog that does not arrive within 20 seconds shows the retry state instead of an endless "loading markets". In the shared market adapter only an origin without the Open Oracle routes switches a session to the venue feed; a busy, timed-out or empty reply falls back for that read only, so candles keep coming from Open Oracle (the desktop app cannot read the venue directly).
 
 ## v0.9.1 — 2026-11-28
 
