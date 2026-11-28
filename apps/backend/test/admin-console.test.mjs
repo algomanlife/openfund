@@ -64,13 +64,13 @@ test('the console requires the service token and a named actor', async () => {
 
 test('user profile aggregates records, notes are append-only and tags are a set', async () => {
   assert.equal((await call('POST', `/admin/console/users/${user.id}/notes`, { note: 'Called about a payout delay.' })).status, 201)
-  assert.equal((await call('POST', `/admin/console/users/${user.id}/tags`, { tags: ['vip', 'kyc-pending', 'vip'], reason: 'onboarding review' })).status, 200)
+  assert.equal((await call('POST', `/admin/console/users/${user.id}/tags`, { tags: ['vip', 'onboarding', 'vip'], reason: 'onboarding review' })).status, 200)
   const badTag = await call('POST', `/admin/console/users/${user.id}/tags`, { tags: ['Not Valid'], reason: 'test' })
   assert.equal(badTag.status, 400)
   const { status, data } = await call('GET', `/admin/console/users/${user.id}/profile`)
   assert.equal(status, 200)
   assert.equal(data.user.wallet_address, wallet)
-  assert.deepEqual(data.tags, ['kyc-pending', 'vip'])
+  assert.deepEqual(data.tags, ['onboarding', 'vip'])
   assert.equal(data.notes[0].note, 'Called about a payout delay.')
   assert.equal(data.notes[0].actor, 'admin:qa owner')
   for (const key of ['purchases', 'challenges', 'support', 'certificates', 'entitlements', 'tournament', 'migration']) assert.ok(Array.isArray(data[key]), key)

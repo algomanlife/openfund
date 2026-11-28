@@ -1,0 +1,118 @@
+/* Airdrop page: balloon hero, missions and rules */
+.information-page .bd-scene { width: 100%; max-width: 540px; height: auto; display: block; margin-inline: auto; color: var(--green, #82e7bd); overflow: visible; }
+.bd-scene .bd-flight { animation: bd-float 7s ease-in-out infinite; transform-box: view-box; }
+.bd-scene .bd-balloon { animation: bd-sway 5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+.bd-scene .bd-body { stroke: #0006; stroke-width: 1; }
+.bd-scene .is-green .bd-body, .bd-scene .is-green .bd-knot { fill: #12965d; }
+.bd-scene .is-mint .bd-body, .bd-scene .is-mint .bd-knot { fill: #82e7bd; }
+.bd-scene .is-gold .bd-body, .bd-scene .is-gold .bd-knot { fill: #f2c14e; }
+.bd-scene .is-coral .bd-body, .bd-scene .is-coral .bd-knot { fill: #f08a6c; }
+.bd-scene .bd-string { fill: none; stroke: color-mix(in srgb, var(--text, #e8f1ec) 55%, transparent); stroke-width: 1.4; }
+/* prizes */
+.bd-scene .bd-cash rect { fill: #1f9d64; stroke: #0b4d31; stroke-width: 1.2; }
+.bd-scene .bd-cash .bd-cash-inner { fill: none; stroke: #c9f5df; stroke-width: 1; opacity: .8; }
+.bd-scene .bd-cash .bd-cash-dot { fill: #c9f5df; }
+.bd-scene .bd-coin ellipse { fill: #f2c14e; stroke: #9a6d12; stroke-width: 1.4; }
+.bd-scene .bd-coin .bd-coin-rim { fill: none; stroke: #fff3; }
+.bd-scene .bd-coin .bd-mark { fill: none; stroke: #7a5208; stroke-width: 1.6; stroke-linecap: round; }
+.bd-scene .bd-gift rect { fill: #f08a6c; stroke: #7d3524; stroke-width: 1.2; }
+.bd-scene .bd-gift .bd-gift-lid { fill: #f4a58c; }
+.bd-scene .bd-gift .bd-ribbon { fill: none; stroke: #fff6d8; stroke-width: 3; stroke-linecap: round; }
+/* falling prizes: appear at the basket, fall into the pile, fade */
+.bd-scene .bd-drop { opacity: 0; animation: bd-fall 4.8s cubic-bezier(.45, .05, .7, .4) infinite; transform-box: fill-box; transform-origin: center; }
+.bd-scene .bd-sparkles path { fill: none; stroke: var(--green, #82e7bd); stroke-width: 2; stroke-linecap: round; opacity: .2; animation: bd-twinkle 4.2s ease-in-out infinite; }
+@keyframes bd-float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(6px, -14px); } }
+@keyframes bd-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes bd-fall {
+  0% { opacity: 0; transform: translateY(0) rotate(0); }
+  8% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(var(--bd-fall, 200px)) rotate(200deg); }
+}
+@keyframes bd-twinkle { 0%, 100% { opacity: .15; } 50% { opacity: .9; } }
+@media (prefers-reduced-motion: reduce) {
+  .bd-scene .bd-flight, .bd-scene .bd-balloon, .bd-scene .bd-sparkles path { animation: none; }
+  .bd-scene .bd-drop { animation: none; opacity: 0; }
+  .bd-scene .bd-flight > .bd-drop:nth-child(2) { opacity: 1; transform: translateY(calc(var(--bd-fall, 200px) * .45)) rotate(40deg); }
+}
+html[data-theme=light] .bd-scene .bd-body { stroke: #0002; }
+
+/* content */
+.information-page .ad-section { padding-block: clamp(28px, 4vw, 56px); }
+.information-page .ad-section > h2 { margin: 0 0 8px; font-size: clamp(22px, 2.4vw, 30px); }
+.information-page .ad-lead { margin: 0 0 22px; max-width: 70ch; color: var(--body, #a5b9ae); line-height: 1.9; }
+.information-page .ad-missions { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.information-page .ad-mission { position: relative; display: grid; gap: 10px; align-content: start; min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--ds-radius-lg, 18px);
+  background: color-mix(in srgb, var(--surface, #0d1511) 72%, transparent); overflow: hidden; }
+.information-page .ad-mission::before { content: ""; position: absolute; inset-inline-start: 0; inset-block: 0; width: 3px; background: var(--ad-tone, #12965d); }
+.information-page .ad-mission h3 { margin: 0; font-size: 17px; line-height: 1.5; }
+.information-page .ad-mission p { margin: 0; color: var(--body, #a5b9ae); font-size: 14px; line-height: 1.85; }
+.information-page .ad-reward { font-size: clamp(26px, 3vw, 34px); font-weight: 700; color: var(--ad-tone, #12965d); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.information-page .ad-reward small { display: block; font-size: 12px; font-weight: 400; color: var(--body, #a5b9ae); }
+.information-page .ad-steps { counter-reset: ad; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.information-page .ad-steps li { counter-increment: ad; display: grid; gap: 6px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; }
+.information-page .ad-steps li::before { content: counter(ad); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: color-mix(in srgb, var(--green, #82e7bd) 18%, transparent); color: var(--green, #82e7bd); font-weight: 700; font-size: 14px; }
+.information-page .ad-steps b { font-size: 15px; }
+.information-page .ad-steps span { color: var(--body, #a5b9ae); font-size: 14px; line-height: 1.8; }
+.information-page .ad-rules { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 8px; color: var(--body, #a5b9ae); line-height: 1.85; max-width: 80ch; }
+.information-page .ad-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.information-page .ad-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; color: var(--body, #a5b9ae); }
+
+/* hero extras: confetti and a glow pulsing under the prize pile */
+.bd-scene .bd-confetti rect { animation: bd-confetti 6s linear infinite; transform-box: fill-box; transform-origin: center; opacity: .85; }
+.bd-scene .bd-burst circle { fill: none; stroke: #f2c14e; stroke-width: 2; opacity: 0; animation: bd-burst 3.2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.bd-scene .bd-burst circle + circle { animation-delay: 1.6s; stroke: #82e7bd; }
+@keyframes bd-confetti { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 10% { opacity: .9; } 100% { transform: translate(18px, 440px) rotate(540deg); opacity: 0; } }
+@keyframes bd-burst { 0% { transform: scale(.4); opacity: .8; } 100% { transform: scale(1.6); opacity: 0; } }
+
+/* achievements board */
+.information-page .ad-signin { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 0 0 20px; padding: 14px 18px; border: 1px dashed var(--line); border-radius: 14px; color: var(--body, #a5b9ae); }
+.information-page .ad-achievements { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.information-page .ad-achievement { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; align-items: start; padding: 18px; border: 1px solid var(--line); border-radius: var(--ds-radius-lg, 18px);
+  background: color-mix(in srgb, var(--surface, #0d1511) 72%, transparent); animation: ad-rise .6s ease-out both; position: relative; overflow: hidden; }
+.information-page .ad-achievement.is-ready { border-color: color-mix(in srgb, var(--ad-tone) 70%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ad-tone) 35%, transparent), 0 10px 40px -20px var(--ad-tone); }
+.information-page .ad-achievement.is-paid, .information-page .ad-achievement.is-approved { border-color: color-mix(in srgb, #2bb57a 60%, transparent); }
+.information-page .ad-ach-body { display: grid; gap: 8px; min-width: 0; }
+.information-page .ad-ach-body h3 { margin: 0; font-size: 17px; line-height: 1.5; }
+.information-page .ad-ach-body p { margin: 0; color: var(--body, #a5b9ae); font-size: 14px; line-height: 1.85; }
+.information-page .ad-ach-body .ad-reward { font-size: 26px; }
+.information-page .ad-state { justify-self: start; padding: 2px 10px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); color: var(--body, #a5b9ae); }
+.information-page .ad-state.is-ready { color: #08130d; background: var(--ad-tone); border-color: transparent; animation: ad-pulse 1.8s ease-in-out infinite; }
+.information-page .ad-state.is-submitted { color: #f2c14e; border-color: #f2c14e66; }
+.information-page .ad-state.is-approved, .information-page .ad-state.is-paid { color: #2bb57a; border-color: #2bb57a66; }
+.information-page .ad-steps-mini { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.information-page .ad-steps-mini li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 13px; color: var(--body, #a5b9ae); }
+.information-page .ad-count { font-variant-numeric: tabular-nums; }
+.information-page .ad-bar { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--text, #e8f1ec) 10%, transparent); position: relative; overflow: hidden; }
+.information-page .ad-bar::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: var(--ad-fill, 0%); background: var(--ad-tone); border-radius: inherit; transition: width .8s ease; }
+.information-page .ad-claim { justify-self: start; }
+.information-page .ad-claim-form { display: grid; gap: 10px; }
+.information-page .ad-claim-form label { display: grid; gap: 6px; font-size: 13px; color: var(--body, #a5b9ae); }
+.information-page .ad-claim-form textarea { font: inherit; font-size: 13px; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface, #0d1511); color: inherit; resize: vertical; }
+.information-page .ad-error, .information-page .ad-reason { color: #f08a6c !important; }
+/* badge artwork */
+.ad-badge-art { width: 96px; height: 96px; overflow: visible; }
+.ad-badge-art .ad-badge-track { fill: none; stroke: color-mix(in srgb, var(--text, #e8f1ec) 10%, transparent); stroke-width: 5; }
+.ad-badge-art .ad-badge-ring { fill: none; stroke: var(--ad-tone); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+.ad-badge-art .ad-badge-medal { fill: color-mix(in srgb, var(--ad-tone) 30%, var(--surface, #0d1511)); stroke: var(--ad-tone); stroke-width: 2; }
+.ad-badge-art .ad-badge-glyph { fill: none; stroke: #f3fff9; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ad-badge-art .ad-badge-shine { fill: #ffffff; opacity: 0; }
+.ad-badge-art:not(.is-locked) .ad-badge-shine { animation: ad-shine 3.6s ease-in-out infinite; }
+.ad-badge-art.is-locked .ad-badge-medal { fill: color-mix(in srgb, var(--text, #e8f1ec) 8%, var(--surface, #0d1511)); stroke: color-mix(in srgb, var(--text, #e8f1ec) 25%, transparent); }
+.ad-badge-art.is-locked .ad-badge-glyph { stroke: color-mix(in srgb, var(--text, #e8f1ec) 35%, transparent); opacity: .18; }
+.ad-badge-art .ad-badge-lock { transform: scale(1.25); }
+.ad-badge-art .ad-badge-lock rect { fill: #1c2621; stroke: #a5b9ae; stroke-width: 1.5; }
+.ad-badge-art .ad-badge-lock path { fill: none; stroke: #a5b9ae; stroke-width: 1.5; }
+.ad-badge-art .ad-badge-done circle { fill: #2bb57a; }
+.ad-badge-art .ad-badge-done path { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ad-badge-art.is-ready { animation: ad-bob 2.4s ease-in-out infinite; }
+html[data-theme=light] .ad-badge-art .ad-badge-glyph { stroke: #0b3d27; }
+@keyframes ad-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes ad-pulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ad-tone) 60%, transparent); } 50% { box-shadow: 0 0 0 6px transparent; } }
+@keyframes ad-shine { 0%, 60% { opacity: 0; transform: translateX(0) skewX(-20deg); } 70% { opacity: .35; } 100% { opacity: 0; transform: translateX(130px) skewX(-20deg); } }
+@keyframes ad-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@media (max-width: 480px) { .information-page .ad-achievement { grid-template-columns: 72px minmax(0, 1fr); } .ad-badge-art { width: 72px; height: 72px; } }
+@media (prefers-reduced-motion: reduce) {
+  .bd-scene .bd-confetti rect, .bd-scene .bd-burst circle { animation: none; opacity: 0; }
+  .information-page .ad-achievement, .information-page .ad-state.is-ready, .ad-badge-art.is-ready, .ad-badge-art .ad-badge-shine { animation: none; }
+}

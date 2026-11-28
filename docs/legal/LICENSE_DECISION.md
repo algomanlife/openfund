@@ -83,11 +83,10 @@ These apply to every option, including A.
    recorded. The owner must produce a license from the rights holder or replace
    the fonts (a visual change that needs separate design approval). Relicensing
    cannot cover them.
-2. **Pine indicators.** `indicators/smc-v1.pine` states CC BY-NC-SA 4.0
-   (non-commercial). The owner states the indicators are owner-controlled and
-   should be open source (Apache-2.0 proposed), but the repository holds
-   evidence of third-party origin for several files and no authorship records.
-   The exact Apache-2.0 change is prepared, not applied
+2. **Pine indicators: resolved.** Openfund owns the indicators and their
+   libraries and publishes them as open source (owner decision 2026-11-28,
+   [ADR 0066](../decisions/0066-indicator-ownership.md)): Apache-2.0 for four
+   files, CC BY-NC-SA 4.0 for `smc-v1.pine` as it states
    ([LICENSING.md item 3](LICENSING.md#pine-indicator-sources)).
 3. **AGPL scope** of the shipped chart bundle and the form of the section 13
    source offer ([PineTS](PINETS.md)).

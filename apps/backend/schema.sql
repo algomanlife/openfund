@@ -3189,7 +3189,7 @@ CREATE TABLE IF NOT EXISTS migration_requests (
   claimed_max_size_usd   numeric(20,2) NOT NULL CHECK (claimed_max_size_usd > 0),
   approved_max_size_usd  numeric(20,2) CHECK (approved_max_size_usd IS NULL OR approved_max_size_usd > 0),
   full_name              text CHECK (full_name IS NULL OR length(full_name) BETWEEN 2 AND 120),
-  kyc_verified           boolean NOT NULL DEFAULT false,
+  kyc_verified           boolean NOT NULL DEFAULT false,  -- retired: Openfund runs no KYC; never set by a decision
   name_matched           boolean NOT NULL DEFAULT false,
   decision_reason        text,
   decided_by             text,
@@ -3476,3 +3476,30 @@ END $$;
 DROP TRIGGER IF EXISTS trg_chain_trade ON trading_positions;
 CREATE TRIGGER trg_chain_trade AFTER INSERT OR UPDATE ON trading_positions
   FOR EACH ROW EXECUTE FUNCTION openfund_chain_trade();
+
+-- ============================================================
+-- Openfund airdrop (owner decision 2026-11-28): cash or other prizes, never
+-- a token, for wallets that bought a challenge. Mission progress is computed
+-- from valid certificates (airdrop.js); a claim carries the public post links
+-- that share them and is reviewed by Openfund. One claim per wallet and
+-- mission; a rejected claim can be submitted again. Payment is recorded with
+-- the on-chain transaction to the account's wallet.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS airdrop_claims (
+  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id        uuid NOT NULL REFERENCES openfund_users(id),
+  mission        text NOT NULL CHECK (mission IN ('buy-share','pass-share','payout-share','three-buys-pass','ten-payouts')),
+  reward_usd     numeric(12,2) NOT NULL CHECK (reward_usd > 0),
+  links          jsonb NOT NULL DEFAULT '[]'::jsonb,
+  status         text NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted','approved','rejected','paid')),
+  decision_reason text,
+  decided_by     text,
+  decided_at     timestamptz,
+  paid_tx_hash   text CHECK (paid_tx_hash IS NULL OR paid_tx_hash ~ '^0x[0-9a-f]{64}$'),
+  submitted_at   timestamptz NOT NULL DEFAULT now(),
+  created_at     timestamptz NOT NULL DEFAULT now(),
+  updated_at     timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, mission),
+  CHECK ((status = 'paid') = (paid_tx_hash IS NOT NULL))
+);
+CREATE INDEX IF NOT EXISTS idx_airdrop_claims_status ON airdrop_claims (status, submitted_at);

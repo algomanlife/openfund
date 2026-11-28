@@ -12,8 +12,9 @@
      wallet sign-in on Arbitrum One, DePay checkout. Live order execution
      on Gains and automatic payouts are NOT available (feature register:
      Blocked) and appear only under "planned".
-   - No "No KYC", "No VPN", "zero spread", "lowest fees", "no
-     restrictions" or "fully decentralized trading" claims. Rule numbers
+   - No "No VPN", "zero spread", "lowest fees", "no restrictions" or
+     "fully decentralized trading" claims. "No KYC" is a fact (owner
+     decision 2026-11-28: the wallet owner is the account owner). Rule numbers
      are rendered from the plan catalog, never written into this copy.
    ============================================================ */
 import { text } from '../information/content'

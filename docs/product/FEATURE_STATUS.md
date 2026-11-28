@@ -160,8 +160,10 @@ Statuses: **Completed** = implemented within the stated boundary with repository
 | React product shell and hash routes | Completed | [Router](../../apps/web-react/src/main.tsx); `/react/#/{locale}/…`; Persian/English and RTL retained |
 | Openfund gateway (one-screen animated solar system, two actions) | In Progress (implemented; review and release pending) | `features/home` (`solarScene.ts`); fixed between header and price strip at every viewport; light theme and reduced motion covered by `e2e/test-landing-motion.cjs` |
 | Market discovery | Completed | `features/markets`; Open Oracle with venue fallback, including an empty catalog; instrument counts vary |
-| Airdrop page | In Progress (reserved route, no content) | `/:locale/airdrop`, Challenges menu |
+| Airdrop | Completed (local verification; not deployed) | `/:locale/airdrop`: five achievements with badges from valid certificates, claims with public post links, Backstage review and payment record ([ADR 0067](../decisions/0067-airdrop-achievements.md)); cash or prizes, never a token |
 | Smart contracts page | In Progress (implemented; contracts not deployed) | `/:locale/smart-contracts`; addresses from `GET /chain/status` |
+| Terms of Use and Privacy Policy | Completed (local verification; not deployed) | `/:locale/terms`, `/:locale/privacy`, five locales, footer links, Directus override ([ADR 0065](../decisions/0065-no-kyc-terms-and-privacy.md)) |
+| No KYC | Completed (owner decision 2026-11-28) | Wallet owner is the account owner; migration review has no identity step ([ADR 0065](../decisions/0065-no-kyc-terms-and-privacy.md)) |
 | Home hero card trader journey (evaluation → target → verification flip → funded loop) | Completed (merged #188; deployed on GLOBAL at `main` `9f8b171` (`/version` checked 2026-11-23; not yet in an official release)) | `features/home/heroJourney.ts`; illustration only, no real account data; `e2e/test-hero-journey.cjs`; checked at 360–1920 px, RTL/LTR, dark/light, reduced motion |
 | Footer "alien trader" banner (shared site footer) | Completed (merged #189; deployed on GLOBAL at `main` `9f8b171` (`/version` checked 2026-11-23; not yet in an official release)) | `features/footer`; decorative, lazy, illustrated SVG (raster swap documented in [Footer banner](../website/FOOTER_BANNER.md)); `e2e/test-footer-banner.cjs` |
 | Compact terminal presentation | Completed | [Local acceptance](../reviews/terminal-ui/DELIVERY.md); both products/languages, 74px header, non-scrolling form at four desktop sizes; no production or execution change |
@@ -296,7 +298,7 @@ decision: [ADR 0017](../decisions/0017-hybrid-governance.md).
 - Lookahead corrections in PAC previous-period levels and SMC higher-timeframe gaps.
 - PAC Trendline Liquidity crash fixed.
 
-[Report](../reviews/pine-optimization/README.md), [ADR 0048](../decisions/0048-pine-indicator-optimization-and-provenance.md). The indicator licence is unresolved. The ordered catalog, settings persistence, interval/symbol/menu repairs and permitted branding changes have local regression coverage. Genuine volume-dependent outputs, full optional-setting/reference conformance and deployed acceptance remain open. [Architecture](../trading/PINE_SCRIPT.md) · [Evidence](../reviews/vela-pine/DELIVERY.md).
+[Report](../reviews/pine-optimization/README.md), [ADR 0048](../decisions/0048-pine-indicator-optimization-and-provenance.md). Openfund owns the indicators and publishes them as open source ([ADR 0066](../decisions/0066-indicator-ownership.md)). The ordered catalog, settings persistence, interval/symbol/menu repairs and permitted branding changes have local regression coverage. Genuine volume-dependent outputs, full optional-setting/reference conformance and deployed acceptance remain open. [Architecture](../trading/PINE_SCRIPT.md) · [Evidence](../reviews/vela-pine/DELIVERY.md).
 
 ## Evidence policy
 

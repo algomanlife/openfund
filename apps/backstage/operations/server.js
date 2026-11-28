@@ -73,6 +73,8 @@ const routes = {
   /* Migration to Openfund (migration.js, ADR 0051) */
   migrations: ['/admin/migration/requests', 'requests', ['status']],
   migrationFirms: ['/admin/migration/firms'],
+  /* Openfund airdrop claims (apps/backend/airdrop.js) */
+  airdrop: ['/admin/airdrop/claims', 'claims', ['status']],
   /* site search analytics (site-search.js, ADR 0052); record 'export.csv' is the CSV */
   siteSearch: ['/admin/search/analytics', null, ['from', 'to', 'locale', 'q']],
 }
@@ -297,8 +299,9 @@ const operations = {
       return [`/admin/tournaments/${body.slug}/awards/${record}`, { status: body.status, note: textOf(body.note, 1000, false), reason: textOf(body.reason, 1000) }]
     },
   },
-  /* migration review: a decision needs the checklist, KYC and name match
-     (approve) and always a reason; the backend refuses anything else */
+  /* migration review: an approval needs the complete checklist and a size,
+     every decision a reason; the backend refuses anything else. Openfund
+     runs no KYC: the wallet owner is the account owner. */
   migrations: {
     identifier: uuid,
     actions: ['approve', 'reject'],
@@ -307,9 +310,23 @@ const operations = {
       if (body.action === 'approve') {
         const size = Number(body.approvedMaxSizeUsd)
         if (!Number.isFinite(size) || size <= 0) throw fail(400, 'invalid_size')
-        Object.assign(out, { approvedMaxSizeUsd: size, kycVerified: body.kycVerified === true, nameMatched: body.nameMatched === true })
+        Object.assign(out, { approvedMaxSizeUsd: size })
       }
       return [`/admin/migration/requests/${record}/decide`, out]
+    },
+  },
+  /* airdrop review: approve or reject with a reason; paid needs the on-chain
+     transaction of the payment to the claim's wallet */
+  airdrop: {
+    identifier: uuid,
+    actions: ['approve', 'reject', 'paid'],
+    request: (record, body) => {
+      const out = { decision: body.action, reason: textOf(body.reason, 1000) }
+      if (body.action === 'paid') {
+        if (!/^0x[0-9a-fA-F]{64}$/.test(String(body.txHash || ''))) throw fail(400, 'invalid_tx_hash')
+        out.txHash = body.txHash
+      }
+      return [`/admin/airdrop/claims/${record}/decide`, out]
     },
   },
   migrationPasses: {

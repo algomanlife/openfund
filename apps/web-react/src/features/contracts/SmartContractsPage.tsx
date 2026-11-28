@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import InformationShell, { Hero, useInformationLocale } from '../information/InformationShell'
 import { text, tx } from '../information/content'
 import { apiFetch } from '../../session/useOpenfundSession'
+import ChainMint from './ChainMint'
 import './contracts.css'
 
 /* /:locale/smart-contracts: Openfund's public contracts (ADR 0063). The
@@ -33,6 +34,7 @@ const c = {
   notAudited: text('Not audited yet', 'هنوز ممیزی نشده'),
   recording: text('Recording', 'وضعیت ثبت'),
   on: text('On', 'فعال'), off: text('Off', 'غیرفعال'),
+  scene: text('A certificate seal sending records into a moving chain of blocks, with the trade ledger filling below.', 'مهر گواهی که رکوردها را به زنجیرهٔ در حال حرکت بلاک‌ها می‌فرستد و دفتر معاملات زیر آن پر می‌شود.'),
 }
 
 export default function SmartContractsPage() {
@@ -64,7 +66,7 @@ export default function SmartContractsPage() {
     </article>
   }
   return <InformationShell page="smart-contracts" description={tx(locale, c.description)}>
-    <Hero locale={locale} page="smart-contracts" title={tx(locale, c.title)} accent={tx(locale, c.accent)} intro={tx(locale, c.intro)}>
+    <Hero locale={locale} page="smart-contracts" title={tx(locale, c.title)} accent={tx(locale, c.accent)} intro={tx(locale, c.intro)} visual={<ChainMint label={tx(locale, c.scene)} ledger={tx(locale, c.ledger)} />}>
       <p className="of-contract-note">{tx(locale, c.testnet)} {s && <span>{tx(locale, c.recording)}: {tx(locale, s.enabled ? c.on : c.off)}</span>}</p>
     </Hero>
     <section className="container of-contract-grid" aria-live="polite">

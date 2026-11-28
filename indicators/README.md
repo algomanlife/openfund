@@ -60,30 +60,21 @@ The Gains candle feed has no traded volume. The adapter passes volume as Pine
 order-block volume figures, Open Algo's VWMA filter option) are unavailable. Higher timeframes are
 standard OHLC aggregation of genuine Gains candles.
 
-## Licence and provenance
+## Ownership and licence
 
-**Unresolved.** The owner states that these sources are owner-controlled and
-should be open source. The repository does not yet contain evidence that every
-file is wholly owner-authored, and several files carry signs of third-party
-origin:
+Openfund owns these three indicators and two libraries and publishes them as
+open source (owner decision, 2026-11-28,
+[ADR 0066](../docs/decisions/0066-indicator-ownership.md)).
 
-- `smc-v1.pine` declares *CC BY-NC-SA 4.0* with "© Openfund". That is a
-  non-commercial ShareAlike licence. Its structure and comments closely
-  resemble a widely published third-party Smart Money Concepts script that is
-  distributed under the same licence.
-- `pac v1.pine` has no licence header. Its title says "Open source" and its
-  scanner shows "SDK © Algoman.life". "Price Action Concepts" is also the
-  name of a commercial third-party product.
-- `sdk.pine` describes itself as a kernel library for Nadaraya–Watson
-  estimators, in the wording of a published third-party library.
-- Open Algo originally imported libraries named `ayvaliktrading/...`.
+| File | Licence |
+| --- | --- |
+| `Open algo v5.pine`, `pac v1.pine`, `Overlayslibrary.pine`, `sdk.pine` | Apache-2.0, "Copyright 2026 Openfund" ([LICENSE](LICENSE)) |
+| `smc-v1.pine` | CC BY-NC-SA 4.0, "© Openfund", as stated in the file |
 
-Until the owner provides authorship records or the original upstream
-licences, no file here is relabelled, and the existing CC BY-NC-SA notice
-stays. The prepared change, which applies Apache-2.0 only to the files proven
-owner-authored, is in [the licensing record](../docs/legal/LICENSING.md#pine-indicator-sources).
-The PineTS runtime (AGPL-3.0-only) and Vela (Apache-2.0 with NOTICE) have
-their own terms, independent of these sources.
+Keep each file's header when you copy or change it. The PineTS runtime
+(AGPL-3.0-only) and Vela (Apache-2.0 with NOTICE) have their own terms,
+independent of these sources. The earlier provenance review is kept as a
+[historical record](../docs/legal/history/PINE_PROVENANCE_REVIEW_2026-11.md).
 
 ## Tests
 

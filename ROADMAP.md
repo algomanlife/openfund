@@ -38,7 +38,7 @@ Do not advance a milestone because a folder, UI placeholder or dependency exists
 
 ## Openfund chart indicators
 
-**In Progress:** original Pine execution, local-library resolution, ordered catalog, persistent settings and chart interaction repairs are implemented. Local validation is recorded in [delivery evidence](docs/reviews/vela-pine/DELIVERY.md). Independent reference-platform conformance, genuine volume-dependent outputs, full optional-setting coverage and deployed acceptance remain open. No financial execution milestone changes. The November 2026 optimization pass is implemented on a branch, not deployed ([report](docs/reviews/pine-optimization/README.md)); the indicator licence decision is outstanding.
+**In Progress:** original Pine execution, local-library resolution, ordered catalog, persistent settings and chart interaction repairs are implemented. Local validation is recorded in [delivery evidence](docs/reviews/vela-pine/DELIVERY.md). Independent reference-platform conformance, genuine volume-dependent outputs, full optional-setting coverage and deployed acceptance remain open. No financial execution milestone changes. The November 2026 optimization pass is implemented on a branch, not deployed ([report](docs/reviews/pine-optimization/README.md)); Openfund owns the indicators and publishes them as open source ([ADR 0066](docs/decisions/0066-indicator-ownership.md)).
 
 ## Unified account integration
 

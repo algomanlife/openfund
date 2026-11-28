@@ -2,7 +2,7 @@
  * Migration to Openfund (migration.js, ADR 0051) on real PostgreSQL with a
  * local S3-compatible stand-in: signing (AWS SigV4 test vector), file
  * validation, "opening soon" until storage is configured, the live
- * checklist, one migration per person, the review decision with KYC, the
+ * checklist, one migration per person, the review decision (no KYC), the
  * single-use pass, the normal-price Migration order that provisions a
  * funded-stage challenge, and deletion of files after retention.
  */
@@ -120,7 +120,7 @@ test('the form says "opening soon" and stores nothing until storage is configure
 })
 
 let request, firms
-test('the live checklist: identity, a funded account, three distinct payouts in twelve months', async () => {
+test('the live checklist: a funded account and three distinct payouts in twelve months, no identity document', async () => {
   firms = (await call('GET', '/migration/config')).data.firms
   assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[0].id, claimedMaxSizeUsd: 100000, fullName: 'Sara Example', email: 'not-an-email' } })).data.error, 'invalid_email')
   const created = await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[0].id, claimedMaxSizeUsd: 100000, fullName: 'Sara Example', email: 'sara@example.test' } })
@@ -128,10 +128,11 @@ test('the live checklist: identity, a funded account, three distinct payouts in 
   request = created.data.request
   assert.equal((await call('POST', '/migration/requests', { user: users[0].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 50000, fullName: 'Sara Example', email: 'sara@example.test' } })).data.error, 'request_exists', 'one open request per person')
   const up = (kind, body, type, q = '') => call('POST', `/migration/requests/${request.id}/evidence/upload?kind=${kind}${q}`, { user: users[0].id, raw: body, type })
-  assert.equal((await up('identity', png, 'image/png')).status, 201)
-  assert.equal((await up('identity', png, 'application/pdf')).data.error, 'file_type_mismatch')
-  assert.equal((await up('statement', pdf, 'application/pdf')).data.error, 'invalid_date', 'a payout document needs its payout date')
+  assert.equal((await up('identity', png, 'image/png')).data.error, 'invalid_kind', 'Openfund runs no KYC: identity documents are not accepted')
   assert.equal((await up('funded_account', png, 'image/png')).status, 201)
+  assert.equal((await up('funded_account', png, 'application/pdf')).data.error, 'file_type_mismatch')
+  assert.equal((await up('statement', pdf, 'application/pdf')).data.error, 'invalid_date', 'a payout document needs its payout date')
+  assert.equal((await up('recording', png, 'image/png')).status, 201)
   assert.equal((await up('statement', pdf, 'application/pdf', `&payoutDate=${daysAgo(40)}&amountUsd=1800`)).status, 201)
   const cert = await call('POST', `/migration/requests/${request.id}/evidence`, { user: users[0].id, body: { kind: 'payout_certificate', url: 'https://firm.example/certificate/abc', payoutDate: daysAgo(80), amountUsd: 2100 } })
   assert.equal(cert.status, 201)
@@ -139,7 +140,8 @@ test('the live checklist: identity, a funded account, three distinct payouts in 
   const tx = await call('POST', `/migration/requests/${request.id}/evidence`, { user: users[0].id, body: { kind: 'payout_tx', chainId: 42161, txHash: txHash(), payoutDate: daysAgo(400), amountUsd: 900 } })
   assert.equal(tx.data.evidence.verification.verified, true)
   let me = await call('GET', '/migration/me', { user: users[0].id })
-  assert.deepEqual([me.data.checklist.identity, me.data.checklist.fundedAccount, me.data.checklist.payouts, me.data.checklist.payoutCount], [true, true, false, 2], 'a payout older than the window does not count')
+  assert.equal('identity' in me.data.checklist, false)
+  assert.deepEqual([me.data.checklist.fundedAccount, me.data.checklist.payouts, me.data.checklist.payoutCount], [true, false, 2], 'a payout older than the window does not count')
   assert.equal((await call('POST', `/migration/requests/${request.id}/submit`, { user: users[0].id })).data.error, 'checklist_incomplete')
   await call('POST', `/migration/requests/${request.id}/evidence`, { user: users[0].id, body: { kind: 'payout_tx', chainId: 42161, txHash: txHash(), payoutDate: daysAgo(10), amountUsd: 2500 } })
   me = await call('GET', '/migration/me', { user: users[0].id })
@@ -151,17 +153,17 @@ test('the live checklist: identity, a funded account, three distinct payouts in 
 })
 
 let pass
-test('review: signed short-lived links, KYC and name match required, a single-use pass on approval', async () => {
+test('review: signed short-lived links, no KYC step, a single-use pass on approval', async () => {
   const queue = await call('GET', '/admin/migration/requests?status=submitted', { admin: true })
   assert.ok(queue.data.requests.some(r => r.id === request.id))
   const detail = await call('GET', `/admin/migration/requests/${request.id}`, { admin: true })
-  const file = detail.data.evidence.find(e => e.kind === 'identity')
+  const file = detail.data.evidence.find(e => e.kind === 'funded_account')
   assert.match(file.download.url, /X-Amz-Signature=/)
   assert.equal((await fetch(file.download.url)).status, 200)
   const decide = body => call('POST', `/admin/migration/requests/${request.id}/decide`, { admin: true, body })
-  assert.equal((await decide({ decision: 'approve', reason: 'payouts verified', approvedMaxSizeUsd: 100000 })).data.error, 'kyc_required')
-  assert.equal((await decide({ decision: 'approve', reason: 'x', approvedMaxSizeUsd: 100000, kycVerified: true, nameMatched: true })).data.error, 'reason_required')
-  const ok = await decide({ decision: 'approve', reason: 'three payouts verified; KYC name matches the firm documents', approvedMaxSizeUsd: 50000, kycVerified: true, nameMatched: true })
+  assert.equal((await decide({ decision: 'approve', reason: 'payouts verified' })).data.error, 'invalid_size')
+  assert.equal((await decide({ decision: 'approve', reason: 'x', approvedMaxSizeUsd: 100000 })).data.error, 'reason_required')
+  const ok = await decide({ decision: 'approve', reason: 'three payouts verified on the same firm account', approvedMaxSizeUsd: 50000 })
   assert.equal(ok.status, 200)
   pass = ok.data.pass
   assert.equal(Number(pass.max_size_usd), 50000)
@@ -205,7 +207,7 @@ test('checkout: a normal-price order with the pass starts at the funded stage, o
 test('rejection, withdrawal and deletion of every file after retention', async () => {
   const created = await call('POST', '/migration/requests', { user: users[1].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 25000, fullName: 'Reza Example', email: 'reza@example.test' } })
   const id = created.data.request.id
-  await call('POST', `/migration/requests/${id}/evidence/upload?kind=identity`, { user: users[1].id, raw: png, type: 'image/png' })
+  await call('POST', `/migration/requests/${id}/evidence/upload?kind=funded_account`, { user: users[1].id, raw: png, type: 'image/png' })
   assert.equal((await call('POST', `/migration/requests/${id}/withdraw`, { user: users[1].id })).status, 200)
   assert.equal((await call('POST', '/migration/requests', { user: users[1].id, body: { firmId: firms[1].id, claimedMaxSizeUsd: 25000, fullName: 'Reza Example', email: 'reza@example.test' } })).status, 201, 'a withdrawn trader may apply again')
   /* make the approved request's and the withdrawn request's retention due */
@@ -223,7 +225,7 @@ test('rejection, withdrawal and deletion of every file after retention', async (
 test('the checklist counts one payout per date and amount', () => {
   const s = { minPayouts: 3, windowMonths: 12 }
   const e = (kind, d, a) => ({ kind, payout_date: d == null ? null : daysAgo(d), amount_usd: a ?? null, deleted_at: null })
-  const list = checklist([e('identity'), e('recording'), e('statement', 5, 100), e('payout_certificate', 5, 100), e('payout_tx', 6, 100), e('statement', 7, 200)], s)
+  const list = checklist([e('recording'), e('statement', 5, 100), e('payout_certificate', 5, 100), e('payout_tx', 6, 100), e('statement', 7, 200)], s)
   assert.deepEqual([list.payoutCount, list.complete], [3, true])
 })
 

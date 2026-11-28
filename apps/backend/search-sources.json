@@ -382,11 +382,11 @@
         "zh-CN": "空投"
       },
       "description": {
-        "fa": "ایردراپ اوپن‌فاند؛ جزئیات به‌زودی.",
-        "en": "Openfund airdrop: details coming soon.",
-        "ar": "الإسقاط الجوي من Openfund: التفاصيل قريبًا.",
-        "ru": "Аирдроп Openfund: подробности скоро.",
-        "zh-CN": "Openfund 空投：详情即将公布。"
+        "fa": "جایزهٔ نقدی ۱٬۰۰۰ تا ۵٬۰۰۰ دلاری برای خریداران چلنج.",
+        "en": "Cash rewards of $1,000 to $5,000 for challenge buyers.",
+        "ar": "مكافآت نقدية من 1,000 إلى 5,000 دولار لمشتري التحديات.",
+        "ru": "Денежные награды от $1,000 до $5,000 для покупателей челленджей.",
+        "zh-CN": "为挑战购买者提供 1,000 至 5,000 美元的现金奖励。"
       }
     },
     {
@@ -407,6 +407,32 @@
         "ru": "Наши контракты в Arbitrum Sepolia, открытые для проверки.",
         "zh-CN": "我们在 Arbitrum Sepolia 上的合约，人人可验证。"
       }
+    },
+    {
+      "path": "terms",
+      "view": "terms",
+      "icon": null,
+      "title": {
+        "fa": "شرایط استفاده",
+        "en": "Terms of Use",
+        "ar": "شروط الاستخدام",
+        "ru": "Условия использования",
+        "zh-CN": "使用条款"
+      },
+      "description": null
+    },
+    {
+      "path": "privacy",
+      "view": "privacy",
+      "icon": null,
+      "title": {
+        "fa": "سیاست حریم خصوصی",
+        "en": "Privacy Policy",
+        "ar": "سياسة الخصوصية",
+        "ru": "Политика конфиденциальности",
+        "zh-CN": "隐私政策"
+      },
+      "description": null
     },
     {
       "path": "migrate",
@@ -668,8 +694,8 @@
         "fa": "تغییرات برای توسعه‌دهندگان"
       },
       "text": {
-        "en": "2026 11 28 — exact size orders and Openfund contract specifications (ADR 0064) POST /trading/order and POST /trading/preview accept size mode: collateral (default, with margin), quantity (with quantity, base asset units) or lots (with lots). Quantity and lots orders fill exactly; the collateral is quantity × entry / leverage, recalculated at the fill price. The preview returns size mode, lots and contract size. New 400 errors: invalid size mode, lots unavailable, invalid lots, below lot min, off lot step, quantity precision. New module apps/backend/contract specs.js (one lot per market) mirror",
-        "fa": "۱۴۰۵/۰۹/۰۷ — سفارش با اندازهٔ دقیق و مشخصات قرارداد اوپن‌فاند (ADR 0064) POST /trading/order و POST /trading/preview فیلد size mode را می‌پذیرند: collateral (پیش‌فرض، با margin)، quantity (با quantity به واحد دارایی پایه) یا lots (با lots). سفارش با اندازهٔ نماد یا لات دقیقاً همان اندازه پر می‌شود؛ کولترال برابر اندازه × قیمت ورود ÷ اهرم است و در لحظهٔ پر شدن با قیمت واقعی دوباره محاسبه می‌شود. پیش‌نمایش size mode، lots و contract size را برمی‌گرداند. خطاهای تازهٔ 400: invalid size mode، lots unavailable، invalid lots، below lot min، off lot step و quantity precision. ماژول تازهٔ apps/backend/"
+        "en": "2026 11 28 — airdrop API (ADR 0067) GET /airdrop/missions (public), GET /airdrop/me and POST /airdrop/claims ({ mission, links }, signed in), admin GET /admin/airdrop/claims?status= and POST /admin/airdrop/claims/:id/decide (approve / reject / paid with txHash). New table airdrop claims in apps/backend/schema.sql; npm prefix apps/backend run test:airdrop. 2026 11 28 — Terms of Use, Privacy Policy and no KYC (ADR 0065, ADR 0066) New public routes /:locale/terms and /:locale/privacy (features/legal/), in the sitemap (apps/backend/seo.js), the editorial route registry and every footer. A publishe",
+        "fa": "۱۴۰۵/۰۹/۰۷ — رابط برنامه‌نویسی ایردراپ (ADR 0067) GET /airdrop/missions (عمومی)، GET /airdrop/me و POST /airdrop/claims ({ mission, links }، با ورود)، و برای مدیر GET /admin/airdrop/claims?status= و POST /admin/airdrop/claims/:id/decide (approve / reject / paid همراه txHash). جدول تازهٔ airdrop claims در apps/backend/schema.sql؛ npm prefix apps/backend run test:airdrop. ۱۴۰۵/۰۹/۰۷ — شرایط استفاده، سیاست حریم خصوصی و حذف KYC (ADR 0065 و ADR 0066) مسیرهای عمومی تازه /:locale/terms و /:locale/privacy (features/legal/)، در نقشهٔ سایت (apps/backend/seo.js)، فهرست مسیرهای محتوایی و فوتر همهٔ صفحه‌ها"
       }
     }
   ]

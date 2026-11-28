@@ -79,7 +79,7 @@ Every row is **unresolved**. Each needs qualified counsel. Decision rule: **a fa
 | --- | --- | --- | --- | --- | --- |
 | C1 | Regulatory authorization | Does offering a leveraged-derivatives interface, even non-custodially, require a licence or registration in the jurisdictions Openfund targets (GLOBAL and IRAN regions)? | Yes | **Not approved — blocks** | Legal counsel (to be appointed by `algomanlife`) |
 | C2 | Provider permission | Do Gains' terms permit a third-party interface? What obligations apply (referrer, branding, disclosures)? | Yes | **Not approved — blocks** | Owner (`algomanlife`) with Gains |
-| C3 | Eligibility verification | What verification is required (self-attestation, KYC, screening)? IP and locale are never proof | Yes | **Not approved — blocks** | Legal counsel |
+| C3 | Eligibility verification | What verification is required (self-attestation or screening; no KYC per ADR 0065)? IP and locale are never proof | Yes | **Not approved — blocks** | Legal counsel |
 | C4 | Minimum age | At least 18 (Gains) and the local age of majority. How is it enforced? | Yes | **Not approved — blocks** | Legal counsel |
 | C5 | Restricted jurisdictions and sanctions | Restricted list, screening provider, re-screening cadence | Yes | **Not approved — blocks** | Legal counsel + engineering |
 | C6 | User changes location | When to re-check; what happens to open positions (reads stay available; new writes are blocked) | Yes | **Not approved — blocks** | Legal counsel |

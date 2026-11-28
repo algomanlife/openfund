@@ -99,7 +99,9 @@ const digest = page => page.locator('.solar-canvas').evaluate(c => {
     for (const [selector,target] of [['.solar-buy',/\/fa\/checkout$/],['.solar-rules',/\/fa\/rulebook$/]]) {
       await page.goto(BASE+'/fa/home'); await page.locator(selector).click(); await page.waitForURL(target);
       check(`${selector} opens ${target}`, target.test(page.url()));
-      check(`${selector}: leaving the gateway unlocks scrolling`, await page.evaluate(()=>!document.documentElement.classList.contains('of-gateway-locked')));
+      /* the URL changes before a lazy route has rendered: wait for the gateway to unmount */
+      const unlocked = await page.waitForFunction(()=>!document.documentElement.classList.contains('of-gateway-locked'), null, {timeout:10000}).then(()=>true, ()=>false);
+      check(`${selector}: leaving the gateway unlocks scrolling`, unlocked);
     }
     await page.goto(BASE+'/fa/home');
     await page.locator('.of-language-select').first().waitFor({ state: 'attached' });

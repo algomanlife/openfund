@@ -60,5 +60,5 @@ alone does not resolve these points.
    public GitHub repository plus release tags satisfy it.
 3. Compatibility of the AGPL frontend with any first-party license the owner
    chooses.
-4. The licensing and provenance of the Pine indicator sources in `indicators/`
-   (see [Licensing › Pine indicator sources](LICENSING.md#pine-indicator-sources)).
+4. Resolved: the Pine indicator sources in `indicators/` are owned by Openfund
+   and open source (see [Licensing › Pine indicator sources](LICENSING.md#pine-indicator-sources)).

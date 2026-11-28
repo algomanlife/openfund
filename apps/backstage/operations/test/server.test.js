@@ -256,7 +256,7 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
   const user = randomUUID(), challenge = randomUUID()
   for (const [path, body, expected] of [
     [`/api/userNotes/${user}`, { action: 'add', note: 'Called about payout timing.' }, `/admin/console/users/${user}/notes`],
-    [`/api/userTags/${user}`, { action: 'set', tags: 'vip, kyc-pending', reason: 'review' }, `/admin/console/users/${user}/tags`],
+    [`/api/userTags/${user}`, { action: 'set', tags: 'vip, onboarding', reason: 'review' }, `/admin/console/users/${user}/tags`],
     [`/api/challengeActions/${challenge}`, { action: 'extend', days: 5, reason: 'outage' }, `/admin/console/challenges/${challenge}/action`],
     ['/api/entitlements/new', { action: 'issue', walletAddress: '0x' + 'ab'.repeat(20), planSlug: 'standard', accountSizeUsd: 10000, reason: 'goodwill' }, '/admin/console/entitlements'],
     ['/api/plans/standard', { action: 'retire', reason: 'replaced' }, '/admin/console/plans/standard/retire'],
@@ -265,7 +265,7 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
     assert.equal((await call(path, { ...body, password }, headers)).status, 200, path)
     assert.equal(calls.at(-1).path, expected, path)
   }
-  assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/tags')).body).tags, ['vip', 'kyc-pending'])
+  assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/tags')).body).tags, ['vip', 'onboarding'])
   assert.equal((await call(`/api/userTags/${user}`, { action: 'set', tags: 'Bad Tag', reason: 'x', password }, headers)).status, 400)
   assert.equal((await call(`/api/challengeActions/${challenge}`, { action: 'extend', days: 500, reason: 'x', password }, headers)).status, 400)
   assert.equal((await call(`/api/challengeActions/${challenge}`, { action: 'rewrite_balance', reason: 'x', password }, headers)).status, 400)
@@ -286,7 +286,7 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
     [`/api/tournaments/${slug}`, { action: 'finalize', reason: 'all accounts settled' }, `/admin/tournaments/${slug}/finalize`],
     [`/api/tournaments/${slug}`, { action: 'issueAwards', reason: 'standings reviewed' }, `/admin/tournaments/${slug}/awards/issue`],
     [`/api/tournamentEntries/${entry}`, { action: 'disqualify', slug, reason: 'mirrored opposite trades' }, `/admin/tournaments/${slug}/registrations/${entry}/disqualify`],
-    [`/api/tournamentAwards/${award}`, { action: 'update', slug, status: 'fulfilled', note: 'paid after KYC', reason: 'payment sent' }, `/admin/tournaments/${slug}/awards/${award}`],
+    [`/api/tournamentAwards/${award}`, { action: 'update', slug, status: 'fulfilled', note: 'paid to the winner wallet', reason: 'payment sent' }, `/admin/tournaments/${slug}/awards/${award}`],
   ]) {
     assert.equal((await call(path, body, headers)).status, 401, `${path} requires the password`)
     assert.equal((await call(path, { ...body, password }, headers)).status, 200, path)
@@ -304,9 +304,11 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
   assert.equal((await call(`/api/migrations/${migration}`, undefined, headers)).status, 200)
   assert.equal(calls.at(-1).path, `/admin/migration/requests/${migration}`)
   for (const [path, body, expected] of [
-    [`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: 50000, kycVerified: true, nameMatched: true, reason: 'three payouts verified' }, `/admin/migration/requests/${migration}/decide`],
+    [`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: 50000, reason: 'three payouts verified' }, `/admin/migration/requests/${migration}/decide`],
     [`/api/migrations/${migration}`, { action: 'reject', reason: 'statements do not match the firm' }, `/admin/migration/requests/${migration}/decide`],
     [`/api/migrationPasses/${migrationPass}`, { action: 'revoke', reason: 'issued in error' }, `/admin/migration/passes/${migrationPass}/revoke`],
+    [`/api/airdrop/${migration}`, { action: 'approve', reason: 'two public posts verified' }, `/admin/airdrop/claims/${migration}/decide`],
+    [`/api/airdrop/${migration}`, { action: 'paid', reason: 'sent from the Safe', txHash: '0x' + 'a'.repeat(64) }, `/admin/airdrop/claims/${migration}/decide`],
     ['/api/migrationFirms/new', { action: 'save', name: 'Example Firm', reason: 'owner request' }, '/admin/migration/firms'],
     ['/api/migrationFirms/new', { action: 'settings', minPayouts: 3, windowMonths: 12, reason: 'policy review' }, '/admin/migration/settings'],
   ]) {
@@ -314,8 +316,9 @@ test('operations sections: reads, table-driven mutations, validation, step-up an
     assert.equal((await call(path, { ...body, password }, headers)).status, 200, path)
     assert.equal(calls.at(-1).path, expected, path)
   }
-  assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/decide')).body), { decision: 'approve', reason: 'three payouts verified', approvedMaxSizeUsd: 50000, kycVerified: true, nameMatched: true })
+  assert.deepEqual(JSON.parse(calls.find(c => c.path.endsWith('/decide')).body), { decision: 'approve', reason: 'three payouts verified', approvedMaxSizeUsd: 50000 })
   assert.equal((await call(`/api/migrations/${migration}`, { action: 'approve', approvedMaxSizeUsd: -1, reason: 'x', password }, headers)).status, 400)
+  assert.equal((await call(`/api/airdrop/${migration}`, { action: 'paid', reason: 'sent', password }, headers)).status, 400, 'paid needs the on-chain hash')
   assert.equal((await call(`/api/migrations/${migration}`, { action: 'autoApprove', reason: 'x', password }, headers)).status, 400, 'no other actions exist')
 })
 

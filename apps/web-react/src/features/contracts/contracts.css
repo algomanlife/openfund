@@ -16,3 +16,42 @@
 .information-page .of-contract-address { font-variant-numeric: tabular-nums; font-size: 13px; overflow-wrap: anywhere; letter-spacing: .02em; }
 .information-page .of-contract-links { display: flex; flex-wrap: wrap; gap: 16px; }
 @media (max-width: 760px) { .information-page .of-contract-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* hero motion: a certificate seal mints records into a moving chain; the ledger fills below */
+.information-page .cm-scene { width: 100%; max-width: 540px; height: auto; display: block; margin-inline: auto; color: var(--green, #82e7bd); overflow: visible; }
+.cm-scene .cm-halo { animation: cm-pulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.cm-scene .cm-hex { fill: color-mix(in srgb, #12965d 85%, #000); stroke: #82e7bd; stroke-width: 2; }
+.cm-scene .cm-hex-inner { fill: none; stroke: #c9f5df; stroke-opacity: .45; stroke-width: 1.2; }
+.cm-scene .cm-check { fill: none; stroke: #eafff4; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 46; animation: cm-draw 2.4s ease-in-out infinite; }
+.cm-scene .cm-ribbon { fill: #0f7a4b; stroke: #82e7bd; stroke-opacity: .5; stroke-width: 1; }
+.cm-scene .cm-beam { stroke: #82e7bd; stroke-width: 2; stroke-dasharray: 4 6; animation: cm-flow .8s linear infinite; opacity: .7; }
+.cm-scene .cm-packet { fill: #eafff4; filter: drop-shadow(0 0 4px #82e7bd); opacity: 0; animation: cm-drop 2.4s ease-in infinite; }
+.cm-scene .cm-rail { stroke: color-mix(in srgb, var(--text, #e8f1ec) 20%, transparent); stroke-width: 1; }
+.cm-scene .cm-track { animation: cm-slide 2.4s linear infinite; }
+.cm-scene .cm-front { fill: color-mix(in srgb, #12965d 55%, var(--surface, #0d1511)); stroke: #82e7bd; stroke-opacity: .6; stroke-width: 1.2; }
+.cm-scene .cm-top { fill: color-mix(in srgb, #82e7bd 55%, var(--surface, #0d1511)); }
+.cm-scene .cm-side { fill: color-mix(in srgb, #0b4d31 80%, var(--surface, #0d1511)); }
+.cm-scene .cm-hash { stroke: #c9f5df; stroke-opacity: .55; stroke-width: 2; stroke-linecap: round; }
+.cm-scene .cm-link { stroke: #82e7bd; stroke-opacity: .55; stroke-width: 3; stroke-dasharray: 6 4; }
+.cm-scene .cm-slot { fill: none; stroke: #f2c14e; stroke-width: 2; stroke-dasharray: 6 5; animation: cm-slot 2.4s ease-in-out infinite; }
+.cm-scene .cm-panel { fill: color-mix(in srgb, var(--surface, #0d1511) 80%, transparent); stroke: var(--line, #ffffff1a); }
+.cm-scene .cm-ledger-title { fill: var(--body, #a5b9ae); font-size: 12px; }
+.cm-scene .cm-row { opacity: .15; animation: cm-row 3.6s ease-in-out infinite; }
+.cm-scene .cm-dot.is-open { fill: #2bb57a; }
+.cm-scene .cm-dot.is-close { fill: #f08a6c; }
+.cm-scene .cm-bar { fill: color-mix(in srgb, var(--text, #e8f1ec) 35%, transparent); }
+.cm-scene .cm-bar.is-faint { fill: color-mix(in srgb, var(--text, #e8f1ec) 16%, transparent); }
+.cm-scene .cm-bar.is-value { fill: #82e7bd; opacity: .75; }
+@keyframes cm-pulse { 0%, 100% { transform: scale(.92); opacity: .7; } 50% { transform: scale(1.06); opacity: 1; } }
+@keyframes cm-draw { 0% { stroke-dashoffset: 46; } 40%, 100% { stroke-dashoffset: 0; } }
+@keyframes cm-flow { to { stroke-dashoffset: -10; } }
+@keyframes cm-drop { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(70px); } }
+@keyframes cm-slide { from { transform: translateX(0); } to { transform: translateX(-86px); } }
+@keyframes cm-slot { 0%, 100% { stroke-opacity: .35; } 50% { stroke-opacity: 1; } }
+@keyframes cm-row { 0%, 100% { opacity: .2; } 30%, 70% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .cm-scene .cm-halo, .cm-scene .cm-check, .cm-scene .cm-beam, .cm-scene .cm-track, .cm-scene .cm-slot, .cm-scene .cm-row { animation: none; }
+  .cm-scene .cm-check { stroke-dashoffset: 0; }
+  .cm-scene .cm-row { opacity: 1; }
+  .cm-scene .cm-packet { animation: none; opacity: 0; }
+}

@@ -59,7 +59,9 @@ test('every rule section has matching bilingual content and unique anchors', () 
     }
   }
   ruleSections.forEach(check)
-  for (const id of ['configurations', 'stages', 'targets', 'daily-loss', 'maximum-loss', 'violations', 'identity', 'fees', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
+  for (const id of ['configurations', 'stages', 'targets', 'daily-loss', 'maximum-loss', 'violations', 'fees', 'practices']) assert.equal(ruleSections.find(s => s.id === id).status, 'draft')
+  /* ADR 0065: no KYC is decided; the identity section is current */
+  assert.equal(ruleSections.find(s => s.id === 'identity').status, 'current')
   /* ADR 0062: the request-based Free Trial is operational */
   assert.equal(ruleSections.find(s => s.id === 'free-trial').status, 'current')
   /* v0.3.1: the evaluation path (purchase → start → live rules) is operational */

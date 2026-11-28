@@ -446,17 +446,22 @@ def main():
     # ---------------- legal_documents --------------------------------------
     ensure_collection('legal_documents', {'sort_field': 'sort', 'icon': 'gavel', 'note': 'اسناد حقوقی و سلب مسئولیت — نسخه‌دار'})
     ensure_field('legal_documents', 'sort', 'integer', meta={'interface': 'input', 'hidden': True}, schema={'default_value': 0})
+    LEGAL_DOC_CHOICES = {'choices': [
+        {'text': 'Important information & disclaimer', 'value': 'overview'},
+        {'text': 'Simulated trading environment', 'value': 'simulated-environment'},
+        {'text': 'No investment services', 'value': 'no-investment-services'},
+        {'text': 'General risk warning', 'value': 'general-risk'},
+        {'text': 'Corporate information & access', 'value': 'corporate'},
+        {'text': 'Offices', 'value': 'offices'},
+        {'text': 'Hosting & infrastructure note', 'value': 'hosting'},
+        {'text': 'Premium League terms', 'value': 'tournament-terms'},
+        # /:locale/terms and /:locale/privacy: a published row replaces the built-in copy
+        {'text': 'Terms of Use', 'value': 'terms'},
+        {'text': 'Privacy Policy', 'value': 'privacy'},
+    ]}
     ensure_field('legal_documents', 'doc_type', 'string',
-        meta={'interface': 'select-dropdown', 'options': {'choices': [
-            {'text': 'Important information & disclaimer', 'value': 'overview'},
-            {'text': 'Simulated trading environment', 'value': 'simulated-environment'},
-            {'text': 'No investment services', 'value': 'no-investment-services'},
-            {'text': 'General risk warning', 'value': 'general-risk'},
-            {'text': 'Corporate information & access', 'value': 'corporate'},
-            {'text': 'Offices', 'value': 'offices'},
-            {'text': 'Hosting & infrastructure note', 'value': 'hosting'},
-            {'text': 'Premium League terms', 'value': 'tournament-terms'},
-        ]}, 'required': True}, schema={'default_value': 'overview'})
+        meta={'interface': 'select-dropdown', 'options': LEGAL_DOC_CHOICES, 'required': True}, schema={'default_value': 'overview'})
+    update_field_meta('legal_documents', 'doc_type', {'options': LEGAL_DOC_CHOICES})
     ensure_field('legal_documents', 'version', 'string', meta={'interface': 'input', 'note': 'مثال: 2026-11'}, schema={'default_value': '2026-11'})
     ensure_field('legal_documents', 'effective_date', 'date', meta={'interface': 'datetime'}, schema={})
     ensure_field('legal_documents', 'status', 'string',

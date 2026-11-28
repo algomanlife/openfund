@@ -86,7 +86,7 @@ export const MEGA_DESCRIPTIONS: Record<string, { en: string; fa: string }> = {
   about: text('Who we are and how we work.', 'ما که هستیم و چگونه کار می‌کنیم.'),
   contact: text('Reach support, legal and technical teams.', 'تماس با پشتیبانی، واحد حقوقی و فنی.'),
   'bug-bounty': text('Report a vulnerability and get rewarded.', 'آسیب‌پذیری را گزارش کن و جایزه بگیر.'),
-  airdrop: text('Openfund airdrop: details coming soon.', 'ایردراپ اوپن‌فاند؛ جزئیات به‌زودی.'),
+  airdrop: text('Cash rewards of $1,000 to $5,000 for challenge buyers.', 'جایزهٔ نقدی ۱٬۰۰۰ تا ۵٬۰۰۰ دلاری برای خریداران چلنج.'),
   'smart-contracts': text('Our contracts on Arbitrum Sepolia, open to verify.', 'قراردادهای ما روی Arbitrum Sepolia، قابل بررسی برای همه.'),
 }
 
