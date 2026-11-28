@@ -256,8 +256,8 @@ body:has(.openfund-header) main { overflow-x:clip; }
    columns under headings (four columns, two on tablets and phones). A light
    sweep runs along the top edge and a slow orbit circles the mark. */
 .openfund-header ~ footer, .information-page footer { position:relative; overflow:hidden; }
-.openfund-header ~ footer::before, .information-page footer::before { content:""; position:absolute; inset-inline:0; top:-1px; height:1px; pointer-events:none;
-  background:linear-gradient(90deg, transparent, var(--green,#82e7bd) 45%, #f2c14e 55%, transparent); background-size:40% 100%; background-repeat:no-repeat; animation:of-footer-sweep 9s linear infinite; opacity:.8; }
+.openfund-header ~ footer::before, .information-page footer::before { content:""; position:absolute; left:0; top:-1px; width:40%; height:1px; pointer-events:none;
+  background:linear-gradient(90deg, transparent, var(--green,#82e7bd) 45%, #f2c14e 55%, transparent); animation:of-footer-sweep 9s linear infinite; opacity:.8; will-change:transform; }
 .openfund-header ~ footer .footer-top, .information-page footer .footer-top { display:grid !important; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:28px 24px; }
 .openfund-header ~ footer .footer-top>.brand, .information-page footer .footer-top>.brand { position:relative; isolation:isolate; }
 .openfund-header ~ footer .footer-top>.brand::after, .information-page footer .footer-top>.brand::after { content:""; position:absolute; z-index:-1; inset-block-start:50%; inset-inline-start:15px; width:64px; height:64px; margin:-32px 0 0 -32px;
@@ -273,7 +273,7 @@ footer #footer-links .of-footer-col a:hover, footer #footer-links .of-footer-col
 footer #footer-links .of-footer-col a[aria-current=page] { color:var(--green,#82e7bd); }
 @media(max-width:900px) { .openfund-header ~ footer #footer-links, footer #footer-links { grid-template-columns:repeat(2, minmax(0,1fr)); } }
 @media(max-width:420px) { .openfund-header ~ footer .footer-top, .information-page footer .footer-top { grid-template-columns:minmax(0,1fr); } }
-@keyframes of-footer-sweep { from { background-position:-40% 0 } to { background-position:140% 0 } }
+@keyframes of-footer-sweep { from { transform:translateX(-100%) } to { transform:translateX(250%) } }
 @keyframes of-footer-orbit { to { transform:rotate(360deg) } }
 @keyframes of-footer-rise { from { transform:translateY(10px) } to { transform:none } }
 html[data-theme=light] footer #footer-links .of-footer-col > b { color:#0d1f16; border-bottom-color:#0d1f161f; }
