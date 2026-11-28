@@ -39,10 +39,12 @@ html.of-gateway-locked { overscroll-behavior: none; }
   padding-inline: max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
 }
 .solar-gateway .solar-actions .button {
-  min-height: 48px; min-width: 0; flex: 0 1 220px;
-  justify-content: center; text-align: center; white-space: nowrap;
+  min-height: 48px; flex: 0 0 auto; width: max-content; min-width: max-content; max-width: none;
+  justify-content: center; text-align: center; white-space: nowrap; overflow: visible;
   padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
 }
+/* the shared button sheen is translated outside the box and inflates scrollWidth */
+.solar-gateway .solar-actions .button::before { content: none; display: none; }
 .solar-gateway .solar-actions .solar-rules {
   background: color-mix(in srgb, #06110c 55%, transparent);
   border: 1px solid color-mix(in srgb, var(--mint, #82e7bd) 55%, transparent);
@@ -55,7 +57,7 @@ html:is([lang=fa], [lang=ar]) .solar-gateway .solar-actions .button { font-famil
 /* small phones: the two buttons share the row */
 @media (max-width: 420px) {
   .solar-gateway .solar-actions { gap: 10px; }
-  .solar-gateway .solar-actions .button { flex: 1 1 0; padding-inline: 12px; font-size: 14px; }
+  .solar-gateway .solar-actions .button { flex: 1 1 auto; width: auto; white-space: normal; overflow-wrap: anywhere; padding-inline: 10px; font-size: 14px; }
 }
 /* short landscape screens: keep the buttons clear of the planets */
 @media (max-height: 460px) and (orientation: landscape) {

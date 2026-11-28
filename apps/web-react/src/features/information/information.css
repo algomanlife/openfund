@@ -290,8 +290,14 @@ html:is([lang=ru],[lang=zh-CN]) .information-page .info-hero h1,.info-main[lang=
 :root .openfund-header.nav-overflow .nav > .brand { flex: 0 0 auto; }
 :root .openfund-header.nav-overflow .nav-actions { margin-inline-start: auto; flex: 0 0 auto; }
 :root .openfund-header.nav-overflow .nav-actions .menu { display: inline-flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 5px; }
-/* staged by fitNavigation from real widths (long locales, wallet states) */
-:root .openfund-header.nav-overflow.nav-tight .nav-actions .nav-cta { display: none; }
+/* staged by fitNavigation from real widths (long locales, wallet states).
+   The terminal entry stays on the header: it becomes an icon button so the
+   row can fit, instead of leaving the header. */
+:root .openfund-header.nav-overflow.nav-tight .nav-actions .nav-cta {
+  display: inline-flex; font-size: 0; gap: 0; width: var(--hc-h, 36px); min-width: var(--hc-h, 36px);
+  padding-inline: 0; justify-content: center;
+}
+:root .openfund-header.nav-overflow.nav-tight .nav-actions .nav-cta svg { width: 16px; height: 16px; flex: none; }
 :root .openfund-header.nav-overflow.nav-tighter .nav-actions :is(#language-slot, .language-slot, .theme-toggle) { display: none; }
 @media (max-width: 600px) {
   /* the two-row phone header stays only for the menu-less product gateway */

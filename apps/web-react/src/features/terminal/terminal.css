@@ -877,9 +877,15 @@ html[data-theme="light"] body:has(.of-terminal) {
 .of-terminal-compact .of-terminal-more > summary {
   display: flex; align-items: center; height: 100%; padding: 0 10px; font-size: 12px;
   line-height: 1.4; white-space: nowrap; border-bottom: 2px solid transparent;
+  flex: 0 0 auto; min-width: 24px; min-height: 24px;
 }
 .of-terminal-compact #terminal-navigation > a.active { border-color: var(--of-mint); }
-.of-terminal-more { position: relative; }
+.of-terminal-more { position: relative; flex: 0 0 auto; }
+/* When the inline tabs no longer fit (long locales, the gateway link), the
+   same menu trigger used below 1100px replaces them. TerminalShell sets the
+   class from the measured row. */
+.of-terminal-compact.of-nav-collapsed #terminal-navigation { display: none; }
+.of-terminal-compact.of-nav-collapsed .of-terminal-menu-trigger { display: inline-flex; }
 .of-terminal-more > summary { list-style: none; cursor: pointer; gap: 6px; }
 .of-terminal-more > summary::-webkit-details-marker { display: none; }
 .of-terminal-more > summary:focus-visible { outline: 2px solid var(--of-mint); outline-offset: -3px; }
