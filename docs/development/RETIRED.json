@@ -211,7 +211,7 @@
       "kind": "code",
       "status": "retired",
       "retiredSince": "2026-11-28",
-      "replacement": "One-screen Openfund gateway: an animated solar-system scene with two actions, Buy a challenge and Trading rules (`apps/web-react/src/features/home/solarScene.ts`)",
+      "replacement": "One-screen Openfund gateway: an animated solar-system scene under the hero line with three actions, Start trading, Buy a challenge and Trading rules (`apps/web-react/src/features/home/solarScene.ts`)",
       "note": "Owner decision. The Home content row in Directus keeps only its SEO title and description in use; the product-card fields are no longer rendered.",
       "gate": {
         "files": [
