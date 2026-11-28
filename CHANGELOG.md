@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **Gateway hero and Start trading.** The Openfund gateway shows the hero line "Your trading story starts here…" with "Every market alongside every tool / All of it on one platform" directly on the scene, and a third action, Start trading, opens the terminal. Planets start scattered (never in one row), orbit about six times faster, rocks stream faster still, and planets carry a soft halo and depth haze so they sit in the scene.
+- **Mega menu placement on wide screens.** The panel was measured before it was shown, so on wide screens it opened right of the header (most visible on the gateway); it is now centred after it opens.
+- **Footer in grouped columns.** Destinations sit under four headings (Trading challenges, Markets and economy, Resources, Openfund with Terms and Privacy) instead of one long list; a light sweep runs along the top edge and a slow orbit circles the mark.
 - **Terms of Use and Privacy Policy.** New pages `/:locale/terms` and `/:locale/privacy` in Persian, English, Arabic, Russian and Chinese, linked from every footer; a published Directus version replaces the built-in text.
 - **No KYC (ADR 0065).** Openfund does not ask for or verify identity documents: the wallet owner is the account owner, and rewards, prizes and refunds go only to that wallet. Migration review drops the identity document and the KYC/name-match step; the rulebook, Premium League terms, learning path and Backstage say the same.
 - **Indicator ownership settled (ADR 0066).** Openfund owns Open Algo V5, Price Action Concepts and Smart Money Concepts and their libraries and publishes them as open source: Apache-2.0 headers and `indicators/LICENSE`; `smc-v1.pine` keeps its CC BY-NC-SA 4.0 notice. The earlier provenance review is kept as a historical record.

@@ -220,7 +220,7 @@ async function walletDisclosureFits(page){
    check(prefix+' Home native surfaces',await nativeSurfaces(page,'html,body,header,.home-panel,.hero-account,.account-card,.model-card,.feature-card',theme));
    await whiteCanvas(page,'html,body,#root,main,.home-gateway',theme);
    await readableText(page,PUBLIC_TEXT,theme);
-   check(prefix+' Home actions',await page.locator('.solar-actions .button').count()===2);
+   check(prefix+' Home actions',await page.locator('.solar-actions .button').count()===3);
    check(prefix+' Home navigation',await page.locator('header #navigation').count()===1);
    check(prefix+' Home is one screen',await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+1&&document.documentElement.scrollWidth<=innerWidth+1));
    if(connected)check(prefix+' wallet dropdown actions fit and Escape closes',await walletDisclosureFits(page));

@@ -213,7 +213,7 @@ async function realThemeClicks(browser) {
     await page.evaluate(() => document.fonts.ready);
     check('Persian Home has no footer', await page.locator('footer').count() === 0);
     check('Persian Home has no Instagram promo', await page.locator('.instagram-community').count() === 0);
-    check('Persian Home is the one-screen gateway with two actions', await page.locator('.solar-actions .button').count() === 2 &&
+    check('Persian Home is the one-screen gateway with three actions', await page.locator('.solar-actions .button').count() === 3 &&
       await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1));
     await shot(page, 'home-fa', '/fa/home');
     await page.close();
@@ -226,10 +226,10 @@ async function realThemeClicks(browser) {
           actions: document.querySelectorAll('.solar-actions .button').length,
           footers: document.querySelectorAll('footer').length,
         };
-        return state.lang === 'en' && state.footers === 0 && state.actions === 2 ? state : false;
+        return state.lang === 'en' && state.footers === 0 && state.actions === 3 ? state : false;
       }, null, { timeout: 30000 });
       const homeState = await ready.jsonValue();
-      check(`English Home shows the gateway without a footer: ${JSON.stringify(homeState)}`, homeState.actions === 2 && homeState.footers === 0);
+      check(`English Home shows the gateway without a footer: ${JSON.stringify(homeState)}`, homeState.actions === 3 && homeState.footers === 0);
     } finally { await englishHome.close(); }
     // These are direct-entry checks, not transition checks. Isolate each entry
     // from the preceding legacy Landing teardown's scheduled document reload.

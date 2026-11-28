@@ -49,9 +49,13 @@ const digest = page => page.locator('.solar-canvas').evaluate(c => {
         const strip = document.querySelector('.bitpin-ticker')?.getBoundingClientRect().height || 0;
         const buttons = [...document.querySelectorAll('.solar-actions .button')].map(e => { const r = e.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height, text: e.textContent.trim(),
           clipped: e.scrollWidth > e.clientWidth + 1 } });
-        const overlap = buttons.length === 2 && !(buttons[0].r <= buttons[1].l || buttons[1].r <= buttons[0].l || buttons[0].b <= buttons[1].t || buttons[1].b <= buttons[0].t);
+        const hit = (a, b) => !(a.r <= b.l || b.r <= a.l || a.b <= b.t || b.b <= a.t);
+        const overlap = buttons.some((a, i) => buttons.slice(i + 1).some(b => hit(a, b)));
+        const heroBox = document.querySelector('.solar-hero h1')?.getBoundingClientRect();
+        const hero = heroBox && { l: heroBox.left, r: heroBox.right, t: heroBox.top, b: heroBox.bottom };
+        const heroClear = !!hero && buttons.every(b => !hit(hero, b));
         return { width: innerWidth, height: innerHeight, scrollWidth: document.documentElement.scrollWidth, scrollHeight: document.documentElement.scrollHeight,
-          bodyScroll: document.body.scrollHeight - innerHeight, stageTop: stage.top, stageBottom: stage.bottom, headerBottom: header.bottom, strip, buttons, overlap,
+          bodyScroll: document.body.scrollHeight - innerHeight, stageTop: stage.top, stageBottom: stage.bottom, headerBottom: header.bottom, strip, buttons, overlap, hero, heroClear,
           footerCount: document.querySelectorAll('footer').length, dir: document.documentElement.dir,
           canvas: (() => { const c = document.querySelector('.solar-canvas').getBoundingClientRect(); return { w: c.width, h: c.height } })(),
           nav: !!document.querySelector('header #navigation, header .menu, header .of-mobile-menu') };
@@ -61,9 +65,10 @@ const digest = page => page.locator('.solar-canvas').evaluate(c => {
       check(`${tag} one screen: nothing scrolls`, geometry.scrollWidth <= width + 1 && geometry.scrollHeight <= height + 1);
       check(`${tag} stage sits between the header and the price strip`, Math.abs(geometry.stageTop - geometry.headerBottom) <= 1 && Math.abs(geometry.stageBottom - (height - geometry.strip)) <= 1);
       check(`${tag} canvas fills the stage`, Math.abs(geometry.canvas.w - width) <= 1 && Math.abs(geometry.canvas.h - (geometry.stageBottom - geometry.stageTop)) <= 1);
-      check(`${tag} two actions inside the stage`, geometry.buttons.length === 2 && geometry.buttons.every(b => b.l >= -.5 && b.r <= width + .5 && b.t >= geometry.stageTop - .5 && b.b <= geometry.stageBottom + .5));
+      check(`${tag} three actions inside the stage`, geometry.buttons.length === 3 && geometry.buttons.every(b => b.l >= -.5 && b.r <= width + .5 && b.t >= geometry.stageTop - .5 && b.b <= geometry.stageBottom + .5));
       check(`${tag} actions do not overlap or clip`, !geometry.overlap && geometry.buttons.every(b => !b.clipped));
       check(`${tag} 44px action targets`, geometry.buttons.every(b => b.w >= 44 && b.h >= 42));
+      check(`${tag} hero line inside the stage and clear of the actions`, geometry.heroClear && geometry.hero.t >= geometry.stageTop - .5 && geometry.hero.l >= -.5 && geometry.hero.r <= width + .5);
       check(`${tag} no footer on the gateway`, geometry.footerCount === 0);
       check(`${tag} site navigation present`, geometry.nav);
       check(`${tag} direction`, geometry.dir === (locale === 'en' ? 'ltr' : 'rtl'));
@@ -96,7 +101,7 @@ const digest = page => page.locator('.solar-canvas').evaluate(c => {
     const q1 = await digest(quiet); await quiet.waitForTimeout(900); const q2 = await digest(quiet);
     check('reduced motion draws one still frame', q1.lit > 20 && q1.sum === q2.sum);
     await still.close();
-    for (const [selector,target] of [['.solar-buy',/\/fa\/checkout$/],['.solar-rules',/\/fa\/rulebook$/]]) {
+    for (const [selector,target] of [['.solar-buy',/\/fa\/checkout$/],['.solar-rules',/\/fa\/rulebook$/],['.solar-trade',/\/fa\/prop\/trade$/]]) {
       await page.goto(BASE+'/fa/home'); await page.locator(selector).click(); await page.waitForURL(target);
       check(`${selector} opens ${target}`, target.test(page.url()));
       /* the URL changes before a lazy route has rendered: wait for the gateway to unmount */
@@ -106,7 +111,7 @@ const digest = page => page.locator('.solar-canvas').evaluate(c => {
     await page.goto(BASE+'/fa/home');
     await page.locator('.of-language-select').first().waitFor({ state: 'attached' });
     await toggleLanguage(page); await page.waitForFunction(()=>document.documentElement.lang==='en'); await page.locator('.solar-gateway').waitFor();
-    check('English gateway', page.url().includes('/en/home') && await page.locator('.solar-actions .button').count()===2);
+    check('English gateway', page.url().includes('/en/home') && await page.locator('.solar-actions .button').count()===3);
     await toggleLanguage(page); await page.waitForFunction(()=>document.documentElement.lang==='fa'); await page.locator('.solar-gateway').waitFor();
     check('language round trip returns the Persian gateway', page.url().includes('/fa/home'));
     const touch = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true}); await fixture(touch);

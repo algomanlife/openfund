@@ -76,7 +76,7 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
       check(`Home ${locale} ${width}: site navigation with terminal access`,await page.locator('header #navigation').count()===1 && await page.locator('header .nav-cta').count()===1)
       const navLinks=await page.locator('header #navigation a').evaluateAll(links=>links.map(a=>a.getAttribute('href')))
       check(`Home ${locale} ${width}: navigation stays localized`,navLinks.length>0&&navLinks.every(href=>!href||!href.startsWith('/')||href.startsWith(`/${locale}/`)||href==='/terminal'))
-      check(`Home ${locale} ${width}: actions scoped`,await page.locator('.solar-buy').getAttribute('href')===`/${locale}/checkout`&&await page.locator('.solar-rules').getAttribute('href')===`/${locale}/rulebook`)
+      check(`Home ${locale} ${width}: actions scoped`,await page.locator('.solar-buy').getAttribute('href')===`/${locale}/checkout`&&await page.locator('.solar-rules').getAttribute('href')===`/${locale}/rulebook`&&await page.locator('.solar-trade').getAttribute('href')===`/${locale}/prop/trade`)
       check(`Home ${locale} ${width}: one screen, no overflow`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1&&document.documentElement.scrollHeight<=innerHeight+1))
       check(`Home ${locale} ${width}: scene behind the actions`,await page.locator('.solar-canvas').evaluate(el=>getComputedStyle(el).position==='absolute')&&await page.locator('.solar-actions').evaluate(el=>getComputedStyle(el).zIndex==='2'))
       await page.screenshot({path:path.join(OUT,`home-${locale}-${width}.png`)})

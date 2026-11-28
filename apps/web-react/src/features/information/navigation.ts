@@ -16,6 +16,13 @@ const challengeGroup = ['challenges', 'checkout', 'trading-objectives', 'labs', 
  *  Referral & Rewards (formerly "Growth Partner" under Resources; same /referral page). */
 const economy = ['governance', 'ambassador', 'transparency', 'revenue-model', 'live-market-access', 'referral'] as const
 const resources = ['faq', 'learn', 'tools', 'apps', 'roadmap', 'developers', 'certificate-verification', 'about', 'contact', 'bug-bounty', 'smart-contracts'] as const
+/** footer columns (headings and destinations); the order follows the menu */
+const FOOTER_COLUMNS: ReadonlyArray<readonly [string, { fa: string; en: string }, readonly string[]]> = [
+  ['challenges', text('Trading challenges', 'چلنج‌های معاملاتی'), [...challengeGroup]],
+  ['markets', text('Markets and economy', 'بازارها و اقتصاد'), [...primary, ...economy]],
+  ['resources', text('Resources', 'منابع'), [...resources.filter(r => !['about', 'contact'].includes(r)), 'glossary']],
+  ['company', text('Openfund', 'اوپن‌فاند'), ['about', 'contact', 'terms', 'privacy']],
+]
 /** Website-owned labels that win over a stale CMS navigation/footer label. */
 const FIXED_LABELS = new Set(['referral'])
 /** footer "Openfund documents" entries */
@@ -245,18 +252,31 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   const footer = root.querySelector('#footer-links')
   if (footer) {
     (footer as HTMLElement).dataset.localeOwned = 'react'
-    const defaults = [...challengeGroup, ...primary, ...economy, ...resources, 'glossary' as const, 'terms' as const, 'privacy' as const].map(route => ({ destination: route, label: navigationLabels[route] }))
+    /* grouped columns, in the menu's order; a CMS footer row joins the column
+       that owns its destination (Resources otherwise), never duplicated */
+    const columns = FOOTER_COLUMNS.map(([id, heading, routes]) => ({ id, heading, items: routes.map(route => ({ destination: route as string, label: navigationLabels[route as keyof typeof navigationLabels] as { fa: string; en: string } | undefined })) }))
+    for (const item of footerLinks || []) {
+      const column = columns.find(c => c.items.some(i => i.destination === item.destination)) ?? columns.find(c => c.id === 'resources')!
+      const existing = column.items.find(i => i.destination === item.destination)
+      if (existing) existing.label = item.label; else column.items.push({ destination: item.destination, label: item.label })
+    }
     const seen = new Set<string>()
     footer.replaceChildren()
-    for (const item of [...(footerLinks || []), ...defaults]) {
-      if (RETIRED_DESTINATIONS.has(item.destination)) continue
-      const href = navigationHref(item.destination, locale)
-      const identity = item.destination === 'accounts-section' ? navigationHref('challenges', locale) : href
-      if (seen.has(identity)) continue
-      seen.add(identity)
-      const a = link(item.destination, item.label)
-      if (item.destination === 'github') { a.target = '_blank'; a.rel = 'noopener' }
-      footer.append(a)
+    for (const column of columns) {
+      const box = document.createElement('div'); box.className = 'of-footer-col'; box.dataset.footerColumn = column.id
+      const title = document.createElement('b'); title.textContent = pickRecord(locale, column.heading)
+      box.append(title)
+      for (const item of column.items) {
+        if (RETIRED_DESTINATIONS.has(item.destination)) continue
+        const href = navigationHref(item.destination, locale)
+        const identity = item.destination === 'accounts-section' ? navigationHref('challenges', locale) : href
+        if (seen.has(identity)) continue
+        seen.add(identity)
+        const a = link(item.destination, item.label)
+        if (item.destination === 'github') { a.target = '_blank'; a.rel = 'noopener' }
+        box.append(a)
+      }
+      footer.append(box)
     }
   }
   root.querySelector('a[href$="downloads/Openfund-brandbook.zip"]')?.setAttribute('href', brandbookUrl)
@@ -280,15 +300,18 @@ function placePanel(group: Element) {
   const panel = group.querySelector<HTMLElement>('.nav-mega')
   if (!panel || group.closest('.openfund-header')?.classList.contains('nav-overflow')) return
   const width = Math.min(1040, document.documentElement.clientWidth - 32)
-  const base = (panel.offsetParent as HTMLElement | null)?.getBoundingClientRect().left || 0
+  const parent = (panel.offsetParent as HTMLElement | null) ?? group.closest<HTMLElement>('.nav-account')
+  const base = parent?.getBoundingClientRect().left || 0
   panel.style.width = `${width}px`
   panel.style.left = `${(document.documentElement.clientWidth - width) / 2 - base}px`
   panel.style.right = 'auto'
 }
 function openGroup(root: ParentNode, group: Element) {
   root.querySelectorAll('.nav-account.resources-open').forEach(other => { if (other !== group) { other.classList.remove('resources-open'); other.querySelector('.resources-toggle')?.setAttribute('aria-expanded', 'false') } })
-  placePanel(group)
+  /* measure once the panel is displayed: a hidden panel has no offsetParent,
+     which shifted it right of the header on wide screens */
   group.classList.add('resources-open')
+  placePanel(group)
   group.querySelector('.resources-toggle')?.setAttribute('aria-expanded', 'true')
   syncScrim(root)
 }

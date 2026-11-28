@@ -178,7 +178,7 @@ function leaks(locale, texts) {
   await page.goto(`${BASE}/ru/perpetual/trade`, { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(4000)
   check('direct entry ru Perpetual stays on Perpetual', new URL(page.url()).pathname === '/ru/perpetual/trade', page.url())
   await page.goto(`${BASE}/ru/home`, { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(2500)
-  check('ru Home shows the two-product gateway', await page.locator('.solar-actions a[href="/ru/checkout"]').count() === 1 && await page.locator('.solar-actions a[href="/ru/rulebook"]').count() === 1)
+  check('ru Home shows the two-product gateway', await page.locator('.solar-actions a[href="/ru/checkout"]').count() === 1 && await page.locator('.solar-actions a[href="/ru/rulebook"]').count() === 1 && await page.locator('.solar-actions a[href="/ru/prop/trade"]').count() === 1)
   await context.close()
   }
 
