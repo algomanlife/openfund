@@ -54,7 +54,10 @@ has been done.
 | 10 | Backstage investigation and refund lifecycle (refund of test 6) | Search finds it; refund recorded, verified on-chain and completed | Backstage | Not started |
 
 Also reconcile the two 2026-11-18 cases (incident report) before calling
-purchases accepted.
+purchases accepted. Test A is re-verified automatically by the payment-recovery
+sweep (`reconcileStrandedPayments`, which also re-runs retryable attempts older
+than the 24-hour recovery window); Test B needs its transaction hash or the
+sending wallet and network.
 
 ## Historical: production state (verified 2026-11-13, superseded)
 
