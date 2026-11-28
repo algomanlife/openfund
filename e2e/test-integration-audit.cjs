@@ -82,7 +82,10 @@ function check(name,value) { assert.ok(value,name); results.push(name); console.
       await page.screenshot({path:path.join(OUT,`home-${locale}-${width}.png`)})
     }
     await page.emulateMedia({reducedMotion:'reduce'})
-    check('Reduced motion stops ambient animation',await page.locator('.landing-network circle').first().evaluate(el=>getComputedStyle(el).animationName)==='none')
+    await page.waitForTimeout(400)
+    const sceneFrame=()=>page.locator('.solar-canvas').evaluate(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let h=0;for(let i=0;i<d.length;i+=4*101)h=(h*31+d[i]+d[i+1]*7+d[i+2]*13)%1e9;return h})
+    const still1=await sceneFrame();await page.waitForTimeout(700)
+    check('Reduced motion stops the gateway scene',still1===await sceneFrame())
     await page.emulateMedia({reducedMotion:'no-preference'})
     await page.route('**/release-manifest.json',route=>route.fulfill({status:404,json:{error:'not_found'}}))
     await page.goto(`${BASE}/en/prop/dashboard`)

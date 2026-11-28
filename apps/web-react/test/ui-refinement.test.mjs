@@ -288,10 +288,10 @@ test('the public header measures real widths instead of a fixed English-length b
 
 test('Home is the one-screen solar gateway with two actions', () => {
   const home = src('features/home/Home.tsx'), css = src('features/home/home.css')
-  assert.match(home, /startSolarScene\(element, \{ still: reduced\.matches \}\)/)
+  assert.match(home, /startSolarScene\(element, \{ still: reduced\.matches, theme: current \}\)/)
   assert.match(home, /pick\(locale, 'خرید سریع چلنج', 'Buy a challenge'\)/)
   assert.match(home, /pick\(locale, 'قوانین معاملاتی', 'Trading rules'\)/)
-  assert.match(css, /html\.of-gateway-locked, html\.of-gateway-locked body \{ overflow: hidden;/)
+  assert.match(css, /\.home-gateway\.solar-gateway \{\n  position: fixed;/)
   assert.match(css, /top: var\(--gateway-top, 72px\); bottom: var\(--gateway-bottom, 0px\);/)
 })
 
