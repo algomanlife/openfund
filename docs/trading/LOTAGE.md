@@ -1,57 +1,58 @@
-# Lotage
+# Lotage and order size
 
-Status: implemented on branch `agent/claude/checkout-campaign-chart-trading`
-(local verification; not deployed). Decision:
-[ADR 0028](../decisions/0028-manual-payment-treasury-networks-campaign-chart-english-lotage.md).
+Status: implemented (ADR [0064](../decisions/0064-openfund-contract-specifications-and-exact-size-orders.md));
+review and release pending. Supersedes the conventions of ADR 0028.
 
-## What Gains defines
+## Three ways to size an order
 
-Gains Network (gTrade) has **no lot or contract-size concept**:
+The Prop order panel sizes an order by **collateral**, **symbol size**
+(base-asset quantity) or **lots**. The three fields stay in step: entering one
+shows the others, with the notional, margin, estimated liquidation, P/L at the
+stop and fees.
 
-- position size = collateral × leverage, denominated in the collateral
-  (docs.gains.trade start page and glossary);
-- Trading API order `size` is in base-asset units on the market's
-  `sizePrecision` grid; collateral = size × price / leverage
-  (docs.gains.trade, Trading API → orders);
-- `/markets` and `/trading-variables` carry `pricePrecision`,
-  `sizePrecision`, leverage limits, `minPositionUsd` and fee fields — no lot,
-  contract size or multiplier for any market.
+| Mode | Sent to the engine | Filled |
+| :--- | :--- | :--- |
+| Collateral | `size_mode: 'collateral'`, `margin` | quantity = margin × leverage / fill price, rounded down to the market precision |
+| Symbol size | `size_mode: 'quantity'`, `quantity` | exactly that quantity |
+| Lots | `size_mode: 'lots'`, `lots` | exactly lots × contract size |
 
-The Prop engine mirrors this: quantity = margin × leverage / entry, rounded
-down to `sizePrecision`; contract size 1; USD quotes only
-(`instruments.js` refuses other quote currencies).
+For symbol size and lots the collateral is quantity × entry / leverage,
+rounded up: estimated at the expected entry for the margin checks
+(market: mark with spread; limit and stop: the target) and recalculated at
+the actual fill price.
 
-## Openfund convention
+## What one lot is
 
-A lot is therefore an Openfund entry/display convention, used only where one
-industry-standard unit exists and the engine prices in USD:
+Openfund defines its contract specifications itself
+(`apps/backend/contract-specs.js`, mirrored in
+`apps/web-react/public/legacy/position-sizing.js`; a backend test keeps them
+identical).
 
-| Markets | 1 lot | Basis |
-|---|---|---|
-| Forex, USD quote (EUR/USD, GBP/USD, AUD/USD, NZD/USD…) | 100,000 units of the base currency | standard FX lot |
-| XAU/USD | 100 troy oz | CME gold (GC) contract unit |
-| XAG/USD | 5,000 troy oz | CME silver (SI) contract unit |
-| WTI/USD | 1,000 barrels | CME crude (CL) contract unit |
+| Markets | 1 lot |
+| :--- | :--- |
+| Forex (USD quote) | 100,000 units of the base currency |
+| Gold (XAU) | 100 troy oz |
+| Silver (XAG) | 5,000 troy oz |
+| Platinum (XPT) · palladium (XPD) | 50 · 100 troy oz |
+| WTI and Brent crude | 1,000 barrels |
+| Natural gas | 10,000 MMBtu |
+| Copper | 25,000 lb |
+| Other commodities | 1 unit |
+| Indices | 1 index unit |
+| Stocks | 100 shares (a round lot) |
+| Crypto | 1 coin; for prices quoted with more than 4 decimals, 10^(decimals − 4) coins (for example 1,000,000 for a token quoted with 10 decimals) |
 
-Minimum and step: 0.01 lot. The CME contract pages could not be fetched during
-implementation (timeouts), so these units are recorded as conventions that
-**need owner approval**; they are stated next to the input in the ticket.
+Minimum and step: 0.01 lot, raised to the smallest step that is a whole
+number of the market's quantity units (an index traded in whole units has a
+1-lot step). No maximum beyond the engine's own limits. Markets quoted in
+another currency than USD have no lot.
 
-Unavailable, with the reason shown: crypto (no standard lot), stocks (no
-single standard), indices (contract sizes differ by venue), other commodities
-(XPT, copper…) and every non-USD-quoted pair. An explicitly approved
-per-market specification (`APPROVED_LOT_SPECS` or `meta.contractSpec.approved`)
-overrides a convention.
+## Errors
 
-## Conversion
+`lots_unavailable`, `invalid_lots`, `below_lot_min`, `off_lot_step`,
+`quantity_precision`, `invalid_order_size`, `invalid_size_mode` (`400`). The
+ticket explains each one next to the field.
 
-Lots → quantity (lots × contract size, exact decimals) → collateral =
-quantity × price / leverage rounded **up** to cents — the same canonical path
-as the quantity mode. The engine then derives the final quantity from the
-collateral, leverage, entry price and `sizePrecision`, which is never smaller
-than the requested quantity. The ticket shows the equivalents (symbol size,
-notional, collateral, leverage) and the review lists the requested lotage.
-No order contract, backend formula or engine rule changed.
-
-Tests: `apps/web-react/test/position-sizing.test.mjs` (conventions, round trip,
-precision, limits, unavailable markets).
+Tests: `apps/backend/test/contract-specs.test.mjs` (definitions and parity),
+`apps/backend/test/trading.test.mjs` section 6b (exact quantity and lots
+fills, pending lots orders, idempotency), `apps/web-react/test/position-sizing.test.mjs`.

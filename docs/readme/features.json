@@ -2,42 +2,226 @@
   "$comment": "Feature groups for README › Features. Add a capability here in the same PR that ships it; link the document that owns its detail. Edit, then `npm run docs:write`.",
   "schemaVersion": 1,
   "groups": [
-    { "id": "workspace", "title": "Trading workspace", "icon": "candles", "href": "docs/trading/TERMINAL.md",
-      "items": ["Dashboard, accounts, balances and challenge progress", "Request-based 14-day Free Trial (One-phase or Two-phase) with trial and phase-pass certificates", "Market, limit and stop orders with risk preview", "Chart protection: SL/TP handles and P/L zones", "Collateral, quantity and lot sizing conventions", "Funding and Details tabs with our own hourly funding history", "Terminal guide with recorded walkthroughs"] },
-    { "id": "journal", "title": "Journal and analytics", "icon": "notebook", "href": "docs/trading/JOURNAL_METRICS.md",
-      "items": ["Daily journal, notebook, playbooks and missed trades", "Net PnL, win rate, profit factor, drawdown", "Edge Score v2 and calendar performance", "Account-scoped notes with safe import"] },
-    { "id": "charts", "title": "Charts and Pine indicators", "icon": "layers", "href": "docs/trading/INDICATORS.md",
-      "items": ["Vela charts with the official Pine addon", "Open Algo V5, Price Action Concepts, Smart Money Concepts", "Original Pine sources run in a worker", "Settings scoped by product and wallet"] },
-    { "id": "footprint", "title": "Hybrid Footprint", "icon": "footprint", "href": "docs/integrations/FOOTPRINT.md",
-      "items": ["Bid/ask ladder and profiles", "Volume and delta profiles, absolute delta", "POC, value area and imbalances", "Gains candles stay unchanged"] },
-    { "id": "radar", "title": "Trade Radar", "icon": "radar", "href": "docs/integrations/HYPERLIQUID_RADAR.md",
-      "items": ["Live large-trade tape from $10K to $1M", "Leaderboards and long/short positioning", "Whale positions and wallet profiles", "Stale data is marked, never hidden"] },
-    { "id": "heatmap", "title": "Market Heatmap", "icon": "heatmap", "href": "docs/integrations/HYPERLIQUID_RADAR.md",
-      "items": ["Area by 24h volume or open interest", "Color by 24h change or hourly funding", "Drill-down, search and proportional +N tiles", "Jump from a tile into the chart"] },
-    { "id": "tools", "title": "Tools Center", "icon": "calculator", "href": "docs/website/WEBSITE_EXPANSION.md",
-      "items": ["Position size, leverage/margin, liquidation", "Perp PnL, funding rate, risk/reward", "Risk of ruin, prop drawdown, consistency rule", "Journal analyzer in the browser"] },
-    { "id": "learning", "title": "Learning center", "icon": "school", "href": "docs/website/WEBSITE_EXPANSION.md",
-      "items": ["Learning paths and lessons", "Searchable glossary", "FAQ hub, rulebook and whitepaper", "Tools link to the matching lessons"] },
-    { "id": "wallet", "title": "Wallet identity", "icon": "wallet", "href": "docs/wallet/IDENTITY.md",
-      "items": ["Sign-In with Ethereum on Arbitrum One", "Explicit wallet picker over every page, keyboard and phone friendly", "Mobile wallets by QR code through WalletConnect (Reown)", "Server-side HttpOnly sessions, every record scoped to its owner"] },
-    { "id": "on-chain-records", "title": "On-chain records", "icon": "link", "href": "docs/decisions/0063-on-chain-certificates-and-trade-ledger.md",
-      "items": ["Soulbound certificate NFTs: purchase, Free Trial start, phase pass, final pass, payout", "Every position open, SL/TP change, partial close and close recorded publicly", "Arbitrum Sepolia; Openfund pays, traders never sign", "Transactional outbox with idempotent, retried sends"] },
-    { "id": "payments", "title": "Payments", "icon": "bolt", "href": "docs/payments/ORDER_LIFECYCLE.md",
-      "items": ["Pay with Wallet and manual transfer", "On-chain verification of token, amount and finality", "Ledger with partial payments and refunds", "Exactly-once challenge activation"] },
-    { "id": "site-search", "title": "Site search", "icon": "compass", "href": "docs/decisions/0052-site-search.md",
-      "items": ["Command palette with Ctrl/⌘+K and /, in five locales", "Persian and Arabic normalization, typo tolerance and synonyms", "Published content only, one index per region", "Anonymous search analytics in Backstage"] },
-    { "id": "migration", "title": "Migration to Openfund", "icon": "route", "href": "docs/decisions/0051-migration-to-openfund.md",
-      "items": ["Proof of payouts reviewed with KYC", "Single-use pass: normal price, funded-stage start", "Private, encrypted evidence storage with retention", "Editable firm list and rules"] },
-    { "id": "tournament", "title": "Openfund Premium League", "icon": "award", "href": "docs/decisions/0050-openfund-premium-league.md",
-      "items": ["30-day demo competition with daily, maximum-loss and consistency rules", "Email-verified registration, one entry per wallet", "Frozen standings, owner-gated awards and review signals", "Original prize artwork and rank badges"] },
-    { "id": "trading-objectives", "title": "Trading objectives", "icon": "scale", "href": "docs/decisions/0054-funded-trader-agreement.md",
-      "items": ["Every objective with the real numbers of each plan and size", "Cards link to their rulebook section", "Wallet-signed funded-trader agreement", "Worked pass and fail scenarios"] },
-    { "id": "labs", "title": "Labs drops", "icon": "flask", "href": "docs/decisions/0055-labs-limited-drops.md",
-      "items": ["Numbered drops with limited inventory", "Never oversold: reservations under a row lock", "Rules shown are the rules enforced", "Archive with the real number sold"] },
-    { "id": "backstage", "title": "Backstage operations", "icon": "sliders", "href": "docs/backstage/OPERATIONS_GUIDE.md",
-      "items": ["Final-pass review and suspension decisions", "Payment investigation, coupons, payouts", "Partners, finance, risk board and audit", "Owner re-authentication for privileged actions", "Bug bounty rewards and a consent-only hall of fame"] },
-    { "id": "cms", "title": "Editorial CMS", "icon": "edit", "href": "docs/backstage/UNIVERSAL_VISUAL_EDITING.md",
-      "items": ["Directus owns public editorial copy", "Visual editing mapped to collection and field", "Draft previews stay inside the editor", "Financial collections are never editable"] },
+    {
+      "id": "workspace",
+      "title": "Trading workspace",
+      "icon": "candles",
+      "href": "docs/trading/TERMINAL.md",
+      "items": [
+        "Dashboard, accounts, balances and challenge progress",
+        "Request-based 14-day Free Trial (One-phase or Two-phase) with trial and phase-pass certificates",
+        "Market, limit and stop orders with risk preview",
+        "Chart protection: SL/TP handles and P/L zones",
+        "Lots, symbol size or collateral; lot and size orders filled exactly, Openfund lot for every market",
+        "Funding and Details tabs with our own hourly funding history",
+        "Terminal guide with recorded walkthroughs"
+      ]
+    },
+    {
+      "id": "journal",
+      "title": "Journal and analytics",
+      "icon": "notebook",
+      "href": "docs/trading/JOURNAL_METRICS.md",
+      "items": [
+        "Daily journal, notebook, playbooks and missed trades",
+        "Net PnL, win rate, profit factor, drawdown",
+        "Edge Score v2 and calendar performance",
+        "Account-scoped notes with safe import"
+      ]
+    },
+    {
+      "id": "charts",
+      "title": "Charts and Pine indicators",
+      "icon": "layers",
+      "href": "docs/trading/INDICATORS.md",
+      "items": [
+        "Vela charts with the official Pine addon",
+        "Open Algo V5, Price Action Concepts, Smart Money Concepts",
+        "Original Pine sources run in a worker",
+        "Settings scoped by product and wallet"
+      ]
+    },
+    {
+      "id": "footprint",
+      "title": "Hybrid Footprint",
+      "icon": "footprint",
+      "href": "docs/integrations/FOOTPRINT.md",
+      "items": [
+        "Bid/ask ladder and profiles",
+        "Volume and delta profiles, absolute delta",
+        "POC, value area and imbalances",
+        "Gains candles stay unchanged"
+      ]
+    },
+    {
+      "id": "radar",
+      "title": "Trade Radar",
+      "icon": "radar",
+      "href": "docs/integrations/HYPERLIQUID_RADAR.md",
+      "items": [
+        "Live large-trade tape from $10K to $1M",
+        "Leaderboards and long/short positioning",
+        "Whale positions and wallet profiles",
+        "Stale data is marked, never hidden"
+      ]
+    },
+    {
+      "id": "heatmap",
+      "title": "Market Heatmap",
+      "icon": "heatmap",
+      "href": "docs/integrations/HYPERLIQUID_RADAR.md",
+      "items": [
+        "Area by 24h volume or open interest",
+        "Color by 24h change or hourly funding",
+        "Drill-down, search and proportional +N tiles",
+        "Jump from a tile into the chart"
+      ]
+    },
+    {
+      "id": "tools",
+      "title": "Tools Center",
+      "icon": "calculator",
+      "href": "docs/website/WEBSITE_EXPANSION.md",
+      "items": [
+        "Position size, leverage/margin, liquidation",
+        "Perp PnL, funding rate, risk/reward",
+        "Risk of ruin, prop drawdown, consistency rule",
+        "Journal analyzer in the browser"
+      ]
+    },
+    {
+      "id": "learning",
+      "title": "Learning center",
+      "icon": "school",
+      "href": "docs/website/WEBSITE_EXPANSION.md",
+      "items": [
+        "Learning paths and lessons",
+        "Searchable glossary",
+        "FAQ hub, rulebook and whitepaper",
+        "Tools link to the matching lessons"
+      ]
+    },
+    {
+      "id": "wallet",
+      "title": "Wallet identity",
+      "icon": "wallet",
+      "href": "docs/wallet/IDENTITY.md",
+      "items": [
+        "Sign-In with Ethereum on Arbitrum One",
+        "Explicit wallet picker over every page, keyboard and phone friendly",
+        "Mobile wallets by QR code through WalletConnect (Reown)",
+        "Server-side HttpOnly sessions, every record scoped to its owner"
+      ]
+    },
+    {
+      "id": "on-chain-records",
+      "title": "On-chain records",
+      "icon": "link",
+      "href": "docs/decisions/0063-on-chain-certificates-and-trade-ledger.md",
+      "items": [
+        "Soulbound certificate NFTs: purchase, Free Trial start, phase pass, final pass, payout",
+        "Every position open, SL/TP change, partial close and close recorded publicly",
+        "Arbitrum Sepolia; Openfund pays, traders never sign",
+        "Transactional outbox with idempotent, retried sends"
+      ]
+    },
+    {
+      "id": "payments",
+      "title": "Payments",
+      "icon": "bolt",
+      "href": "docs/payments/ORDER_LIFECYCLE.md",
+      "items": [
+        "Pay with Wallet and manual transfer",
+        "On-chain verification of token, amount and finality",
+        "Ledger with partial payments and refunds",
+        "Exactly-once challenge activation"
+      ]
+    },
+    {
+      "id": "site-search",
+      "title": "Site search",
+      "icon": "compass",
+      "href": "docs/decisions/0052-site-search.md",
+      "items": [
+        "Command palette with Ctrl/⌘+K and /, in five locales",
+        "Persian and Arabic normalization, typo tolerance and synonyms",
+        "Published content only, one index per region",
+        "Anonymous search analytics in Backstage"
+      ]
+    },
+    {
+      "id": "migration",
+      "title": "Migration to Openfund",
+      "icon": "route",
+      "href": "docs/decisions/0051-migration-to-openfund.md",
+      "items": [
+        "Proof of payouts reviewed with KYC",
+        "Single-use pass: normal price, funded-stage start",
+        "Private, encrypted evidence storage with retention",
+        "Editable firm list and rules"
+      ]
+    },
+    {
+      "id": "tournament",
+      "title": "Openfund Premium League",
+      "icon": "award",
+      "href": "docs/decisions/0050-openfund-premium-league.md",
+      "items": [
+        "30-day demo competition with daily, maximum-loss and consistency rules",
+        "Email-verified registration, one entry per wallet",
+        "Frozen standings, owner-gated awards and review signals",
+        "Original prize artwork and rank badges"
+      ]
+    },
+    {
+      "id": "trading-objectives",
+      "title": "Trading objectives",
+      "icon": "scale",
+      "href": "docs/decisions/0054-funded-trader-agreement.md",
+      "items": [
+        "Every objective with the real numbers of each plan and size",
+        "Cards link to their rulebook section",
+        "Wallet-signed funded-trader agreement",
+        "Worked pass and fail scenarios"
+      ]
+    },
+    {
+      "id": "labs",
+      "title": "Labs drops",
+      "icon": "flask",
+      "href": "docs/decisions/0055-labs-limited-drops.md",
+      "items": [
+        "Numbered drops with limited inventory",
+        "Never oversold: reservations under a row lock",
+        "Rules shown are the rules enforced",
+        "Archive with the real number sold"
+      ]
+    },
+    {
+      "id": "backstage",
+      "title": "Backstage operations",
+      "icon": "sliders",
+      "href": "docs/backstage/OPERATIONS_GUIDE.md",
+      "items": [
+        "Final-pass review and suspension decisions",
+        "Payment investigation, coupons, payouts",
+        "Partners, finance, risk board and audit",
+        "Owner re-authentication for privileged actions",
+        "Bug bounty rewards and a consent-only hall of fame"
+      ]
+    },
+    {
+      "id": "cms",
+      "title": "Editorial CMS",
+      "icon": "edit",
+      "href": "docs/backstage/UNIVERSAL_VISUAL_EDITING.md",
+      "items": [
+        "Directus owns public editorial copy",
+        "Visual editing mapped to collection and field",
+        "Draft previews stay inside the editor",
+        "Financial collections are never editable"
+      ]
+    },
     {
       "id": "open-oracle",
       "title": "Open Oracle pricing service",

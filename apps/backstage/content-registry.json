@@ -2,8 +2,8 @@
   "version": 1,
   "scope": "Static React bilingual calls and flat bilingual records; not an assertion of total content coverage",
   "summary": {
-    "uniqueRecords": 4983,
-    "mappedCalls": 2381,
+    "uniqueRecords": 4990,
+    "mappedCalls": 2388,
     "exceptions": 63,
     "validationFindings": 0,
     "reviewedExclusions": 52
@@ -1281,7 +1281,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 161,
+          "line": 175,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -10249,6 +10249,26 @@
       ]
     },
     {
+      "key": "react.1672d2fbbd694b61",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "لاتیج باید مضربی از گام لات باشد.",
+      "en": "Lotage must be a multiple of the lot step.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 157,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.1675f45e2cc533ee",
       "namespace": "react",
       "area": "Website",
@@ -13717,7 +13737,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 162,
+          "line": 176,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16192,7 +16212,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 144,
+          "line": 151,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -16236,6 +16256,26 @@
           "page": "global",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.2522c1e7db2a1e1d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "اندازهٔ سفارش نامعتبر است.",
+      "en": "Invalid order size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 160,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -27431,7 +27471,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 138,
+          "line": 145,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29060,7 +29100,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 110,
+          "line": 117,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -29855,7 +29895,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 143,
+          "line": 150,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -35401,7 +35441,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 139,
+          "line": 146,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -50342,7 +50382,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 137,
+          "line": 144,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -51389,7 +51429,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 141,
+          "line": 148,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57057,7 +57097,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 146,
+          "line": 153,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -57101,6 +57141,26 @@
           "page": "company",
           "route": "/:locale/*",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.88e02fc6fb6697a0",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "اندازهٔ نماد بیش از دقت مجاز رقم اعشار دارد.",
+      "en": "The quantity has more decimals than this market allows.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 159,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -60053,6 +60113,26 @@
           "page": "applications",
           "route": "/:locale/apps",
           "method": "bilingual-record"
+        }
+      ]
+    },
+    {
+      "key": "react.8f3b60b7354ac30d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "برای این بازار لاتیج تعریف نشده است.",
+      "en": "No lot is defined for this market.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 155,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
         }
       ]
     },
@@ -64123,7 +64203,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 113,
+          "line": 120,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -69776,7 +69856,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 109,
+          "line": 116,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71048,7 +71128,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 160,
+          "line": 174,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -71390,7 +71470,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 115,
+          "line": 122,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72380,7 +72460,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 159,
+          "line": 173,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -72629,7 +72709,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 140,
+          "line": 147,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -75505,6 +75585,26 @@
       ]
     },
     {
+      "key": "react.b3bc87ddcb652135",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "اندازهٔ سفارش کمتر از حداقل این بازار است.",
+      "en": "The order is below this market's minimum size.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 161,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.b3bcd2aeefe67e9e",
       "namespace": "react",
       "area": "Website",
@@ -75984,7 +76084,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 112,
+          "line": 119,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76259,6 +76359,26 @@
         {
           "component": "apps/web-react/src/cms/seed/whitepaper/chapters-economy.ts",
           "line": 118,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
+      "key": "react.b5df9acb9bfbbaf1",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "لاتیج کمتر از حداقل است.",
+      "en": "Lotage below the minimum.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 156,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -76700,7 +76820,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 147,
+          "line": 154,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -78527,7 +78647,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 148,
+          "line": 162,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -85904,6 +86024,26 @@
       ]
     },
     {
+      "key": "react.ce8407e537b3e93d",
+      "namespace": "react",
+      "area": "Global Content",
+      "owner": "Content editor",
+      "fa": "لاتیج نامعتبر است.",
+      "en": "Enter a valid lotage.",
+      "editing": "Directus ui_messages / translations",
+      "publication": "Published-only; browser reload; bundled fallback on failure",
+      "validation": "mapped",
+      "locations": [
+        {
+          "component": "apps/web-react/src/trading/TradingBridge.tsx",
+          "line": 158,
+          "page": "global",
+          "route": "/:locale/*",
+          "method": "pick-pipeline"
+        }
+      ]
+    },
+    {
       "key": "react.cea1513eafe8deea",
       "namespace": "react",
       "area": "Website",
@@ -89105,7 +89245,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 114,
+          "line": 121,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -93947,7 +94087,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 145,
+          "line": 152,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -98212,7 +98352,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 150,
+          "line": 164,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -98920,7 +99060,7 @@
       "locations": [
         {
           "component": "apps/web-react/src/trading/TradingBridge.tsx",
-          "line": 142,
+          "line": 149,
           "page": "global",
           "route": "/:locale/*",
           "method": "pick-pipeline"
@@ -107560,7 +107700,7 @@
     },
     {
       "component": "apps/web-react/src/trading/TradingBridge.tsx",
-      "line": 38,
+      "line": 45,
       "page": "global",
       "route": "/:locale/*",
       "reason": "helper-wrapper-definition",

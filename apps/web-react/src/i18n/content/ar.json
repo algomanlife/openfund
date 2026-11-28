@@ -4461,5 +4461,12 @@
   "View on Arbiscan": "عرض على Arbiscan",
   "View the NFT on Arbitrum Sepolia": "عرض الـ NFT على Arbitrum Sepolia",
   "expired": "انتهت المهلة",
-  "passed": "ناجح"
+  "passed": "ناجح",
+  "Enter a valid lotage.": "أدخل حجم لوت صالحًا.",
+  "Invalid order size.": "حجم الأمر غير صالح.",
+  "Lotage below the minimum.": "عدد اللوتات أقل من الحد الأدنى.",
+  "Lotage must be a multiple of the lot step.": "يجب أن يكون عدد اللوتات من مضاعفات خطوة اللوت.",
+  "No lot is defined for this market.": "لا يوجد لوت معرّف لهذا السوق.",
+  "The order is below this market's minimum size.": "الأمر أصغر من الحد الأدنى لحجم هذا السوق.",
+  "The quantity has more decimals than this market allows.": "يحتوي الحجم على منازل عشرية أكثر مما يسمح به هذا السوق."
 }

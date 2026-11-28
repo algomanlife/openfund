@@ -200,6 +200,46 @@ const clean = async (userId) => {
   if (st.data.positions[0]) await j('POST', `/trading/positions/${st.data.positions[0].id}/close`, {}, C1)
 }
 
+/* ================= 6b. QUANTITY AND LOTS ORDERS (ADR 0064) ================= */
+{
+  await marketDataPrice(MKT, '50000')
+  const entry = fx(50000, 'long', 'open')                 /* 50002.5 */
+  /* quantity: filled exactly; collateral = quantity × entry / leverage, rounded up */
+  const q = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', size_mode: 'quantity', quantity: '0.2', leverage: 10 }, C1, { 'Idempotency-Key': 'qty-1' })
+  ok('quantity order fills the exact quantity', q.status === 200 && Number(q.data.position?.quantity) === 0.2, JSON.stringify(q.data).slice(0, 160))
+  ok('quantity order collateral = 0.2 × 50002.5 / 10', near(q.data.position?.margin, 0.2 * entry / 10, 0.000001), q.data.position?.margin)
+  const pv = await j('POST', '/trading/preview', { market: MKT, side: 'long', order_type: 'market', size_mode: 'lots', lots: '0.15', leverage: 10 }, C1)
+  ok('lots preview: 0.15 lot of BTC (1 lot = 1 BTC) is 0.15 BTC', pv.status === 200 && Number(pv.data.quantity) === 0.15 && pv.data.size_mode === 'lots' && pv.data.contract_size === '1', JSON.stringify(pv.data).slice(0, 200))
+  const l = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', size_mode: 'lots', lots: '0.15', leverage: 10 }, C1, { 'Idempotency-Key': 'lots-1' })
+  ok('lots order fills lots × contract size', l.status === 200 && Number(l.data.position?.quantity) === 0.15, JSON.stringify(l.data).slice(0, 160))
+  const again = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', size_mode: 'lots', lots: '0.15', leverage: 10 }, C1, { 'Idempotency-Key': 'lots-1' })
+  ok('lots order retry is a duplicate', again.data?.duplicate === true)
+  const conflict = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', size_mode: 'lots', lots: '0.16', leverage: 10 }, C1, { 'Idempotency-Key': 'lots-1' })
+  ok('same key with another lotage conflicts', conflict.status === 409 && conflict.data?.error === 'idempotency_conflict', JSON.stringify(conflict.data))
+  for (const [body, reason] of [
+    [{ size_mode: 'lots', lots: '0.015' }, 'off_lot_step'],
+    [{ size_mode: 'lots', lots: '0.001' }, 'below_lot_min'],
+    [{ size_mode: 'lots', lots: 'abc' }, 'invalid_lots'],
+    [{ size_mode: 'quantity', quantity: '0.00000000001' }, 'quantity_precision'],
+    [{ size_mode: 'quantity', quantity: '-1' }, 'invalid_order_size'],
+    [{ size_mode: 'contracts', quantity: '1' }, 'invalid_size_mode'],
+  ]) {
+    const r = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'market', leverage: 10, ...body }, C1, { 'Idempotency-Key': 'bad-size-' + reason })
+    ok('reject size: ' + reason, r.status === 400 && r.data?.error === reason, JSON.stringify(r.data))
+  }
+  for (const p of [q.data.position, l.data.position]) if (p) await j('POST', `/trading/positions/${p.id}/close`, {}, C1)
+  /* a pending lots order fills its lotage at the target price */
+  const lim = await j('POST', '/trading/order', { market: MKT, side: 'long', order_type: 'limit', size_mode: 'lots', lots: '0.1', leverage: 10, target_price: 49500 }, C1, { 'Idempotency-Key': 'lots-lim-1' })
+  ok('pending lots order accepted', lim.data?.pending === true, JSON.stringify(lim.data).slice(0, 160))
+  await new Promise(r => setTimeout(r, 1500))
+  await marketDataPrice(MKT, '49500')
+  await new Promise(r => setTimeout(r, 2000))
+  const st = await j('GET', '/trading/state', null, C1)
+  const filled = st.data.positions.find(p => p.entry_price === '49500.00')
+  ok('pending lots order filled 0.1 BTC with 495 collateral', filled && Number(filled.quantity) === 0.1 && near(filled.margin, 495, 0.000001), JSON.stringify(filled))
+  if (filled) await j('POST', `/trading/positions/${filled.id}/close`, {}, C1)
+}
+
 /* ================= 7. SL / TP EXECUTION (server-side, no browser) ================= */
 {
   await marketDataPrice(MKT, '50000')

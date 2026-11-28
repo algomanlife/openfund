@@ -238,6 +238,8 @@
       ar: {
         "1 lot =": "1 لوت =",
         "Openfund convention (Gains itself has no lots)": "اصطلاح Openfund (لا توجد لوتات في Gains نفسها)",
+        "Openfund definition": "تعريف Openfund",
+        "No lot is defined for this market; enter the size as collateral or symbol size.": "لا يوجد لوت معرّف لهذا السوق؛ أدخل الحجم كضمان أو كحجم الرمز.",
         "minimum and step": "الحد الأدنى والخطوة",
         "lot": "لوت",
         "Crypto has no standard lot size — enter the size as collateral or symbol size.": "لا يوجد حجم لوت قياسي للعملات المشفرة — أدخل الحجم كضمان أو كحجم الرمز.",
@@ -300,6 +302,8 @@
       ru: {
         "1 lot =": "1 лот =",
         "Openfund convention (Gains itself has no lots)": "Соглашение Openfund (в самой Gains лотов нет)",
+        "Openfund definition": "Определение Openfund",
+        "No lot is defined for this market; enter the size as collateral or symbol size.": "Для этого рынка лот не определён — укажите размер как залог или размер символа.",
         "minimum and step": "минимум и шаг",
         "lot": "лот",
         "Crypto has no standard lot size — enter the size as collateral or symbol size.": "Для криптовалют нет стандартного лота — укажите размер через обеспечение или количество.",
@@ -362,6 +366,8 @@
       'zh-CN': {
         "1 lot =": "1 手 =",
         "Openfund convention (Gains itself has no lots)": "Openfund 约定（Gains 本身没有手数概念）",
+        "Openfund definition": "Openfund 定义",
+        "No lot is defined for this market; enter the size as collateral or symbol size.": "此市场未定义手数——请按保证金或标的数量输入仓位。",
         "minimum and step": "最小值与步长",
         "lot": "手",
         "Crypto has no standard lot size — enter the size as collateral or symbol size.": "加密货币没有标准手数——请按保证金或标的数量输入仓位。",

@@ -9,25 +9,20 @@
 
    Arithmetic is exact decimal on BigInt (no binary floating point).
 
-   Lotage: Gains Network has NO lot or contract-size concept —
-   position size = collateral × leverage, and order size is in base-asset
-   units on the market's sizePrecision grid (docs.gains.trade: start page,
-   glossary, Trading API orders; /markets metadata carries no lot field).
-   The engine is linear with contract size 1. A lot is therefore an
-   Openfund display/entry convention, applied only where one standard unit
-   exists across the industry, and stated on screen with its unit:
-     forex        1 lot = 100,000 units of the base currency (standard FX lot),
-                  USD-quoted pairs only — the engine values positions in USD and
-                  refuses other quote currencies (instruments.js)
-     XAU/USD      1 lot = 100 troy oz   (CME GC contract unit)
-     XAG/USD      1 lot = 5,000 troy oz (CME SI contract unit)
-     WTI/USD      1 lot = 1,000 barrels (CME CL contract unit)
-   Crypto, stocks, indices and other commodities have no single standard
-   (venues differ), so lotSpec() returns `available: false` for them and the
-   ticket says why. An explicitly approved per-market specification
-   (APPROVED_LOT_SPECS or meta.contractSpec.approved) takes precedence.
-   Lotage never changes the order: lots → quantity → the canonical
-   collateral, exactly like the quantity mode (docs/trading/LOTAGE.md).
+   Lotage: Openfund defines what one lot is (ADR 0064), because Openfund
+   runs its own engine and price service. The rules below are identical to
+   apps/backend/contract-specs.js, which the engine uses to turn a lots order
+   into its exact base-asset quantity (the backend test
+   contract-specs.test.mjs compares the two):
+     forex (USD quote)  1 lot = 100,000 units of the base currency
+     metals             XAU 100 oz · XAG 5,000 oz · XPT 50 oz · XPD 100 oz
+     energy             WTI and Brent 1,000 barrels · natural gas 10,000 MMBtu
+     copper             25,000 lb · other commodities 1 unit
+     indices            1 index unit · stocks 100 shares (a round lot)
+     crypto             1 coin; 10^(d − 4) coins for prices quoted with d > 4
+                        decimals (low-priced tokens)
+   Minimum and step 0.01 lot, raised to the smallest step on the market's
+   quantity grid. USD-quoted markets only (the engine values positions in USD).
    ============================================================ */
 (function (global) {
   'use strict';
@@ -110,50 +105,61 @@
     return cmp(round(q, quantityPrecision, 'down'), q) === 0;
   }
 
-  /* ---------- lots ---------- */
-  /* market symbol → { contractSize, baseUnit, lotMin, lotMax, lotStep, source }
-     for an explicitly approved per-market specification (none yet). */
-  const APPROVED_LOT_SPECS = Object.freeze({});
-  /* Openfund lot conventions (see the header): the industry-standard unit per
-     asset class; never applied to a market outside these entries. */
-  const LOT_CONVENTIONS = Object.freeze({
-    forex: Object.freeze({ contractSize: '100000', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'base', source: 'convention:fx_standard_lot' }),
-    'commodities:XAU': Object.freeze({ contractSize: '100', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'troy oz', source: 'convention:cme_gc_100oz' }),
-    'commodities:XAG': Object.freeze({ contractSize: '5000', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'troy oz', source: 'convention:cme_si_5000oz' }),
-    'commodities:WTI': Object.freeze({ contractSize: '1000', lotMin: '0.01', lotMax: null, lotStep: '0.01', unit: 'barrels', source: 'convention:cme_cl_1000bbl' }),
+  /* ---------- lots (mirror of apps/backend/contract-specs.js) ---------- */
+  const COMMODITIES = Object.freeze({
+    XAU: ['100', 'troy oz'], GOLD: ['100', 'troy oz'],
+    XAG: ['5000', 'troy oz'], SILVER: ['5000', 'troy oz'],
+    XPT: ['50', 'troy oz'], PLATINUM: ['50', 'troy oz'],
+    XPD: ['100', 'troy oz'], PALLADIUM: ['100', 'troy oz'],
+    WTI: ['1000', 'barrels'], USOIL: ['1000', 'barrels'], CL: ['1000', 'barrels'], OIL: ['1000', 'barrels'],
+    BRENT: ['1000', 'barrels'], UKOIL: ['1000', 'barrels'], BRN: ['1000', 'barrels'],
+    NG: ['10000', 'MMBtu'], NATGAS: ['10000', 'MMBtu'], XNG: ['10000', 'MMBtu'],
+    HG: ['25000', 'lb'], COPPER: ['25000', 'lb'], XCU: ['25000', 'lb'],
   });
-  /* the reason Lotage is unavailable for a market (shown in the ticket) */
-  function noLotReason(meta) {
-    const g = meta && String(meta.group || '').replace(/-.*$/, '');
-    if (meta && meta.quote && String(meta.quote).toUpperCase() !== 'USD') return 'non_usd_quote';
-    return g === 'crypto' ? 'no_lot_standard_crypto' : g === 'stocks' ? 'no_lot_standard_stocks' : g === 'indices' ? 'no_lot_standard_indices'
-      : g === 'commodities' ? 'no_lot_standard_commodity' : 'no_approved_contract_spec';
+  function multipleOf(a, b) {
+    const s = Math.max(a.s, b.s);
+    return (a.n * pow10(s - a.s)) % (b.n * pow10(s - b.s)) === 0n;
   }
-  function conventionFor(meta) {
-    if (!meta || typeof meta.base !== 'string') return null;
-    const g = String(meta.group || '').replace(/-.*$/, '');
-    const quote = String(meta.quote || 'USD').toUpperCase();
-    if (quote !== 'USD') return null;
-    if (g === 'forex') return LOT_CONVENTIONS.forex;
-    if (g === 'commodities') return LOT_CONVENTIONS['commodities:' + meta.base.toUpperCase()] || null;
+  function groupOf(meta) { return String((meta && meta.group) || '').toLowerCase().replace(/-.*$/, ''); }
+  function precisionOf(meta) {
+    const p = !meta || meta.sizePrecision == null ? 10 : Number(meta.sizePrecision);
+    return Number.isInteger(p) && p >= 0 && p <= 10 ? p : 10;
+  }
+  function baseContract(meta, market) {
+    const group = groupOf(meta);
+    const base = String((meta && meta.base) || String(market || '').split('/')[0] || '').toUpperCase();
+    if (group === 'forex') return { contractSize: '100000', unit: base, source: 'openfund:fx_standard_lot' };
+    if (group === 'commodities') {
+      const known = COMMODITIES[base];
+      return known ? { contractSize: known[0], unit: known[1], source: 'openfund:commodity_' + base.toLowerCase() }
+        : { contractSize: '1', unit: base, source: 'openfund:commodity_unit' };
+    }
+    if (group === 'indices') return { contractSize: '1', unit: base, source: 'openfund:index_unit' };
+    if (group === 'stocks') return { contractSize: '100', unit: base, source: 'openfund:round_lot' };
+    if (group === 'crypto') {
+      const decimals = Number(meta && meta.pricePrecision);
+      const k = Number.isInteger(decimals) && decimals > 4 ? Math.min(decimals - 4, 9) : 0;
+      return { contractSize: '1' + '0'.repeat(k), unit: base, source: k ? 'openfund:crypto_scaled' : 'openfund:crypto_coin' };
+    }
     return null;
   }
+  /** the lot definition for a market: { available, contractSize, unit, baseUnit, lotMin, lotStep, lotMax, quantityPrecision, source } or { available: false, reason } */
   function lotSpec(meta, market) {
-    const own = Object.prototype.hasOwnProperty;
-    const approved = own.call(APPROVED_LOT_SPECS, market) ? APPROVED_LOT_SPECS[market]
-      : (meta && meta.contractSpec && meta.contractSpec.approved === true ? meta.contractSpec
-        : conventionFor(meta));
-    const valid = approved && isPos(parse(String(approved.contractSize))) && isPos(parse(String(approved.lotStep))) &&
-      isPos(parse(String(approved.lotMin)));
-    if (!valid) return { available: false, reason: noLotReason(meta) };
-    return { available: true, contractSize: String(approved.contractSize),
-      baseUnit: approved.baseUnit || (approved.unit && approved.unit !== 'base' ? approved.unit : (meta && meta.base) || ''),
-      lotMin: String(approved.lotMin), lotMax: approved.lotMax != null ? String(approved.lotMax) : null,
-      lotStep: String(approved.lotStep), source: approved.source || 'approved' };
+    if (!meta || typeof meta !== 'object') return { available: false, reason: 'unknown_market' };
+    const quote = String(meta.quote || String(market || '').split('/')[1] || 'USD').toUpperCase();
+    if (quote !== 'USD') return { available: false, reason: 'non_usd_quote' };
+    const base = baseContract(meta, market);
+    if (!base) return { available: false, reason: 'unsupported_instrument' };
+    const precision = precisionOf(meta);
+    const contract = parse(base.contractSize), grid = { n: 1n, s: precision };
+    let step = { n: 1n, s: 2 };
+    for (let i = 0; i < 12 && !multipleOf(mul(step, contract), grid); i++) step = step.s > 0 ? { n: 1n, s: step.s - 1 } : { n: step.n * 10n, s: 0 };
+    return { available: true, contractSize: base.contractSize, unit: base.unit, baseUnit: base.unit, lotMin: text(step), lotStep: text(step), lotMax: null,
+      quantityPrecision: precision, source: base.source };
   }
   /** quantity = lots × contractSize (requires an available spec; lots on the step grid) */
   function quantityFromLots(lots, spec) {
-    if (!spec || !spec.available) return { ok: false, reason: 'no_approved_contract_spec' };
+    if (!spec || !spec.available) return { ok: false, reason: (spec && spec.reason) || 'lots_unavailable' };
     const l = parse(lots), step = parse(spec.lotStep), min = parse(spec.lotMin), max = spec.lotMax ? parse(spec.lotMax) : null;
     if (!isPos(l)) return { ok: false, reason: 'invalid_lots' };
     if (cmp(l, min) < 0) return { ok: false, reason: 'below_lot_min' };
@@ -182,6 +188,6 @@
   global.OpenfundPositionSizing = {
     parse: s => { const d = parse(s); return d ? text(d) : null; },
     quantityFromCollateral, collateralFromQuantity, notional, quantityOnGrid,
-    lotSpec, quantityFromLots, lotsFromQuantity, lotsFloor, APPROVED_LOT_SPECS, LOT_CONVENTIONS
+    lotSpec, quantityFromLots, lotsFromQuantity, lotsFloor
   };
 })(typeof window !== 'undefined' ? window : globalThis);

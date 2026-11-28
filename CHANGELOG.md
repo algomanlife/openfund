@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Lots, symbol size or collateral: every order is filled as entered.** Openfund now defines its own contract specification for every USD-quoted market (forex 100,000 units, gold 100 oz, silver 5,000 oz, oil 1,000 barrels, indices 1 unit, stocks 100 shares, crypto 1 coin or a scaled lot for low-priced tokens; ADR 0064), so lots are available on crypto, stocks and indices too. Quantity and lots orders reach the engine as such (`size_mode`) and fill that exact size; the collateral follows the fill price. Collateral orders are unchanged.
+
 - **Charts: Vela 0.10.19 and Vela Pine addon 0.3.5.** The vendored Vela source and the npm packages move from 0.10.6 / 0.3.4 to the latest releases (29 more built-in indicators, now 106, including Ichimoku Cloud, MA/EMA crosses, Chop Zone and volatility studies; comparison symbols, percentage-scale toggle, indicator labels on the price scale, tick timeframes, full screen and other upstream fixes). Openfund's picker order patch (OF-VELA-003) was ported to the new upstream picker API; the no-badge patch, the Pine worker wrapper, Openfund's indicators, themes, locales and terminal integration are unchanged. PineTS stays at 0.13.1 because 0.14.0 is not yet published to npm.
 
 - **Footer: Arbitrum Sepolia.** The public footer credits gain a ninth card, Arbitrum Sepolia, "Blockchain and distributed ledger of records", with the official full-colour Arbitrum logomark (unchanged Offchain Labs SVG, provenance in `assets/notices/Public-brand-assets.txt`), linked to the network explorer. The credit grid shows nine columns on desktop and three below 1200 px, so no card is left alone on a row.

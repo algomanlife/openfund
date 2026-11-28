@@ -17,6 +17,13 @@ import { useSession, backendUrl } from '../session/useOpenfundSession'
  * clearly-labelled client-side demo engine.
  */
 const BACKEND = backendUrl()
+/* the order's size as the engine accepts it: collateral (margin), an exact
+   base-asset quantity, or lots (ADR 0064) */
+function orderSize(req: { sizeMode?: string; quantity?: string | null; lots?: string | null; collateral: number }) {
+  if (req.sizeMode === 'lots' && req.lots) return { size_mode: 'lots', lots: req.lots }
+  if (req.sizeMode === 'quantity' && req.quantity) return { size_mode: 'quantity', quantity: req.quantity }
+  return { margin: req.collateral }
+}
   ;(window as any).__ofBackendUrl = BACKEND
 
 export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,number>; accountId?: string } = {}) {
@@ -116,7 +123,7 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
         return errs
       },
       async previewAsync(req: any) {
-        const res=await postRaw('/trading/preview',{market:req.market,side:req.side,order_type:req.type,margin:req.collateral,leverage:req.leverage,target_price:req.type==='market'?null:req.price,sl:req.sl??null,tp:req.tp??null});
+        const res=await postRaw('/trading/preview',{market:req.market,side:req.side,order_type:req.type,...orderSize(req),leverage:req.leverage,target_price:req.type==='market'?null:req.price,sl:req.sl??null,tp:req.tp??null});
         const data=await res.json(); if(!res.ok)throw new Error(data.error || 'Preview unavailable');return data
       },
       async submitAsync(req: any) {
@@ -124,7 +131,7 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
         const key = req.clientId ||= crypto.randomUUID()
         const res = await postRaw('/trading/order', {
             market: req.market, side: req.side, order_type: req.type,
-            margin: req.collateral, leverage: req.leverage,
+            ...orderSize(req), leverage: req.leverage,
             target_price: req.type === 'market' ? null : req.price,
             sl: req.sl ?? null, tp: req.tp ?? null
           }, key)
@@ -145,6 +152,13 @@ export function TradingBridge({ pricing, accountId }: { pricing?: Record<string,
           tp_above_mark: L('تیک‌پرافیت باید زیر قیمت مارک باشد.', 'Take profit must be below the mark price.'),
           margin_too_small: L('کولترال کمتر از حداقل است.', 'Collateral below the minimum.'),
           target_price_required: L('قیمت تریگر لازم است.', 'Trigger price required.'),
+          lots_unavailable: L('برای این بازار لاتیج تعریف نشده است.', 'No lot is defined for this market.'),
+          below_lot_min: L('لاتیج کمتر از حداقل است.', 'Lotage below the minimum.'),
+          off_lot_step: L('لاتیج باید مضربی از گام لات باشد.', 'Lotage must be a multiple of the lot step.'),
+          invalid_lots: L('لاتیج نامعتبر است.', 'Enter a valid lotage.'),
+          quantity_precision: L('اندازهٔ نماد بیش از دقت مجاز رقم اعشار دارد.', 'The quantity has more decimals than this market allows.'),
+          invalid_order_size: L('اندازهٔ سفارش نامعتبر است.', 'Invalid order size.'),
+          instrument_minimum_size: L('اندازهٔ سفارش کمتر از حداقل این بازار است.', 'The order is below this market\'s minimum size.'),
           funded_agreement_required: L('پیش از اولین معامله در حساب فاندشده، توافق‌نامهٔ معامله‌گر فاندشده را از پنل حساب کاربری با کیف پولت امضا کن.', 'Before the first trade on a funded account, sign the funded-trader agreement with your wallet in your account panel.')
         }
         return { ok: false, errors: [reasons[data?.error] || data?.error || L('خطای سرور.', 'Server error.')] }
