@@ -146,7 +146,7 @@ non-browser clients with HTTP 403).
 4. The receiver multisig signers can move funds out, and the refund procedure
    (record via payment adjustment) has been rehearsed.
 5. Database backup and restore have been exercised.
-6. Legal pages, KYC policy and compliance review are approved.
+6. The Terms of Use and Privacy Policy are published (Openfund runs no KYC, [ADR 0065](../decisions/0065-no-kyc-terms-and-privacy.md)) and the compliance review is approved.
 7. Management gives explicit approval. Only then set
    `PURCHASE_PAYMENT_RECEIVER` on the production service.
 

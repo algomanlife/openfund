@@ -409,6 +409,32 @@
       }
     },
     {
+      "path": "terms",
+      "view": "terms",
+      "icon": null,
+      "title": {
+        "fa": "شرایط استفاده",
+        "en": "Terms of Use",
+        "ar": "شروط الاستخدام",
+        "ru": "Условия использования",
+        "zh-CN": "使用条款"
+      },
+      "description": null
+    },
+    {
+      "path": "privacy",
+      "view": "privacy",
+      "icon": null,
+      "title": {
+        "fa": "سیاست حریم خصوصی",
+        "en": "Privacy Policy",
+        "ar": "سياسة الخصوصية",
+        "ru": "Политика конфиденциальности",
+        "zh-CN": "隐私政策"
+      },
+      "description": null
+    },
+    {
       "path": "migrate",
       "view": "migrate",
       "icon": "migrate",

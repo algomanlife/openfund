@@ -13,7 +13,7 @@ Rules from the brief, all configurable:
 - a size cap at the largest proven funded size;
 - normal price and the plan's normal funded rules;
 - one migration per person;
-- KYC with a name match.
+- No identity step: Openfund runs no KYC ([ADR 0065](0065-no-kyc-terms-and-privacy.md)).
 
 ## Decision
 
@@ -29,7 +29,7 @@ Rules from the brief, all configurable:
    - at least `min_payouts` **distinct** payouts dated inside the window, counted once per date and amount however many documents prove them.
 
    The same check runs again at approval.
-3. **Review.** An owner-gated decision (Backstage: session, CSRF, password re-entry, audit) needs a reason. Approval also needs the checklist, `kycVerified` and `nameMatched`, and sets the approved maximum size. Nothing is approved automatically: on-chain payouts are checked (receipt success and block time, through the configured RPC endpoints) only as a reviewer signal.
+3. **Review.** An owner-gated decision (Backstage: session, CSRF, password re-entry, audit) needs a reason. Approval also needs the complete checklist and sets the approved maximum size (no identity step, [ADR 0065](0065-no-kyc-terms-and-privacy.md)). Nothing is approved automatically: on-chain payouts are checked (receipt success and block time, through the configured RPC endpoints) only as a reviewer signal.
 4. **Migration pass.** Approval issues one wallet-bound pass: eligible plans, maximum size and an expiry. Checkout's Migration path (`?migration=<pass>`):
    - shows only eligible plans and sizes and hides the coupon field;
    - creates a **normal-price** order with `purchase_orders.migration_pass_id`.
@@ -68,5 +68,5 @@ Rules from the brief, all configurable:
 
 - The pricing and provisioning paths change only for orders that carry a pass; every other order is untouched.
 - The owner must provide a private bucket and a key limited to it before requests open.
-- KYC and name matching are reviewer judgments recorded with the decision; the platform does not run an identity provider.
+- Openfund runs no KYC and no identity provider; the reviewer judges the evidence and records the reason with the decision.
 - Firm names are text only, never logos, with a "not affiliated" disclaimer.

@@ -3189,7 +3189,7 @@ CREATE TABLE IF NOT EXISTS migration_requests (
   claimed_max_size_usd   numeric(20,2) NOT NULL CHECK (claimed_max_size_usd > 0),
   approved_max_size_usd  numeric(20,2) CHECK (approved_max_size_usd IS NULL OR approved_max_size_usd > 0),
   full_name              text CHECK (full_name IS NULL OR length(full_name) BETWEEN 2 AND 120),
-  kyc_verified           boolean NOT NULL DEFAULT false,
+  kyc_verified           boolean NOT NULL DEFAULT false,  -- retired: Openfund runs no KYC; never set by a decision
   name_matched           boolean NOT NULL DEFAULT false,
   decision_reason        text,
   decided_by             text,

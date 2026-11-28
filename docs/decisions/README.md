@@ -68,3 +68,5 @@ Read newer decisions alongside historical ones; current implementation and expli
 - [0061 — The Openfund leverage ceilings are final for every Prop account](0061-final-prop-leverage-ceilings.md)
 - [0062 — Request-based 14-day Free Trial; the automatic demo account is retired](0062-request-based-free-trial.md)
 - [0063 — Public on-chain certificates and trade records on Arbitrum Sepolia](0063-on-chain-certificates-and-trade-ledger.md)
+- [0065 — No KYC: the wallet owner is the account owner; Terms of Use and Privacy Policy](0065-no-kyc-terms-and-privacy.md)
+- [0066 — Openfund owns the chart indicators and publishes them as open source](0066-indicator-ownership.md)

@@ -245,7 +245,7 @@ export function renderNavigation(root: ParentNode, locale: Locale, pathname: str
   const footer = root.querySelector('#footer-links')
   if (footer) {
     (footer as HTMLElement).dataset.localeOwned = 'react'
-    const defaults = [...challengeGroup, ...primary, ...economy, ...resources, 'glossary' as const].map(route => ({ destination: route, label: navigationLabels[route] }))
+    const defaults = [...challengeGroup, ...primary, ...economy, ...resources, 'glossary' as const, 'terms' as const, 'privacy' as const].map(route => ({ destination: route, label: navigationLabels[route] }))
     const seen = new Set<string>()
     footer.replaceChildren()
     for (const item of [...(footerLinks || []), ...defaults]) {

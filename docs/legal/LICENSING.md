@@ -100,7 +100,7 @@ manifest or embedded font metadata, not inferred from neighbours.
 | Dastkhat, Dastkhat Arabic and Dastkhat FaNum variable fonts (`assets/fonts/dastkhat/`) | Dastyar (Dastkhat Project Authors), based on Vazirmatn by Saber Rastikerdar | SIL OFL 1.1, no Reserved Font Name | None (unmodified WOFF2 copies) | Ship OFL text and upstream notices; do not sell the fonts alone | Met (`assets/fonts/dastkhat/OFL.txt`, `FONTLOG.txt`, `THIRD-PARTY-NOTICES.txt`; v1.210, pinned commit `ac5b01542f36`, SHA-256 in `SOURCE.json`) |
 | Ubuntu font (`ubuntu-400/700.ttf`) | Canonical | Ubuntu Font Licence 1.0 | None | Ship licence with the fonts | **Fixed in this change**: `assets/Ubuntu-LICENSE.txt` added (text taken from the brandbook archive, where it already shipped) |
 | Irancell fonts (`irancell-*.ttf`) and renamed copies (`openfund-1…5.ttf`, `openfund-persian-*-v4.woff2`) | Irancell (MTN Irancell) per embedded metadata | "All rights reserved"; no license recorded | — | — | **Resolved by removal (2026-11-21)**: no copies remain in the tree; see [retired registry](../development/RETIRED.md) |
-| Pine indicators (`indicators/`) | Owner asserts authorship; repository evidence of third-party origin for several files ([item 3](#pine-indicator-sources)) | CC BY-NC-SA 4.0 stated in `smc-v1.pine`; none in the others | Optimized November 2026 ([ADR 0048](../decisions/0048-pine-indicator-optimization-and-provenance.md)) | NC forbids commercial use | **Blocker: provenance missing** |
+| Pine indicators (`indicators/`) | Openfund (owner decision 2026-11-28, [ADR 0066](../decisions/0066-indicator-ownership.md)) | Apache-2.0 (four files, `indicators/LICENSE`); `smc-v1.pine` CC BY-NC-SA 4.0 as stated in the file | Optimized November 2026 ([ADR 0048](../decisions/0048-pine-indicator-optimization-and-provenance.md)) | Keep the file headers | Resolved ([item 3](#pine-indicator-sources)) |
 | Service logos (Gains, Vela, TradingView, DePay, Render, Liara, Bitpin, Hyperliquid, GMX, MetaMask, Rabby, social glyphs) | Brand owners / Simple Icons | Brand terms / CC0 | Per [Public-brand-assets.txt](../../apps/web-react/public/assets/notices/Public-brand-assets.txt) | Brand guidelines | Documented; `dist/` copy of the notice re-synced in this change |
 | Day/night toggle design | Hamzeh Ghoreyshi | MIT | Adapted | Keep notice | Met |
 | Trade Radar logic (`apps/backend/radar.js`, `features/radar/RadarPage.tsx`) | drkxbt/whales `34d5575` | MIT | Re-implemented and modified ([provenance](../../third_party/drkxbt-whales/PROVENANCE.md)) | Keep copyright and permission notice | Met: LICENSE/NOTICE in `third_party/`, shipped in `assets/notices/` |
@@ -132,32 +132,17 @@ manifest or embedded font metadata, not inferred from neighbours.
    qualifies, and how "prominent notice" must be shown. The engineering
    alternative is to drop the MetaMask SDK connector and rely on injected
    (EIP-6963) and WalletConnect wallets: a product decision, not made here.
-3. <a id="pine-indicator-sources"></a>**Pine indicator sources (`indicators/`).**
-   The owner states that the three indicators and two libraries are
-   owner-controlled and intended to be open source (recorded 2026-11-21 in the
-   optimization task; no authorship records accompany the statement). A
-   file-by-file review of the repository found:
-
-   | File | Header / marks | Evidence of other origin | Status |
-   | --- | --- | --- | --- |
-   | `smc-v1.pine` | CC BY-NC-SA 4.0, "© Openfund" | Structure, identifiers and doc comments closely resemble a widely published third-party "Smart Money Concepts" script distributed under CC BY-NC-SA 4.0 | Not relicensable without the original author's permission; notice kept |
-   | `pac v1.pine` | None; title "Open source"; scanner shows "SDK © Algoman.life" | "Price Action Concepts" is a commercial third-party product name | Unresolved |
-   | `Open algo v5.pine` | None (original first line "I made it better yay") | Original imports `ayvaliktrading/EyopsTelegram` and `ayvaliktrading/JoinUsEyopsTelegram`; the removed dashboard was titled "SMRT Algo" | Unresolved |
-   | `Overlayslibrary.pine` | None | Served in place of `ayvaliktrading/EyopsTelegram` | Unresolved |
-   | `sdk.pine` | None | Description wording of a published Nadaraya–Watson kernel library | Unresolved |
-
-   The November 2026 optimization changed the indicator code (see
-   [ADR 0048](../decisions/0048-pine-indicator-optimization-and-provenance.md)).
-   Those changes are derivative work on these files and do not change their
-   licence status. **Prepared change, not applied:** for each file the owner
-   proves wholly owner-authored (commit history, original drafts or a written
-   assignment), add an `SPDX-License-Identifier: Apache-2.0` header with the
-   owner's copyright line, add `indicators/LICENSE` (Apache-2.0) scoped to
-   those files, and list them in the root README licence table. For a file of
-   third-party origin, record the upstream author, URL and licence, then either
-   obtain permission or keep (or restore) the upstream licence and attribution.
-   CC BY-NC-SA material cannot be offered commercially. The Openfund monorepo
-   licence is not affected by this item.
+3. <a id="pine-indicator-sources"></a>**Pine indicator sources (`indicators/`): resolved.**
+   Openfund owns the three indicators (Open Algo V5, Price Action Concepts,
+   Smart Money Concepts) and the two libraries (`Overlayslibrary`, `sdk`) and
+   publishes them as open source (owner decision, 2026-11-28,
+   [ADR 0066](../decisions/0066-indicator-ownership.md)).
+   `Open algo v5.pine`, `pac v1.pine`, `Overlayslibrary.pine` and `sdk.pine`
+   are Apache-2.0 (`SPDX-License-Identifier: Apache-2.0`, "Copyright 2026
+   Openfund", [indicators/LICENSE](../../indicators/LICENSE)). `smc-v1.pine`
+   keeps the licence it states, CC BY-NC-SA 4.0 with "© Openfund". The earlier
+   provenance review is kept as a
+   [historical record](history/PINE_PROVENANCE_REVIEW_2026-11.md).
 4. `@metamask/eth-json-rpc-provider` declares no license.
 5. Compatibility of whatever first-party license is chosen with items 1–3.
 6. **Legacy Irancell assets — resolved by removal (2026-11-21).** Every

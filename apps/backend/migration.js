@@ -23,7 +23,8 @@ import { validateEvidenceFile, MAX_EVIDENCE_BYTES } from './migration-storage.js
 const fail = (status, error, details) => Object.assign(new Error(error), { status, ...(details ? { details } : {}) })
 const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res)).catch(next)
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const FILE_KINDS = new Set(['identity', 'funded_account', 'statement', 'recording', 'payout_certificate'])
+/* no identity documents: Openfund runs no KYC (the wallet owner is the account owner) */
+const FILE_KINDS = new Set(['funded_account', 'statement', 'recording', 'payout_certificate'])
 const PAYOUT_KINDS = new Set(['payout_certificate', 'payout_tx', 'statement'])
 const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')) ? v : null)
 /* a simple bounded e-mail check (no backtracking regex on input) */
@@ -69,7 +70,6 @@ export function checklist(evidence, settings, now = Date.now()) {
   /* one payout per date and amount, however many documents prove it */
   const distinct = new Set(payouts.map(e => `${new Date(e.payout_date).toISOString().slice(0, 10)}:${e.amount_usd ?? ''}`)).size
   const items = {
-    identity: live.some(e => e.kind === 'identity'),
     fundedAccount: live.some(e => e.kind === 'funded_account' || e.kind === 'recording'),
     payouts: distinct >= settings.minPayouts,
   }
@@ -328,12 +328,11 @@ export function migrationAdminRoutes({ pool, storage, audit }) {
       if (decision === 'approve') {
         const list = checklist((await client.query('SELECT * FROM migration_evidence WHERE request_id=$1', [r.id])).rows, settings)
         if (!list.complete) throw fail(422, 'checklist_incomplete', list)
-        if (req.body.kycVerified !== true || req.body.nameMatched !== true) throw fail(422, 'kyc_required')
         const size = money(req.body.approvedMaxSizeUsd)
         if (!size) throw fail(400, 'invalid_size')
         const { rows: [done] } = await client.query(`SELECT 1 FROM migration_requests WHERE user_id=$1 AND status='approved' AND id<>$2`, [r.user_id, r.id])
         if (done) throw fail(409, 'already_migrated')
-        await client.query(`UPDATE migration_requests SET status='approved', approved_max_size_usd=$2, kyc_verified=true, name_matched=true, decision_reason=$3,
+        await client.query(`UPDATE migration_requests SET status='approved', approved_max_size_usd=$2, decision_reason=$3,
           decided_by=$4, decided_at=now(), files_purge_after=now() + ($5::int * interval '1 day'), updated_at=now() WHERE id=$1`, [r.id, size, reason, actor, settings.retentionDays])
         pass = (await client.query(`INSERT INTO migration_passes (request_id, user_id, plans, max_size_usd, expires_at)
           VALUES ($1,$2,$3,$4, now() + ($5::int * interval '1 day')) RETURNING *`, [r.id, r.user_id, JSON.stringify(settings.plans), size, settings.passExpiresDays])).rows[0]

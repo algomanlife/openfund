@@ -60,5 +60,6 @@ optimized, corrected and published as open source.
   the current period.
 - The indicators remain observational; nothing feeds orders, accounts or risk
   controls.
-- Licensing for `indicators/` is unchanged and still blocks commercial
-  distribution until provenance is resolved.
+- Licensing for `indicators/` was settled on 2026-11-28 by
+  [ADR 0066](0066-indicator-ownership.md): Openfund owns the sources and
+  publishes them as open source.

@@ -97,8 +97,8 @@ export const pathC: LearningPathContent = {
         {
           type: 'p',
           text: text(
-            'Access starts with a wallet connection and an EIP-4361 signature that creates a first-party session. One wallet maps to one identity, while a single wallet can hold more than one challenge record. Signing a login message is not a transfer and never requires a token approval; it is also not identity-document verification. KYC, minimum age and geographic eligibility are not finalized in this release, so nothing about access should be read as a statement that you qualify for a funded stage.',
-            'دسترسی با اتصالِ کیف پول و امضای EIP-4361 شروع می‌شود که یک نشستِ first-party می‌سازد. هر کیف پول به یک هویت نگارش می‌شود، ولی یک کیف پول می‌تواند بیش از یک سابقهٔ چلنج داشته باشد. امضای پیامِ ورود انتقالِ دارایی نیست و هرگز به اجازهٔ برداشتِ توکن نیاز ندارد؛ احرازِ هویت با مدرکِ شناسایی هم نیست. الزامات KYC، حداقلِ سن و شرایط جغرافیایی در این نسخه نهایی نشده‌اند، پس نباید هیچ بخشی از دسترسی را به معنایِ واجدِ شرایط بودن برای مرحلهٔ فاندشده خواند.'
+            'Access starts with a wallet connection and an EIP-4361 signature that creates a first-party session. One wallet maps to one identity, while a single wallet can hold more than one challenge record. Signing a login message is not a transfer and never requires a token approval. Openfund runs no KYC: the wallet owner is the account owner, and rewards go only to that wallet. Access to a demo account is not by itself a statement that you qualify for a funded stage; the trading rules decide that.',
+            'دسترسی با اتصالِ کیف پول و امضای EIP-4361 شروع می‌شود که یک نشستِ first-party می‌سازد. هر کیف پول به یک هویت نگارش می‌شود، ولی یک کیف پول می‌تواند بیش از یک سابقهٔ چلنج داشته باشد. امضای پیامِ ورود انتقالِ دارایی نیست و هرگز به اجازهٔ برداشتِ توکن نیاز ندارد؛ اوپن‌فاند احرازِ هویت (KYC) ندارد: مالکِ کیف پول، مالکِ حساب است و پاداش فقط به همان کیف پول می‌رود. دسترسی به حسابِ دمو به‌تنهایی به معنایِ واجدِ شرایط بودن برای مرحلهٔ فاندشده نیست؛ این را قوانینِ معاملاتی تعیین می‌کند.'
           )
         },
         {
@@ -320,8 +320,8 @@ export const pathC: LearningPathContent = {
         {
           type: 'note',
           text: text(
-            'Where the document is silent, this path says so. Nothing here is a contract: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. Identity is one wallet to one identity, and a wallet can hold more than one challenge record; KYC, age and geographic eligibility are not finalized.',
-            'هر جا سند ساکت است، این مسیر همان را می‌گوید. هیچ‌چیز اینجا قرارداد نیست: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. هویت یعنی یک کیف پول و یک هویت، و یک کیف پول می‌تواند چند سابقهٔ چلنج داشته باشد؛ الزاماتِ KYC، سن و شرایطِ جغرافیایی نهایی نشده‌اند.'
+            'Where the document is silent, this path says so. Nothing here is a contract: purchase activation, funded accounts and payouts are not enabled in this release, and a final versioned agreement will be published before launch. Identity is one wallet to one identity, and a wallet can hold more than one challenge record; Openfund runs no KYC.',
+            'هر جا سند ساکت است، این مسیر همان را می‌گوید. هیچ‌چیز اینجا قرارداد نیست: فعال‌سازیِ خرید، حساب فاندشده و برداشت در این نسخه فعال نیست و پیش از عرضه قراردادِ نهاییِ نسخه‌دار منتشر خواهد شد. هویت یعنی یک کیف پول و یک هویت، و یک کیف پول می‌تواند چند سابقهٔ چلنج داشته باشد؛ اوپن‌فاند احرازِ هویت (KYC) ندارد.'
           )
         },
         {

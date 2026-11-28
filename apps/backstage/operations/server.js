@@ -297,8 +297,9 @@ const operations = {
       return [`/admin/tournaments/${body.slug}/awards/${record}`, { status: body.status, note: textOf(body.note, 1000, false), reason: textOf(body.reason, 1000) }]
     },
   },
-  /* migration review: a decision needs the checklist, KYC and name match
-     (approve) and always a reason; the backend refuses anything else */
+  /* migration review: an approval needs the complete checklist and a size,
+     every decision a reason; the backend refuses anything else. Openfund
+     runs no KYC: the wallet owner is the account owner. */
   migrations: {
     identifier: uuid,
     actions: ['approve', 'reject'],
@@ -307,7 +308,7 @@ const operations = {
       if (body.action === 'approve') {
         const size = Number(body.approvedMaxSizeUsd)
         if (!Number.isFinite(size) || size <= 0) throw fail(400, 'invalid_size')
-        Object.assign(out, { approvedMaxSizeUsd: size, kycVerified: body.kycVerified === true, nameMatched: body.nameMatched === true })
+        Object.assign(out, { approvedMaxSizeUsd: size })
       }
       return [`/admin/migration/requests/${record}/decide`, out]
     },

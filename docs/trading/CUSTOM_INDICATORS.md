@@ -2,7 +2,7 @@
 
 Keep source, dependency resolution, runtime compatibility, catalog registration, calculations, rendering and saved settings separate. Extend the shared chart package once for both products. Never copy financial state into an indicator engine.
 
-1. Add the `.pine` file under [indicators](../../indicators/README.md), recording its provenance and license terms (see [LICENSING.md item 3](../legal/LICENSING.md#pine-indicator-sources)). Inspect all imports, source inputs, historical state, requests and rendering constructs.
+1. Add the `.pine` file under [indicators](../../indicators/README.md), with an SPDX licence header and its owner (see [LICENSING.md item 3](../legal/LICENSING.md#pine-indicator-sources)). Inspect all imports, source inputs, historical state, requests and rendering constructs.
 2. Add only necessary libraries to the resolver allowlist in [pine-sources.mjs](../../packages/openfund-charts/src/pine-sources.mjs). Use valid Pine import identifiers resolved by the runtime. Unknown dependencies must fail clearly. Validate exports/signatures against every alias access.
 3. Import the source in [workspace-entry.ts](../../packages/openfund-charts/src/workspace-entry.ts) and add a catalog entry. Preserve the first three Openfund entries and the built-in order. Libraries never enter the manifest. Start new entries disabled unless a separately approved default requires them.
 4. Execute the original source on captured OHLC and real provider-backed secondary data. Confirm inputs, nonempty calculated series/drawings, live changes and data availability. Add a targeted regression that fails without the feature. Runtime compatibility patches require an exact reproducer and a calculation-preserving fallback; do not invent formulas.

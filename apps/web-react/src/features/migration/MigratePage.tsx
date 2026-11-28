@@ -23,12 +23,12 @@ const c = {
   rowPrice: text('Price', 'قیمت'), rowPriceBoth: text('The normal plan price', 'قیمت عادی پلن'),
   rowRules: text('Funded rules', 'قوانین مرحلهٔ فاند'), rowRulesBoth: text('The plan’s normal funded rules', 'قوانین عادی مرحلهٔ فاند پلن'),
   rowNeeds: text('You need', 'نیاز داری'), rowNeedsN: text('To pass the evaluation', 'قبولی در ارزیابی'),
-  rowNeedsM: text('Proof of ${n} payouts in ${m} months and identity checks', 'اثبات ${n} برداشت در ${m} ماه و احراز هویت'),
+  rowNeedsM: text('Proof of ${n} payouts in ${m} months and of the funded account', 'اثبات ${n} برداشت در ${m} ماه و اثبات حساب فاندشده'),
   rowSize: text('Account size', 'اندازهٔ حساب'), rowSizeN: text('Any size of the plan', 'هر اندازهٔ پلن'), rowSizeM: text('Up to your largest proven funded size', 'تا بزرگ‌ترین حساب فاندشدهٔ اثبات‌شده'),
   stepsTitle: text('Steps', 'مراحل'),
   s1: text('Request', 'درخواست'), s1b: text('Choose your firm and your largest funded account size.', 'شرکت و بزرگ‌ترین اندازهٔ حساب فاندشده‌ات را انتخاب کن.'),
   s2: text('Upload', 'بارگذاری'), s2b: text('Add evidence; the checklist shows what is still missing.', 'مدارک را اضافه کن؛ فهرست بررسی نشان می‌دهد چه چیزی کم است.'),
-  s3: text('Review', 'بازبینی'), s3b: text('A reviewer checks every item and your identity.', 'بازبین همهٔ موارد و هویت تو را بررسی می‌کند.'),
+  s3: text('Review', 'بازبینی'), s3b: text('A reviewer checks every item. No identity documents: your wallet is your account.', 'بازبین همهٔ موارد را بررسی می‌کند. مدرک هویتی لازم نیست: کیف پول تو، حساب توست.'),
   s4: text('Decision', 'تصمیم'), s4b: text('Approval or rejection, always with a reason.', 'تأیید یا رد، همیشه با دلیل.'),
   s5: text('Buy', 'خرید'), s5b: text('Checkout’s Migration path uses your single-use pass.', 'مسیر مهاجرت در صفحهٔ خرید از مجوز یک‌بارمصرف تو استفاده می‌کند.'),
   evidenceTitle: text('Accepted evidence', 'مدارک پذیرفته‌شده'),
@@ -36,7 +36,6 @@ const c = {
   e2: text('On-chain payout transaction hashes (checked automatically where the chain is supported)', 'هش تراکنش برداشت روی زنجیره (در زنجیره‌های پشتیبانی‌شده خودکار بررسی می‌شود)'),
   e3: text('Bank or payment-provider statements', 'صورت‌حساب بانک یا ارائه‌دهندهٔ پرداخت'),
   e4: text('A screen recording of a live login showing the account and payout history', 'فیلم صفحه از ورود زنده که حساب و سابقهٔ برداشت را نشان دهد'),
-  e5: text('An identity document whose name matches the firm’s documents (KYC)', 'مدرک هویتی با نامی مطابق مدارک شرکت (KYC)'),
   privacy: text('Files are stored privately and encrypted, opened only by reviewers through links that expire in minutes, and deleted ${d} days after the decision.', 'فایل‌ها خصوصی و رمزنگاری‌شده نگهداری می‌شوند، فقط بازبین‌ها با لینک‌هایی که چند دقیقه بعد منقضی می‌شوند آن‌ها را باز می‌کنند و ${d} روز پس از تصمیم حذف می‌شوند.'),
   firmsTitle: text('Accepted firms', 'شرکت‌های پذیرفته‌شده'),
   officialSite: text('Official site', 'سایت رسمی'), programs: text('Accepted programs', 'برنامه‌های پذیرفته‌شده'), firmEvidence: text('Evidence the firm provides', 'مدارکی که شرکت ارائه می‌دهد'),
@@ -47,13 +46,13 @@ const c = {
   soonBody: text('Requests open once private evidence storage is ready. Nothing is collected before then.', 'درخواست‌ها پس از آماده شدن فضای خصوصی نگهداری مدارک باز می‌شوند. تا آن زمان اطلاعاتی دریافت نمی‌شود.'),
   connect: text('Connect wallet', 'اتصال کیف پول'), signIn: text('Sign in with your wallet', 'ورود با کیف پول'),
   firm: text('Prop firm', 'شرکت تأمین سرمایه'), size: text('Largest funded account size (USD)', 'بزرگ‌ترین اندازهٔ حساب فاندشده (دلار)'),
-  fullName: text('Full name as on your identity document', 'نام کامل مطابق مدرک هویتی'),
+  fullName: text('Name on your account at the firm', 'نام روی حساب تو در آن شرکت'),
   create: text('Create request', 'ثبت درخواست'),
   checklist: text('Checklist', 'فهرست بررسی'),
-  cIdentity: text('Identity document', 'مدرک هویتی'), cFunded: text('Funded account proof (screenshot or recording)', 'اثبات حساب فاندشده (تصویر یا فیلم)'),
+  cFunded: text('Funded account proof (screenshot or recording)', 'اثبات حساب فاندشده (تصویر یا فیلم)'),
   cPayouts: text('${have} of ${need} payouts in the last ${m} months', '${have} از ${need} برداشت در ${m} ماه اخیر'),
   addFile: text('Upload a file', 'بارگذاری فایل'), kind: text('Type', 'نوع'),
-  kIdentity: text('Identity document', 'مدرک هویتی'), kFunded: text('Funded account proof', 'اثبات حساب فاندشده'), kStatement: text('Payout statement', 'صورت‌حساب برداشت'),
+  kFunded: text('Funded account proof', 'اثبات حساب فاندشده'), kStatement: text('Payout statement', 'صورت‌حساب برداشت'),
   kRecording: text('Screen recording', 'فیلم صفحه'), kCertificate: text('Payout certificate', 'گواهی برداشت'), kTx: text('On-chain payout', 'برداشت روی زنجیره'),
   payoutDate: text('Payout date', 'تاریخ برداشت'), amount: text('Amount (USD, optional)', 'مبلغ (دلار، اختیاری)'),
   file: text('File (PDF, PNG, JPEG, WebP up to 10 MB; MP4 or WebM up to 40 MB)', 'فایل (PDF، PNG، JPEG، WebP تا ۱۰ مگابایت؛ MP4 یا WebM تا ۴۰ مگابایت)'),
@@ -92,7 +91,7 @@ interface Firm { id: string; name: string; websiteUrl: string | null; programTyp
 interface Config { open: boolean; firms: Firm[]; rules: { minPayouts: number; windowMonths: number; plans: string[]; retentionDays: number } }
 interface Evidence { id: string; kind: string; payoutDate: string | null; amountUsd: string | null; url: string | null; txHash: string | null; file: { contentType: string; sizeBytes: number } | null; verification: { verified: boolean | null } | null }
 interface Me { open: boolean; request: null | { id: string; status: string; firm: string; claimedMaxSizeUsd: string; approvedMaxSizeUsd: string | null; decisionReason: string | null }
-  evidence?: Evidence[]; checklist?: { identity: boolean; fundedAccount: boolean; payouts: boolean; payoutCount: number; minPayouts: number; windowMonths: number; complete: boolean }
+  evidence?: Evidence[]; checklist?: { fundedAccount: boolean; payouts: boolean; payoutCount: number; minPayouts: number; windowMonths: number; complete: boolean }
   pass?: { id: string; plans: string[]; maxSizeUsd: string; status: string; expiresAt: string } | null }
 
 export default function MigratePage() {
@@ -134,7 +133,7 @@ export default function MigratePage() {
 
     <section className="container mg-section" aria-labelledby="mg-evidence">
       <h2 id="mg-evidence">{t(c.evidenceTitle)}</h2>
-      <ul className="mg-evidence">{[c.e1, c.e2, c.e3, c.e4, c.e5].map((e, i) => <li key={i}>{t(e)}</li>)}</ul>
+      <ul className="mg-evidence">{[c.e1, c.e2, c.e3, c.e4].map((e, i) => <li key={i}>{t(e)}</li>)}</ul>
       <p className="mg-note">{pickFormat(locale, c.privacy.fa, c.privacy.en, { d: num(rules.retentionDays) })}</p>
     </section>
 
@@ -237,11 +236,11 @@ function Status({ t, me, money, locale }: { t: (v: L) => string; me: Me; money: 
 function Evidence({ t, me, busy, act, locale }: { t: (v: L) => string; me: Me; locale: AppLocale; busy: boolean; act: (fn: () => Promise<{ ok: boolean; data: { error?: string } | null }>) => Promise<void> }) {
   const id = me.request!.id
   const list = me.checklist!
-  const [kind, setKind] = useState('identity'), [date, setDate] = useState(''), [amount, setAmount] = useState('')
+  const [kind, setKind] = useState('funded_account'), [date, setDate] = useState(''), [amount, setAmount] = useState('')
   const [linkKind, setLinkKind] = useState('payout_certificate'), [url, setUrl] = useState(''), [chain, setChain] = useState('42161'), [hash, setHash] = useState(''), [linkDate, setLinkDate] = useState('')
   const file = useRef<HTMLInputElement>(null)
-  const kinds: [string, L][] = [['identity', c.kIdentity], ['funded_account', c.kFunded], ['statement', c.kStatement], ['recording', c.kRecording], ['payout_certificate', c.kCertificate]]
-  const label = (k: string) => t(([...kinds, ['payout_tx', c.kTx]] as [string, L][]).find(([v]) => v === k)?.[1] ?? c.kIdentity)
+  const kinds: [string, L][] = [['funded_account', c.kFunded], ['statement', c.kStatement], ['recording', c.kRecording], ['payout_certificate', c.kCertificate]]
+  const label = (k: string) => t(([...kinds, ['payout_tx', c.kTx]] as [string, L][]).find(([v]) => v === k)?.[1] ?? c.kFunded)
   const payout = ['statement', 'payout_certificate'].includes(kind)
   const upload = () => act(async () => {
     const f = file.current?.files?.[0]
@@ -256,7 +255,6 @@ function Evidence({ t, me, busy, act, locale }: { t: (v: L) => string; me: Me; l
     <div className="mg-card">
       <h3>{t(c.checklist)}</h3>
       <ul className="mg-checklist">
-        <li className={list.identity ? 'is-done' : ''}>{t(c.cIdentity)}</li>
         <li className={list.fundedAccount ? 'is-done' : ''}>{t(c.cFunded)}</li>
         <li className={list.payouts ? 'is-done' : ''}>{pickFormat(locale, c.cPayouts.fa, c.cPayouts.en, { have: new Intl.NumberFormat(intlLocale(locale)).format(list.payoutCount), need: new Intl.NumberFormat(intlLocale(locale)).format(list.minPayouts), m: new Intl.NumberFormat(intlLocale(locale)).format(list.windowMonths) })}</li>
       </ul>

@@ -27,7 +27,7 @@ const c = {
   register: text('Register', 'ثبت‌نام'), rules: text('Rules', 'قوانین'), prizes: text('Prizes', 'جوایز'),
   podiumTitle: text('Prizes for the top three', 'جوایز سه نفر اول'),
   first: text('1st place', 'نفر اول'), second: text('2nd place', 'نفر دوم'), third: text('3rd place', 'نفر سوم'),
-  cashNote: text('Cash prizes are paid after winner identity checks (KYC), subject to law and sanctions.', 'جوایز نقدی پس از احراز هویت برندگان (KYC) و مطابق قانون و تحریم‌ها پرداخت می‌شود.'),
+  cashNote: text('No KYC: cash prizes are paid only to the winning wallet, within the law.', 'بدون احراز هویت: جایزهٔ نقدی فقط به کیف پول برنده و در چارچوب قانون پرداخت می‌شود.'),
   ranks4: text('Ranks 4 to 10', 'رتبه‌های ۴ تا ۱۰'),
   ranks11: text('Ranks 11 to 100', 'رتبه‌های ۱۱ تا ۱۰۰'),
   /* neon prize wall (owner fix 4) */

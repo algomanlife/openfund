@@ -56,7 +56,7 @@ passing the trial each issue a certificate. Sign-in no longer creates a demo acc
 ## 4. Decisions still awaiting the owner (before commercial launch)
 
 1. Final price sanity-check of the adopted fees against Openfund's own cost structure.
-2. KYC provider, documents, jurisdictions.
+2. Jurisdictions (no KYC: [ADR 0065](../decisions/0065-no-kyc-terms-and-privacy.md)).
 3. Payout rail (currency/network), payout fees, taxes.
 4. Weekend-holding and news-window policy on funded accounts.
 5. Appeals/reset process and termination policy.
