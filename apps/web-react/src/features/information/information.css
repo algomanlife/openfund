@@ -275,7 +275,10 @@ footer #footer-links .of-footer-col a[aria-current=page] { color:var(--green,#82
 @media(max-width:420px) { .openfund-header ~ footer .footer-top, .information-page footer .footer-top { grid-template-columns:minmax(0,1fr); } }
 @keyframes of-footer-sweep { from { background-position:-40% 0 } to { background-position:140% 0 } }
 @keyframes of-footer-orbit { to { transform:rotate(360deg) } }
-@keyframes of-footer-rise { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
+@keyframes of-footer-rise { from { transform:translateY(10px) } to { transform:none } }
+html[data-theme=light] footer #footer-links .of-footer-col > b { color:#0d1f16; border-bottom-color:#0d1f161f; }
+html[data-theme=light] footer #footer-links .of-footer-col a { color:#3d5247; }
+html[data-theme=light] footer #footer-links .of-footer-col a:hover, html[data-theme=light] footer #footer-links .of-footer-col a:focus-visible, html[data-theme=light] footer #footer-links .of-footer-col a[aria-current=page] { color:#065f3a; }
 @media(prefers-reduced-motion:reduce) { .openfund-header ~ footer::before, footer .footer-top>.brand::after, footer #footer-links .of-footer-col { animation:none !important; } }
 @media(max-width:600px) {
   .openfund-header .rk-chip-connect .rk-connect-label { display:none; }
