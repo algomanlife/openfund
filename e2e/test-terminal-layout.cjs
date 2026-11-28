@@ -166,6 +166,10 @@ async function metrics(page) {
         await frame.locator('#of-sl').fill('');
         await frame.locator('#of-collateral').fill('150');
       }
+      /* The viewport loop ends at 1280, where long labels fold the tabs into
+         the menu trigger. Secondary routes are part of the desktop More menu,
+         so open them at a width where that row fits. */
+      await page.setViewportSize({width:1920,height:1080});
       await page.locator('.of-terminal-more summary').click();
       check(`${product}/${locale}: secondary routes preserved`,await page.locator(`.of-terminal-more-links a[href$="/${product==='prop'?'certificates':'rewards'}"]`).isVisible());
       await page.locator('.of-terminal-more summary').press('Escape');

@@ -144,7 +144,16 @@ const ok = (name, value, info = '') => { assert.ok(value, `${name} ${info}`); re
         for (const theme of ['dark', 'light']) {
           const page = await browser.newPage({ viewport: { width: w, height: h }, colorScheme: theme, reducedMotion: 'reduce' }); page.on('pageerror', e => errors.push(String(e)))
           await page.goto(`${BASE}/${loc}/rulebook`, { waitUntil: 'load' }); await page.waitForTimeout(1200)
-          await page.locator('.openfund-header .resources-toggle[aria-controls="website-economy"]').click(); await page.waitForTimeout(400)
+          const economyToggle = page.locator('.openfund-header .resources-toggle[aria-controls="website-economy"]')
+          /* fitNavigation moves the labels into the menu when they do not fit
+             (English at 1280 after the Openfund link). The side-by-side panel
+             is checked wherever that desktop row is actually shown. */
+          if (!(await economyToggle.isVisible())) {
+            ok(`${loc} ${theme} ${w}: the header uses the menu when the labels do not fit`, await page.locator('.openfund-header.nav-overflow .menu').isVisible())
+            await page.close()
+            continue
+          }
+          await economyToggle.click(); await page.waitForTimeout(400)
           const e = await page.evaluate(() => {
             const box = el => { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height, b: r.bottom } }
             const banners = [...document.querySelectorAll('#website-economy .mega-banner')].map(box)
