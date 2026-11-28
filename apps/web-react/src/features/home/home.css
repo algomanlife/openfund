@@ -8,6 +8,12 @@
 /* the stage is fixed and the header is the only flowing content, so the
    page has nothing to scroll; dialogs keep their own scroll locking */
 html.of-gateway-locked { overscroll-behavior: none; }
+/* Closed menus are only visibility-hidden, so their panels still stretch the
+   document. On this one-screen page that makes a short window scroll. The
+   price strip is fixed and the stage already clears it, so the body does not
+   also reserve that strip. */
+html.of-gateway-locked .openfund-header .nav-account:not(.resources-open) .nav-dropdown { display: none; }
+html.of-gateway-locked.has-bitpin-ticker body { padding-bottom: 0; }
 
 .home-gateway.solar-gateway {
   position: fixed; inset-inline: 0;
