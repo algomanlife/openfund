@@ -11,7 +11,7 @@ Critical, P1 High, P2 Medium, P3 Low.
 
 | ID | Priority | Remaining task | Owner action |
 | --- | --- | --- | --- |
-| OF-2026-11-12 | P1 | Deploy the merged role isolation (#149): backup and restore drill, `db-roles.mjs apply`, switch `openfund-cms` `DB_CONNECTION_STRING` to the `openfund_directus` role, verify, then sync the Blueprint ([database roles](DATABASE_ROLES.md)) | Run the steps; record the evidence in `docs/status/status.json` |
+| OF-2026-11-12 | P1 | Deploy the merged role isolation (#149): backup and restore drill, `db-roles.mjs apply`, switch `openfund-cms` `DB_CONNECTION_STRING` to the `openfund_directus` role, verify, then sync the Blueprint ([database roles](DATABASE_ROLES.md)) | Dispatch **Production database roles (OF-2026-11-12)**: `plan`, then `apply` (automates the steps, rotates the Directus password, rolls back on failure); record the evidence in `docs/status/status.json` |
 | OF-2026-11-11 | P1 | Upgrade Directus to 12.x with an entitlement for 43+ collections and custom permission rules. Until then, the verified 11.x controls from #151 apply once they are deployed | Decide the licence (or accept 11.x in writing) |
 | OF-2026-11-20 | P1 | Deploy the hardened edge (#150) when the IRAN edge is activated: staging first, then production | Dispatch the edge workflow |
 | OF-2026-11-04 | P2 | `zod` and `decode-uri-component` clear when RainbowKit supports wagmi 3, or after a connector migration with the full wallet browser suite | — |

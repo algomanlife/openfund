@@ -164,6 +164,37 @@ runtime-role server. The application logged no privilege errors. The only
 failures were test-harness DDL: fault-injection triggers, `TRUNCATE` fixtures
 and schema re-application, which need the owner role.
 
+## Automated path (owner-dispatched workflow)
+
+The production steps above are automated by the **Production database roles
+(OF-2026-11-12)** workflow (`.github/workflows/db-roles-production.yml`,
+`scripts/ops/db-roles-production.mjs`). It runs only from `main`, in the
+protected `production` environment, with the existing `RENDER_API_TOKEN`
+secret and `RELEASE_CMS_URL` variable. Nothing else needs to be configured.
+
+1. Dispatch it with `step: plan`. It reads the owner connection from the
+   Render API (masked in the log, never stored) and prints the redacted
+   statements. Nothing changes.
+2. Dispatch it with `step: apply` and the confirmation text
+   `switch openfund-cms to openfund_directus`. In one run it:
+   - applies the roles and grants (one transaction);
+   - generates a new `openfund_directus` password and sets it (the rotation);
+   - proves that the new credential connects as `openfund_directus`;
+   - sets `openfund-cms` → `DB_CONNECTION_STRING` to the role's internal
+     connection string and restarts the service;
+   - waits for `/server/ping` and for a live `openfund_directus` session;
+   - runs the drift check.
+   If Directus does not come back on the new role, the previous
+   `DB_CONNECTION_STRING` is restored and the service restarted.
+3. Check a Backstage content edit and a public published read, then record
+   the run in `docs/status/status.json` (step 6 above).
+
+TLS to the external database host is verified by default. Only if Render's
+certificate chain does not verify on the runner, set the environment variable
+`DB_SSLMODE=encrypt-only` (encrypted, not verified) for the run. Run
+`step: verify` after every migration, Directus upgrade or bootstrap. Rotating
+the password again is another `apply`.
+
 ## New environments and backend schema changes
 
 Directus 11 rewrites a foreign key whenever relation metadata is attached
